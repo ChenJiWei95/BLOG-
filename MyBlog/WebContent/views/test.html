@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>layui自定义封装</title>
+  <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+  <style>
+	*{margin: 0; padding: 0;}
+  </style>
+ </head>
+ <body>
+	<div class="layui-collapse">
+							<div class="layui-colla-item">
+								<h2 class="layui-colla-title">主页</h2>
+								<div class="layui-colla-content layui-show">内容区域</div>
+							</div>
+							<div class="layui-colla-item">
+								<h2 class="layui-colla-title">主页</h2>
+								<div class="layui-colla-content layui-show">内容区域</div>
+							</div>
+						</div>
+	<script>
+	</script>
+ </body>
+ <script src="../layuiadmin/layui/layui.js"></script>
+ <script>
+	layui.config({
+		base: '../layuiadmin/modules/' //静态资源所在路径
+	}).extend({
+		test: 'test' //主入口模块
+	});
+	layui.use(['layer', 'test', 'element'], function() {
+		var test = layui.test;
+		var ui = layui.layer; 
+		//test.say();
+		ui.msg("hello word");
+	});
+ </script>
+</html>

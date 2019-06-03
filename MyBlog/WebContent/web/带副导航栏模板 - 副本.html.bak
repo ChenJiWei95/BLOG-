@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>随笔</title>
+  <link type="text/css" rel="stylesheet" href="../css/MyCss.css" />
+  <link type="text/css" rel="stylesheet" href="../css/basi.css" />
+  <link type="text/css" rel="stylesheet" href="../css/git-plugin.css" />
+  <script src="../js/MyjsV0-8.js"></script>
+  <style>
+	.foot {padding: 0 4px;}
+	.bom_container {background: #fff; border-radius: 4px; width: 100%;}
+	
+	.api-content {margin: auto; margin: 4px;}
+	.api-content > .api-content-right, .api-content > .api-content-left {border-radius: 4px; background: #fff; float:left; height: 100%; padding: 4px;}
+	
+	/* api 左边界面 导航 */
+	.api-content > .api-content-left { width: 166px;}
+
+	/*.api-content-left > .api-serch, */
+	.api-content-left > .show-content {overflow-x: auto; overflow-y: auto; width: 166px; min-height: 366px;}
+
+	.api-content-left > .api-serch {height: 30px; border-bottom: 1px solid #e6e6e6;}
+
+	/* S 联级树组件 */
+	.show-content-li, .show-content-li .item-title-text {cursor: pointer;}
+
+	.show-content-li .item-title {height: 25px; line-height: 25px;}
+
+	.show-content-li .item-title-ico,
+	.show-content-li .item-title-text {float: left;}
+	.show-content-li .item-title-ico {margin-top: 5px; width:16px; height:16px;}
+	.show-content-li .item-title-text {margin-left: 2px; color: #888;}
+	.show-content-li .item-title-text:hover {color: #555;}
+
+	.show-content-li .item-title-ico > i { transition: all 0.2s ease-out; transform: rotate(-90deg); width:16px; height:16px;}
+	.show-content-li:active .show-content-li .item-title-ico > i {}
+	.show-content-li .item-title-ico > .open {background: url(../img/open.png); cursor: pointer;}
+	.show-content-li .item-title-ico > .open:hover {background: url(../img/open_hover.png);}
+	
+	.show-content-li .item-child {padding-left: 12px; height: 0; transition: all 0.2s ease-out; overflow: hidden;}
+	/* E 联级树组件 */
+
+	/* api 右边界面 内容 */
+	.api-content > .api-content-right {margin-left: 4px;}
+	.api-content > .api-content-right > div {background:#fff; padding: 20px; border-radius: 3px; min-width: 748px;}
+	.api-content > .api-content-right > div > div { border-bottom: 1px solid #d1d5da; margin-top: 10px; padding: 10px; position: relative; overflow: hidden; font-size: 14px;}
+	.api-content > .api-content-right > div > div:nth-child(1) {margin-top: 0px !important;}
+	/* 随笔文章头部 */
+	.page-top div:nth-child(1) {margin-bottom: 10px; }
+	.page-top .page-top-infor > span:first-child {margin-left: 0px !important;}
+	.page-top .page-top-infor > span {margin-left: 10px; color: #555; font-size: 12px;}
+	.page-top .page-top-infor > span a:first-child {margin-left: 0px !important;}
+	.page-top div:last-child {float: right; font-size: 12px; color: #555; position: absolute; right: 18px; top: 18px;}
+
+	/*S-canlender*/
+	.calend{background: #fff;  position: relative;  z-index: 5;  margin: 0px auto; font-size: 12px; font-family: -webkit-pictograph; margin-top: 12px;}
+	.calend > .calend_top{width: 236px;  height: 25px;  background: #555;  text-align: center;  line-height: 29px;  position: relative;}
+
+	.calend > .calend_top p {color: #fff;  font-size: 14px; line-height: 29px;}
+	.calend > .calend_top .calend-top-ico {width: 16px;  height: 16px; background: url(../img/calend.png); left: 66px; top: 5px; position: absolute;}
+	.calend > .calend_body{padding: 4px;  width: 218px; background: #fff;  position: relative; min-height: 125px; }
+	.calend > .calend_body table {width: 212px; text-align:center; position: absolute; z-index: 2;}
+	.calend > .calend_body table tbody tr td{color: #555; width: 28px;  height: 12px;  line-height: 18px; cursor: pointer; padding: 2px 10px; transform:1s; -moz-transition:1s; -webkit-transition:1s;}
+	.calend > .calend_body table tbody tr .current-day {color: red;}
+	.calend > .calend_body table tbody tr .no-current-day {}
+	.calend > .calend_body table tbody tr .other-month-day {color: #ccc;}
+	.calend > .calend_body table tbody tr .target-month-day {color: #fff;}
+
+	.calend > div > .current-day-bg {width: 20px; height: 20px; background: #555; border-radius: 50%; z-index: 1; position: absolute; top: 0; left: 0; transform:1s; -moz-transition:1s; -webkit-transition:1s; opacity: 0.5;}
+	/* 切换页按钮 */
+	.calend > .lr-bt {}
+	.calend > .lr-bt div i {width: 16px;  height: 16px;  cursor: pointer; }
+	.calend > .lr-bt div {position: absolute;  top: 4px;   z-index:2; }
+	.calend > .lr-bt .l-bt {left: 4px; }
+	.calend > .lr-bt .l-bt i {background: url(../img/r1.png); }
+	/*.lr-bt .l-bt i:hover {background: url(); }*/
+	.calend > .lr-bt .r-bt {right: 4px; }
+	.calend > .lr-bt .r-bt i {background: url(../img/l1.png); }
+	/*.lr-bt .r-bt i:hover {background: url(); }*/
+	/*E-canlender*/
+
+	.input-text-style1 {width: 166px; height: 25px; border: 0px; outline: none; padding: 0px 4px; border-bottom: 1px solid #e6e6e6;}
+
+	.input-text-style1 {width: 266px;}
+
+	.textarea-style1 {width: 97%;
+    min-height: 666px; margin-top: 6px;}
+
+	.body-content-in .git-show-cnt {display: none; min-height: 888px;}
+	.body-content-in .git-show-cnt-in {padding: 10px;}
+  </style>
+ </head>
+ <body>
+	<!-- 隐藏栏 -->
+	<div class="more-oprate">
+		<ul class="nolist">
+			<li title="查找">
+				<i class="serch_ico"></i>
+				<div class="li-cnt">
+					<label class="input-lable">
+						<input type="text" class="serch-input"/> 
+					</label>
+					<label>
+						<i class="serch-click-bt-ico"></i>
+					</label>
+				</div>
+			</li>
+			<li title="API" class="li-api"><label class="show-label">API</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击查看api</label>
+				</div>
+			</li>
+			<li title="TOP" class="li-top"><label class="show-label">TOP</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击返回顶部</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- S-左栏 -->
+	<div class="body-nav">
+		<div class="body-nav-in">
+			<!-- 个人信息 -->
+			<div class="nav-ifnor">
+				<label>
+					<img src="../img/pho.jpg" width="80" height="80" alt="chenjiwei"/>
+				</label>
+				<label>
+					指尖的美
+				</label>
+				<label class="clearFloat">
+					浏览数量：1
+				</label>
+				<label class="clearFloat">
+					<i onclick="link.open('https://github.com/ChenJiWei95');" class="github" title="https://github.com/ChenJiWei95"></i>
+					<i class="email" title="chenJiWey@163.com"></i>
+				</label>
+			</div>
+			<!--S-canlender-->
+			<div class="calend clearFloat">
+				<div class="calend_top">
+					<i class="calend-top-ico"></i>
+					<p class="p_inner"></p>
+				</div>
+				<div class="calend_body">
+					<table class='cre_tab' cellspacing="0" cellpadding="0">
+						<tbody>
+							<tr>
+								<td class="week">日</td>
+								<td class="week">一</td>
+								<td class="week">二</td>
+								<td class="week">三</td>
+								<td class="week">四</td>
+								<td class="week">五</td>
+								<td class="week">六</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="lr-bt">
+					<div class="l-bt"><i></i></div>
+					<div class="r-bt"><i></i></div>
+				</div>
+				<div>
+					<div class="current-day-bg"></div>
+				</div>
+			</div>
+			<!--E-canlender-->
+			<!-- 导航栏 -->
+			<div class="nav-list">
+				<ul class="nolist">
+					<li>首页</li>
+					<li>Java</li>
+					<li>HTML</li>
+					<li>JavaScript</li>
+					<li>其他</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- E-左栏 -->
+	<!-- S body -->
+	<div class="body">
+		<div class="body-con">
+			<!-- 导航 -->
+			<div class="body-nav-no">
+				
+			</div>
+			<div class="body-content">
+				<div class="api-content clearFloat"  style="position: relative;">
+					<div class="api-content-left clearFloat">
+						<div class="api-serch"></div>
+						<div class="show-content">
+							<ul class="nolist"></ul>
+						</div>
+					</div>
+					<div class="api-content-right">
+						<div class="content-in">
+							<!--编辑-->
+							<div style="min-height: 100px;">
+								<div class="show-text">
+									<h3>新建随笔</h3>
+								</div>
+								<div>
+									<span style="color: #555;" class="coll-text"></span>
+									<!-- 标题 主体 -->
+									<input type="text" class="input-title input-text-style1" placeholder="输入标题" spellcheck="false" />
+								</div>
+								<div class="cnt-textarea">
+									<textarea class="textarea-style1" spellcheck="false"></textarea>
+								</div>
+								<div class="buttons">
+									<input type="button" class="clear-button box-style1" value="清空"/>
+									<input type="button" class="save-button box-style1" value="保存"/>
+									<input type="button" class="view-button box-style1" value="浏览"/>
+								</div>
+							</div>
+							<!--标题-->
+							<div class="page-top">
+								<div class="page-top-title">
+									<h1>文章头部</h1>
+								</div>
+								<div class="page-top-infor">
+									<span class="time">xxx</span>
+									<span class="readCount">阅读数：xxx</span>
+									<span class="tags">
+										<span class="">标签：</span>
+										<a class="tag-link radius-box-style1">xxx</a>
+										<a class="tag-link radius-box-style1">xxx</a>
+									</span>
+								</div>
+								<div style="float: right;"><span class="last-time">上一次更新时间：xxx</span></div>
+							</div>
+							<!--显示内容-->
+							<div class="git-show-cnt">
+								<div class="git-show-cnt-in">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--S -  foot-->
+				<div class="foot" style="position: relative;">
+					<div class="bom_container">
+						<li style="color:#586069;list-style:none;padding:10px 245px;">Copyright ©2018 <span  style="color:#a71d5d;cursor:pointer;" title="作者介绍">chen</span> Powered By <span  style="color:#a71d5d;cursor:pointer;" title="程序目录">My Blog</span> Version 1.0.0</li>
+					</div>
+				</div>
+				<!--E - foot-->
+			</div>
+		</div>
+	</div>
+	<!-- E body -->
+	<script src="../js/canlender-plugin.js"></script>
+	<script src="../js/git-plugin V0.js"></script>
+	<script src="../js/Cascade-plugin.js"></script>
+	<script src="../js/MyjsDataStructureV0-1.js"></script>
+	<script>
+	/* S 联级树 */
+	
+	//如何通过json数据生成列表
+	var casData = '[{text:"java基础" , child:[{text:"java基础篇1"}]},{text:"java高级", child:[{text:"java高级篇1"}]}]';
+	//var JSONArr = $$.json.toObject(casData);
+	var manageT = new ManageCascade(e => {
+		//点击项
+		if(e.target.attr("class") == "item-title-text"){
+			//通过判断是否有打开标签来确认是夹还是子元素
+			$(".content-in").eq(0).style.display = "block";
+			if(e.target.pre().$("i").eq(0) === undefined) {
+				//点击随笔
+				//获取随笔标题 时间 等数据
+				$(".show-text h3").eq(0).text("编辑随笔");
+				$(".coll-text").eq(0).text(e.target.parent("li").parent("li").$(".item-title-text").eq(0).text()+"/");
+				$(".input-title").eq(0).value = e.target.text();
+				$(".buttons .clear-button").eq(0).style.display = "none";
+			} else {
+				//点击夹
+				$(".show-text h3").eq(0).text("新建随笔");
+				$(".coll-text").eq(0).text(e.target.text()+"/");
+				$(".input-title").eq(0).value = "";
+				$(".buttons .clear-button").eq(0).style.display = "initial";
+			}
+		}
+	});
+	console.log($(".show-content ul").eq(0));
+	dealCasCade(casData);
+
+	/* E 联级树 */
+
+	/* S 日历 */
+	var manageCanlender = new ManegeCanlender(new Canlender());
+	manageCanlender.doReay();
+	/* E 日历 */
+
+	/* S 随笔文章的解析 */
+	//{title:, time:, update-time:, read-count:, tags:[{tag:,},], page-content:,}
+	$(".buttons").eq(0).onclick = function(e){
+		if(e.target.tName() == "input"){
+			switch(e.target.value){
+				case "清空" : 
+				$(".input-title").eq(0).value = "";
+				$(".cnt-textarea textarea").eq(0).value = "";
+				break;
+				case "保存" : 
+				
+				break;
+				case "浏览" : 
+				if($(".git-show-cnt-in").eq(0) !== undefined)	
+					$(".git-show-cnt-in").eq(0).remove();
+				$$.cre("div").addClass("git-show-cnt-in").appendTo($(".git-show-cnt").eq(0));
+				test();
+				break;
+			}
+		}
+	}
+	function Page(data){
+		//标题
+		$(".page-top-title h1").eq(0).text(data.get("title"));
+		//创建时间
+		$(".page-top-infor .time").eq(0).text("上次更新时间：2017年05月09日 23:19:10");
+		//上次更新时间
+		$(".last-time").eq(0).text("2017年05月09日 23:19:10");
+		//阅读数
+		$(".page-top-infor .readCount").eq(0).text("阅读数："+data.get("read-count"));
+		//标签
+		var tagsE = $(".page-top-infor .tags").eq(0);
+		var tags = data.get("tags");
+		tags.forEach(item => {
+			$$.cre("a").text(item.get("tag")).addClass("radius-box-style1").appendTo(tagsE);
+		});
+		//将文章解析
+		new GitManage(data.get("page-content")).getElements().forEach(item => {
+			item.appendTo($(".git-show-cnt-in").eq(0));
+		});
+	}
+	function test(){
+		//标题
+		$(".page-top-title h1").eq(0).text($(".input-title").eq(0).value);
+		//创建时间
+		$(".page-top-infor .time").eq(0).text("上次更新时间：2017年05月09日 23:19:10");
+		//上次更新时间
+		$(".last-time").eq(0).text("2017年05月09日 23:19:10");
+		//阅读数
+		$(".page-top-infor .readCount").eq(0).text("阅读数：0");
+		//将文章解析
+		new GitManage($(".cnt-textarea textarea").eq(0).value).getElements().forEach(item => {
+			item.appendTo($(".git-show-cnt-in").eq(0));
+		});
+	}
+	var gitStr = "|Author|威\n"+
+"|:---:|:---:\n"+
+"|E-mail|chenJiWey@163.com\n"+
+"|date|2018/10/11\n"+
+"# Ajax异步交互\n"+
+"### 说明\n"+
+"    描述\n"+
+"### 字段描述\n"+
+"|类型|字段|描述\n"+
+"|---|---|---\n"+
+"### 构造描述\n"+
+"|构造|描述\n"+
+"|---|---\n"+
+"|模板|模板\n"+
+"### 方法描述\n"+
+"|返回值|方法|参数\n"+
+"|---|---|---\n"+
+"|模板|模板|模板\n"+
+"### 案例\n"+
+"### 详细描述";
+	/*new GitManage(gitStr).getElements().forEach(item => {
+		item.appendTo($(".git-show-cnt-in").eq(0));
+	});*/
+	/* E 随笔文章的解析 */
+
+	//每次窗口的变化
+	var bodyContentShow = $(".body-content-show").eq(0);
+	var bodyNavNo = $(".body-nav-no").eq(0);
+	var bodyNav = $(".body-nav").eq(0);
+	var moreOprate = $(".more-oprate").eq(0);
+	initAndUpdate();
+	window.onresize = function(e){
+		initAndUpdate();
+	}
+	function initAndUpdate(){
+		document.body.style.minHeight = window.innerHeight+"px";
+		//对导航条的初始化和随着窗口的变动进行更新
+		var marginLeft = bodyNavNo.getMarginLeft();
+		var width = bodyNavNo.clientWidth;
+		
+		bodyNav.style.width = width + "px";
+		bodyNav.style.left = marginLeft + "px";
+		bodyNav.style.display = "block";
+
+		//更多操作
+		//$(".more-oprate").eq(0).style.top = 100 + "px";
+		//alert(bodyContentShow.getBoundingClientRect().right);
+		
+		
+		//$(".more-oprate").eq(0).style.display = "block";
+		$(".body-nav-in").eq(0).style.height = (window.innerHeight-16)+"px";
+		$(".api-content-left").eq(0).style.minHeight = window.innerHeight - $(".foot").eq(0).getHeight() - 18+"px"; 
+		$(".api-content-right").eq(0).style.minHeight = window.innerHeight - $(".foot").eq(0).getHeight() - 18+"px"; 
+	}
+	
+	//alert($(".foot").eq(0).getHeight());
+	//只进行一次初始化
+	//alert(bodyContentShow.getMarginRight() - bodyContentShow.getWidth());
+	//$(".select-page").eq(0).style.right = (bodyContentShow.getMarginRight() - bodyContentShow.getWidth() - $(".select-page").eq(0).getWidth()) + "px";
+	//$(".select-page").eq(0).style.top =  (bodyContentShow.getHeight() - 38) + "px"
+	
+	liEvent_2.extends(LiEventSuper);
+	function liEvent_2(data){
+		LiEventSuper.call(this, data);
+
+		this.overEventCss = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false); 
+		}
+		//当前移出样式设置
+		this.outEventCss = function (i){
+			data.liElements[i].css("background:#fff; color:#555;", false); 
+		}
+		//e {i:preIndex}
+		this.preClickFun = function (i){
+			data.liElements[i].css("background:#fff; color:#555;", false);
+		}
+		//设置当前的元素 
+		//e {i:i}
+		this.nowClickFun = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false);
+			ajaxC({
+				url:"",
+				data:{code:data.codes[i]},
+				success:function(msg){
+				
+				},	
+				error:function(msg){
+				
+				},
+			});
+		}
+	}
+	//左栏选择内容
+	new liEvent_2({
+		liElements:$(".nav-list li"),
+		initIndex: 1,
+		codes:["0000", "0001", "0002", "0003", "0004", "0005"],
+	}).doReady();
+	</script>
+ </body>
+</html>

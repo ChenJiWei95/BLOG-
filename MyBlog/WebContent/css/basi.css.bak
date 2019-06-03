@@ -1,0 +1,117 @@
+*{margin: 0; padding: 0;}
+	body{ height: 560px; background: #e4e3e3;}
+	body::-webkit-scrollbar {width: 4px;border-radius:2px;}
+	body::-webkit-scrollbar-button {background-color: #fff;}  /* 滑轨两头的监听按钮颜色 */
+	body::-webkit-scrollbar-track {height:100px;background: #fff;}/*滚动条的滑轨背景颜色 */
+	body::-webkit-scrollbar-thumb {background: #ccc;border-radius: 5px;}
+	label {display: block;}
+
+	.filter_ico, 
+	.serch-click-bt-ico, 
+	.serch_ico, 
+	.more-oprate li > .show-label {cursor: pointer;}
+	/* S body */
+	.body {width: 100%; height: 100%; overflow: hidden;}
+	.body .body-con{width: 1228px; height: 100%; margin: auto auto;}
+	
+	/* 导航 */
+	.body .body-con > .body-nav-no{width: 20%; height: 100%; float: left;}
+		
+	/* 内容 */
+	.body > .body-con > .body-content{height: 100%; float: left; margin: 8px;}
+		/* 动态内容展示 */
+		.body-content-show {margin: auto;}
+		.body-content-show-in {border-radius: 4px; background: #fff; padding: 4px; position: relative;}
+		.body-content-show li {margin-right: -1818px; position: relative; animation-name: mymove1; animation-duration: 0.6s; animation-fill-mode: forwards; animation-delay:0ms;}
+		.body-content-show li:nth-child(1){}
+		.body-content-show li:nth-child(2){animation-delay:200ms;}
+		.body-content-show li:nth-child(3){animation-delay:400ms;}
+		.body-content-show li:nth-child(4){animation-delay:600ms;}
+		.body-content-show li:nth-child(5){animation-delay:800ms;}
+		.body-content-show li:nth-child(6){animation-delay:1000ms;}
+		.body-content-show li:nth-child(7){animation-delay:1200ms;}
+		.body-content-show li:nth-child(8){animation-delay:1400ms;}
+		@keyframes mymove1
+		{
+			to {margin-right: 0px;}
+		}
+
+		.body-content-show > .body-content-show-in > ul {padding: 40px;}
+		.body-content-show li > div {background: #fff; width: 700px; border-radius: 4px; margin-top: 4px; cursor: pointer; padding: 8px; color: #cac7c7; cursor: pointer; margin: auto; padding: 8px 25px;
+		box-shadow: 0px 1px 6px #ddd; overflow: hidden;}
+		.body-content-show li > div:hover {box-shadow: 1px 2px 7px #ddd; color: #848080}
+
+		.body-content-show li > div > .item-tilte label:nth-child(1),.body-content-show li > div > .item-body label:nth-child(1) {float: left; font-size: 14px; font-weight: bold; color: #555;}
+		.body-content-show li > div > .item-tilte label:nth-child(2),.body-content-show li > div > .item-body label:nth-child(2) {float: right;}
+		
+		.body-content-show li > div > .item-body {width: 99%; height: 54px; margin-top: 2px;     padding: 4px;}
+		.body-content-show li > div > .item-body label:nth-child(1){border-radius: 6px; overflow: hidden; width: 50px; height: 50px; margin: auto; }
+		.body-content-show li > div > .item-body label:nth-child(2) {width: 621px; padding-top: 1px; height: 51px; overflow: hidden;}
+
+		.item-tag label {margin-left: 4px; background: #ddd; border-radius: 4px; padding: 2px 4px; display: inline-block; color: #fff; float:left;}
+		.item-comment > label {float: right; margin-right: 10px;}
+		.item-comment > label > label {float: left;}
+		/* 选页组件 */
+		.select-page {padding: 2px; position: absolute; right: 50px; bottom: 26px; }
+		.left-bt {background: url(../img/left2.png); cursor: pointer; width: 16px; height: 16px;}
+		.right-bt {background: url(../img/right2.png); cursor: pointer; margin-right: 162px; width: 16px; height: 16px;}
+		.left-bt:hover {background: url(../img/left2_hover.png);}
+		.right-bt:hover {background: url(../img/right2_hover.png);}
+
+		.select-page a {width: 16px; height: 16px; display: block; float: left; text-decoration: none; border-radius: 50%; text-align: center; color: #fff; cursor: pointer; background: #ccc; margin-left: 4px;}
+		.select-page a:hover {color: #ddd; background: #555;}
+	/* E body */
+
+	/* S 左导航部分 */
+	.body-nav{position: fixed; top: -200px; display: none; height: 100%; overflow: hidden; animation-name: bodyNavAni; animation-duration: 1.5s; animation-fill-mode: forwards; animation-delay:0ms; opacity: 0.5;}
+	@keyframes bodyNavAni
+	{
+		to {top: 0; opacity: 1;}
+	}
+		/* 个人信息 */
+		.body-nav .body-nav-in {padding: 0 5px; margin: 8px auto; background: #fff; height: 98%; border-radius: 4px;}
+		.body-nav .nav-ifnor {padding-top: 30px; padding-bottom: 6px; border-bottom: 1px solid #e6e6e6; color: #555;}
+		.body-nav .nav-ifnor > label{ margin-top: -100px; text-align: center; margin-top: 2px; cursor: pointer; position: relative;}
+		
+		.body-nav .nav-ifnor > label:nth-child(1){border-radius: 6px; overflow: hidden; width: 80px; height: 80px; margin: auto;}
+		.body-nav .nav-ifnor > label:nth-child(2),
+		
+		.body-nav .nav-ifnor > label:nth-child(3){width: 64px; margin: auto;}
+		.body-nav .nav-ifnor .github {background: url(../img/github.png); float: left;}
+		.body-nav .nav-ifnor .email {background: url(../img/email.png); float: left;}
+		
+		/* 导航栏 */
+		.body-nav .nav-list {margin:10px 0px; border-top: 1px solid #e6e6e6;}
+		.body-nav .nav-list li {height: 25px; line-height: 25px; text-align: center; cursor: pointer; }
+	/* E 左导航部分 */	
+
+	/* S 更多操作部分 */
+	.more-oprate {position: fixed; z-index: 8; top: 4px; animation-name: moreOprateAni; animation-duration: 1.5s; animation-fill-mode: forwards; animation-delay:1000ms; opacity: 0;}
+	@keyframes moreOprateAni{to {opacity: 1;}}
+	.more-oprate li{color: #ddd; width: 38px; height: 38px; position: relative; background: #fff; border-radius: 4px; margin-top: 4px;}
+	.more-oprate li:hover {color: #ccc;}
+	.more-oprate li:hover .li-cnt {width: 268px; box-shadow: 0px 1px 6px #ddd;}
+
+	.more-oprate li > .show-label {width: 100%; height: 100%; text-align: center; line-height: 38px;}
+
+	.more-oprate li > i { margin: 2px 2px;}
+	.more-oprate li .serch_ico {background: url(../img/serch.png);}
+	.more-oprate li .filter_ico {background: url(../img/filter.png);}
+
+	.more-oprate li .li-cnt {background: #fff; overflow: hidden; position: absolute; top: 0px; right: 41px; width: 0px; height: 38px; transition: all 0.2s ease-out; color: #888;}
+	.more-oprate li .li-cnt > label {float: left; margin-top: 5px;}
+	.more-oprate li .li-cnt > .input-lable {border-bottom: 1px solid #e6e6e6; margin-left: 5px}
+	.more-oprate li .li-cnt > .msg-label {text-align: center; line-height: 30px; width: 100%; height: 100%;}
+	.more-oprate li .li-cnt label .serch-input, 
+	.more-oprate li .li-cnt label select {width: 228px; height: 25px; border: none; outline: none; color: #888; font-size: 14px;}
+	.more-oprate li .li-cnt label .serch-click-bt-ico {background: url(../img/sure.png); width: 25px; height: 25px;}
+	.more-oprate li .li-cnt label .serch-click-bt-ico:hover {background: url(../img/sure_hover.png); }
+	
+	/* E 更多操作部分 */
+
+	/* S - foot */
+	.foot {min-height: 50px; margin-top: 8px; position: relative;}
+	.foot > .bom_container { margin: auto; height: 36px; background: #fff; border-radius: 4px; width: 100%;}
+	.foot > .bom_container > li {color: #586069; list-style: none; padding: 10px 245px;}
+	.foot > .bom_container > li > span {color: #a71d5d; cursor: pointer;}
+	/* E - foot */

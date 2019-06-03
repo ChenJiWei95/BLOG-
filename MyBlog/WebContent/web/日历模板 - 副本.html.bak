@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <link type="text/css" rel="stylesheet" href="../css/MyCss.css" />
+  <script src="../js/MyjsV0-8.js"></script>
+  <style>
+    *{font-size: 12px;  margin: 0;  padding: 0;  font-family: -webkit-pictograph; }
+    /*S-canlender*/
+	.calend{font-size: 12px;  font-family: -webkit-pictograph;  width: 222px;  height: 155px;  background: #fff;  position: relative;  z-index: 5;  margin: 200px auto; }
+	.calend > .calend_top{width: 223px;  height: 30px;  background: #555;  text-align: center;  line-height: 29px;  position: relative; }
+
+	.calend > .calend_top p {color: #fff;  font-size: 14px; line-height: 35px;}
+	.calend > .calend_top .calend-top-ico {width: 16px;  height: 16px; background: url(../img/calend.png); left: 64px; top: 8px; position: absolute;}
+	.calend > .calend_body{padding: 4px;  width: 218px; background: #fff;  position: relative; min-height: 118px; }
+	.calend > .calend_body table {width: 212px; text-align:center; position: absolute; z-index: 2;}
+	.calend > .calend_body table tbody tr td{color: #555; width: 28px;  height: 12px;  line-height: 18px; cursor: pointer; padding: 1px; transform:1s; -moz-transition:1s; -webkit-transition:1s;}
+	.calend > .calend_body table tbody tr .current-day {color: red;}
+	.calend > .calend_body table tbody tr .no-current-day {}
+	.calend > .calend_body table tbody tr .other-month-day {color: #ccc;}
+	.calend > .calend_body table tbody tr .target-month-day {color: #fff;}
+
+	.calend > div > .current-day-bg {width: 20px; height: 20px; background: #555; border-radius: 50%; z-index: 1; position: absolute; top: 0; left: 0; transform:1s; -moz-transition:1s; -webkit-transition:1s; opacity: 0.5;}
+	/*E-canlender*/
+
+	/* 切换页按钮 */
+	.calend > .lr-bt {}
+    
+	.calend > .lr-bt div i {width: 16px;  height: 16px;  cursor: pointer; }
+	.calend > .lr-bt div {position: absolute;  top: 7px;   z-index:2; }
+	.calend > .lr-bt .l-bt {left: 4px; }
+	.calend > .lr-bt .l-bt i {background: url(../img/r1.png); }
+	/*.lr-bt .l-bt i:hover {background: url(); }*/
+	.calend > .lr-bt .r-bt {right: 4px; }
+	.calend > .lr-bt .r-bt i {background: url(../img/l1.png); }
+	/*.lr-bt .r-bt i:hover {background: url(); }*/
+	
+	
+  </style>
+ </head>
+ 
+ <body>
+	<!--S-canlender-->
+	<div class="calend clearFloat">
+		<div class="calend_top">
+			<i class="calend-top-ico"></i>
+			<p class="p_inner"></p>
+		</div>
+		<div class="calend_body">
+			<table class='cre_tab' cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr>
+						<td class="week">日</td>
+						<td class="week">一</td>
+						<td class="week">二</td>
+						<td class="week">三</td>
+						<td class="week">四</td>
+						<td class="week">五</td>
+						<td class="week">六</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="lr-bt">
+			<div class="l-bt"><i></i></div>
+			<div class="r-bt"><i></i></div>
+		</div>
+		<div>
+			<div class="current-day-bg"></div>
+		</div>
+	</div>
+	<!--E-canlender-->
+  <script>
+	var manage = new ManegeCanlender(new Canlender());
+	manage.doReay();
+	/*S-canlender*/
+	//负责向页面插入html
+	//插入后的初始化高度设置
+	//项点击事件
+	function ManegeCanlender(canlender){
+		var cdb = $(".current-day-bg").eq(0);
+		var cBody = $(".calend_body").eq(0);
+		var preTarget, currentTarget;
+		
+		//设置current-day-bg 的 top、left
+		function setCurrentDayBg(){
+			cdb.style.left = (currentTarget.getMarginLeft()-cBody.getMarginLeft() + 5) + "px";
+			cdb.style.top = (currentTarget.getMarginTop()-cBody.getMarginTop() + 24 + 5) + "px";
+			cdb.style.opacity = "1";
+			currentTarget.addClass("target-month-day");
+			if(preTarget != undefined){
+				switch(preTarget.attr("data-type")){
+					case "1" : preTarget.addClass("current-month-day"); break;
+					case "2" : preTarget.addClass("no-current-month-day"); break;
+					case "3" : preTarget.addClass("other-month-day"); break;
+				}
+			}
+		}
+		
+		//点击日历项
+		$(".calend").eq(0).onclick = function(e){
+			//名称为td并且不是星期行
+			if(e.target.tName() === "td" && e.target.attr("class") !== "week"){
+				cdb.style.opacity = "0";
+				preTarget = currentTarget;
+				currentTarget = e.target;
+				setCurrentDayBg();
+			}
+		}	
+		//插入后的初始化高度设置
+		function init(){
+			if(canlender.getRow() > 5)
+				$(".calend").eq(0).style.height = $(".calend").eq(0).getHeight()+19+"px";
+			$(".calend_top p").eq(0).text(canlender.getYear()+"/"+canlender.getCurrentMonth()+"/" +canlender.getCurrentMonthDay());
+		}
+		this.doReay = function(){
+			$(".cre_tab tbody")[0].insert(canlender.html());
+			console.log(canlender.getCurrentMonthDay()+canlender.getStartWeek());
+			currentTarget = $("table td").eq(canlender.getCurrentMonthDay()+canlender.getStartWeek()+6);
+			setCurrentDayBg();
+			init();
+		}
+	}
+	function Canlender(){
+		var today = new Date(); //实例化Date对象
+		var year = today.getFullYear(); //当前年份-2018
+		this.getYear = function(){
+			return year;
+		}
+		var month = today.getMonth() + 1; //当前月份-1~
+		this.getCurrentMonth = function (){
+			return month;
+		}
+		var currentMonthDay = today.getDate(); //今天的日期 27
+		this.getCurrentMonthDay = function (){
+			return currentMonthDay;
+		}
+		
+		//Math.ceil((currentMonthDayOfEnd+StartWeek)/7)向上取整获取日历行数
+		var currentMonthDayOfEnd = new Date(year,month, 0).getDate(); 
+		var startWeek = new Date(year,month - 1, 1).getDay(); //本月一日对应的是星期几--1234567
+		this.getStartWeek = function(){
+			return startWeek;
+		}
+		
+		var row = Math.ceil((currentMonthDayOfEnd+startWeek)/7);//行数
+		this.getRow = function(){
+			return row;
+		}
+
+		var tempDay = 1;
+		//处理第一行
+		this.firstRow = function(){
+			var calWeek = new CalWeek(); 
+			calWeek.setWeek(startWeek);
+			console.log(startWeek)
+
+			var html = "";
+			var tempWeek;
+			var preMonthDayOfEnd = new Date(year,month - 1, 0).getDate(); //获取上一个月有几天
+			
+			do{
+				html = this.otherMonthDayTdCss(preMonthDayOfEnd--) + html;
+			}
+			while((tempWeek = calWeek.minus()) != 7);
+				
+			tempWeek = startWeek;
+			calWeek.setWeek(startWeek);
+			do{
+				html += tempDay !== currentMonthDay ? this.unCurrentDayTdCss(tempDay++) :  this.currentDayTdCss(tempDay++);	
+			}
+			while((tempWeek = calWeek.add()) != 7);
+			console.log(this.trCss(html));
+			return this.trCss(html);
+		}
+		//处理一般行
+		this.gRow = function(){
+			var html = "";
+			var tempWeek = 7;
+			while(tempWeek-- != 0)
+				html += tempDay !== currentMonthDay ? this.unCurrentDayTdCss(tempDay++) :  this.currentDayTdCss(tempDay++);
+			
+			console.log(this.trCss(html));
+			return this.trCss(html);
+		}
+		this.lastRow = function(){
+			var html = "";
+			var tempWeek = 7;
+			var flag = true;
+			while(tempWeek-- != 0){
+				if(flag){
+					html += tempDay !== currentMonthDay ? this.unCurrentDayTdCss(tempDay++) :  this.currentDayTdCss(tempDay++);
+				}else
+					html += this.otherMonthDayTdCss(tempDay++);
+				if(tempDay > currentMonthDayOfEnd) {
+					flag = false;
+					tempDay = 1;
+				}
+			}
+			console.log(this.trCss(html));
+			return this.trCss(html);
+		}
+
+		this.html = function(){
+			var html = this.firstRow();
+			for(var i = 1; i < row-1; i++)
+				html += this.gRow();
+			html += this.lastRow();
+			return html;
+		}
+
+		this.currentDayTdCss = function(data){
+			return '<td class="current-day" data-type="1">' + data + '</td>'
+		}
+		this.unCurrentDayTdCss = function(data){
+			return '<td class="no-current-day" data-type="2">' + data + '</td>'
+		}
+		this.otherMonthDayTdCss = function(data){
+			return '<td class="other-month-day" data-type="3">' + data + '</td>';
+		}
+		this.trCss = function(data){
+			return '<tr>' + data + '</tr>'
+		}
+	}
+	//对周的计算
+	function CalWeek(){
+		var week;
+		this.setWeek = function(i){
+			if(classof(i) !== "Number")
+				$$.error("i必须为数字：i class " + classof(i));
+			week = i;
+		}
+		this.getWeek = function(){
+			return week;
+		}
+		this.add = function(){
+			if(++week > 7)
+				return 1;
+			return week;
+		}
+		this.minus = function(){
+			if(--week < 1)
+				return 7;
+			return week;
+		}
+	}
+  
+	  /*
+	  1、补足上(
+		 if startWeek == 0 
+			preMonthDayOfEnd--; 
+			startWeek--; 
+		 )、
+		 下(
+		 if row*7+1 > currentMonthDayOfEnd 
+			row--;
+			if data = row*7+1 < currentMonthDayOfEnd
+				while data != currentMonthDayOfEnd
+					data++;
+		 )个月剩余天数
+		 处理星期
+		 function CalWeek(){
+			var week;
+			this.setWeek = function(i){
+				if(classof(i) !== "Number")
+					TypeError("i必须为数字：i class " + classof(i));
+				week = i;
+			}
+			this.getWeek = function(){
+				return week;
+			}
+			this.add = function(){
+				if(++week > 7)
+					return 1;
+				return week;
+			}
+			this.minus = function(){
+				if(--week < 1)
+					return 7;
+				return week;
+			}
+		 }
+	  2、
+	  3、
+	  4、
+	  */
+
+    
+	/*E-canlender*/
+  </script>
+ </body>
+</html>

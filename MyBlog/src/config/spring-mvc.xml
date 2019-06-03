@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+    <!-- 注解扫描包 -->
+    <context:component-scan base-package="com"/>
+    
+    <!-- 开启注解 -->
+    <mvc:annotation-driven />
+    
+    <!-- 
+    	定义跳转的文件的前缀，视图模式配置 
+    	根据返回的modelAndView选择一个合适viewResolver,返回给DispatcherServlet
+    	InternalResourceViewResolver的工作原理: 在视图逻辑名前面加上prefix,后面加上suffix;
+    	这只是其中一种视图解析的方式链接下还有其他的介绍
+    	https://blog.csdn.net/superdog007/article/details/28857495
+    -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    	<property name="prefix" value=""></property>
+    	<!-- 
+    	suffix 
+    	此处结尾为.jsp
+    	@RequestMapping 请求方法只返回"fonts/success"
+    	与此处拼接得到一个完整的链接
+    	 -->
+    	<property name="suffix" value=".jsp"></property>
+    </bean>
+    <!-- 
+    BeanNameViewResolver 视图解析方式 不只是一种解析方式
+    <bean id="beanNameViewResolver" class="org.springframework.mvc.servlet.
+    view.BeanNameViewResolver" />
+    <bean id="courseList" class="xx.courseListPdfView"></bean>
+     -->
+    
+    <!-- 
+    XmlViewResolver 在独立的xml中声明view beans
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.
+    XmlViewResolver">
+    	<property name="location">
+    		<value>/WEB-INF/xx-views.xml</value>
+    	</property>
+    </bean>
+    xx-views.xml文件配置 
+ 	<bean id="viewResolver" class="org.springframework.web.servlet.view.
+ 	XmlViewResolver">
+	  	<property name="location">
+	   		<value>/WEB-INF/xx-views.xml</value>
+	 	</property>
+	</bean>
+    -->
+	<bean id="bundleViewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+  		<property name="basename">
+   			<value>views</value>
+  		</property>
+ 	</bean>
+	<!-- 然后是资源文件：
+	views_en_US.properties:courseList.class=xx.CourseListPdfView
+	views_fr_FR.properties:courseList.class=xx.CoureseListExcelView
+	views_de_DE.properties:courseList.class=org.springframework.web.view.JstlView 
+	-->
+    
+</beans>

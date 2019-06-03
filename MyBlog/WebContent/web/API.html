@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>api</title>
+  
+  <link type="text/css" rel="stylesheet" href="../css/MyCss.css" />
+  <link type="text/css" rel="stylesheet" href="../css/basi.css" />
+  <script src="../js/MyjsV0-8.js"></script>
+  <style>
+	.api-content {margin: auto}
+	.api-content > .api-content-right, .api-content > .api-content-left {border-radius: 4px; background: #fff; float:left; height: 100%; padding: 4px;}
+	
+	/* api 左边界面 导航 */
+	.api-content > .api-content-left { width: 166px;}
+	
+	/* 查找 */
+	/*.api-content-left > .api-serch, */
+	.api-content-left > .show-content {overflow-x: auto; overflow-y: auto; width: 166px; min-height: 366px;}
+
+	.api-content-left > .api-serch {height: 30px; border-bottom: 1px solid #e6e6e6;}
+	
+	/* 联级树组件 */
+	.show-content-li, .show-content-li .item-title-text {cursor: pointer;}
+
+	.show-content-li .item-title {height: 25px; line-height: 25px;}
+
+	.show-content-li .item-title-ico,
+	.show-content-li .item-title-text {float: left;}
+	.show-content-li .item-title-ico {margin-top: 5px; width:16px; height:16px;}
+	.show-content-li .item-title-text {margin-left: 2px; color: #888; /*white-space: nowrap; width: 135px; overflow: hidden;将字体控制在一行内，隐藏多余的文字*/}
+	.show-content-li .item-title-text:hover {color: #555;}
+
+	.show-content-li .item-title-ico > i { transition: all 0.2s ease-out; transform: rotate(-90deg); width:16px; height:16px;}
+	.show-content-li:active .show-content-li .item-title-ico > i {}
+	.show-content-li .item-title-ico > .open {background: url(../img/open.png); cursor: pointer;}
+	.show-content-li .item-title-ico > .open:hover {background: url(../img/open_hover.png);}
+	
+	.show-content-li .item-child {padding-left: 10px; height: 0; transition: all 0.2s ease-out; overflow: hidden;}
+
+	/* api 右边界面 内容 */
+	.api-content > .api-content-right {margin-left: 4px; }
+	.api-content > .api-content-right .show-title,
+	.api-content > .api-content-right .show-desc,
+	.api-content > .api-content-right .show-constructor,
+	.api-content > .api-content-right .show-field,
+	.api-content > .api-content-right .show-method  {min-height: 60px; border-top: 1px solid #e6e6e6;}
+
+	.show-title {padding: 6px;}
+	.show-title .label-text {overflow: hidden;}
+	.show-title .class-text {float: left; font-size: 30px;}
+	.show-title .desc {float: left; line-height: 34px; padding: 10px;}
+	.show-title .super-tree {padding-left: 10px;}
+	.show-title .super-tree i {width: 16px; height: 16px; background: url(..img/super-ico.png);}
+	.show-title .super-tree .let-1 {}
+	.show-title .super-tree .let-2 {padding-left: 10px;}
+	.show-title .super-tree .let-3 {padding-left: 20px;}
+	.show-title .super-tree .let-4 {padding-left: 30px;}
+	.show-title .super-tree .let-5 {padding-left: 40px;}
+	.show-title .super-tree .let-6 {padding-left: 50px;}
+	.show-title .super-tree .let-7 {padding-left: 60px;}
+	.show-title .super-tree .let-8 {padding-left: 70px;}
+
+	.api-content > .api-content-right .show-constructor,
+	.api-content > .api-content-right .show-field,
+	.api-content > .api-content-right .show-method {padding: 8px 0;}
+
+	.api-content > .api-content-right .show-desc {padding: 6px; color: #555; text-indent: 25px;}
+	
+	/* method 摘要表格 */
+	.tb tr{height:35px;}
+	.tb .th-gener1{background-color:#fff;}
+	.tb .th-gener2{background:#f6f4f0;}
+	.tb tr td{padding: 0px 5px; border-right: 1px solid #ddd;}
+	.tb tr td:nth-lastchild{border-right:none;}
+
+	.tb .th-title{height:20px; background-color:#555;}
+	.tb tr:nth-child(1) td{color:#fff; border:none; border-right:1px solid #555;}
+	.tb{box-shadow: 1px 1px 4px 0px #ddd; font-size: 12px;}
+	.tb td i {}
+	.tb td .modi, 
+	.tb td .modi-ico {float: left;}
+	.tb td .modi {line-height: 35px; width: 108px;}
+	.tb td .td-name {height: 25px; line-height: 25px;}
+	.tb td .desc {padding-left: 10px; word-break: break-all; width: 297px;     text-indent: 20px;} 
+
+	/* 切换页按钮 */
+	.body-content-show > .lr-bt {}
+    
+	.body-content-show > .lr-bt div i {width: 64px; height: 64px; cursor: pointer;}
+	.body-content-show > .lr-bt div {position: absolute; top: 400px;  z-index:2;}
+	.body-content-show > .lr-bt .l-bt {left: 20px;}
+	.body-content-show > .lr-bt .l-bt i {background: url(../img/pre.png);}
+	.body-content-show > .lr-bt .l-bt i:hover {background: url(../img/pre_hover.png);}
+	.body-content-show > .lr-bt .r-bt {right: 20px;}
+	.body-content-show > .lr-bt .r-bt i {background: url(../img/next.png);}
+	.body-content-show > .lr-bt .r-bt i:hover {background: url(../img/next_hover.png);}
+
+    /*S-canlender*/
+	.calend{background: #fff;  position: relative;  z-index: 5;  margin: 0px auto; font-size: 12px; font-family: -webkit-pictograph; margin-top: 12px;}
+	.calend > .calend_top{width: 236px;  height: 25px;  background: #555;  text-align: center;  line-height: 29px;  position: relative;}
+
+	.calend > .calend_top p {color: #fff;  font-size: 14px; line-height: 29px;}
+	.calend > .calend_top .calend-top-ico {width: 16px;  height: 16px; background: url(../img/calend.png); left: 66px; top: 5px; position: absolute;}
+	.calend > .calend_body{padding: 4px;  width: 218px; background: #fff;  position: relative; min-height: 125px; }
+	.calend > .calend_body table {width: 212px; text-align:center; position: absolute; z-index: 2;}
+	.calend > .calend_body table tbody tr td{color: #555; width: 28px;  height: 12px;  line-height: 18px; cursor: pointer; padding: 2px 10px; transform:1s; -moz-transition:1s; -webkit-transition:1s;}
+	.calend > .calend_body table tbody tr .current-day {color: red;}
+	.calend > .calend_body table tbody tr .no-current-day {}
+	.calend > .calend_body table tbody tr .other-month-day {color: #ccc;}
+	.calend > .calend_body table tbody tr .target-month-day {color: #fff;}
+
+	.calend > div > .current-day-bg {width: 20px; height: 20px; background: #555; border-radius: 50%; z-index: 1; position: absolute; top: 0; left: 0; transform:1s; -moz-transition:1s; -webkit-transition:1s; opacity: 0.5;}
+	/* 切换页按钮 日历*/
+	.calend > .lr-bt {}
+	.calend > .lr-bt div i {width: 16px;  height: 16px;  cursor: pointer; }
+	.calend > .lr-bt div {position: absolute;  top: 4px;   z-index:2; }
+	.calend > .lr-bt .l-bt {left: 4px; }
+	.calend > .lr-bt .l-bt i {background: url(../img/r1.png); }
+	/*.lr-bt .l-bt i:hover {background: url(); }*/
+	.calend > .lr-bt .r-bt {right: 4px; }
+	.calend > .lr-bt .r-bt i {background: url(../img/l1.png); }
+	/*.lr-bt .r-bt i:hover {background: url(); }*/
+	/*E-canlender*/
+  </style>
+ </head>
+ <body>
+	<!-- 隐藏栏 -->
+	<div class="more-oprate">
+		<ul class="nolist">
+			<li title="查找">
+				<i class="serch_ico"></i>
+				<div class="li-cnt">
+					<label class="input-lable">
+						<input type="text" class="serch-input"/> 
+					</label>
+					<label>
+						<i class="serch-click-bt-ico"></i>
+					</label>
+				</div>
+			</li>
+			<li title="API" class="li-api"><label class="show-label">API</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击查看api</label>
+				</div>
+			</li>
+			<li title="TOP" class="li-top"><label class="show-label">TOP</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击返回顶部</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- 左栏 -->
+	<div class="body-nav">
+		<div class="body-nav-in">
+			<!-- 个人信息 -->
+			<div class="nav-ifnor">
+				<label>
+					<img src="../img/pho.jpg" width="80" height="80" alt="chenjiwei"/>
+				</label>
+				<label>
+					指尖的美
+				</label>
+				<label class="clearFloat">
+					<i onclick="link.open('https://github.com/ChenJiWei95');" class="github" title="https://github.com/ChenJiWei95"></i>
+					<i class="email" title="chenJiWey@163.com"></i>
+				</label>
+			</div>
+			<!--S-canlender-->
+			<div class="calend clearFloat">
+				<div class="calend_top">
+					<i class="calend-top-ico"></i>
+					<p class="p_inner"></p>
+				</div>
+				<div class="calend_body">
+					<table class='cre_tab' cellspacing="0" cellpadding="0">
+						<tbody>
+							<tr>
+								<td class="week">日</td>
+								<td class="week">一</td>
+								<td class="week">二</td>
+								<td class="week">三</td>
+								<td class="week">四</td>
+								<td class="week">五</td>
+								<td class="week">六</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="lr-bt">
+					<div class="l-bt"><i></i></div>
+					<div class="r-bt"><i></i></div>
+				</div>
+				<div>
+					<div class="current-day-bg"></div>
+				</div>
+			</div>
+			<!--E-canlender-->
+			<!-- 导航栏 -->
+			<div class="nav-list">
+				<ul class="nolist">
+					<li>首页</li>
+					<li>MyJs.js</li>
+					<li>Util</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- S body -->
+	<div class="body">
+		<div class="body-con">
+			<!-- 导航 -->
+			<div class="body-nav-no">
+				
+			</div>
+			<!-- 内容 -->
+			<div class="body-content" style="position: relative;">
+				
+				<!-- 动态内容展示 -->
+				<div class="body-content-show" style="position: relative;">
+					<div class="body-content-show-in" style="position: relative;">
+						<ul class="nolist">
+							<li>
+								<div>
+									<!-- 标题 -->
+									<label class="item-tilte clearFloat">
+										<label>JavaScript API</label>
+										<label>2018年9月18日 23:16</label>
+									</label>
+									<!-- 内容 -->
+									<label class="item-body">
+										<label><img src="../img/pho.jpg" width="50px" height="50px" alt="chenjiwei"/></label>
+										<label><br><br>修改了$$.ajax函数</label>
+									</label>
+									<!-- 相关 标签 -->
+									<label class="item-tag">
+										<label>javaScript</label>
+									</label>
+
+									<label class="item-comment">
+										<label class="item-comment-count">0</label>
+										<label>评论：</label>
+									</label>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- S-选页组件 -->
+					<div class="select-page">
+						<a href="javascript:;">1</a>
+						<a href="javascript:;">2</a>
+					</div>
+					<div class="lr-bt">
+						<div class="l-bt"><i></i></div>
+						<div class="r-bt"><i></i></div>
+					</div>
+					<!-- E-选页组件 -->
+				</div>
+		
+				<!-- API -->
+				<div class="api-content clearFloat"  style="position: relative;">
+					<div class="api-content-left clearFloat">
+						<div class="api-serch"></div>
+						<div class="show-content">
+							<div>
+								<ul class="nolist">
+								<!--
+									<li class="show-content-li">
+										<label class="item-title clearFloat">
+											<label class="item-title-ico"><i class="open"></i></label>
+											<label class="item-title-text">Ajax</label>
+										</label>
+										<label class="item-child">
+											<ul class="nolist">
+												<li class="show-content-li">
+													<label class="item-title clearFloat">
+														<label class="item-title-ico"><i class="open"></i></label>
+														<label class="item-title-text">AjaxC</label>
+													</label>
+													<label class="item-child">
+														
+													</label>
+												</li>
+											</ul>
+										</label>
+									</li>
+								-->
+								</ul>	
+							</div>
+							
+						</div>
+					</div>
+					<div class="api-content-right">
+						<div class="show-title">
+							<label class="label-text">
+								<p class="class-text">ajax</p>
+								<p class="desc">异步交互</p>
+							</label>
+							<label class="super-tree">
+								<label class="let-1">ajax</label>
+								<label class="let-2">-ajaxTest</label>
+							</label>
+						</div>
+						<div class="show-desc">
+							<p>ajax前后台交互封装方法 -- 使用方法类似于Jquery 中的ajax<br>默认值解析 ：<br>
+						type 请求类型 默认get<br>
+						async 是否异步交互 默认true</p>
+						</div>
+						<div class="show-field">
+							<table class="tb" cellspacing="0" cellpadding="0">
+								<tbody>
+									<tr class="th-title">
+										<td>类型</td>
+										<td>字段</td>
+										<td>描述</td>
+									</tr>
+									<tr class="th-gener1">
+										<td>
+											<label class="modi-ico"><i class=""></i></label>
+											<label class="modi">void</label>
+										</td>
+										<td>
+											<label class="td-name">TYPE_FLAG</label>
+										</td>
+										<td>
+											<label class="td-name">某某字段</label>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="show-constructor">
+							<table class="tb" cellspacing="0" cellpadding="0">
+								<tbody>
+									<tr class="th-title">
+										<td>构造</td>
+										<td>描述</td>
+									</tr>
+									<tr class="th-gener1">
+										<td>
+											<label class="modi-ico"><i class=""></i></label>
+											<label class="modi">Manage(data)</label>
+										</td>
+										<td>
+											<label class="td-name">data</label>
+											<p class="desc">前后台异步交互对象</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="show-method">
+							<table class="tb" cellspacing="0" cellpadding="0">
+								<tbody>
+									<tr class="th-title">
+										<td>返回值</td>
+										<td>方法</td>
+										<td>参数</td>
+									</tr>
+									<tr class="th-gener1">
+										<td>
+											<label class="modi-ico"><i class=""></i></label>
+											<label class="modi">void</label>
+										</td>
+										<td>
+											<label class="td-name">ajax(data)</label>
+											<p class="desc">前后台异步交互对象</p>
+										</td>
+										<td>
+											<label class="td-name">data</label>
+											<p class="desc">一个对象</p>
+										</td>
+									</tr>
+									<tr class="th-gener2">
+										<td>
+											<label class="modi-ico"><i class=""></i></label>
+											<label class="modi">void</label>
+										</td>
+										<td>
+											<label class="td-name">ajaxTest(data)</label>
+											<p class="desc">前后台异步交互对象测试对象</p>
+										</td>
+										<td>
+											<label class="td-name">data</label>
+											<p class="desc">一个对象</p>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!--S -  foot-->
+				<div class="foot" style="position: relative;">
+					<div class="bom_container">
+						<li style="color:#586069;list-style:none;padding:10px 245px;">Copyright ©2018 <span  style="color:#a71d5d;cursor:pointer;" title="作者介绍">chen</span> Powered By <span  style="color:#a71d5d;cursor:pointer;" title="程序目录">My Blog</span> Version 1.0.0</li>
+					</div>
+				</div>
+				<!--E - foot-->
+			</div>
+		</div>
+	</div>
+	<!-- E body -->
+	<script src="../js/canlender-plugin.js"></script>
+	<script src="../js/Cascade-plugin.js"></script>
+	<script>
+	var manageCanlender = new ManegeCanlender(new Canlender());
+	manageCanlender.doReay();
+
+	$(".nav-list li").forEach(function(item){
+		item.addClass("test");
+	});
+	$(".nav-list li").eq(0).siblings().removeClass();
+	/*
+	Table2 = (function(_super) {
+		__extends(Table2, _super);
+		function Table2() {
+			return Table2._super.constructor.apply(this);
+		}
+		Table2.prototype.tdCss = function(css, i , rowNum) {
+			alert("run");
+			return Table2._super.tdCss.call(this, css, i , rowNum);
+		};
+		Table2.prototype.strategyRowspan = function(arr, i) {
+			alert("run");
+			return Table2._super.strategyRowspan.call(this, arr, i) && i == 2;
+		};
+		return Table2;
+	})(Table1);
+	*/
+	//
+	//对表格的测试
+	var table = new Table2();
+	table.setData([["返回值","方法名","参数"],
+			["void",["ajax", "ddd"],["num","data"]],
+			["void",["ajax", "ddd"],"data"],
+			["void","ajax","data"]]);
+	//$(".api-content-right").eq(0).insert(table.htmlTable());
+	
+	function SuperTable (){
+		var data;
+		this.setData = function (_data){
+			data = _data;
+		}
+		this.getData = function (){
+			return data;
+		}
+		this.topTrCss = function (css){
+			return this.trCss(css);
+		}
+		this.topTdCss = function (text){
+			return this.tdCss(text);
+		}
+		//奇数列 不分奇偶时只需要覆盖此方法即可
+		this.trCssOdd = function (css){
+			return '<tr>'+css+'</tr>';
+		}
+		//偶数列
+		this.trCssEven = function (css){
+			return this.trCssOdd(css);
+		}
+		
+		this.tdCss = function (text, j, rowNum){
+			return '<td '+
+				((rowNum == undefined || rowNum < 2) 
+					? "" 
+					: "rowspan='"+rowNum+"'")+
+				'>'+text+'</td>';
+		}
+		//判断是否需要rowspan以及判断的条件
+		this.strategyRowspan = function (arr, i){
+			if(arr instanceof Array)
+				return true;
+			return false;
+		}
+		//列下标-作为标识 获取rowspan值
+		this.strategy = function (arr, i){
+			if(this.strategyRowspan(arr))
+				return arr.length;
+			return 0;
+		}
+		this.strategyEnd = function (arr, i){
+			if(arr instanceof Array)
+				return arr.length;
+			return 0;
+		}
+		//返回tr元素集
+		this.html = function (){
+			var html = "";
+			var temp = "";
+			var tempArr = [];
+			var rowNum = 0;
+			for(var i = 0; i < data[0].length; i++)
+				temp += this.topTdCss(data[0][i]);	
+			html += this.topTrCss(temp);
+
+			for(var i = 1; i < data.length; i++){
+				temp = "";
+				tempArr = [];
+				var l = data[i].length;
+				
+				for(var j = 0; j < l; j++){rowNum=this.strategy(data[i][j], j);}
+				for(var j = 0; j < l; j++){
+					if(this.strategyRowspan(data[i][j])) {
+						tempArr[tempArr.length] = data[i][j];
+						temp += this.tdCss(data[i][j][0], j);
+					} else 
+						temp += this.tdCss(data[i][j], j, rowNum);
+				}
+				html += (i%2 != 0 
+					? this.trCssOdd(temp, rowNum) 
+					: this.trCssEven(temp, rowNum));
+				//对rowspan其他行进行处理
+				for(var k = 1; k < rowNum; k++){
+					temp = "";
+					for(var j = 0; j < tempArr.length; j++){
+						temp += this.tdCss(tempArr[j][k]);
+					}
+					html += (i%2 != 0 
+						? this.trCssOdd(temp, rowNum) 
+						: this.trCssEven(temp, rowNum));
+				}
+			}
+			return html;
+		}
+		//返回table元素
+		this.htmlTable = function(){
+			return '<table class="tb" cellspacing="0" cellpadding="0"><tbody>'+
+				this.html()+
+				'</tr></tbody>';
+		}
+	}
+	//标准
+	Table1.extends(SuperTable);
+	function Table1(){
+		SuperTable.call(this);
+		this.topTrCss = function (data){
+			return '<tr class="th-title">'+data+'</tr>';
+		}
+		this.topTdCss = function (text){
+			return this.tdCss(text);
+		}
+		//奇数列
+		this.trCssOdd = function (data){
+			return '<tr class="th-gener1">'+data+'</tr>';
+		}
+		//偶数列
+		this.trCssEven = function (data){
+			return '<tr class="th-gener2">'+data+'</tr>';
+		}
+	}
+
+	//自定义
+	/*
+	
+	*/
+	Table2.extends(Table1);
+	function Table2(){
+		Table1.call(this);
+		this.tdCss = function (text, j, rowNum){
+			return '<td '+
+				((rowNum == undefined || rowNum < 2) 
+					? "" 
+					: "rowspan='"+rowNum+"'")+
+				'>'+text+'</td>';
+		}
+	}
+
+
+	//测试目录
+	//ArrayList.serch
+	//transform: rotate(0deg);	打开
+	//transform: rotate(-90deg);收缩
+	var manageT = new ManageCascade();
+	var root1 = new SuperCascade(manageT);
+	root1.setText("集合");
+
+	var item1 = new SuperCascade(manageT);
+	item1.setText("List新特性");
+	var item2 = new SuperCascade(manageT);
+	item2.setText("Set新特性");
+	root1.add(item1);
+	root1.add(item2);
+
+	manageT.insert(root1);
+
+	var root2 = new SuperCascade(manageT);
+	root2.setText("jdk版本解析");
+
+	var item3 = new SuperCascade(manageT);
+	item3.setText("JDK版本新特性介绍JDK1.7");
+	var item4 = new SuperCascade(manageT);
+	item4.setText("JDK版本新特性介绍JDK1.75");
+	item3.add(item4);
+
+	var item5 = new SuperCascade(manageT);
+	item5.setText("JDK版本新特性介绍JDK1.8");
+
+	root2.add(item3);root2.add(item5);
+
+	manageT.insert(root2);
+	
+
+	//检测滚动点击滚回顶部
+	var showLabelLi = $(".li-top").eq(0);
+	showLabelLi.style.display = "none";
+	window.onscroll = function(){
+		var sTop = document.documentElement.scrollTop || document.body.scrollTop;
+		if(sTop > 0){
+			showLabelLi.style.display = "block";
+		}else{
+			showLabelLi.style.display = "none";
+		}	
+	}
+	showLabelLi.onclick = function(){
+		document.body.scrollTop = 0;
+	}
+
+	//点击api切换api页面
+	var apiContent = $(".api-content").eq(0);
+	apiContent.style.display = "none";
+	var isApiContent = false;
+	$(".li-api").eq(0).onclick = function() {
+		moreOprate.style.display = "none";
+		if(!isApiContent){
+			isApiContent = true;
+			$(".body-content-show").eq(0).style.display = "none";
+			$(".select-page").eq(0).style.display = "none";
+			apiContent.style.display = "block";
+			//alert(apiContent.getBoundingClientRect().right);
+			moreOprate.style.left = (apiContent.getBoundingClientRect().right + 4) + "px";
+		} else {
+			isApiContent = false;
+			apiContent.style.display = "none";
+			$(".body-content-show").eq(0).style.display = "block";
+			$(".select-page").eq(0).style.display = "block";
+			moreOprate.style.left = (bodyContentShow.getBoundingClientRect().right + 2) + "px";
+		}
+		setTimeout(function(){moreOprate.style.display = "block";}, 10);
+	}
+	
+	//每次窗口的变化
+	var bodyContentShow = $(".body-content-show").eq(0);
+	var bodyNavNo = $(".body-nav-no").eq(0);
+	var bodyNav = $(".body-nav").eq(0);
+	var moreOprate = $(".more-oprate").eq(0);
+	initAndUpdate();
+	window.onresize = function(e){
+		initAndUpdate();
+	}
+	function initAndUpdate(){
+		document.body.style.minHeight = window.innerHeight+"px";
+		//对导航条的初始化和随着窗口的变动进行更新
+		var marginLeft = bodyNavNo.getMarginLeft();
+		var width = bodyNavNo.clientWidth;
+		
+		bodyNav.style.width = width + "px";
+		bodyNav.style.left = marginLeft + "px";
+		bodyNav.style.display = "block";
+
+		//更多操作
+		//$(".more-oprate").eq(0).style.top = 100 + "px";
+		//alert(bodyContentShow.getBoundingClientRect().right);
+		
+		moreOprate.style.left = (isApiContent 
+			? apiContent.getBoundingClientRect().right + 4 
+			: bodyContentShow.getMarginRight() + 2) + "px";
+		//$(".more-oprate").eq(0).style.display = "block";
+		$(".body-nav-in").eq(0).style.height = (window.innerHeight-16)+"px";
+		$(".api-content-left").eq(0).style.minHeight = window.innerHeight - $(".foot").eq(0).getHeight() - 18+"px"; 
+		$(".api-content-right").eq(0).style.minHeight = window.innerHeight - $(".foot").eq(0).getHeight() - 18+"px"; 
+		$(".body-content-show-in").eq(0).style.minHeight = window.innerHeight - $(".foot").eq(0).getHeight() - 18+"px"; 
+		//对左右切换按钮进行定位
+		$(".body-content-show .lr-bt div").forEach(function(item){
+			item.style.top = $(".body-content-show-in").eq(0).getHeight()/2 - 64/2 + "px";
+		});
+		
+	}
+	
+	//alert($(".foot").eq(0).getHeight());
+	//只进行一次初始化
+	//alert(bodyContentShow.getMarginRight() - bodyContentShow.getWidth());
+	//$(".select-page").eq(0).style.right = (bodyContentShow.getMarginRight() - bodyContentShow.getWidth() - $(".select-page").eq(0).getWidth()) + "px";
+	//$(".select-page").eq(0).style.top =  (bodyContentShow.getHeight() - 38) + "px"
+	
+	liEvent_2.extends(LiEventSuper);
+	function liEvent_2(data){
+		LiEventSuper.call(this, data);
+
+		this.overEventCss = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false); 
+		}
+		//当前移出样式设置
+		this.outEventCss = function (i){
+			data.liElements[i].css("background:#fff; color:#555;", false); 
+		}
+		//e {i:preIndex}
+		this.preClickFun = function (i){
+			data.liElements[i].css("background:#fff; color:#555;", false);
+		}
+		//设置当前的元素 
+		//e {i:i}
+		this.nowClickFun = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false);
+			ajaxC({
+				url:"",
+				data:{code:data.codes[i]},
+				success:function(msg){
+				
+				},	
+				error:function(msg){
+				
+				},
+			});
+		}
+	}
+	//左栏选择内容
+	new liEvent_2({
+		liElements:$(".nav-list li"),
+		initIndex: 1,
+		codes:["0000", "0001", "0002", "0003", "0004", "0005"],
+	}).doReady();
+	</script>
+ </body>
+</html>

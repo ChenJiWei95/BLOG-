@@ -1,0 +1,101 @@
+.dialog-out-scale {
+	animation-name:zoom-dialog-out-scale;
+	animation-duration:0.8s;
+}
+.dialog-in-scale {
+	animation-name:zoom-dialog-in-scale;
+	animation-duration:0.8s;
+}
+@keyframes zoom-dialog-out-scale {
+	from {
+		transform:scale(0.1);
+		opacity:0;
+	}
+to {
+	transform:scale(1);
+	opacity:1;
+}
+}@keyframes zoom-dialog-in-scale {
+	from {
+		transform:scale(1);
+		opacity:1;
+	}
+	to {
+		transform:scale(0.1);
+		opacity:0;
+	}
+}.translat-int {
+	transition:-webkit-transform .3s ease-out;
+	transition:transform .3s ease-out;
+	transition:transform .3s ease-out,-webkit-transform .3s ease-out;
+	-webkit-transform:translate(0,-50px);
+	transform:translate(0,-50px);
+}
+.translat-out {
+	-webkit-transform:none;
+	transform:none;
+}
+.rotate-animate {
+	animation-name:zoom-rotate;
+	animation-duration:100s;
+}
+@keyframes zoom-rotate {
+	from {
+		transform:rotate(0deg);
+	}
+	to {
+		transform:rotate(36000deg);
+	}
+}.shake_effect {
+	-webkit-animation-name:shake;
+	animation-name:shake;
+	-webkit-animation-duration:1s;
+	animation-duration:1s;
+}
+@-webkit-keyframes shake {
+	from,to {
+	-webkit-transform:translate3d(0,0,0);
+	transform:translate3d(0,0,0);
+}
+10%,30%,50%,70%,90% {
+	-webkit-transform:translate3d(-10px,0,0);
+	transform:translate3d(-10px,0,0);
+}
+20%,40%,60%,80% {
+	-webkit-transform:translate3d(10px,0,0);
+	transform:translate3d(10px,0,0);
+}
+}@keyframes shake {
+	from,to {
+	-webkit-transform:translate3d(0,0,0);
+	transform:translate3d(0,0,0);
+}
+10%,30%,50%,70%,90% {
+	-webkit-transform:translate3d(-10px,0,0);
+	transform:translate3d(-10px,0,0);
+}
+20%,40%,60%,80% {
+	-webkit-transform:translate3d(10px,0,0);
+	transform:translate3d(10px,0,0);
+}
+}.breath_light {
+	opacity:0.5;
+	animation-name:zoom-breath;
+	animation-duration:4s;
+	animation-timing-function:ease-in-out;
+	animation-iteration-count:infinite;
+}
+@keyframes zoom-breath {
+	form {
+		opacity:0.5;
+		font-weight:inherit;
+	}
+50% {
+	opacity:1;
+		font-weight:blod;
+	}
+	to {
+		opacity:0.5;
+		font-weight:inherit;
+	}
+}

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>project</title>
+  <link type="text/css" rel="stylesheet" href="../css/MyCss.css" />
+  <link type="text/css" rel="stylesheet" href="../css/basi.css" />
+  <script src="../js/MyjsV0-8.js"></script>
+  <style>
+  </style>
+ </head>
+ <body>
+	<!-- 隐藏栏 -->
+	<div class="more-oprate">
+		<ul class="nolist">
+			<li title="查找">
+				<i class="serch_ico"></i>
+				<div class="li-cnt">
+					<label class="input-lable">
+						<input type="text" class="serch-input"/> 
+					</label>
+					<label>
+						<i class="serch-click-bt-ico"></i>
+					</label>
+				</div>
+			</li>
+			<li title="API"><label class="show-label">API</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击查看api</label>
+				</div>
+			</li>
+			<li title="TOP"><label class="show-label">TOP</label>
+				<div class="li-cnt">
+					<label class="msg-label">点击返回顶部</label>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- 左栏 -->
+	<div class="body-nav">
+		<!-- 个人信息 -->
+		<div class="nav-ifnor">
+			<label>
+				<img src="img/pho.jpg" width="80" height="80" alt="chenjiwei"/>
+			</label>
+			<label>
+				ChenJiWei
+			</label>
+			<label>
+				码出人生...
+			</label>
+			<label class="clearFloat">
+				<i onclick="link.open('https://github.com/ChenJiWei95');" class="github" title="https://github.com/ChenJiWei95"></i>
+				<i class="email" title="chenJiWey@163.com"></i>
+			</label>
+		</div>
+		<!-- 导航栏 -->
+		<div class="nav-list">
+			<ul class="nolist">
+				<li>首页</li>
+				<li>前端项目</li>
+				<li>java项目</li>
+			</ul>
+		</div>
+	</div>
+	<!-- S body -->
+	<div class="body">
+		<div class="body-con clearFloat">
+			<!-- 导航 -->
+			<div class="body-nav-no">
+				
+			</div>
+			<!-- 内容 -->
+			<div class="body-content">
+				<!-- 动态内容展示 -->
+				<div class="body-content-show">
+					<ul class="nolist">
+						<li>
+							<div>
+								<!-- 标题 -->
+								<label class="item-tilte clearFloat">
+									<label>模拟TIM界面</label>
+									<label>2018年9月18日 23:16</label>
+								</label>
+								<!-- 内容 -->
+								<label class="item-body">
+									<label><img src="img/pho.jpg" width="50px" height="50px" alt="chenjiwei"/></label>
+									<label><br><br>点击跳转到项目浏览</label>
+								</label>
+								<!-- 相关 标签 -->
+								<label class="item-tag">
+									<label>前端项目</label><label>JavaScript</label><label>HTML</label>
+								</label>
+							</div>
+						</li>
+						<li>
+							<div>
+								<!-- 标题 -->
+								<label class="item-tilte clearFloat">
+									<label>评论组件</label>
+									<label>2018年9月18日 23:10</label>
+								</label>
+								<!-- 内容 -->
+								<label class="item-body">
+									<label><img src="img/pho.jpg" width="50px" height="50px" alt="chenjiwei"/></label>
+									<label><br><br>点击跳转到项目浏览</label>
+								</label>
+								<!-- 相关 标签 -->
+								<label class="item-tag">
+									<label>前端项目</label><label>JavaScript</label><label>HTML</label>
+								</label>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 选页组件 -->
+				<div class="select-page clearFloat">
+					<div>
+						<label><i class="right-bt"></i></label>
+						<label><ul class="nolist">
+							<li>1</li>
+							<li>2</li>
+						</ul></label>
+						<label><i class="left-bt"></i></label>
+					</div>
+				</div>
+				<!--S -  foot-->
+				<div class="foot">
+					<div class="bom_container">
+						<li style="color:#586069;list-style:none;padding:10px 245px;">Copyright ©2018 <span  style="color:#a71d5d;cursor:pointer;" title="作者介绍">chen</span> Powered By <span  style="color:#a71d5d;cursor:pointer;" title="程序目录">My Blog</span> Version 1.0.0</li>
+					</div>
+				</div>
+				<!--E - foot-->
+			</div>
+		</div>
+	</div>
+	<!-- E body -->
+	<script>
+	initAndUpdate();
+	window.onresize = function(e){
+		initAndUpdate();
+	}
+	function initAndUpdate(){
+		//对导航条的初始化和随着窗口的变动进行更新
+		var bodyNavNo = $(".body-nav-no")[0];
+		var marginLeft = bodyNavNo.getBoundingClientRect().left;
+		var width = bodyNavNo.clientWidth;
+		var bodyNav = $(".body-nav")[0];
+		
+		bodyNav.style.width = width + "px";
+		bodyNav.style.left = marginLeft + "px";
+		bodyNav.style.display = "block";
+
+		//更多操作
+		var bodyContentShow = $(".body-content-show")[0];
+		//$(".more-oprate")[0].style.top = 100 + "px";
+		$(".more-oprate")[0].style.left = (bodyContentShow.getBoundingClientRect().right - 30) + "px";
+		//$(".more-oprate")[0].style.display = "block";
+	}
+	
+	
+	liEvent_2.extends(LiEventSuper);
+	function liEvent_2(data){
+		LiEventSuper.call(this, data);
+
+		this.overEventCss = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false); 
+		}
+		//当前移出样式设置
+		this.outEventCss = function (i){
+			data.liElements[i].css("background:#f6f4f0; color:#555;", false); 
+		}
+		//e {i:preIndex}
+		this.preClickFun = function (i){
+			data.liElements[i].css("background:#f6f4f0; color:#555;", false);
+		}
+		//设置当前的元素 
+		//e {i:i}
+		this.nowClickFun = function (i){
+			data.liElements[i].css("background:#555; color:#fff;", false);
+			ajaxC({
+				url:"",
+				data:{code:data.codes[i]},
+				success:function(msg){
+				
+				},	
+				error:function(msg){
+				
+				},
+			});
+		}
+	}
+	//左栏选择内容
+	new liEvent_2({
+		liElements:$(".nav-list")[0].$("li"),
+		initIndex:1,
+		codes:["0000", "0001", "0002"],
+	}).doReady();
+	</script>
+ </body>
+</html>

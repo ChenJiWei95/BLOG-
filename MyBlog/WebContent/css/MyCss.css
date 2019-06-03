@@ -1,0 +1,273 @@
+	/*
+	2017/9/24
+	全局格式样式，可以插入插件
+	*/
+	/*全局默认外边距，内边距为0*/*{margin: 0; padding: 0;}
+	body {font-size: 12px; font-family: "Microsoft YaHei", "宋体", "Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif, FreeSans, Arimo;}
+	/*顶部窗口*/.body-top{height: 100px; position: relative; border-bottom: 1px solid #ccc;}
+	/*底部窗口*/.body-bom{height: 90px;}
+	.clearFloat, .clear-float{overflow: hidden;}
+	/* display: table; content: " "; 清除浮动*/
+	.cle-f:after, .cle-f:before, .nav:before, .nav:after {display: table; content: " ";}
+	
+	/* 2018/12/14 container页面容器*/
+	.container {
+		padding-right: 15px;
+		padding-left: 15px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	
+	@media (min-width: 768px)
+	{
+		.container {
+			width: 750px;
+		}
+	}
+	@media (min-width: 992px)
+	{
+		.container {
+			width: 970px;
+		}
+	}
+	@media (min-width: 1200px)
+	{
+		.container {
+			width: 1170px;
+		}
+	}
+	/* 布局 左 中 右 */
+	/*中间*/
+	
+	a {color: rgba(255, 255, 255, 0.6); outline: none; text-decoration: none; -webkit-transition: 0.2s; transition: 0.2s;}
+	/*
+	2017/9/24
+	图标i标签
+	*/
+	i{display:block; width: 32px; height: 32px;}
+
+	/*
+	2017/9/24
+	对常用按钮的设定
+	*/
+	/*一般样式*/.input-submit, .input-button, .select-button, .select-input{width: 150px; height: 35px;cursor: pointer; border: 0px; border-radius: 5px; outline: none; color: #fff; }
+	/*鼠标进入时的样式*/.input-submit:hover, .input-button:hover{background: #8e8787;}
+	.select-button {height:30px; width:75px; margin:0px 10px; color:#ccc;}
+	.select-input {height:30px; display:block; margin:0px 10px; color:#ccc;}
+	.button-red {width:100px; height:35px; color:white; cursor:pointer; background-color:#cc0000; border:1px solid #ccc; border-radius:5px; font-size:14px; outline:none;}
+	.button-red:hover {box-shadow:0px 0px 10px 0px #ccc;}
+
+	.input-button-style1 {border: 1px solid #e6e6e6; background: #fff; border-radius: 3px;  padding: 1px 12px; cursor: pointer; color: #555; outline: none;}
+	.input-button-style1:hover {border: 1px solid #d1d5da;}
+
+	/*圆角框样式 适用链接、按钮*/
+	.radius-box-style1 {border: 1px solid #d1d5da; border-radius: 10px; padding: 1px 9px; margin-left: 4px; cursor: pointer;}
+	.radius-box-style1:hover {border: 1px solid #555;}
+
+	/* 按钮 2018/10/19 */
+	.box-style1 {outline: none; border: 1px solid #d1d5da; padding: 1px 9px; margin-left: 4px; cursor: pointer; color: #555;}
+	.box-style1:hover {color: #fff; background: #555;}
+	/*新增按钮*/
+	/*
+	具有波浪形的按钮的使用方式
+	btn 初始设置
+	btn-success 颜色设置（字体颜色、背景颜色、边框颜色）
+	ripple 动画（此处是波浪形动画）
+	*/
+	.btn-default {color: #333; background-color: #fff; border-color: #ccc;}
+	.btn-default:hover {background-color: #ccc;}
+	.btn-primary {color: #fff; background-color: #337ab7; border-color: #2e6da4;}
+	.btn-primary:hover {background-color: #2e6da4;}
+	.btn-success {color: #fff; background-color: #5cb85c; border-color: #4cae4c;}
+	.btn-success:hover {background-color: #4cae4c;}
+	.btn-info {color: #fff; background-color: #5bc0de; border-color: #46b8da;}
+	.btn-info:hover {background-color: #46b8da;}
+	.btn-warning {color: #fff; background-color: #f0ad4e; border-color: #eea236;}
+	.btn-warning:hover {background-color: #eea236;}
+	.btn-danger {color: #fff; background-color: #d9534f; border-color: #d43f3a;}
+	.btn-danger:hover {background-color: #d43f3a;}
+	/*btn-lg 边距、格式设置（大小、行高、内边距、是否圆角）*/
+	.btn-lg {padding: 10px 16px; font-size: 18px; line-height: 1.33; border-radius: 6px;}
+	/*btn 初始设置*/
+	.btn {display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		-ms-touch-action: manipulation;
+		touch-action: manipulation;
+		cursor: pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		background-image: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+	}
+	/*ripple 点击按钮产生波浪动画*/
+	.ripple {position: relative; overflow: hidden;}
+	/*动画初始状态*/
+	.ripple:after{
+		content:"";
+		background:rgba(255,255,255,0.3);
+		display:block; 
+		position:absolute;
+		border-radius:50%;
+		padding-top:240%;
+		padding-left:240%;
+		margin-top:-120%;
+		margin-left:-120%;
+		opacity:0;
+		transition:all 1s;/*transition:all 1s; all参数可以指定，例如：opacity...,如果是all那么指定所有*/
+	}
+	.ripple:active:after{
+		padding-top:0;
+		padding-left:0;
+		margin-top:0;
+		margin-left:0;
+		opacity:1;
+		transition:0s;/*此处（整个括号样式设置代表初始状态）是按压多长时间，恢复初始状态，设为0*/ /*一般在点击的时候才会加上这个时间限定*/
+	}
+	
+	
+	
+	/*
+	2017/9/24
+	input 样式
+	输入框的样式设定
+	placeholder 提示文字
+	required 不允许为空
+	圆边框格式
+	*/
+	/*圆角样式 适合input select会有样式的不统一样*/
+	.input-text{display:block; width: 200px; height: 30px; border: 1px solid #ddd; border-radius:5px; outline: none; padding: 0px 5px; color: #777171;}
+	/*获取焦点时*/.input-focus{border: 1px solid deepskyblue;}
+	/*2018/9/30 下划线样式 适合select input; input-text_类名将加在父标签上<label class="input-text_"><input /></label>*/
+	.input-text_ {border-bottom: 1px solid #e6e6e6; width: 228px;}
+	.input-text_ select, .input-text_ input {background: #fff; width: 100%; height: 25px; border: none; outline: none; color: #888; font-size: 14px;}
+
+	/*
+	模态框样式，默认全屏
+	*/
+	.modal_Box{display: block; position: fixed; z-index: 1; right: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3);}
+
+	/*radio组件*/
+	.radio-comp{margin: 4px 2px; color: #888;}
+	.radio-comp input {float: left;}
+	.radio-comp span {display: block; float: left; margin: -1px 8px;}
+
+	/*
+	2017/9/24
+	menu bar菜单栏
+	menu item菜单项
+	其中包含item自动分配空间 flex-direction row-reverse
+	ul
+		li
+		li
+	*/
+	/* menu_Bar */.menu_Bar{border: 1px solid #efe1e1;}
+	.menu_Bar ul{height: 35px; margin-top: -1px; flex-direction: row-reverse; display: -webkit-flex; text-align: center;}
+	.menu_Bar ul #menu_Item_Left{}	/* 最左边的项 */
+	.menu_Bar ul #menu_Item_Right{}	/* 最右边的项 */
+	.menu_Bar ul .menu_Item{float: left; list-style-type: none; flex: 1;}
+	.menu_Bar ul .menu_Item a{display: block; margin-top: 12px; height: 18px; border-right: 1px solid #efe1e1;}
+	.menu_Bar ul .menu_Item a:hover{}
+	.nolist{list-style-type: none;}
+	/* 2017/12/31 横格式 */
+	.rowli, .rowli-style1 {list-style-type: none;}
+	.rowli li, .rowli-style1 li {float: left; width: 60px; height: 25px; text-align: center; line-height: 25px; cursor: pointer; color: #555;}
+	/* 2017/12/31 列格式 */
+	.colli, .colli-style1 {list-style-type: none;}
+	.colli li, .colli-style1 li {width: 120px; height: 25px; cursor: pointer; text-align: center; line-height: 25px; color: #555;}
+	.colli li:hover, .rowli li:hover, .colli-style1 li:hover, .rowli-style1 li:hover{background: #555; color: #fff;}
+	/**/
+	.nav {
+		padding-left: 0;
+		margin-bottom: 0;
+		list-style: none;	
+	}
+	.nav>li {
+		position: relative;
+		display: block;
+	}
+	.nav-pills>li {
+		float: left;
+	}
+	.nav-pills>li>a {
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	.nav-pills>.active>a, .nav-pills>.active>a:hover, .nav-pills>.active>a:focus {
+		color: #fff;
+		background-color: #337ab7;
+	}
+	.nav>li>a {
+		position: relative;
+		display: block;
+		padding: 10px 15px;
+		border: 1px solid transparent;
+	}
+	.nav>li>a:hover, .nav>li>a:focus, .nav>li>a:active {
+		background: #fff;
+		color: #494A5F;
+	}
+
+	/* 输入框样式 */
+	.textarea-style1 {border: 1px solid #d1d5da; border-radius: 4px; padding: 10px;  outline: none;}
+
+	/* 2018/12/12 字体 */
+	/*普通字体*/
+	.text-font-style1, .text-font-style3, .textarea-style1, .text-break-style1 {font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace; color: #555;}
+	/*斜体 有点文艺*/
+	.text-font-style3 {text-align: justify; line-height: 20px; font-style: italic; font-size: 14px;}
+	/*标题 */
+	.title-font-style1, .title-font-style2  {text-align: center; color: #555; font-family: 'Times New Roman', Times, serif;}
+	/*有倒影，适合做标题或者文字图标*/
+	.title-font-style2 {text-shadow: 1px 5px 3px #ccc;}
+	h1, .h1, h2, .h2, h3, .h3 { margin-top: 20px; margin-bottom: 10px;}
+	/*p标签文字自动换行*/
+	.text-break-style1 {    
+		word-break: break-all;  /*自动换行*/
+		width: 300px;
+		letter-spacing: 10px;	/*间距*/
+		text-align: justify;
+		text-indent: 20px; 		/*缩进*/
+		line-height: 20px;}
+	/*p标签文字自动换行有阴影*/
+	.text-break-style2 {text-shadow: 1px 5px 3px #ccc;}
+	
+	/* 2018/12/12 关于盒子 */
+	.box-border-bom {border-bottom: 1px solid #d1d5da;}		/*底部边框*/
+	.box-border-top {border-top: 1px solid #d1d5da;} 		/*顶部边框*/
+	.box-border-right {border-right: 1px solid #d1d5da;} 	/*右部边框*/
+	.box-border-left {border-left: 1px solid #d1d5da;} 		/*左部边框*/
+	.box-border-style1, .box-border-style2 {border: 1px solid #d1d5da; }	/*一般边框*/
+	.box-border-style2 {border-radius: 5px;}	/*圆角边框*/
+	.box-size-style1 {width: 300px; height: 266px;}		/*小尺寸盒子*/
+	.box-size-style2 {width: 1200px; height: 266px;}		/*大尺寸盒子*/
+	
+	/* 2018/12/12 body框架 分左右栏 */
+	
+	/* 滚动条样式 */
+	/*欠缺：横向条没能调整适当、统一*/
+	.scroll-style1::-webkit-scrollbar {width: 4px;border-radius:2px;}
+	.scroll-style1::-webkit-scrollbar-button {background-color: #fff;}  /* 滑轨两头的监听按钮颜色 */
+	.scroll-style1::-webkit-scrollbar-track {height:100px;background: #fff;}/*滚动条的滑轨背景颜色 */
+	.scroll-style1::-webkit-scrollbar-thumb {background: #ccc;border-radius: 5px;}
+	
+	/* 2018/12/12 table 表格样式 */
+	/* 如果想要在双数行中显示有什么不同的话可以使用在tr标签中使用class属性为tr-odd */
+	/* tr标签为标准行；  th标签为tablehead用作标题使用 */
+	.table-style1 {display: block; overflow: hidden; width: 100%; border-collapse: collapse; border-spacing: 0; margin: 10px 0px;}
+	.table-style1 tr {background: #fff;}
+	.table-style1 th {font-weight: 500; border: 1px solid #e6e6e6;}
+	.table-style1 th, .table-style1 td {padding: 6px 13px; border-left: 1px solid #e6e6e6; border-right: 1px solid #e6e6e6;}
+	.table-style1 tr:last-child {border-bottom: 1px solid #e6e6e6}
+	.table-style1 tr {height:35px;}
+	/* 如果想要在双数行中显示有什么不同的话可以使用在tr标签中使用class属性为tr-odd */
+	.table-style1 .tr-odd {background:#f6f4f0;}
