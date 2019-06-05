@@ -8,10 +8,10 @@ function(e) {
         config: {},
         index: layui.atree ? layui.atree.index + 1e4: 0,
         set: function(e) {
-            var a = this;
-            return a.config = i.extend({},
-            a.config, e),
-            a
+            var that = this;
+            return that.config = i.extend({},
+            that.config, e),
+            that
         },
         on: function(e, i) {
             return layui.onevent.call(this, l, e, i)
@@ -44,11 +44,11 @@ function(e) {
     v = "layui-tree-showLine",
     C = "layui-tree-lineExtend",
     m = function(e) {
-        var a = this;
-        a.index = ++n.index,
-        a.config = i.extend({},
-        a.config, n.config, e),
-        a.render()
+        var that = this;
+        that.index = ++n.index,
+        that.config = i.extend({},
+        that.config, n.config, e),
+        that.render()
     };
     m.prototype.config = {//基本参数 默认配置
         data: [],
