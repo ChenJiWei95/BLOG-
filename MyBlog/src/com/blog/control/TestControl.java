@@ -17,6 +17,7 @@ import com.blog.util.ActionUtil;
 public class TestControl {
 	public static Logger logger = LogManager.getLogger(TestControl.class);
 	
+	//请求 http://localhost:8080/MyBlog/api/test.do
 	@RequestMapping("/api/test.do")
 	public void test(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		/*logger.error("servlet path:"+request.getServletPath());
@@ -25,7 +26,6 @@ public class TestControl {
 		logger.error("路径:" + System.getProperty("catalina.home"));
 		//return "index";
 */	
-		
 		System.out.println(ActionUtil.read(request));
 		
 		ActionUtil.returnRes(response, "success");
