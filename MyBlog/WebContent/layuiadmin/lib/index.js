@@ -1,55 +1,81 @@
-/** layuiAdmin.std-v1.2.1 LPPL License By http://www.layui.com/admin/ */
+/** 
+
+ */
 ;
 layui.extend({
     setter: "config",
     admin: "lib/admin",
     view: "lib/view"
 }).define(["setter", "admin"],
-function(a) {
-    var e = layui.setter,
-    i = layui.element,
-    n = layui.admin,
-    t = n.tabsPage,
-    d = layui.view,
-    l = function(a, d) {
-        var l, b = r("#LAY_app_tabsheader>li"),
-        y = a.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
-        if (b.each(function(e) {
-            var i = r(this),
-            n = i.attr("lay-id");
-            n === a && (l = !0, t.index = e)
-        }), d = d || "新标签页", e.pageTabs) l || (r(s).append(['<div class="layadmin-tabsbody-item layui-show">', '<iframe src="' + a + '" frameborder="0" class="layadmin-iframe"></iframe>', "</div>"].join("")), t.index = b.length, i.tabAdd(o, {
-            title: "<span>" + d + "</span>",
-            id: a,
-            attr: y
-        }));
+function(export_) {
+    var config = layui.setter,
+    element = layui.element,
+    admin = layui.admin,
+    page = admin.tabsPage,//代表着一个标签页 
+    view = layui.view,
+    iframe = function(url, desc) {//点击左栏 创建一个iframe窗口
+        var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素
+        attr = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
+		//each 遍历元素
+		/*
+		模拟测试 以下if语句可以写成 -> if(fn, 表达式, boolean)
+		var i = 0, b = 1;
+		if((function(){
+			
+		})() , b = 3 , true){
+			alert("hh");
+		}
+		
+		以上格式代码不容易读，
+		经过整改后如下 
+		
+		*/
+		elements_.each(function(e) {
+			console.log("if (elements_.each(function(e) { -- "+this);
+            var element_ = selectElement(this),
+            n = element_.attr("lay-id");
+            n === url && (flag = !0, page.index = e)
+        })
+		desc = desc || "新标签页"
+        if (config.pageTabs){
+			console.log("是否存在顶栏标签 " + flag + " ");
+			flag || (selectElement(LAY_app_body).append(['<div class="layadmin-tabsbody-item layui-show">'
+				, '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>'
+				, "</div>"].join("")), page.index = elements_.length, element.tabAdd(layadmin_layout_tabs, {
+				title: "<span>" + desc + "</span>",
+				id: url,
+				attr: attr
+			}));
+		} 
         else {
-            var u = n.tabsBody(n.tabsPage.index).find(".layadmin-iframe");
-            u[0].contentWindow.location.href = a
+			console.log("存在顶栏标签 则直接修改链接" + url);
+            var u = admin.tabsBody(admin.tabsPage.index).find(".layadmin-iframe");
+            u[0].contentWindow.location.href = url
         }
-        i.tabChange(o, a),
-        n.tabsBodyChange(t.index, {
-            url: a,
-            text: d
+        element.tabChange(layadmin_layout_tabs, url),
+        admin.tabsBodyChange(page.index, {
+            url: url,
+            text: desc
         })
     },
-    s = "#LAY_app_body",
-    o = "layadmin-layout-tabs",
-    r = layui.$;
-    r(window);
-    n.screen() < 2 && n.sideFlexible(),
+    LAY_app_body = "#LAY_app_body",
+    layadmin_layout_tabs = "layadmin-layout-tabs",
+    selectElement = layui.$;//query - $() 匹配元素
+    selectElement(window);//query - $() 匹配元素
+    admin.screen() < 2 && admin.sideFlexible(),
     layui.config({
-        base: e.base + "modules/"
+        base: config.base + "modules/"
     }),
-    layui.each(e.extend,
+	//遍历对象
+    layui.each(config.extend,
     function(a, i) {
         var n = {};
-        n[i] = "{/}" + e.base + "lib/extend/" + i,
+        n[i] = "{/}" + config.base + "lib/extend/" + i,
         layui.extend(n)
     }),
-    d().autoRender(),
+    view().autoRender(),
     layui.use("common"),
-    a("index", {
-        openTabsPage: l
+    export_("index", {
+        openTabsPage: iframe//打开页面
     })
 });
