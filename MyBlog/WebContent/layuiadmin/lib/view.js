@@ -15,24 +15,29 @@ function(e) {
         this.id = e,
         this.container = t("#" + (e || s))
     };
-    i.loading = function(e) {
+    i.loading = function(e) {  //载入
+		console.log("view i.loading");
         e.append(this.elemLoad = t('<i class="layui-anim layui-anim-rotate layui-anim-loop layui-icon layui-icon-loading layadmin-loading"></i>'))
     },
-    i.removeLoad = function() {
+    i.removeLoad = function() {  //删除
+		console.log("view i.removeLoad");
         this.elemLoad && this.elemLoad.remove()
     },
     i.exit = function(e) {
+		console.log("view i.exit");
         layui.data(r.tableName, {
             key: r.request.tokenName,
             remove: !0
         }),
         e && e()
     },
-    i.req = function(e) {
+    i.req = function(e) {//ajax请求
+		console.log("view i.req");
         var a = e.success,
         n = (e.error, r.request),
         o = r.response,
         s = function() {
+			console.log("执行");		
             return r.debug ? "<br><cite>URL：</cite>" + e.url: ""
         };
         if (e.data = e.data || {},
@@ -66,6 +71,7 @@ function(e) {
         e))
     },
     i.popup = function(e) {
+		console.log("view i.popup 默认提示框 根据传进来的值定制");
         var a = e.success,
         r = e.skin;
         return delete e.success,
@@ -91,6 +97,7 @@ function(e) {
         e))
     },
     i.error = function(e, a) {
+		console.log("view i.error 错误框定制");
         return i.popup(t.extend({
             content: e,
             maxWidth: 300,
@@ -101,6 +108,7 @@ function(e) {
         a))
     },
     d.prototype.render = function(e, a) {
+		console.log("view d.render");
         var n = this;
         layui.router();
         return e = r.views + e + r.engine,
@@ -136,6 +144,7 @@ function(e) {
         n
     },
     d.prototype.parse = function(e, n, r) {
+		console.log("view d.parse");
         var s = this,
         d = "object" == typeof e,
         l = d ? e: t(e),
@@ -198,33 +207,34 @@ function(e) {
         return s
     },
     d.prototype.autoRender = function(e, a) {
-        var n = this;
+		console.log("view d.autoRender");
+        var that = this;
         t(e || "body").find("*[template]").each(function(e, a) {
             var r = t(this);
-            n.container = r,
-            n.parse(r, "refresh")
+            that.container = r,
+            that.parse(r, "refresh")
         })
     },
-    d.prototype.send = function(e, t) {
+    d.prototype.send = function(e, t) {console.log("view d.send");
         var n = a(e || this.container.html()).render(t || {});
         return this.container.html(n),
         this
     },
-    d.prototype.refresh = function(e) {
-        var t = this,
-        a = t.container.next(),
-        n = a.attr("lay-templateid");
-        return t.id != n ? t: (t.parse(t.container, "refresh",
+    d.prototype.refresh = function(e) {console.log("view d.refresh");
+        var that = this,
+        next = that.container.next(),
+        attr = next.attr("lay-templateid");
+        return that.id != attr ? that: (that.parse(that.container, "refresh",
         function() {
-            t.container.siblings('[lay-templateid="' + t.id + '"]:last').remove(),
+            that.container.siblings('[lay-templateid="' + that.id + '"]:last').remove(),
             "function" == typeof e && e()
-        }), t)
+        }), that)
     },
-    d.prototype.then = function(e) {
+    d.prototype.then = function(e) {console.log("view d.then");
         return this.then = e,
         this
     },
-    d.prototype.done = function(e) {
+    d.prototype.done = function(e) {console.log("view d.done");
         return this.done = e,
         this
     },

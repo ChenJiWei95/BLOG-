@@ -1,7 +1,7 @@
 /** layuiAdmin.std-v1.2.1 LPPL License By http://www.layui.com/admin/ */
 ;
 layui.define("view",
-function(e) {
+function(e) {console.log("admin");
     var a = layui.jquery,
     i = layui.laytpl,
     t = layui.element,
@@ -24,17 +24,17 @@ function(e) {
     x = "layui-icon-spread-left",
     C = "layadmin-side-shrink",
     k = "LAY-system-side-menu",
-    P = {
+    P = { 
         v: "1.2.1 std",
         req: l.req,
         exit: l.exit,
-        escape: function(e) {
+        escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);
             return String(e || "").replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;")
         },
-        on: function(e, a) {
+        on: function(e, a) {console.log("admin P.on e:"+e+" a:"+a);
             return layui.onevent.call(this, n.MOD_NAME, e, a)
         },
-        sendAuthCode: function(e) {
+        sendAuthCode: function(e) {console.log("admin P.sendAuthCode");
             e = a.extend({
                 seconds: 60,
                 elemPhone: "#LAY_phone",
@@ -84,11 +84,11 @@ function(e) {
                 }
             })
         },
-        screen: function() {
+        screen: function() {console.log("admin P.screen");
             var e = r.width();
             return e > 1200 ? 3 : e > 992 ? 2 : e > 768 ? 1 : 0
         },
-        sideFlexible: function(e) {
+        sideFlexible: function(e) {console.log("admin P.sideFlexible");
             var i = u,
             t = a("#" + h),
             l = P.screen();
@@ -98,7 +98,7 @@ function(e) {
             })
         },
         popup: l.popup,
-        popupRight: function(e) {
+        popupRight: function(e) {console.log("admin P.popupRight");
             return P.popup.index = layer.open(a.extend({
                 type: 1,
                 id: "LAY_adminPopupR",
@@ -113,7 +113,7 @@ function(e) {
             },
             e))
         },
-        theme: function(e) {
+        theme: function(e) {console.log("admin P.theme 皮肤设置");
             var t = (n.theme, layui.data(n.tableName)),
             l = "LAY_layadmin_theme",
             s = document.createElement("style"),
@@ -127,7 +127,7 @@ function(e) {
             o.attr("layadmin-themealias", e.color.alias),
             t.theme = t.theme || {},
             layui.each(e,
-            function(e, a) {
+            function(e, a) {console.log("输出tableName-theme-a:");console.log(n.tableName);console.log(t.theme);console.log(a);
                 t.theme[e] = a
             }),
             layui.data(n.tableName, {
@@ -135,7 +135,7 @@ function(e) {
                 value: t.theme
             })
         },
-        initTheme: function(e) {
+        initTheme: function(e) {console.log("admin P.initTheme");
             var a = n.theme;
             e = e || 0,
             a.color[e] && (a.color[e].index = e, P.theme({
@@ -143,10 +143,10 @@ function(e) {
             }))
         },
         tabsPage: {},
-        tabsBody: function(e) {
+        tabsBody: function(e) {console.log("admin P.tabsBody");
             return a(m).find("." + b).eq(e || 0)
         },
-        tabsBodyChange: function(e, a) {
+        tabsBodyChange: function(e, a) {console.log("admin P.tabsBodyChange");
             a = a || {},
             P.tabsBody(e).addClass(d).siblings().removeClass(d),
             F.rollPage("auto", e),
@@ -155,56 +155,56 @@ function(e) {
                 text: a.text
             })
         },
-        resize: function(e) {
+        resize: function(e) {console.log("admin P.resize");
             var a = layui.router(),
             i = a.path.join("-");
             P.resizeFn[i] && (r.off("resize", P.resizeFn[i]), delete P.resizeFn[i]),
             "off" !== e && (e(), P.resizeFn[i] = e, r.on("resize", P.resizeFn[i]))
         },
         resizeFn: {},
-        runResize: function() {
+        runResize: function() {console.log("admin P.runResize");
             var e = layui.router(),
             a = e.path.join("-");
             P.resizeFn[a] && P.resizeFn[a]()
         },
-        delResize: function() {
+        delResize: function() {console.log("admin P.delResize");
             this.resize("off")
         },
-        closeThisTabs: function() {
+        closeThisTabs: function() {console.log("admin P.closeThisTabs");
             P.tabsPage.index && a(z).eq(P.tabsPage.index).find(".layui-tab-close").trigger("click")
         },
-        fullScreen: function() {
+        fullScreen: function() {console.log("admin P.fullScreen");
             var e = document.documentElement,
             a = e.requestFullScreen || e.webkitRequestFullScreen || e.mozRequestFullScreen || e.msRequestFullscreen;
             "undefined" != typeof a && a && a.call(e)
         },
-        exitScreen: function() {
+        exitScreen: function() {console.log("admin P.exitScreen");
             document.documentElement;
             document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen()
         }
     },
     F = P.events = {
-        flexible: function(e) {
+        flexible: function(e) {console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);
             P.sideFlexible(i ? "spread": null)
         },
-        refresh: function() {
+        refresh: function() {console.log("admin F.refresh");
             var e = ".layadmin-iframe",
             i = a("." + b).length;
             P.tabsPage.index >= i && (P.tabsPage.index = i - 1);
-            var t = P.tabsBody(P.tabsPage.index).find(e);
-            t[0].contentWindow.location.reload(!0)
+            var es = P.tabsBody(P.tabsPage.index).find(e);
+            es[0].contentWindow.location.reload(!0)
         },
-        serach: function(e) {
+        serach: function(e) {console.log('admin F.serach');
             e.off("keypress").on("keypress",
             function(a) {
                 if (this.value.replace(/\s/g, "") && 13 === a.keyCode) {
                     var i = e.attr("lay-action"),
-                    t = e.attr("lay-text") || "搜索";
+                    html = e.attr("lay-text") || "搜索";
                     i += this.value,
-                    t = t + ' <span style="color: #FF5722;">' + P.escape(this.value) + "</span>",
-                    layui.index.openTabsPage(i, t),
+                    html = html + ' <span style="color: #FF5722;">' + P.escape(this.value) + "</span>",
+                    layui.index.openTabsPage(i, html),
                     F.serach.keys || (F.serach.keys = {}),
                     F.serach.keys[P.tabsPage.index] = this.value,
                     this.value === F.serach.keys[P.tabsPage.index] && F.refresh(e),
@@ -212,10 +212,10 @@ function(e) {
                 }
             })
         },
-        message: function(e) {
+        message: function(e) {console.log('admin F.message');
             e.find(".layui-badge-dot").remove()
         },
-        theme: function() {
+        theme: function() {console.log('admin F.theme');
             P.popupRight({
                 id: "LAY_adminPopupTheme",
                 success: function() {
@@ -223,7 +223,7 @@ function(e) {
                 }
             })
         },
-        note: function(e) {
+        note: function(e) {console.log('admin F.note');
             var a = P.screen() < 2,
             i = layui.data(n.tableName).note;
             F.note.index = P.popup({
@@ -236,9 +236,9 @@ function(e) {
                 content: '<textarea placeholder="内容"></textarea>',
                 resize: !1,
                 success: function(e, a) {
-                    var t = e.find("textarea"),
+                    var textarea = e.find("textarea"),
                     l = void 0 === i ? "便签中的内容会存储在本地，这样即便你关掉了浏览器，在下次打开时，依然会读取到上一次的记录。是个非常小巧实用的本地备忘录": i;
-                    t.val(l).focus().on("keyup",
+                    textarea.val(l).focus().on("keyup",
                     function() {
                         layui.data(n.tableName, {
                             key: "note",
@@ -248,13 +248,13 @@ function(e) {
                 }
             })
         },
-        fullscreen: function(e) {
+        fullscreen: function(e) {console.log('admin F.fullscreen');
             var a = "layui-icon-screen-full",
             i = "layui-icon-screen-restore",
             t = e.children("i");
             t.hasClass(a) ? (P.fullScreen(), t.addClass(i).removeClass(a)) : (P.exitScreen(), t.addClass(a).removeClass(i))
         },
-        about: function() {
+        about: function() {console.log('admin F.about');
             P.popupRight({
                 id: "LAY_adminPopupAbout",
                 success: function() {
@@ -262,7 +262,7 @@ function(e) {
                 }
             })
         },
-        more: function() {
+        more: function() {console.log('admin F.more');
             P.popupRight({
                 id: "LAY_adminPopupMore",
                 success: function() {
@@ -270,15 +270,15 @@ function(e) {
                 }
             })
         },
-        back: function() {
+        back: function() {console.log('admin F.back');
             history.back()
         },
-        setTheme: function(e) {
+        setTheme: function(e) {console.log('admin F.setTheme');
             var a = e.data("index");
             e.siblings(".layui-this").data("index");
             e.hasClass(y) || (e.addClass(y).siblings(".layui-this").removeClass(y), P.initTheme(a))
         },
-        rollPage: function(e, i) {
+        rollPage: function(e, i) {console.log('admin F.rollPage');
             var t = a("#LAY_app_tabsheader"),
             n = t.children("li"),
             l = (t.prop("scrollWidth"), t.outerWidth()),
@@ -314,29 +314,29 @@ function(e) {
                 !1
             })
         },
-        leftPage: function() {
+        leftPage: function() {console.log('admin F.leftPage');
             F.rollPage("left")
         },
-        rightPage: function() {
+        rightPage: function() {console.log('admin F.rightPage');
             F.rollPage()
         },
-        closeThisTabs: function() {
+        closeThisTabs: function() {console.log('admin F.closeThisTabs');
             var e = parent === self ? P: parent.layui.admin;
             e.closeThisTabs()
         },
-        closeOtherTabs: function(e) {
+        closeOtherTabs: function(e) {console.log('admin F.closeOtherTabs');
             var i = "LAY-system-pagetabs-remove";
             "all" === e ? (a(z + ":gt(0)").remove(), a(m).find("." + b + ":gt(0)").remove(), a(z).eq(0).trigger("click")) : (a(z).each(function(e, t) {
                 e && e != P.tabsPage.index && (a(t).addClass(i), P.tabsBody(e).addClass(i))
             }), a("." + i).remove())
         },
-        closeAllTabs: function() {
+        closeAllTabs: function() {console.log('admin F.closeAllTabs');
             F.closeOtherTabs("all")
         },
-        shade: function() {
+        shade: function() {console.log('admin F.shade');
             P.sideFlexible()
         },
-        im: function() {
+        im: function() {console.log('admin F.im');
             P.popup({
                 id: "LAY-popup-layim-demo",
                 shade: 0,
@@ -351,22 +351,24 @@ function(e) {
             })
         }
     }; !
-    function() {
-        var e = layui.data(n.tableName);
-        e.theme ? P.theme(e.theme) : n.theme && P.initTheme(n.theme.initColorIndex),
-        "pageTabs" in layui.setter || (layui.setter.pageTabs = !0),
-        n.pageTabs || (a("#LAY_app_tabs").addClass(c), u.addClass("layadmin-tabspage-none")),
-        s.ie && s.ie < 10 && l.error("IE" + s.ie + "下访问可能不佳，推荐使用：Chrome / Firefox / Edge 等高级浏览器", {
-            offset: "auto",
-            id: "LAY_errorIE"
-        })
+    function() {console.log('admin.function');
+        setTimeout(function(){
+			var e = layui.data(n.tableName);
+			e.theme ? P.theme(e.theme) : n.theme && P.initTheme(n.theme.initColorIndex),
+			"pageTabs" in layui.setter || (layui.setter.pageTabs = !0),
+			n.pageTabs || (a("#LAY_app_tabs").addClass(c), u.addClass("layadmin-tabspage-none")),
+			s.ie && s.ie < 10 && l.error("IE" + s.ie + "下访问可能不佳，推荐使用：Chrome / Firefox / Edge 等高级浏览器", {
+				offset: "auto",
+				id: "LAY_errorIE"
+			})
+		}, 300);
     } (),
     t.on("tab(" + p + ")",
     function(e) {
         P.tabsPage.index = e.index
     }),
     P.on("tabsPage(setMenustatus)",
-    function(e) {
+    function(e) {console.log("on tabsPage(setMenustatus)");
         var i = e.url,
         t = function(e) {
             return {

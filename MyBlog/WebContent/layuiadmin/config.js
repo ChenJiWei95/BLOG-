@@ -2,7 +2,7 @@
  
  */
  
-layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
+layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){console.log("config");
   exports('setter', {
     container: 'LAY_app' //容器ID
     ,base: layui.cache.base //记录静态资源所在路径

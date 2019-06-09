@@ -1,31 +1,31 @@
 ;
 layui.define("form",
-function(e) {
+function(e) {console.log("tree ");
     "use strict";
     var i = layui.$,
     a = layui.form,
-    n = {
+    n = { 
         config: {},
         index: layui.atree ? layui.atree.index + 1e4: 0,
-        set: function(e) {
+        set: function(e) {console.log("tree n.set");
             var that = this;
             return that.config = i.extend({},
             that.config, e),
             that
         },
-        on: function(e, i) {
+        on: function(e, i) {console.log("tree n.on");
             return layui.onevent.call(this, l, e, i)
         }
     },
-    r = function() {
-        var e = this,
-        i = e.config;
+    r = function() {console.log("tree r");
+        var that = this,
+        i = that.config;
         return {
-            getCheck: function() {
-                return e.getCheck()
+            getCheck: function() {console.log("tree r.getCheck");
+                return that.getCheck()
             },
-            setCheck: function(i) {
-                return e.setCheck(i)
+            setCheck: function(i) {console.log("tree r.setCheck");
+                return that.setCheck(i)
             },
             config: i
         }
@@ -43,11 +43,10 @@ function(e) {
     y = "layui-tree-setLineShort",
     v = "layui-tree-showLine",
     C = "layui-tree-lineExtend",
-    m = function(e) {
+    m = function(e) {console.log("tree m");
         var that = this;
         that.index = ++n.index,
-        that.config = i.extend({},
-        that.config, n.config, e),
+        that.config = i.extend({}, that.config, n.config, e),
         that.render()
     };
     m.prototype.config = {//基本参数 默认配置
@@ -65,90 +64,89 @@ function(e) {
         draggable: !1,
         emptyText: "暂无数据"
     },
-    m.prototype.render = function() {//render的内置方法
-        var e = this,
-        n = e.config,
-        r = i('<div class="layui-tree' + (n.showCheckbox ? " layui-form": "") + (n.showLine ? " layui-tree-line": "") + '"></div>');
-        e.tree(r);
-        var l = i(n.elem),
-        s = l.next("." + t);
+    m.prototype.render = function() {console.log("tree.render");//render的内置方法
+        var that = this,
+        config = that.config,
+        r = i('<div class="layui-tree' + (config.showCheckbox ? " layui-form": "") + (config.showLine ? " layui-tree-line": "") + '"></div>');
+        that.tree(r);
+        var outTarget = i(config.elem),
+        s = outTarget.next("." + t);
         return s[0] && s.remove(),
-        n.showSearch && r.prepend('<input type="text" class="layui-input layui-tree-search" placeholder="请输入关键字进行过滤">'),
-        e.elem = r,
-        e.emptyText = i('<div class="layui-tree-emptyText">' + n.emptyText + "</div>"),
-        l.html(e.elem),
-        0 == e.elem.find(".layui-tree-set").length ? void e.elem.append(e.emptyText) : (n.draggable && e.drag(), n.showCheckbox && a.render("checkbox"), e.elem.find(".layui-tree-set").each(function() {
+        config.showSearch && r.prepend('<input type="text" class="layui-input layui-tree-search" placeholder="请输入关键字进行过滤">'),
+        that.elem = r,
+        that.emptyText = i('<div class="layui-tree-emptyText">' + config.emptyText + "</div>"),
+        outTarget.html(that.elem),
+        0 == that.elem.find(".layui-tree-set").length ? void that.elem.append(that.emptyText) : (config.draggable && that.drag(), config.showCheckbox && a.render("checkbox"), that.elem.find(".layui-tree-set").each(function() {
             i(this).parent(".layui-tree-pack")[0] || i(this).addClass("layui-tree-setHide"),
             !i(this).next()[0] && i(this).parents(".layui-tree-pack").eq(1).hasClass("layui-tree-lineExtend") && i(this).addClass(y),
             i(this).next()[0] || i(this).parents(".layui-tree-set").eq(0).next()[0] || i(this).addClass(y)
-        }), void e.events())
+        }), void that.events())
     },
-    m.prototype.tree = function(e, a) {//生成页面
-        var n = this,
-        r = n.config,
-        l = a || r.data;
-        layui.each(l,
-        function(a, l) {
-            function t(e) {
-                return 0 != r.spread.length && i.inArray(e, r.spread) != -1
+    m.prototype.tree = function(e, data_) {console.log("tree.tree");//生成页面
+        var that = this,
+        config = that.config,
+        data = data_ || config.data;
+        layui.each(data, function(a, itemData) {
+            function t(e) {//判断
+                return 0 != config.spread.length && i.inArray(e, config.spread) != -1
             }
-            function d(e) {
-                return 0 != r.checked.length && i.inArray(e, r.checked) != -1
+            function d(e) {//判断
+                return 0 != config.checked.length && i.inArray(e, config.checked) != -1
             }
-            var c = l.children && l.children.length > 0,
-            h = i('<div class="layui-tree-pack" style="' + (t(l[r.key]) ? "display: block;": "") + '"></div>'),
-            o = i(["<div " + (r.key ? 'data-key="' + (l[r.key] || "") + '"': "") + ' class="layui-tree-set' + (t(l[r.key]) ? " layui-tree-spread": "") + (d(l[r.key]) ? " layui-tree-checkedFirst": "") + '">', "<div " + (r.draggable && !l.fixed ? 'draggable="true"': "") + ' class="layui-tree-entry">', '<div class="layui-tree-main layui-inline">',
+            var hasChilds = itemData.children && itemData.children.length > 0,
+            h = i('<div class="layui-tree-pack" style="' + (t(itemData[config.key]) ? "display: block;": "") + '"></div>'),
+            o = i(["<div " + (config.key ? 'data-key="' + (itemData[config.key] || "") + '"': "") + ' class="layui-tree-set' + (t(itemData[config.key]) ? " layui-tree-spread": "") + (d(itemData[config.key]) ? " layui-tree-checkedFirst": "") + '">', "<div " + (config.draggable && !itemData.fixed ? 'draggable="true"': "") + ' class="layui-tree-entry">', '<div class="layui-tree-main layui-inline">',
             function() {
-                return r.showLine ? c ? '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon ' + (t(l[r.key]) ? "layui-icon-subtraction": "layui-icon-addition") + '"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow ' + (c ? "": "hide") + '"></i></span>'
+                return config.showLine ? hasChilds ? '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon ' + (t(itemData[config.key]) ? "layui-icon-subtraction": "layui-icon-addition") + '"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow ' + (hasChilds ? "": "hide") + '"></i></span>'
             } (),
             function() {
-                return r.showCheckbox ? '<input type="checkbox" name="layuiTreeCheck" lay-skin="primary" ' + (l.disabled ? "disabled": "") + ">": ""
+                return config.showCheckbox ? '<input type="checkbox" name="layuiTreeCheck" lay-skin="primary" ' + (itemData.disabled ? "disabled": "") + ">": ""
             } (),
             function() {
-                return r.isJump && l.href ? '<a href="' + l.href + '" target="_blank" class="layui-tree-txt">' + (l.label || "未命名") + "</a>": '<span class="layui-tree-txt">' + (l.label || "未命名") + "</span>"
+                return config.isJump && itemData.href ? '<a href="' + itemData.href + '" target="_blank" class="layui-tree-txt">' + (itemData.label || "未命名") + "</a>": '<span class="layui-tree-txt">' + (itemData.label || "未命名") + "</span>"
             } (), "</div>",
             function() {
-                return r.renderContent ? ['<div class="layui-btn-group layui-tree-btnGroup">', '<i class="layui-icon layui-icon-add-1"  data-type="add"></i>', '<i class="layui-icon layui-icon-edit" data-type="edit"></i>', '<i class="layui-icon layui-icon-delete" data-type="del"></i>', "</div>"].join("") : ""
-            } (), "</div></div>"].join(""));
-            c && (o.append(h), n.tree(h, l.children)),
+                return config.renderContent ? ['<div class="layui-btn-group layui-tree-btnGroup">', '<i class="layui-icon layui-icon-add-1"  data-type="add"></i>', '<i class="layui-icon layui-icon-edit" data-type="edit"></i>', '<i class="layui-icon layui-icon-delete" data-type="del"></i>', "</div>"].join("") : ""
+            } (), "</div></div>"].join(""));//最后会得到一个符合条件的值，需在外围添加括号，每个选值以逗号隔开
+            hasChilds && (o.append(h), that.tree(h, itemData.children)),//符合c条件则继续往下执行
             e.append(o),
             o.prev("." + s)[0] && o.prev().children(".layui-tree-pack").addClass("layui-tree-showLine"),
-            c || o.parent(".layui-tree-pack").addClass("layui-tree-lineExtend"),
-            n.spread(o, l),
-            r.showCheckbox && n.checkClick(o, l),
-            r.renderContent && n.operate(o, l)
+            hasChilds || o.parent(".layui-tree-pack").addClass("layui-tree-lineExtend"),
+            that.spread(o, itemData),
+            config.showCheckbox && that.checkClick(o, itemData),
+            config.renderContent && that.operate(o, itemData)
         })
     },
-    m.prototype.spread = function(e, i) {//点击事件
-        var a = this,
-        n = a.config,
+    m.prototype.spread = function(e, i) {console.log("tree.spread");//点击事件
+        var that = this,
+        config = that.config,
         r = e.children("." + o),
-        l = n.expandClick ? r.children("." + u) : r.find("." + d);
+        l = config.expandClick ? r.children("." + u) : r.find("." + d);
         l.on("click",
         function() {
-            var a = e.children("." + p),
+            var that = e.children("." + p),
             r = l.children(".layui-icon")[0] ? l.children(".layui-icon") : l.find(".layui-tree-icon").children(".layui-icon"),
             t = "";
-            if (a[0]) {
+            if (that[0]) {
                 if (e.hasClass(f)) e.removeClass(f),
-                a.slideUp(200),
+                that.slideUp(200),
                 r.removeClass(h).addClass(c),
                 t = "close";
-                else if (e.addClass(f), a.slideDown(200), r.addClass(h).removeClass(c), t = "open", n.accordion) {
+                else if (e.addClass(f), that.slideDown(200), r.addClass(h).removeClass(c), t = "open", config.accordion) {
                     var d = e.siblings("." + s);
                     d.removeClass(f),
                     d.children("." + p).slideUp(200),
                     d.find(".layui-tree-icon").children(".layui-icon").removeClass(h).addClass(c)
                 }
             } else t = "normal";
-            n.click && n.click({//回调click方法
+            config.click && config.click({//回调click方法
                 elem: e,
                 state: t,//close、open
                 data: i//key
             })
         })
     },
-    m.prototype.checkClick = function(e, n) {//选中
+    m.prototype.checkClick = function(e, n) {console.log("tree.checkClick");//选中
         var r = this,
         l = r.config,
         t = e.children("." + o),
@@ -195,7 +193,7 @@ function(e) {
             }
         })
     },
-    m.prototype.operate = function(e, n) {//回调方法operate
+    m.prototype.operate = function(e, n) {console.log("tree.operate");//回调方法operate
         var r = this,
         l = r.config,
         t = e.children("." + o),
@@ -305,7 +303,7 @@ function(e) {
             }
         })
     },
-    m.prototype.drag = function() {
+    m.prototype.drag = function() {console.log("tree.drag");
         var e = this,
         n = e.config;
         e.elem.on("dragstart", "." + o,
@@ -440,7 +438,7 @@ function(e) {
             })
         })
     },
-    m.prototype.events = function() {
+    m.prototype.events = function() {console.log("tree.events");
         var e = this,
         a = e.config,
         n = e.elem.find(".layui-tree-checkedFirst");
@@ -483,7 +481,7 @@ function(e) {
             i(".layui-tree-emptyText")[0] && i(".layui-tree-emptyText").remove()
         })
     },
-    m.prototype.getCheck = function() {
+    m.prototype.getCheck = function() {console.log("tree.getCheck");
         var e = this,
         a = e.config,
         n = [];
@@ -493,7 +491,7 @@ function(e) {
         }),
         n
     },
-    m.prototype.setCheck = function(e) {
+    m.prototype.setCheck = function(e) {console.log("tree.setCheck");
         var a = this;
         a.config;
         a.elem.find("." + s).each(function(a, n) {
@@ -505,7 +503,7 @@ function(e) {
             } else i.inArray(r, e) != -1 && (l[0].checked || l.click())
         })
     },
-    n.render = function(e) {
+    n.render = function(e) {console.log("tree.render__");
         var i = new m(e);
         return r.call(i)
     },

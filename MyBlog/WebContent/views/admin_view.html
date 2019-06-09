@@ -83,13 +83,38 @@
       
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
-        <div class="layui-side-scroll">
-          <div class="layui-logo" lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">
+        <div class="layui-side-scroll" id="nav-tree-cnt">
+		  <!--
+		  <div class="layui-logo" lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">
             <span>博客后台管理</span>
           </div>
           
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-            <li data-name="home" class="layui-nav-item layui-nav-itemed">
+            <li data-name="app" class="layui-nav-item">
+              <a href="javascript:;" lay-tips="资源管理" lay-direction="2">
+                <i class="layui-icon layui-icon-app"></i>
+                <cite>资源管理</cite>
+				<span class="layui-nav-more"></span>
+              </a>
+              <dl class="layui-nav-child">
+				<dd>
+                  <a lay-href="home/source-manage.html">机构管理</a>
+                </dd>
+				<dd>
+                  <a lay-href="home/data-manage.html">数据字典</a>
+                </dd>
+              </dl>
+            </li>
+		  </ul>
+		  -->
+		  
+          <!--
+		  <div class="layui-logo" lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">
+            <span>博客后台管理</span>
+          </div>
+          
+          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+			<li data-name="home" class="layui-nav-item layui-nav-itemed">
               <a href="javascript:;" lay-tips="主页" lay-direction="2">
                 <i class="layui-icon layui-icon-home"></i>
                 <cite>主页</cite>
@@ -200,6 +225,7 @@
 				</dl>
             </li>
           </ul>
+		  -->
         </div>
       </div>
 
@@ -241,22 +267,42 @@
 
   <script src="../layuiadmin/layui/layui.js"></script>
   <script>
+  
   layui.config({
     base: '../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use('index');
+  }).use('index', function () {
+	console.log("加载");
+	/*
+	
+	*/
+	var navTree = layui.navTree;
+	navTree.render({
+		elem: '#nav-tree-cnt'
+		,data: {
+			href: 'https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard'
+			,desc: '博客后台管理'
+			,data: [{
+				dataName: 'source'
+				,desc: '资源管理'
+				,icon: 'layui-icon-app'
+				,children: [{
+					dataName: 'manage'
+					,href: 'home/source-manage.html'
+					,desc: '机构管理'
+				}
+				,{
+					dataName: 'data'
+					,href: 'home/data-manage.html'
+					,desc: '数据字典'
+				}]
+			}]
+		}
+	})
+	
+  });
   </script>
   
-  <!-- 百度统计 -->
-  <script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?d214947968792b839fd669a4decaaffc";
-    var s = document.getElementsByTagName("script")[0]; 
-    s.parentNode.insertBefore(hm, s);
-  })();
-  </script>
 </body>
 </html>

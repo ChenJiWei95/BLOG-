@@ -33,5 +33,21 @@
 操作日志：表	-- ID
 
 
+样式先加载出来 
+分析需要什么数据字段
+data-name 标识
+desc 显示 名称
+icon 图标
+tips 
+childs 子元素
+	data-name
+	desc
+	href
+
+明白tree是如何写的界面
+config是如何被传入
+其他处理不变
+
+
 
 

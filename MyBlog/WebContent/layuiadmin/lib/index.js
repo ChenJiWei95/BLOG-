@@ -4,16 +4,18 @@
 ;
 layui.extend({
     setter: "config",
+	navTree: "lib/navTree",
     admin: "lib/admin",
     view: "lib/view"
-}).define(["setter", "admin"],
-function(export_) {
+}).define(["navTree", "setter", "admin"],
+function(export_) {console.log("index");
     var config = layui.setter,
     element = layui.element,
-    admin = layui.admin,
-    page = admin.tabsPage,//代表着一个标签页 
-    view = layui.view,
-    iframe = function(url, desc) {//点击左栏 创建一个iframe窗口
+	navTree = layui.navTree,
+    admin, 
+	page,
+	view,
+    iframe = function(url, desc) {console.log("index iframe");//点击左栏 创建一个iframe窗口
         var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素
         attr = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
 		//each 遍历元素
@@ -30,8 +32,7 @@ function(export_) {
 		经过整改后如下 
 		
 		*/
-		elements_.each(function(e) {
-			console.log("if (elements_.each(function(e) { -- "+this);
+		elements_.each(function(e) { 
             var element_ = selectElement(this),
             n = element_.attr("lay-id");
             n === url && (flag = !0, page.index = e)
@@ -62,7 +63,6 @@ function(export_) {
     layadmin_layout_tabs = "layadmin-layout-tabs",
     selectElement = layui.$;//query - $() 匹配元素
     selectElement(window);//query - $() 匹配元素
-    admin.screen() < 2 && admin.sideFlexible(),
     layui.config({
         base: config.base + "modules/"
     }),
@@ -72,8 +72,14 @@ function(export_) {
         var n = {};
         n[i] = "{/}" + config.base + "lib/extend/" + i,
         layui.extend(n)
-    }),
-    view().autoRender(),
+    });
+	setTimeout(function(){
+		admin = layui.admin,
+		page = admin.tabsPage,//代表着一个标签页 
+		view = layui.view;
+		admin.screen() < 2 && admin.sideFlexible();
+		view().autoRender()
+	}, 300);
     layui.use("common"),
     export_("index", {
         openTabsPage: iframe//打开页面
