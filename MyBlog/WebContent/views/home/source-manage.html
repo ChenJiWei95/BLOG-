@@ -242,7 +242,7 @@
 			});
 			return false;
 		})
-		,form.on('submit(update_submit)', function(data){//更改表单提交为异步提交 修改
+		,form.on('submit(add_submit)', function(data){//更改表单提交为异步提交 修改
 			var fileds = data.field; 
 			$.ajax({
 				type: 'post'

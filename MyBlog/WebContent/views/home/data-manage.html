@@ -20,11 +20,6 @@
 		<div class="layui-row layui-col-space15">
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
-					<div class="layui-card-header layuiadmin-card-header-auto" id="toolbar">
-						<input type="button" class="layui-btn manage-button" value="添加" lay-event="add"/>
-						<input type="button" class="layui-btn manage-button" value="编辑" lay-event="edit"/>
-						<input type="button" class="layui-btn manage-button" value="删除" lay-event="del"/>
-					</div>
 					<div class="layui-card-body">
 						<table class="layui-hide" id="data" lay-filter="data">
 							
@@ -34,6 +29,97 @@
 			</div>
 		</div>
 	</div>
+	<div id="add" style="padding: 30px; display: none;">
+		<form class="layui-form" id="add-form" action="../../api/test/json.do">
+			<div class="layui-form-item">
+				<label class="layui-form-label">类型代码</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_code" lay-verify="type_code" autocomplete="off" placeholder="请输类型代码" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">类型名称</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_name" lay-verify="type_name" autocomplete="off" placeholder="请输类型名称" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">值</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_value" lay-verify="type_value" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-block">
+					<input type="text" name="msg" lay-verify="msg" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="add_submit">确认添加</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="edit" style="padding: 30px; display: none;">
+		<form class="layui-form" id="edit-form" action="../../api/test/json.do">
+			<div class="layui-form-item">
+				<label class="layui-form-label">ID</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_id" lay-verify="type_id" autocomplete="off" disabled placeholder="请输类型代码" class="layui-input layui-disabled">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">类型代码</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_code" lay-verify="type_code" autocomplete="off" placeholder="请输类型代码" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">类型名称</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_name" lay-verify="type_name" autocomplete="off" placeholder="请输类型名称" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">创建时间</label>
+				<div class="layui-input-block">
+					<input type="text" name="create_time" lay-verify="create_time" disabled autocomplete="off" class="layui-input layui-disabled">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">修改时间</label>
+				<div class="layui-input-block">
+					<input type="text" name="update_time" lay-verify="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">值</label>
+				<div class="layui-input-block">
+					<input type="text" name="type_value" lay-verify="type_value" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-block">
+					<input type="text" name="msg" lay-verify="msg" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="edit_submit">确认修改</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<input type="button" class="layui-btn manage-button" value="添加" lay-event="add"/>
+			<input type="button" class="layui-btn manage-button" value="编辑" lay-event="edit"/>
+			<input type="button" class="layui-btn manage-button" value="删除" lay-event="del"/>
+		</div>
+	</script>
 	<script src="../../layuiadmin/layui/layui.js?t=1"></script>
 	<script>
 	layui.config({
@@ -41,12 +127,34 @@
 	}).extend({
 		index: 'lib/index' //主入口模块
 	}).use(["table", 'index', 'console'], function() {
-		var table = layui.table;
+		var table = layui.table
+		,$ = layui.jquery
+		,form = layui.form, addPage, editPage
+		/*测试数据
+		,data = [{ 
+			id: "0001",
+			typeCode: "state",
+			typeName: "启用状态-关",
+			createTime: "2019-05-31 16:58:30",
+			updateTime: "",
+			typeVal: "00",
+			typeMsg: "",
+		}, {
+			id: "0002",
+			typeCode: "state",
+			typeName: "启用状态-开",
+			createTime: "2019-05-31 16:58:40",
+			updateTime: "",
+			typeVal: "00",
+			typeMsg: "",
+		}]
+		*/
+		;
 		table.render({
 			elem: '#data'
 			//,url:'http://localhost:8080/MyBlog/api/test/json.do'
-			,url:'/demo/table/user/'
-			,toolbar: 'toolbar'
+			,url:'../../api/test/json.do'
+			,toolbar: '#toolbar'
 			,title: '用户数据表'
 			,cols: [[
 				{type: 'checkbox', fixed: 'left'}
@@ -59,17 +167,130 @@
 				,{field:'typeMsg', title:'备注', width:100}  
 			]]
 			,page: true
+			/*
 			,parseData: function(res){ //res 即为原始返回的数据
-				console.log("------------------------------------------------------");
-				console.log(res);
+				console.log("--------------------------------"+res);
+				return {
+					"code": 0
+					,"msg": "xxx"
+					,"count": 30
+					,"data": data
+				}
 			}
-		});
-		table.on('toolbar(test)', function(obj){
-			var checkStatus = table.checkStatus(obj.config.id);
+			*/
+		})
+		,table.on('toolbar(data)', function(obj){//toolbar区域的点击委托事件
+			var data = table.checkStatus(obj.config.id).data;
 			switch(obj.event){
-				case 'add': layer.msg("add");
+				case 'add': 
+					addPage = layer.open({//修改
+						type: 1
+						,title: '添加数据字典'
+						,shadeClose: true
+						,shade: 0.8
+						,maxmin: !0
+						,area: ['200', '90%']
+						,content: $('#add')
+						,btnAlign: 'r'
+						,anim: 5
+						,cancel: function(index, layero){
+							layer.close(index); 
+							return false;
+						} 
+					}); 
+					break;
+				case 'edit':  
+					data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : (editPage = layer.open({//修改
+						type: 1
+						,title: '修改数据字典'
+						,shadeClose: true
+						,shade: 0.8
+						,maxmin: !0
+						,area: ['200','90%']
+						,content: $('#edit')
+						,btnAlign: 'r'
+						,anim: 5
+						,cancel: function(index, layero){
+							layer.close(index); 
+							return false;
+						} 
+					}),
+					$("#edit input[name='type_name']")[0].value = data[0].typeName,
+					$("#edit input[name='type_id']")[0].value = data[0].id,
+					$("#edit input[name='type_code']")[0].value = data[0].typeCode,
+					$("#edit input[name='type_value']")[0].value = data[0].typeVal,
+					$("#edit input[name='create_time']")[0].value = data[0].createTime,
+					$("#edit input[name='update_time']")[0].value = data[0].updateTime,
+					$("#edit input[name='msg']")[0].value = data[0].typeMsg);
+					break;
+				case 'del': 
+					layer.confirm('是否删除该项', {//删除
+						btn: ['确认删除','取消'] //按钮
+					}, function(){
+						layer.msg('删除成功', {
+							time: 2000, //2s后自动关闭 
+						});
+					}, function(){
+						layer.msg('已取消删除', {
+							time: 2000, //2s后自动关闭 
+						});
+					})
+					break;
 			}
-		});
+		})
+		,form.on('submit(add_submit)', function(data){//更改表单提交为异步提交 修改
+			var fileds = data.field
+			,that = this;
+			$.ajax({
+				type: 'post'
+				,contentType: 'application/json'
+				,url: $('#add-form').attr("action")
+				,data: JSON.stringify(fileds)
+				,success: function(data){
+					console.log("添加成功"+data);
+					layer.msg("添加成功", {
+						time: 2000, //2s后自动关闭 
+					});
+					addPage && layer.close(addPage);
+				 
+				}
+				,error: function(data){
+					layer.msg("添加失败", {
+						time: 2000, //2s后自动关闭 
+					});
+					addPage && layer.close(addPage);
+				 
+				}
+			});
+			return false;
+		})
+		,form.on('submit(edit_submit)', function(data){//更改表单提交为异步提交 修改
+			var fileds = data.field
+			,that = this;
+			$.ajax({
+				type: 'post'
+				,contentType: 'application/json'
+				,url: $('#edit-form').attr("action")
+				,data: JSON.stringify(fileds)
+				,success: function(data){
+					console.log("修改成功"+data);
+					layer.msg("修改成功", {
+						time: 2000, //2s后自动关闭 
+					});
+					editPage && layer.close(editPage);
+				 
+				}
+				,error: function(data){
+					layer.msg("修改失败", {
+						time: 2000, //2s后自动关闭 
+					});
+					editPage && layer.close(editPage);
+				 
+				}
+			});
+			return false;
+		})
+		
 		//监听行工具事件
 		/*
 		table.on('tool(data)', function(obj){

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.blog.util.ActionUtil;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 @Controller
 public class TestControl {
 	public static Logger logger = LogManager.getLogger(TestControl.class);
@@ -33,6 +36,37 @@ public class TestControl {
 	@RequestMapping("/api/test/json.do")
 	@ResponseBody
 	public Object test2(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "xx");
+		object.put("count", 30);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("typeCode", "state");
+		object_.put("typeName", "启用状态-关");
+		object_.put("createTime", "2019-05-31 16:58:30");
+		object_.put("updateTime", "");
+		object_.put("typeVal", "00");
+		object_.put("typeMsg", "");
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("typeCode", "state");
+		object_.put("typeName", "启用状态-开");
+		object_.put("createTime", "2019-05-31 16:58:30");
+		object_.put("updateTime", "2019-05-31 16:58:30");
+		object_.put("typeVal", "01");
+		object_.put("typeMsg", "");
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
+	public static void main(String[] args){
 		String json = "{\r\n" + 
 				"	\"code\": 0,\r\n" + 
 				"	\"msg\": \"yy\",\r\n" + 
@@ -55,7 +89,8 @@ public class TestControl {
 				"		\"typeMsg\": \"\",\r\n" + 
 				"	}]\r\n" + 
 				"}";
-		return json;
+		
+		System.out.println(json);
 	}
 	@RequestMapping("/api/test/str.do")
 	@ResponseBody

@@ -327,7 +327,7 @@ function(e) {
         "data" === l ? n.pullData(n.config.page.curr) : n.render()
     },
     j.prototype.page = 1,
-    j.prototype.pullData = function(e) {
+    j.prototype.pullData = function(e) { //进行异步
         var i = this,
         a = i.config,
         l = a.request,
