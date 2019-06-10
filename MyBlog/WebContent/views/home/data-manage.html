@@ -44,7 +44,8 @@
 		var table = layui.table;
 		table.render({
 			elem: '#data'
-			,url:'../../layuiadmin/lib/data.json'
+			//,url:'http://localhost:8080/MyBlog/api/test/json.do'
+			,url:'/demo/table/user/'
 			,toolbar: 'toolbar'
 			,title: '用户数据表'
 			,cols: [[
@@ -58,6 +59,10 @@
 				,{field:'typeMsg', title:'备注', width:100}  
 			]]
 			,page: true
+			,parseData: function(res){ //res 即为原始返回的数据
+				console.log("------------------------------------------------------");
+				console.log(res);
+			}
 		});
 		table.on('toolbar(test)', function(obj){
 			var checkStatus = table.checkStatus(obj.config.id);
