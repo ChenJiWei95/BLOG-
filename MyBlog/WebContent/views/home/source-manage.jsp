@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
  <head>
@@ -32,7 +34,7 @@
 		</div>
 	</div>
 	<div id="update" style="padding: 30px; display: none;">
-		<form class="layui-form" action="../api/test/json.do">
+		<form class="layui-form" action="/api/test/json.do">
 			<div class="layui-form-item">
 				<label class="layui-form-label">名称</label>
 				<div class="layui-input-block">
@@ -132,7 +134,7 @@
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form
-		,update = layer.open({//修改
+		,update = layer.open({
 			type: 1
 			,title: '修改'
 			,shadeClose: true
@@ -147,14 +149,15 @@
 				return false;
 			}
 			/*
-			,yes: function(){//第一按钮调用，其他的则 btn2 btn3
+			,yes: function(){
 				layer.msg('修改成功', {
 					time: 2000, //2s后自动关闭 
 				});
 			}
 			*/
 		})
-		,add = layer.open({//添加
+		/*
+		,add = layer.open({
 			type: 1
 			,title: '添加'
 			,shadeClose: true
@@ -169,7 +172,8 @@
 			}
 			
 		})
-		,del = layer.confirm('是否删除该机构或页面', {//删除
+		*/
+		,del = layer.confirm('您是如何看待前端开发？', {
 			btn: ['确认删除','取消'] //按钮
 		}, function(){
 			layer.msg('删除成功', {
@@ -221,7 +225,7 @@
 				return false;
 			}
 		})
-		,form.on('submit(update_submit)', function(data){//更改表单提交为异步提交 修改
+		,form.on('submit(update_submit)', function(data){
 			var fileds = data.field; 
 			$.ajax({
 				type: 'post'
@@ -229,33 +233,12 @@
 				,url: $('#update-form').attr("action")
 				,data: JSON.stringify(fileds)
 				,success: function(data){
-					console.log("修改成功"+data);
 					layer.msg("修改成功"+data, {
 						time: 2000, //2s后自动关闭 
 					});
 				}
 				,error: function(data){
 					layer.msg("修改失败", {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-			});
-			return false;
-		})
-		,form.on('submit(update_submit)', function(data){//更改表单提交为异步提交 修改
-			var fileds = data.field; 
-			$.ajax({
-				type: 'post'
-				,contentType: 'application/json'
-				,url: $('#add_submit').attr("action")
-				,data: JSON.stringify(fileds)
-				,success: function(data){
-					layer.msg("添加成功"+data, {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-				,error: function(data){
-					layer.msg("添加失败", {
 						time: 2000, //2s后自动关闭 
 					});
 				}

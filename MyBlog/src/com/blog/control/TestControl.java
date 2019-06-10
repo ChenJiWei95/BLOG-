@@ -30,4 +30,44 @@ public class TestControl {
 		
 		ActionUtil.returnRes(response, "success");
 	}
+	@RequestMapping("/api/test/json.do")
+	@ResponseBody
+	public Object test2(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String json = "{\r\n" + 
+				"	\"code\": 0,\r\n" + 
+				"	\"msg\": \"yy\",\r\n" + 
+				"	\"count\": 1000,\r\n" + 
+				"	\"data\": [{\r\n" + 
+				"		\"id\": 0001,\r\n" + 
+				"		\"typeCode\": \"state\",\r\n" + 
+				"		\"typeName\": \"启用状态-关\",\r\n" + 
+				"		\"createTime\": \"2019-05-31 16:58:30\",\r\n" + 
+				"		\"updateTime\": \"\",\r\n" + 
+				"		\"typeVal\": \"00\",\r\n" + 
+				"		\"typeMsg\": \"\",\r\n" + 
+				"	}, {\r\n" + 
+				"		\"id\": 0002,\r\n" + 
+				"		\"typeCode\": \"state\",\r\n" + 
+				"		\"typeName\": \"启用状态-开\",\r\n" + 
+				"		\"createTime\": \"2019-05-31 16:58:40\",\r\n" + 
+				"		\"updateTime\": \"\",\r\n" + 
+				"		\"typeVal\": \"00\",\r\n" + 
+				"		\"typeMsg\": \"\",\r\n" + 
+				"	}]\r\n" + 
+				"}";
+		return json;
+	}
+	@RequestMapping("/api/test/str.do")
+	@ResponseBody
+	public String test3(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return "success";
+	}
+	@RequestMapping("/api/test/admin/index.do")
+	public String test4(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return "../../../views/admin_view";
+	}
+}
+class Result{
+	private String result = "success";
+	private String msg = "成功";
 }
