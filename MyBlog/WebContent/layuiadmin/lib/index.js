@@ -3,15 +3,14 @@
  */
 ;
 layui.extend({
-    setter: "config",
+	setter: "config",
 	navTree: "lib/navTree",
     admin: "lib/admin",
     view: "lib/view"
-}).define(["navTree", "setter", "admin"],
+}).define(["setter", "admin"],
 function(export_) {console.log("index");
     var config = layui.setter,
-    element = layui.element,
-	navTree = layui.navTree,
+    element = layui.element, 
     admin, 
 	page,
 	view,

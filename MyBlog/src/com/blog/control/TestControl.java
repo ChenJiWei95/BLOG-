@@ -93,6 +93,43 @@ public class TestControl {
 		
 		return object;
 	}
+	@RequestMapping("/api/test/admin.do")
+	@ResponseBody
+	public Object test6(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "管理员");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("account", "root");
+		object_.put("pass", "cjw168999");
+		object_.put("role", "超级管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "");
+		object_.put("phone", "1111111111");
+		object_.put("email", "2222222222"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("account", "admin");
+		object_.put("pass", "123456");
+		object_.put("role", "管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "2019-06-12");
+		object_.put("phone", "1111111111");
+		object_.put("email", "333333333"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
 	public static void main(String[] args){
 		String json = "{\r\n" + 
 				"	\"code\": 0,\r\n" + 

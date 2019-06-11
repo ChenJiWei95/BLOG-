@@ -271,10 +271,10 @@
   <script>
   
   layui.config({
-    base: '../layuiadmin/' //静态资源所在路径
+	base: '../layuiadmin/' //静态资源所在路径
   }).extend({
-    navTree: 'lib/navTree', //主入口模块
-	index: 'lib/index'
+	  navTree: 'lib/navTree', //主入口模块
+	  index: 'lib/index'
   }).use('navTree', function () {
 	console.log("加载");
 	/*
@@ -300,13 +300,13 @@
 				,{
 					dataName: 'self'
 					,key: 4
-					,href: 'user/list.html'
+					,href: 'user/administrators/list.html'
 					,desc: '后台管理员'
 				}
 				,{
 					dataName: 'role'
 					,key: 5
-					,href: 'user/role.html'
+					,href: 'user/administrators/role.html'
 					,desc: '角色管理'
 				}]
 			}
@@ -326,6 +326,18 @@
 					,key: 7
 					,href: 'home/data-manage.html'
 					,desc: '数据字典'
+				}]
+			}
+			,{
+				dataName: 'set'
+				,desc: '设置'
+				,key: 2
+				,icon: 'layui-icon-set'
+				,children: [{
+					dataName: 'manage'
+					,key: 6
+					,href: 'home/source-manage.html'
+					,desc: '系统设置' 
 				}]
 			}]
 		}

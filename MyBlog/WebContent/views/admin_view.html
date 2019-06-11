@@ -272,7 +272,7 @@
     base: '../layuiadmin/' //静态资源所在路径
   }).extend({
     navTree: 'lib/navTree', //主入口模块
-	index: 'lib/index'
+	  index: 'lib/index'
   }).use('navTree', function () {
 	console.log("加载");
 	/*
@@ -290,15 +290,21 @@
 				,key: 1
 				,icon: 'layui-icon-user'
 				,children: [{
+					dataName: 'visit'
+					,key: 3
+					,href: 'user/list.html'
+					,desc: '访客管理'
+				}
+				,{
 					dataName: 'self'
 					,key: 4
-					,href: 'user/list.html'
+					,href: 'limits/list.html'
 					,desc: '后台管理员'
 				}
 				,{
 					dataName: 'role'
 					,key: 5
-					,href: 'user/role.html'
+					,href: 'limits/role.html'
 					,desc: '角色管理'
 				}]
 			}
@@ -306,18 +312,82 @@
 				dataName: 'source'
 				,desc: '资源管理'
 				,key: 2
-				,icon: 'layui-icon-app'
+				,icon: 'layui-icon-template-1'
 				,children: [{
 					dataName: 'manage'
 					,key: 6
-					,href: 'home/source-manage.html'
+					,href: 'source-manage/source-manage.html'
 					,desc: '机构管理'
 				}
 				,{
 					dataName: 'data'
 					,key: 7
-					,href: 'home/data-manage.html'
+					,href: 'source-manage/data-manage.html'
 					,desc: '数据字典'
+				}]
+			}
+			,{
+				dataName: 'set'
+				,desc: '设置'
+				,key: 2
+				,icon: 'layui-icon-set'
+				,children: [{
+					key: 6
+					,desc: '系统设置'
+					,children: [{
+						key: 6
+						,href: 'set/website.html'
+						,desc: '网站设置'
+					}
+					,{
+						key: 6
+						,href: 'set/email.html'
+						,desc: '邮件设置'
+					}]
+				}
+				,{
+					key: 6
+					,desc: '个人设置'
+					,children: [{
+						key: 6
+						,href: 'set/info.html'
+						,desc: '基本资料'
+					}
+					,{
+						key: 6
+						,href: 'set/password.html'
+						,desc: '密码修改'
+					}]
+				}]
+			}
+			,{
+				dataName: 'app'
+				,desc: '应用'
+				,key: 2
+				,icon: 'layui-icon-app'
+				,children: [{
+					key: 6
+					,desc: '内容系统'
+					,children: [{
+						key: 6
+						,href: 'content/list.html'
+						,desc: '文章列表'
+					}
+					,{
+						key: 6
+						,href: 'content/tags.html'
+						,desc: '标签'
+					}
+					,{
+						key: 6
+						,href: 'content/comment.html'
+						,desc: '评论'
+					}]
+				}
+				,{
+					key: 6
+					,desc: '消息中心'
+					,href: 'message/index.html'
 				}]
 			}]
 		}

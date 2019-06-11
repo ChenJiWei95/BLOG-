@@ -61,9 +61,9 @@ function (e){console.log('navTree');
 		//如果有child
 		layui.each(data, function(e_, itemData) {console.log("each:"+itemData);
 			var hasChilds = itemData.children && itemData.children.length > 0,
-			dd = jquery('<dd data-name="'+itemData.dataName+'"><a lay-href="'+(itemData.href?itemData.href:'javascript:;')+'">'+itemData.desc+'</a></dd>'),
+			dd = jquery('<dd><a '+(hasChilds?'href':'lay-href')+'="'+(itemData.href?itemData.href:'javascript:;')+'">'+itemData.desc+'</a></dd>'),
 			dl = jquery('<dl class="layui-nav-child"></dl>');
-			hasChilds && (dd.append(dl)), that.child(dl, itemData.children),
+			hasChilds && (dd.append(dl), that.child(dl, itemData.children)),
 			e.append(dd)
 		})
 	},

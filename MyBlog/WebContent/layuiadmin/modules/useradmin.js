@@ -217,17 +217,11 @@ function(e) {
         {
             field: "descr",
             title: "具体描述"
-        },
-        {
-            title: "操作",
-            width: 150,
-            align: "center",
-            fixed: "right",
-            toolbar: "#table-useradmin-admin"
         }]],
         text: "对不起，加载出现异常！"
     }),
-    table.on("tool(LAY-user-back-role)",
+    /*
+	table.on("tool(LAY-user-back-role)",
     function(e) {
         e.data;
         if ("del" === e.event) layer.confirm("确定删除此角色？",
@@ -240,7 +234,7 @@ function(e) {
             layer.open({
                 type: 2,
                 title: "编辑角色",
-                content: "../../../views/user/administrators/roleform.html",
+                content: "roleform.html",
                 area: ["500px", "480px"],
                 btn: ["确定", "取消"],
                 yes: function(e, t) {
@@ -258,5 +252,6 @@ function(e) {
             })
         }
     }),
+	*/
     e("useradmin", {})
 });
