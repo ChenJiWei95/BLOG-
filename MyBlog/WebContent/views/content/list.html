@@ -58,8 +58,9 @@
 
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
           <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="edit">修改</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
         </div>
         <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table> 
         <script type="text/html" id="buttonTpl">
@@ -120,6 +121,24 @@
         });
       },
       add: function(){
+        layer.open({
+          type: 2
+          ,title: '添加文章'
+          ,content: 'listform.html'
+          ,maxmin: true
+          ,area: ['550px', '550px']
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+            //点击确认触发 iframe 内容中的按钮提交
+            var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
+            submit.click();
+          }
+        }); 
+      }
+	  ,edit: function(){
+		var checkStatus = table.checkStatus('LAY-app-content-list')
+        ,data = checkStatus.data; //得到选中的数据
+		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
         layer.open({
           type: 2
           ,title: '添加文章'
