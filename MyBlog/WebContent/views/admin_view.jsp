@@ -86,148 +86,6 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll" id="nav-tree-cnt">
-		  <!--
-		  <div class="layui-logo" lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">
-            <span>博客后台管理</span>
-          </div>
-          
-          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-            <li data-name="app" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="资源管理" lay-direction="2">
-                <i class="layui-icon layui-icon-app"></i>
-                <cite>资源管理</cite>
-				<span class="layui-nav-more"></span>
-              </a>
-              <dl class="layui-nav-child">
-				<dd>
-                  <a lay-href="home/source-manage.html">机构管理</a>
-                </dd>
-				<dd>
-                  <a lay-href="home/data-manage.html">数据字典</a>
-                </dd>
-              </dl>
-            </li>
-		  </ul>
-		  -->
-		  
-          <!--
-		  <div class="layui-logo" lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">
-            <span>博客后台管理</span>
-          </div>
-          
-          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-			<li data-name="home" class="layui-nav-item layui-nav-itemed">
-              <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                <i class="layui-icon layui-icon-home"></i>
-                <cite>主页</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd data-name="console" class="layui-this">
-                  <a lay-href="https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard">控制台</a>
-                </dd>
-              </dl>
-            </li>
-            <li data-name="template" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="页面" lay-direction="2">
-                <i class="layui-icon layui-icon-template"></i>
-                <cite>页面</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd><a lay-href="http://www.chenjiwey.cn:8080">主页</a></dd>
-              </dl>
-            </li>
-            <li data-name="app" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="资源管理" lay-direction="2">
-                <i class="layui-icon layui-icon-app"></i>
-                <cite>资源管理</cite>
-              </a>
-              <dl class="layui-nav-child">
-				<dd>
-                  <a lay-href="home/source-manage.html">机构管理</a>
-                </dd>
-				<dd>
-                  <a lay-href="home/data-manage.html">数据字典</a>
-                </dd>
-              </dl>
-            </li>
-            <li data-name="user" class="layui-nav-item">
-              <a href="javascript:;" lay-tips="用户" lay-direction="2">
-                <i class="layui-icon layui-icon-user"></i>
-                <cite>权限管理</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd>
-                  <a lay-href="user/user/list.html">访客用户</a>
-                </dd>
-                <dd>
-                  <a lay-href="user/administrators/list.html">后台管理员</a>
-                </dd>
-                <dd>
-                  <a lay-href="user/administrators/role.html">角色管理</a>
-                </dd>
-              </dl>
-            </li>
-			<li data-name="aticle" class="layui-nav-item">
-				<a href="javascript:;" lay-tips="文章管理" lay-direction="2">
-					<i class="layui-icon layui-icon-user"></i>
-					<cite>文章管理</cite>
-				</a>
-				<dl class="layui-nav-child">
-					<dd data-name="list">
-						<a lay-href="app/content/list.html">文章列表</a>
-					</dd>
-                    <dd data-name="tags">
-						<a lay-href="app/content/tags.html">分类管理</a>
-					</dd>
-                    <dd data-name="comment">
-						<a lay-href="app/content/comment.html">评论管理</a>
-					</dd>
-				</dl>
-            </li>
-			<li data-name="life" class="layui-nav-item">
-				<a href="javascript:;" lay-tips="生活分享" lay-direction="2">
-					<i class="layui-icon layui-icon-auz"></i>
-					<cite>生活分享</cite>
-				</a>
-				<dl class="layui-nav-child">
-					<dd data-name="list">
-						<a lay-href="app/content/list.html">分享列表</a>
-					</dd>
-                    <dd data-name="tags">
-						<a lay-href="app/content/tags.html">分类管理</a>
-					</dd>
-					<dd data-name="privlige">
-						<a lay-href="app/content/tags.html">权限管理</a>
-					</dd>
-                    <dd data-name="comment">
-						<a lay-href="app/content/comment.html">评论管理</a>
-					</dd>
-				</dl>
-            </li>
-            <li data-name="set" class="layui-nav-item">
-				<a href="javascript:;" lay-tips="设置" lay-direction="2">
-					<i class="layui-icon layui-icon-set"></i>
-					<cite>设置</cite>
-				</a>
-				<dl class="layui-nav-child">
-					<dd class="layui-nav-itemed">
-						<a href="javascript:;">系统设置</a>
-						<dl class="layui-nav-child">
-							<dd><a lay-href="set/system/website.html">网站设置</a></dd>
-							<dd><a lay-href="set/system/email.html">邮件服务</a></dd>
-						</dl>
-					</dd>
-					<dd class="layui-nav-itemed">
-						<a href="javascript:;">我的设置</a>
-						<dl class="layui-nav-child">
-							<dd><a lay-href="set/user/info.html">基本资料</a></dd>
-							<dd><a lay-href="set/user/password.html">修改密码</a></dd>
-						</dl>
-					</dd>
-				</dl>
-            </li>
-          </ul>
-		  -->
         </div>
       </div>
 
@@ -286,7 +144,71 @@
 		,data: {
 			href: 'https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard'
 			,desc: '博客后台管理'
-			,data: [{
+			,data: [
+			{
+				dataName: 'control'
+				,desc: '控制台'
+				,key: 2
+				,icon: 'layui-icon-home'
+				,children: [{
+					key: 6
+					,href: 'control/console.html'
+					,desc: '主页'
+				}
+				,{ 
+					key: 7
+					,href: 'https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard'
+					,desc: '阿里云控制台'
+				}]
+			}
+			,{
+				dataName: 'source'
+				,desc: '资源管理'
+				,key: 2
+				,icon: 'layui-icon-template-1'
+				,children: [{ 
+					key: 6
+					,href: 'source-manage/source-manage.html'
+					,desc: '机构管理'
+				}
+				,{
+					dataName: 'data'
+					,key: 7
+					,href: 'source-manage/data-manage.html'
+					,desc: '数据字典'
+				}]
+			}
+			,{
+				dataName: 'app'
+				,desc: '应用'
+				,key: 2
+				,icon: 'layui-icon-app'
+				,children: [{
+					key: 6
+					,desc: '内容系统'
+					,children: [{
+						key: 6
+						,href: 'content/list.html'
+						,desc: '文章列表'
+					}
+					,{
+						key: 6
+						,href: 'content/tags.html'
+						,desc: '标签'
+					}
+					,{
+						key: 6
+						,href: 'content/comment.html'
+						,desc: '评论'
+					}]
+				}
+				,{
+					key: 6
+					,desc: '消息中心'
+					,href: 'message/index.html'
+				}]
+			}
+			,{
 				dataName: 'privilege'
 				,desc: '权限管理'
 				,key: 1
@@ -294,38 +216,20 @@
 				,children: [{
 					dataName: 'visit'
 					,key: 3
-					,href: 'user/user/list.html'
+					,href: 'user/list.html'
 					,desc: '访客管理'
 				}
 				,{
 					dataName: 'self'
 					,key: 4
-					,href: 'user/administrators/list.html'
+					,href: 'limits/list.html'
 					,desc: '后台管理员'
 				}
 				,{
 					dataName: 'role'
 					,key: 5
-					,href: 'user/administrators/role.html'
+					,href: 'limits/role.html'
 					,desc: '角色管理'
-				}]
-			}
-			,{
-				dataName: 'source'
-				,desc: '资源管理'
-				,key: 2
-				,icon: 'layui-icon-app'
-				,children: [{
-					dataName: 'manage'
-					,key: 6
-					,href: 'home/source-manage.html'
-					,desc: '机构管理'
-				}
-				,{
-					dataName: 'data'
-					,key: 7
-					,href: 'home/data-manage.html'
-					,desc: '数据字典'
 				}]
 			}
 			,{
@@ -334,12 +238,35 @@
 				,key: 2
 				,icon: 'layui-icon-set'
 				,children: [{
-					dataName: 'manage'
-					,key: 6
-					,href: 'home/source-manage.html'
-					,desc: '系统设置' 
+					key: 6
+					,desc: '系统设置'
+					,children: [{
+						key: 6
+						,href: 'set/website.html'
+						,desc: '网站设置'
+					}
+					,{
+						key: 6
+						,href: 'set/email.html'
+						,desc: '邮件设置'
+					}]
+				}
+				,{
+					key: 6
+					,desc: '个人设置'
+					,children: [{
+						key: 6
+						,href: 'set/info.html'
+						,desc: '基本资料'
+					}
+					,{
+						key: 6
+						,href: 'set/password.html'
+						,desc: '密码修改'
+					}]
 				}]
-			}]
+			}
+			]
 		}
 	});
 	layui.use('index') //必须在后面加载

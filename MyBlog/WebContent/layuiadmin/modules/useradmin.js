@@ -104,7 +104,7 @@ function(e) {
     }),
     table.render({//管理员的加载
         elem: "#LAY-user-back-manage",
-        url: layui.setter.base + "json/useradmin/mangadmin.js",
+        url: 'http://localhost:8080/MyBlog/api/test/admin.do',
         cols: [[{
             type: "checkbox",
             fixed: "left"
@@ -116,11 +116,11 @@ function(e) {
             sort: !0
         },
         {
-            field: "loginname",
+            field: "account",
             title: "登录名"
         },
         {
-            field: "telphone",
+            field: "phone",
             title: "手机"
         },
         {
@@ -132,24 +132,20 @@ function(e) {
             title: "角色"
         },
         {
-            field: "jointime",
+            field: "create_time",
             title: "加入时间",
             sort: !0
-        },
-        {
-            field: "check",
-            title: "审核状态",
-            templet: "#buttonTpl",
-            minWidth: 80,
-            align: "center"
-        },
-        {
-            title: "操作",
-            width: 150,
-            align: "center",
-            fixed: "right",
-            toolbar: "#table-useradmin-admin"
-        }]],
+        }
+		,{
+            field: "update_time",
+            title: "修改时间",
+            sort: !0
+        }
+		,{
+            field: "msg",
+            title: "描述", 
+        }
+		]],
         text: "对不起，加载出现异常！"
     }),
     table.on("tool(LAY-user-back-manage)",
