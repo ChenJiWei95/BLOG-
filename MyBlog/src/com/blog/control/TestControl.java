@@ -66,6 +66,33 @@ public class TestControl {
 		
 		return object;
 	}
+	@RequestMapping("/api/test/role.do")
+	@ResponseBody
+	public Object test5(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "权限表");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("rolename", "超级管理员");
+		object_.put("limits", "所有管理");
+		object_.put("descr", "管理");
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("rolename", "管理员");
+		object_.put("limits", "部分管理");
+		object_.put("descr", "管理");
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
 	public static void main(String[] args){
 		String json = "{\r\n" + 
 				"	\"code\": 0,\r\n" + 

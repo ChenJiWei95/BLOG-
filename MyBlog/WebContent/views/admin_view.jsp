@@ -300,13 +300,13 @@
 				,{
 					dataName: 'self'
 					,key: 4
-					,href: 'user/administrators/list.html'
+					,href: 'user/list.html'
 					,desc: '后台管理员'
 				}
 				,{
 					dataName: 'role'
 					,key: 5
-					,href: 'user/administrators/role.html'
+					,href: 'user/role.html'
 					,desc: '角色管理'
 				}]
 			}
