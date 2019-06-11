@@ -25,19 +25,16 @@
               <option value="-1">全部角色</option>
               <option value="0">管理员</option>
               <option value="1">超级管理员</option>
-              <option value="2">纠错员</option>
-              <option value="3">采购员</option>
-              <option value="4">推销员</option>
-              <option value="5">运营人员</option>
-              <option value="6">编辑</option>
+			  <!--后面的自动添加进来-->
             </select>
           </div>
         </div>
       </div>
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn layuiadmin-btn-role" data-type="batchdel">删除</button>
           <button class="layui-btn layuiadmin-btn-role" data-type="add">添加</button>
+		  <button class="layui-btn layuiadmin-btn-role" data-type="edit">编辑</button>
+		  <button class="layui-btn layuiadmin-btn-role" data-type="batchdel">删除</button>
         </div>
       
         <table id="LAY-user-back-role" lay-filter="LAY-user-back-role"></table>  
@@ -124,6 +121,32 @@
 					submit.trigger('click');
 				}
 			}); 
+		}
+		,edit: function(){
+			var checkStatus = table.checkStatus('LAY-user-back-role')
+			,data = checkStatus.data; //得到选中的数据
+			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
+			layer.open({
+                type: 2,
+                title: "编辑角色",
+                content: "roleform.html",
+                area: ["500px", "480px"],
+                btn: ["确定", "取消"],
+                yes: function(e, t) {
+                    var l = window["layui-layer-iframe" + e],
+                    r = t.find("iframe").contents().find("#LAY-user-role-submit");
+                    l.layui.form.on("submit(LAY-user-role-submit)",
+                    function(t) {
+                        t.field;
+                        table.reload("LAY-user-back-role"),
+                        layer.close(e)
+                    }),
+                    r.trigger("click")
+                },
+                success: function(e, t) {
+					//这是渲染完之后调用 可以用于初始化
+				}
+            })
 		}
     }  
     $('.layui-btn.layuiadmin-btn-role').on('click', function(){
