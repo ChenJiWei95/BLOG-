@@ -17,12 +17,12 @@ function(e) {
             id: "LAY-app-message-direct"
         }
     }),
-    a = function(e) {
+    a = function(e) {//这里通过模板调用 e为默认传进来的数据
         return '<a href="detail.html?id=' + e.id + '">' + e.title
     };
-    i.render({
+    i.render({//消息通知
         elem: "#LAY-app-message-all",
-        url: layui.setter.base + "json/message/all.js",
+        url: 'http://localhost:8080/MyBlog/api/test/message/.do',
         page: !0,
         cols: [[{
             type: "checkbox",

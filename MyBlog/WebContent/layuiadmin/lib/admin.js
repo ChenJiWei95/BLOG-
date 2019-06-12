@@ -183,7 +183,7 @@ function(e) {console.log("admin");
             document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen()
         }
     },
-    F = P.events = {
+    F = P.events = {//点击回调
         flexible: function(e) {console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);
@@ -363,7 +363,7 @@ function(e) {console.log("admin");
 			})
 		}, 300);
     } (),
-    t.on("tab(" + p + ")",
+    t.on("tab(" + p + ")",  //layadmin-layout-tabs
     function(e) {
         P.tabsPage.index = e.index
     }),
@@ -448,8 +448,8 @@ function(e) {console.log("admin");
         A(i),
         P.delResize()
     }),
-    o.on("click", "*[lay-href]",
-    function() {
+    o.on("click", "*[lay-href]", //这里的事件设了多层的拦截 拦截lay-href 又在下面拦截layadmin-event
+    function() {//打开一个标签页
         var e = a(this),
         i = e.attr("lay-href"),
         t = e.attr("lay-text");
@@ -458,7 +458,7 @@ function(e) {console.log("admin");
         var n = parent === self ? layui: top.layui;
         n.index.openTabsPage(i, t || e.text())
     }),
-    o.on("click", "*[layadmin-event]",
+    o.on("click", "*[layadmin-event]", //打开标签页的方法
     function() {
         var e = a(this),
         i = e.attr("layadmin-event");
