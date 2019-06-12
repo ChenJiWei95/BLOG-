@@ -51,8 +51,8 @@ function(e) {console.log("tree ");
     };
     m.prototype.config = {//基本参数 默认配置
         data: [],
-        showCheckbox: !1,
-        showLine: !0,
+        showCheckbox: !1,//有无选择框
+        showLine: !0,//有无连接线条
         key: "id",
         checked: [],
         spread: [],//展开 根据key
@@ -208,7 +208,7 @@ function(e) {console.log("tree ");
                 type: u,
                 elem: e
             };
-            if ("add" == u) {
+            if ("add" == u) {//添加
                 k[0] || (l.showLine ? (m.find("." + d).addClass("layui-tree-icon"), m.find("." + d).children(".layui-icon").addClass(c).removeClass("layui-icon-file")) : m.find(".layui-tree-iconArrow").removeClass("hide"), e.append('<div class="layui-tree-pack"></div>'));
                 var x = l.operate && l.operate(g),
                 b = {};
@@ -234,7 +234,7 @@ function(e) {console.log("tree ");
                     q.find('input[name="layuiTreeCheck"]')[0].checked = !0
                 }
                 a.render("checkbox")
-            } else if ("edit" == u) {
+            } else if ("edit" == u) {//编辑
                 var A = m.children(".layui-tree-txt").html();
                 m.children(".layui-tree-txt").html(""),
                 m.append('<input type="text" class="layui-inline layui-tree-editInput">'),
@@ -254,11 +254,12 @@ function(e) {console.log("tree ");
                 function(e) {
                     13 === e.keyCode && (e.preventDefault(), S(i(this)))
                 })
-            } else {
-                if (l.operate && l.operate(g), g.status = "remove", !e.prev("." + s)[0] && !e.next("." + s)[0] && !e.parent("." + p)[0]) return e.remove(),
+            } else {//删除
+                if (
+				l.operate && l.operate(g), g.status = "remove", !e.prev("." + s)[0] && !e.next("." + s)[0] && !e.parent("." + p)[0]) return e.remove(),
                 void r.elem.append(r.emptyText);
                 if (e.siblings("." + s).children("." + o)[0]) {
-                    if (l.showCheckbox) {
+                    if (l.showCheckbox) {//选项框
                         var H = function(e) {
                             if (e.parents("." + s)[0]) {
                                 var n = e.siblings("." + s).children("." + o),
@@ -275,7 +276,7 @@ function(e) {console.log("tree ");
                         };
                         H(e)
                     }
-                    if (l.showLine) {
+                    if (l.showLine) {//连线
                         var w = e.siblings("." + s),
                         T = 1,
                         L = e.parent("." + p);
@@ -286,6 +287,7 @@ function(e) {console.log("tree ");
                         1 == T ? (k[0] || (L.removeClass(C), w.children("." + p).addClass(v), w.children("." + p).children("." + s).removeClass(y)), e.next()[0] ? L.children("." + s).last().children("." + p).children("." + s).last().addClass(y) : e.prev().children("." + p).children("." + s).last().addClass(y), e.next()[0] || e.parents("." + s)[1] || e.parents("." + s).eq(0).next()[0] || e.prev("." + s).addClass(y)) : !e.next()[0] && e.hasClass(y) && e.prev().addClass(y)
                     }
                 } else {
+					
                     var E = e.parent("." + p).prev();
                     if (l.showLine) {
                         E.find("." + d).removeClass("layui-tree-icon"),
