@@ -38,7 +38,7 @@
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
           
           <li class="layui-nav-item" lay-unselect>
-            <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+            <a lay-href="message/index.html" layadmin-event="message" lay-text="消息中心">
               <i class="layui-icon layui-icon-notice"></i>  
               
               <!-- 如果有新消息，则显示小圆点 -->
@@ -284,7 +284,71 @@
 		,data: {
 			href: 'https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard'
 			,desc: '博客后台管理'
-			,data: [{
+			,data: [
+			{
+				dataName: 'control'
+				,desc: '控制台'
+				,key: 2
+				,icon: 'layui-icon-home'
+				,children: [{
+					key: 6
+					,href: 'control/console.html'
+					,desc: '主页'
+				}
+				,{ 
+					key: 7
+					,href: 'https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard'
+					,desc: '阿里云控制台'
+				}]
+			}
+			,{
+				dataName: 'source'
+				,desc: '资源管理'
+				,key: 2
+				,icon: 'layui-icon-template-1'
+				,children: [{ 
+					key: 6
+					,href: 'source-manage/source-manage.html'
+					,desc: '机构管理'
+				}
+				,{
+					dataName: 'data'
+					,key: 7
+					,href: 'source-manage/data-manage.html'
+					,desc: '数据字典'
+				}]
+			}
+			,{
+				dataName: 'app'
+				,desc: '应用'
+				,key: 2
+				,icon: 'layui-icon-app'
+				,children: [{
+					key: 6
+					,desc: '内容系统'
+					,children: [{
+						key: 6
+						,href: 'content/list.html'
+						,desc: '文章列表'
+					}
+					,{
+						key: 6
+						,href: 'content/tags.html'
+						,desc: '标签'
+					}
+					,{
+						key: 6
+						,href: 'content/comment.html'
+						,desc: '评论'
+					}]
+				}
+				,{
+					key: 6
+					,desc: '消息中心'
+					,href: 'message/index.html'
+				}]
+			}
+			,{
 				dataName: 'privilege'
 				,desc: '权限管理'
 				,key: 1
@@ -306,24 +370,6 @@
 					,key: 5
 					,href: 'limits/role.html'
 					,desc: '角色管理'
-				}]
-			}
-			,{
-				dataName: 'source'
-				,desc: '资源管理'
-				,key: 2
-				,icon: 'layui-icon-template-1'
-				,children: [{
-					dataName: 'manage'
-					,key: 6
-					,href: 'source-manage/source-manage.html'
-					,desc: '机构管理'
-				}
-				,{
-					dataName: 'data'
-					,key: 7
-					,href: 'source-manage/data-manage.html'
-					,desc: '数据字典'
 				}]
 			}
 			,{
@@ -360,36 +406,7 @@
 					}]
 				}]
 			}
-			,{
-				dataName: 'app'
-				,desc: '应用'
-				,key: 2
-				,icon: 'layui-icon-app'
-				,children: [{
-					key: 6
-					,desc: '内容系统'
-					,children: [{
-						key: 6
-						,href: 'content/list.html'
-						,desc: '文章列表'
-					}
-					,{
-						key: 6
-						,href: 'content/tags.html'
-						,desc: '标签'
-					}
-					,{
-						key: 6
-						,href: 'content/comment.html'
-						,desc: '评论'
-					}]
-				}
-				,{
-					key: 6
-					,desc: '消息中心'
-					,href: 'message/index.html'
-				}]
-			}]
+			]
 		}
 	});
 	layui.use('index') //必须在后面加载
