@@ -14,7 +14,7 @@
 </head>
 <body>
 
-  <form class="layui-form" lay-filter="layuiadmin-form-tags" id="layuiadmin-form-tags" style="padding-top: 30px; text-align: center;">
+  <form class="layui-form" lay-filter="layuiadmin-app-form-tags" id="layuiadmin-app-form-tags" style="padding-top: 30px; text-align: center;">
     <div class="layui-form-item">
       <label class="layui-form-label">标签</label>
       <div class="layui-input-inline">
@@ -41,20 +41,56 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'form'], function(){
     var $ = layui.$ 
-    ,form = layui.form;
-	form.on("submit(layuiadmin-tags-form-submit)", function(data){
-		var e = $(this),
-		index = parent.layer.getFrameIndex(window.name);
-		//此处进行ajax的操作 
-		//ajax成功则关闭
+    ,form = layui.form
+	,admin = layui.admin
+	,table = parent.table
+	,a = 'layuiadmin-tags-form-submit'
+	,b = 'layuiadmin-tags-form-edit'
+	,l = 'LAY-app-content-tags';
+	//添加
+	form.on("submit("+a+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name)
+		,checkData = table.checkStatus(l).data; 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/tags/add.do'
+			,type: 'post'	
+			,data: {data: checkData}
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				//t.remove();
+				table.reload(l);
+			}
+			,success: function(t){
+				console.log('req 调用了success方法 参数=' + t);
+			}
+		});			  
+
 		parent.layer.close(index);
 		return false;
-	});
-	form.on("submit(layuiadmin-tags-form-edit)", function(data){
-		//此处进行ajax的操作
-		alert("edit submit");
+	})
+	//编辑
+	,form.on("submit("+b+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name)
+		,checkData = table.checkStatus(l).data;
+		//执行 Ajax 后重载
+		$.ajax({
+			url: 'http://localhost:8080/MyBlog/api/test/tags/update.do'
+			,type: 'post'	
+			,data: {data: checkData}
+			,dataType: "json"
+			,success: function(data){
+				layer.msg("修改成功！", {time: 2000}),
+				//t.remove();
+				table.reload(l);
+			}
+			,error: function(t){
+				console.log('失败');
+			}
+		});	
+		parent.layer.close(index);
 		return false;
-	});
+	})
   })
   </script>
 </body>

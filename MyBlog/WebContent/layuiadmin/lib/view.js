@@ -33,11 +33,10 @@ function(e) {
     },
     i.req = function(e) {//ajax请求
 		console.log("view i.req");
-        var a = e.success,
+        var a = e.success,// success 初始化完毕
         n = (e.error, r.request),
         o = r.response,
         s = function() {
-			console.log("执行");		
             return r.debug ? "<br><cite>URL：</cite>" + e.url: ""
         };
         if (e.data = e.data || {},
@@ -52,10 +51,12 @@ function(e) {
         t.ajax(t.extend({
             type: "get",
             dataType: "json",
-            success: function(t) {
+            success: function(t) {// done 成功回调
                 var n = o.statusCode;
+				// 判断 数据状态正常
                 if (t[o.statusName] == n.ok)"function" == typeof e.done && e.done(t);
-                else if (t[o.statusName] == n.logout) i.exit();
+                // 判断 登录状态
+				else if (t[o.statusName] == n.logout) i.exit();
                 else {
                     var r = ["<cite>Error：</cite> " + (t[o.msgName] || "返回状态码异常"), s()].join("");
                     i.error(r)

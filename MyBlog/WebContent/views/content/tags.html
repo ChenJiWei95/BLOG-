@@ -16,7 +16,7 @@
     <div class="layui-card">
       <div class="layui-card-header layuiadmin-card-header-auto">
         <button class="layui-btn layuiadmin-btn-tags" data-type="add">添加</button>
-		<button class="layui-btn layuiadmin-btn-tags" data-type="edit">编辑基础信息</button>
+		<button class="layui-btn layuiadmin-btn-tags" data-type="edit">编辑</button>
 		<button class="layui-btn layuiadmin-btn-tags" data-type="del">删除</button>
       </div>
       <div class="layui-card-body">    
@@ -38,9 +38,16 @@
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'contlist', 'table'], function(){
-
-    var table = layui.table;
-    var $ = layui.$, active = {
+    var table = layui.table
+    ,$ = layui.$
+	,e = layui.contlist
+	,f = 'iframe'
+	,admin = layui.admin
+	,a = 'layuiadmin-tags-form-submit'
+	,b = 'layuiadmin-tags-form-edit'
+	,t = 'layuiadmin-app-form-tags'
+	,l = 'LAY-app-content-tags'
+	, active = {//此处使用隐藏提交按钮 自定义提交--异步提交
       add: function(){
         layer.open({
           type: 2
@@ -49,59 +56,59 @@
           ,area: ['450px', '300px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){ 
-			//触发submit的点击 以此自定义提交方式 
-			layero.find('iframe').contents().find("#layuiadmin-tags-form-submit").click(); 
+			layero.find(f).contents().find("#"+a).click(); 
           }
         }); 
       }
 	  ,edit: function(){
-		var checkStatus = table.checkStatus('LAY-app-content-tags')
+		var checkStatus = table.checkStatus(l)
 		,data = checkStatus.data; //得到选中的数据
 		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
 		layer.open({
-                type: 2,
-                title: "编辑分类",
-                content: "tagsform.html?id=" + data[0].id,
-                area: ["450px", "200px"],
-                btn: ["确定", "取消"],
-                yes: function(e, i) {
-                    var n = i.find("iframe").contents().find("#layuiadmin-app-form-tags"),
-                    l = n.find('input[name="tags"]').val();
-                    l.replace(/\s/g, "") && (t.update({
-                        tags: l
-                    }), layer.close(e))
-                },
-                success: function(t, e) {
-                    var iframe = t.find("iframe").contents().find("#layuiadmin-app-form-tags").click();
-                    iframe.find('input[name="tags"]').val(data[0].tags)
-					,iframe.find('textarea[name="msg"]').val(data[0].msg)
-                }
+            type: 2,
+            title: "编辑分类",
+            content: "tagsform.html?id=" + data[0].id,
+            area: ['450px', '300px'],
+            btn: ["确定", "取消"],
+            yes: function(index, layero) {
+				layero.find(f).contents().find("#"+b).click(); 
+            },
+            success: function(e, i) {
+                //初始化 将原始数据打印在输入框中等待编辑
+				var form = e.find(f).contents().find("#"+t);
+                form.find('input[name="tags"]').val(data[0].tags)
+				,form.find('textarea[name="msg"]').val(data[0].msg)
+            }
         })
-		
 	  }
 	  ,del: function(t){
-		var checkStatus = table.checkStatus('LAY-app-content-tags')
+		console.log("删除标签 探究t输出什么参数");
+		console.log(t);
+		var checkStatus = table.checkStatus(l)
         ,checkData = checkStatus.data; //得到选中的数据
-
         checkData.length === 0 ? layer.msg('请选择数据') :
 		layer.confirm('确定删除吗？', function(index) {
-          
           //执行 Ajax 后重载
-          /*
           admin.req({
-            url: 'xxx'
-            //,……
+            url: 'http://localhost:8080/MyBlog/api/test/tags/del.do'
+			,type: 'post'	
+			,data: {data: checkData}
+			,done: function(data){
+				layer.msg("删除成功！", {time: 2000}),
+				//t.remove();
+				table.reload(l);
+			}
+			,success: function(t){
+				console.log('req 调用了success方法 断定为初始化 参数=' + t);
+			}
           });
-          */
-          table.reload('LAY-app-content-comm');
-          layer.msg('已删除');
-		  
+          
         });
 	  }
     }  
+	//适配点击
     $('.layui-btn.layuiadmin-btn-tags').on('click', function(){
-      var type = $(this).data('type');
-	  alert(type);
+      var type = $(this).data('type'); 
       active[type] ? active[type].call(this, $(this)) : '';
     });
   });

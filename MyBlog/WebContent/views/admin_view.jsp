@@ -162,23 +162,6 @@
 				}]
 			}
 			,{
-				dataName: 'source'
-				,desc: '资源管理'
-				,key: 2
-				,icon: 'layui-icon-template-1'
-				,children: [{ 
-					key: 6
-					,href: 'source-manage/source-manage.html'
-					,desc: '机构管理'
-				}
-				,{
-					dataName: 'data'
-					,key: 7
-					,href: 'source-manage/data-manage.html'
-					,desc: '数据字典'
-				}]
-			}
-			,{
 				dataName: 'app'
 				,desc: '应用'
 				,key: 2
@@ -214,20 +197,17 @@
 				,key: 1
 				,icon: 'layui-icon-user'
 				,children: [{
-					dataName: 'visit'
-					,key: 3
+					key: 3
 					,href: 'user/list.html'
 					,desc: '访客管理'
 				}
 				,{
-					dataName: 'self'
-					,key: 4
+					key: 4
 					,href: 'limits/list.html'
 					,desc: '后台管理员'
 				}
-				,{
-					dataName: 'role'
-					,key: 5
+				,{ 
+					key: 5
 					,href: 'limits/role.html'
 					,desc: '角色管理'
 				}]
@@ -237,7 +217,17 @@
 				,desc: '设置'
 				,key: 2
 				,icon: 'layui-icon-set'
-				,children: [{
+				,children: [{ 
+					key: 6
+					,href: 'set/branch-manage.html'
+					,desc: '机构管理'
+				}
+				,{
+					key: 7
+					,href: 'set/data-manage.html'
+					,desc: '数据字典'
+				}
+				,{
 					key: 6
 					,desc: '系统设置'
 					,children: [{

@@ -130,6 +130,153 @@ public class TestControl {
 		
 		return object;
 	}
+	@RequestMapping("/api/test/tags/add.do")
+	@ResponseBody
+	public Object test7(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		System.out.println("访问add");
+		Object data = request.getParameter("data");
+		if(data != null)System.out.println(data.toString());
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "管理员");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("account", "root");
+		object_.put("pass", "cjw168999");
+		object_.put("role", "超级管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "");
+		object_.put("phone", "1111111111");
+		object_.put("email", "2222222222"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("account", "admin");
+		object_.put("pass", "123456");
+		object_.put("role", "管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "2019-06-12");
+		object_.put("phone", "1111111111");
+		object_.put("email", "333333333"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
+	@RequestMapping("/api/test/tags/update.do")
+	@ResponseBody
+	public Object test8(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		System.out.println("访问update");
+		Object data = request.getParameter("data");
+		if(data != null)System.out.println(data.toString());
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "管理员");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("account", "root");
+		object_.put("pass", "cjw168999");
+		object_.put("role", "超级管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "");
+		object_.put("phone", "1111111111");
+		object_.put("email", "2222222222"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("account", "admin");
+		object_.put("pass", "123456");
+		object_.put("role", "管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "2019-06-12");
+		object_.put("phone", "1111111111");
+		object_.put("email", "333333333"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
+	@RequestMapping("/api/test/tags/del.do")
+	@ResponseBody
+	public Object test9(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		System.out.println("访问del");
+		Object data = request.getParameter("data");
+		if(data != null)System.out.println(data.toString());
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "管理员");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("account", "root");
+		object_.put("pass", "cjw168999");
+		object_.put("role", "超级管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "");
+		object_.put("phone", "1111111111");
+		object_.put("email", "2222222222"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("account", "admin");
+		object_.put("pass", "123456");
+		object_.put("role", "管理员"); 
+		object_.put("create_time", "2019-06-11");
+		object_.put("update_time", "2019-06-12");
+		object_.put("phone", "1111111111");
+		object_.put("email", "333333333"); 
+		object_.put("msg", "xxx"); 
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
+	@RequestMapping("/api/test/tags.do")
+	@ResponseBody
+	public Object test10(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		Object data = request.getParameter("data");
+		if(data != null)System.out.println(data.toString());
+		JSONObject object = new JSONObject();
+		object.put("code", 0);
+		object.put("msg", "标签");
+		object.put("count", 20);
+		JSONArray arr = new JSONArray();
+		
+		JSONObject object_ = new JSONObject();
+		object_.put("id", "0001");
+		object_.put("tags", "JAVA");
+		object_.put("msg", "描述些什么");
+		arr.add(object_);
+		
+		object_ = new JSONObject();
+		object_.put("id", "0002");
+		object_.put("tags", "美食");
+		object_.put("msg", "描述些什么...");
+		arr.add(object_);
+		
+		object.put("data", arr);
+		
+		return object;
+	}
 	public static void main(String[] args){
 		String json = "{\r\n" + 
 				"	\"code\": 0,\r\n" + 

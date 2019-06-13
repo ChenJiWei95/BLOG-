@@ -1,12 +1,13 @@
 ;
 layui.define(["table", "form"],
-function(t) {
+function(t) {console.log("contlist");
     var e = layui.$,
     table = layui.table,
     n = layui.form;
     table.render({//文章
         elem: "#LAY-app-content-list",
-        url: layui.setter.base + "json/content/list.js",
+        id: "LAY-app-content-list",
+        url: "http://localhost:8080/MyBlog/api/test/aticle/list.do",
         cols: [[{
             type: "checkbox",
             fixed: "left"
@@ -97,23 +98,25 @@ function(t) {
     }),
     table.render({//标签加载
         elem: "#LAY-app-content-tags",
-        url: layui.setter.base + "json/content/tags.js",
-        cols: [[{
-            type: "numbers",
-            fixed: "left"
-        },
-        {
+		id: "LAY-app-content-tags",
+        url: "http://localhost:8080/MyBlog/api/test/tags.do",
+        cols: [[
+		{
+			type: 'checkbox'
+			,fixed: 'left'
+		}
+		,{
             field: "id",
             width: 100,
             title: "ID",
             sort: !0
-        },
-        {
+        }
+        ,{
             field: "tags",
             title: "标签名",
             minWidth: 100
-        },
-        {
+        }
+        ,{
 			field: "msg",
             title: "描述"
         }]],
@@ -153,7 +156,7 @@ function(t) {
 	*/
     table.render({//评论
         elem: "#LAY-app-content-comm",
-        url: layui.setter.base + "json/content/comment.js",
+        url: "http://localhost:8080/MyBlog/api/test/comm.do",
         cols: [[{
             type: "checkbox",
             fixed: "left"
