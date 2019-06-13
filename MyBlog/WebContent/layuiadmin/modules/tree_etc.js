@@ -217,14 +217,22 @@ function(e) {console.log("tree ");
                 data: n,
                 type: u,
                 elem: e
-            };
+            }
+			,active = {
+				add: function(){
+					
+				}
+			};
             if ("add" == u) {//添加
+				//打开窗口 与后台交互 成功则执行
+				
+				//有子元素包则不执行
                 k[0] || (l.showLine ? (m.find("." + d).addClass("layui-tree-icon"), m.find("." + d).children(".layui-icon").addClass(c).removeClass("layui-icon-file")) : m.find(".layui-tree-iconArrow").removeClass("hide"), e.append('<div class="layui-tree-pack"></div>'));
                 var x = l.operate && l.operate(g),
                 b = {};
                 if (b.label = "newElemTree", b[l.key] = x, r.tree(e.children("." + p), [b]), l.showLine) if (k[0]) k.hasClass(C) || k.addClass(C),
                 e.find("." + p).each(function() {
-                    i(this).children("." + s).last().addClass(y)//为每个包终端的最后一个set元素添加终止线条样式layui-tree-setLineShort
+                    i(this).children("." + s).last().addClass(y)//为每个包中的最后一个set元素添加终止线条样式layui-tree-setLineShort
                 }),
                 k.children("." + s).last().prev().hasClass(y) ? k.children("." + s).last().prev().removeClass(y) : k.children("." + s).last().removeClass(y),
                 !e.parent("." + p)[0] && e.next()[0] && k.children("." + s).last().removeClass(y);

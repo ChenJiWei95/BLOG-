@@ -58,9 +58,72 @@
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'form'], function(){
-    var $ = layui.$ 
-    ,form = layui.form ;
+  }).use(['index'], function(){
+    var table = layui.table;
+    var $ = layui.$
+	,active = {
+      add: function(){
+        layer.open({
+          type: 2
+          ,title: '添加标签'
+          ,content: 'tagsform.html'
+          ,area: ['450px', '300px']
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+            var othis = layero.find('iframe').contents().find("#layuiadmin-app-form-tags")
+            ,tags = othis.find('input[name="tags"]').val();
+            
+            if(!tags.replace(/\s/g, '')) return;
+            
+            table.reload('LAY-app-content-tags');
+            layer.close(index);
+          }
+        }); 
+      }
+	  ,edit: function(){
+		var checkStatus = table.checkStatus('LAY-app-content-tags')
+		,data = checkStatus.data; //得到选中的数据
+		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
+		layer.open({
+                type: 2,
+                title: "编辑分类",
+                content: "tagsform.html?id=" + data[0].id,
+                area: ["450px", "200px"],
+                btn: ["确定", "取消"],
+                yes: function(e, i) {
+                    var n = i.find("iframe").contents().find("#layuiadmin-app-form-tags"),
+                    l = n.find('input[name="tags"]').val();
+                    l.replace(/\s/g, "") && (t.update({
+                        tags: l
+                    }), layer.close(e))
+                },
+                success: function(t, e) {
+                    var iframe = t.find("iframe").contents().find("#layuiadmin-app-form-tags").click();
+                    iframe.find('input[name="tags"]').val(data[0].tags)
+					,iframe.find('textarea[name="msg"]').val(data[0].msg)
+                }
+        })
+		
+	  }
+	  ,del: function(t){
+		var checkStatus = table.checkStatus('LAY-app-content-tags')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        checkData.length === 0 ? layer.msg('请选择数据') :
+		layer.confirm('确定删除吗？', function(index) {
+          
+          //执行 Ajax 后重载
+          /*
+          admin.req({
+            url: 'xxx'
+            //,……
+          });
+          */
+          table.reload('LAY-app-content-comm');
+          layer.msg('已删除');
+        });
+	  }
+    } 
   })
   </script>
 </body>
