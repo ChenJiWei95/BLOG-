@@ -14,7 +14,7 @@
 </head>
 <body>
 
-  <div class="layui-form" lay-filter="layuiadmin-form-tags" id="layuiadmin-app-form-tags" style="padding-top: 30px; text-align: center;">
+  <form class="layui-form" lay-filter="layuiadmin-form-tags" id="layuiadmin-form-tags" style="padding-top: 30px; text-align: center;">
     <div class="layui-form-item">
       <label class="layui-form-label">标签</label>
       <div class="layui-input-inline">
@@ -27,7 +27,11 @@
         <textarea class="layui-textarea" name="msg" placeholder="请输入描述信息"></textarea>
       </div>
     </div>
-  </div>
+	<div class="layui-form-item layui-hide">
+	  <button lay-submit lay-filter="layuiadmin-tags-form-submit" id="layuiadmin-tags-form-submit">确认添加</button>
+	  <button lay-submit lay-filter="layuiadmin-tags-form-edit" id="layuiadmin-tags-form-edit">确认编辑</button>
+	</div>
+  </form>
 
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
@@ -37,7 +41,20 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'form'], function(){
     var $ = layui.$ 
-    ,form = layui.form ;
+    ,form = layui.form;
+	form.on("submit(layuiadmin-tags-form-submit)", function(data){
+		var e = $(this),
+		index = parent.layer.getFrameIndex(window.name);
+		//此处进行ajax的操作 
+		//ajax成功则关闭
+		parent.layer.close(index);
+		return false;
+	});
+	form.on("submit(layuiadmin-tags-form-edit)", function(data){
+		//此处进行ajax的操作
+		alert("edit submit");
+		return false;
+	});
   })
   </script>
 </body>

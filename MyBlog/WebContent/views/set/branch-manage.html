@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>机构管理</title>
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+  <style>
+	*{margin: 0; padding: 0;}
+	.manage-button, .layui-card {border-radius: 5px;}
+	.manage-button {background: #555;}
+
+  </style>
+ </head>
+ <body layadmin-themealias="default">
+	<div class="layui-fluid">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12"> 
+				<div class="layui-card layui-circle">
+					<div class="layui-card-header layuiadmin-card-header-auto">
+						<input type="button" class="layui-btn manage-button" value="添加"/> 
+					</div>
+					<div class="layui-card-body">
+						<div class="layui-collapse" id="show-manage">
+						</div>	  	 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>  
+	<script src="../../layuiadmin/layui/layui.js?t=1"></script>
+	<script>
+	
+	layui.config({
+		base: '../../layuiadmin/' //静态资源所在路径
+	}).extend({
+		index: 'lib/index' //主入口模块
+	}).use(["tree", 'index', 'console', 'element'], function() {
+		var layer  = layui.layer
+		,$ = layui.jquery
+		,form = layui.form
+		,update = layer.open({//修改
+			type: 1
+			,title: '修改'
+			,shadeClose: true
+			,shade: 0.8
+			,maxmin: !0
+			,area: ['200','526']
+			,content: $('#update')
+			,btnAlign: 'c'
+			,anim: 5
+			,cancel: function(index, layero){
+				layer.close(index); 
+				return false;
+			}
+			/*
+			,yes: function(){// 第一按钮调用，其他的则 btn2 btn3
+				layer.msg('修改成功', {
+					time: 2000, // 2s后自动关闭 
+				});
+			}
+			*/
+		})
+		,add = layer.open({// 添加
+			type: 1
+			,title: '添加'
+			,shadeClose: true
+			,shade: 0.8
+			,maxmin: !0
+			,area: ['200','526']
+			,content: $('#add')
+			,btnAlign: 'c'
+			,cancel: function(index, layero){
+				layer.close(index);
+				return false;
+			}
+		})
+		,del = layer.confirm('是否删除该机构或页面', {// 删除
+			btn: ['确认删除','取消'] // 按钮
+		}, function(){
+			layer.msg('删除成功', {
+				time: 2000, // 2s后自动关闭 
+			});
+		}, function(){
+			layer.msg('已取消删除', {
+				time: 2000, // 2s后自动关闭 
+			});
+		})
+		,tree = layui.tree
+		,data=[{// 模拟数据
+				label:'资源管理'
+				,id:1
+				,children:[{
+					label:'机构管理'
+					,id:23
+				}
+				,{
+					label:'数据字典'
+					,id:24
+				}]
+			}
+			,{
+				label:'权限管理'
+				,id:2
+				,children:[{
+					label:'访客用户'
+					,id:25
+				}
+				,{
+					label:'后台管理员'
+					,id:26
+				}]
+		}];
+		tree.render({//分支结构创建
+			elem: '#show-manage'
+			,data: data
+			//,key: 'id'
+			,renderContent: !0
+			,click: function(obj){
+				layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+			}
+			,operate: function(obj){
+				//obj.type 
+				//删除 整个删除 添加 修改
+				layer.msg("操作："+obj.type)  
+				return false;
+			}
+		})
+		,form.on('submit(update_submit)', function(data){//更改表单提交为异步提交 修改
+			var fileds = data.field; 
+			$.ajax({
+				type: 'post'
+				,contentType: 'application/json'
+				,url: $('#update-form').attr("action")
+				,data: JSON.stringify(fileds)
+				,success: function(data){ 
+					layer.msg("修改成功"+data, {
+						time: 2000, //2s后自动关闭 
+					});
+				}
+				,error: function(data){
+					layer.msg("修改失败", {
+						time: 2000, //2s后自动关闭 
+					});
+				}
+			});
+			return false;
+		})
+		,form.on('submit(add_submit)', function(data){//更改表单提交为异步提交 修改
+			var fileds = data.field; 
+			$.ajax({
+				type: 'post'
+				,contentType: 'application/json'
+				,url: $('#add_submit').attr("action")
+				,data: JSON.stringify(fileds)
+				,success: function(data){
+					layer.msg("添加成功"+data, {
+						time: 2000, //2s后自动关闭 
+					});
+				}
+				,error: function(data){
+					layer.msg("添加失败", {
+						time: 2000, //2s后自动关闭 
+					});
+				}
+			});
+			return false;
+		})
+		,form.render()
+	});
+	 
+	</script>
+ </body>
+</html>

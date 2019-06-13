@@ -48,14 +48,9 @@
           ,content: 'tagsform.html'
           ,area: ['450px', '300px']
           ,btn: ['确定', '取消']
-          ,yes: function(index, layero){
-            var othis = layero.find('iframe').contents().find("#layuiadmin-app-form-tags")
-            ,tags = othis.find('input[name="tags"]').val();
-            
-            if(!tags.replace(/\s/g, '')) return;
-            
-            table.reload('LAY-app-content-tags');
-            layer.close(index);
+          ,yes: function(index, layero){ 
+			//触发submit的点击 以此自定义提交方式 
+			layero.find('iframe').contents().find("#layuiadmin-tags-form-submit").click(); 
           }
         }); 
       }
@@ -100,11 +95,13 @@
           */
           table.reload('LAY-app-content-comm');
           layer.msg('已删除');
+		  
         });
 	  }
     }  
     $('.layui-btn.layuiadmin-btn-tags').on('click', function(){
       var type = $(this).data('type');
+	  alert(type);
       active[type] ? active[type].call(this, $(this)) : '';
     });
   });
