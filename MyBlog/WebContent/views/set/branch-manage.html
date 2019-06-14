@@ -42,6 +42,7 @@
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form
+		/*
 		,update = layer.open({//修改
 			type: 1
 			,title: '修改'
@@ -56,13 +57,11 @@
 				layer.close(index); 
 				return false;
 			}
-			/*
 			,yes: function(){// 第一按钮调用，其他的则 btn2 btn3
 				layer.msg('修改成功', {
 					time: 2000, // 2s后自动关闭 
 				});
 			}
-			*/
 		})
 		,add = layer.open({// 添加
 			type: 1
@@ -78,6 +77,7 @@
 				return false;
 			}
 		})
+		*/
 		,del = layer.confirm('是否删除该机构或页面', {// 删除
 			btn: ['确认删除','取消'] // 按钮
 		}, function(){
@@ -125,6 +125,27 @@
 			,operate: function(obj){
 				//obj.type 
 				//删除 整个删除 添加 修改
+				//打开一个open 
+				/*
+				layer.open({
+					type: 2,
+					title: "编辑分类",
+					content: "tagsform.html?id=" + data[0].id,
+					area: ['450px', '300px'],
+					btn: ["确定", "取消"],
+					yes: function(index, layero) {
+						//根据type去点击不同的form表单按钮
+						layero.find(f).contents().find("#"+b).click(); 
+					},
+					success: function(e, i) {
+						//初始化 将原始数据打印在输入框中等待编辑
+						var form = e.find(f).contents().find("#"+t);
+						form.find('input[name="tags"]').val(data[0].tags)
+						,form.find('textarea[name="msg"]').val(data[0].msg)
+					}
+				})
+				*/
+				//根据type去点击不同的form表单按钮
 				layer.msg("操作："+obj.type)  
 				return false;
 			}

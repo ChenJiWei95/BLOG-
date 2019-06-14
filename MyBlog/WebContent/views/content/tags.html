@@ -33,13 +33,13 @@
 
   <script src="../../layuiadmin/layui/layui.js"></script>
   <script>
+  var table;
   layui.config({
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'contlist', 'table'], function(){
-    var table = layui.table
-    ,$ = layui.$
+    var $ = layui.$
 	,e = layui.contlist
 	,f = 'iframe'
 	,admin = layui.admin
@@ -105,12 +105,13 @@
           
         });
 	  }
-    }  
+    };
+	table = layui.table;
 	//适配点击
     $('.layui-btn.layuiadmin-btn-tags').on('click', function(){
       var type = $(this).data('type'); 
       active[type] ? active[type].call(this, $(this)) : '';
-    });
+    }); 
   });
   </script>
 </body>

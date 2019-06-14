@@ -35,6 +35,15 @@
 
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
+	function getQueryVariable (variable) { // 方法获取url后面的参数
+		var query = window.location.search.substring(1);
+		var vars = query.split("&");
+		for (var i=0;i<vars.length;i++) {
+			var pair = vars[i].split("=");
+			if(pair[0] == variable){return pair[1];}
+		}
+		return '';
+	} 
   layui.config({
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
@@ -42,27 +51,29 @@
   }).use(['index', 'form'], function(){
     var $ = layui.$ 
     ,form = layui.form
-	,admin = layui.admin
-	,table = parent.table
+	,admin = layui.admin  
+	,param = getQueryVariable ("id")
 	,a = 'layuiadmin-tags-form-submit'
 	,b = 'layuiadmin-tags-form-edit'
 	,l = 'LAY-app-content-tags';
+	parent.layer;
 	//添加
 	form.on("submit("+a+")", function(data){
-		var index = parent.layer.getFrameIndex(window.name)
-		,checkData = table.checkStatus(l).data; 
+		var index = parent.layer.getFrameIndex(window.name); 
 		//执行 Ajax 后重载
 		admin.req({
 			url: 'http://localhost:8080/MyBlog/api/test/tags/add.do'
 			,type: 'post'	
-			,data: {data: checkData}
+			,data: {data: JSON.stringify(data.field)}
+			,dataType: "json"
 			,done: function(data){
 				layer.msg("添加成功！", {time: 2000}),
 				//t.remove();
-				table.reload(l);
+				parent.table.reload(l);
 			}
 			,success: function(t){
-				console.log('req 调用了success方法 参数=' + t);
+				console.log('req 调用了success方法 参数=');
+				console.log(t);
 			}
 		});			  
 
@@ -71,18 +82,19 @@
 	})
 	//编辑
 	,form.on("submit("+b+")", function(data){
-		var index = parent.layer.getFrameIndex(window.name)
-		,checkData = table.checkStatus(l).data;
+		var index = parent.layer.getFrameIndex(window.name);
+		data.field['id'] = param;
+		console.log(JSON.stringify(data.field));
 		//执行 Ajax 后重载
 		$.ajax({
 			url: 'http://localhost:8080/MyBlog/api/test/tags/update.do'
 			,type: 'post'	
-			,data: {data: checkData}
+			,data: {data: JSON.stringify(data.field)}
 			,dataType: "json"
 			,success: function(data){
 				layer.msg("修改成功！", {time: 2000}),
 				//t.remove();
-				table.reload(l);
+				parent.table.reload(l);
 			}
 			,error: function(t){
 				console.log('失败');
@@ -91,6 +103,19 @@
 		parent.layer.close(index);
 		return false;
 	})
+	;
+	function getParameter(){ 
+		var params = location.search
+		,arr = params.split("&")
+		,result = {};
+		console.log("=========================="+params);
+		for(var i in arr){
+			var arr_ = i.split("=");
+			result[arr_[0]] = arr_[1];
+		}
+		return result;
+	}
+	
   })
   </script>
 </body>

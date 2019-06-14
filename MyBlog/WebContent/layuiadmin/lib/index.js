@@ -14,6 +14,18 @@ function(export_) {console.log("index");
     admin, 
 	page,
 	view,
+	util = {
+		//获取链接中的参数
+		getParameter: function(key){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+				var pair = vars[i].split("=");
+				if(pair[0] == key){return pair[1];}
+			}
+			return '';
+		}
+	},
     iframe = function(url, desc) {console.log("index iframe");//点击左栏 创建一个iframe窗口
         var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素
         attr = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
@@ -82,5 +94,6 @@ function(export_) {console.log("index");
     layui.use("common"),
     export_("index", {
         openTabsPage: iframe//打开页面
+		,util: util
     })
 });

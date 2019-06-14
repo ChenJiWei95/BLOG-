@@ -253,6 +253,7 @@ public class TestControl {
 	@RequestMapping("/api/test/tags.do")
 	@ResponseBody
 	public Object test10(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		System.out.println("初始化");
 		Object data = request.getParameter("data");
 		if(data != null)System.out.println(data.toString());
 		JSONObject object = new JSONObject();
