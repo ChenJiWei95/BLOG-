@@ -38,58 +38,74 @@
 		base: '../../layuiadmin/' //静态资源所在路径
 	}).extend({
 		index: 'lib/index' //主入口模块
-	}).use(["tree", 'index', 'console', 'element'], function() {
+	}).use(["tree_etc", 'index', 'console', 'element'], function() {
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form
-		/*
-		,update = layer.open({//修改
-			type: 1
-			,title: '修改'
-			,shadeClose: true
-			,shade: 0.8
-			,maxmin: !0
-			,area: ['200','526']
-			,content: $('#update')
-			,btnAlign: 'c'
-			,anim: 5
-			,cancel: function(index, layero){
-				layer.close(index); 
-				return false;
+		,a = 'layuiadmin-branch-form-submit'
+		,b = 'layuiadmin-branch-form-edit'
+		,c = 'branch-form-tags'
+		,active = {
+			add: function(){
+				layer.open({
+				  type: 2
+				  ,title: '添加标签'
+				  ,content: 'branchform.html'
+				  ,area: ['450px', '300px']
+				  ,btn: ['确定', '取消']
+				  ,yes: function(index, layero){
+					layero.find(f).contents().find("#"+a).click();
+				  }
+				}); 
 			}
-			,yes: function(){// 第一按钮调用，其他的则 btn2 btn3
-				layer.msg('修改成功', {
-					time: 2000, // 2s后自动关闭 
+			,edit: function(){
+				var checkStatus = table.checkStatus('LAY-app-content-tags')
+				,data = checkStatus.data; //得到选中的数据
+				data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
+				layer.open({
+						type: 2,
+						title: "编辑分类",
+						content: "branchform.html?id=" + data[0].id,
+						area: ["450px", "200px"],
+						btn: ["确定", "取消"],
+						yes: function(index, layero) {
+							layero.find(f).contents().find("#"+b).click(); 
+						},
+						success: function(t, e) {
+							var iframe = t.find("iframe").contents().find("#"+c).click();
+							iframe.find('input[name="title"]').val(data[0].title)
+							,iframe.find('input[name="priority"]').val(data[0].priority)
+							,iframe.find('input[name="url"]').val(data[0].url)
+							,iframe.find('input[name="msg"]').val(data[0].msg)
+							iframe.find('textarea[name="create_time"]').disabled = !0
+							,iframe.find('textarea[name="update_time"]').disabled = !0
+						}
+				})
+			
+			}
+			,del: function(t){
+				var checkStatus = table.checkStatus('LAY-app-content-tags')
+				,checkData = checkStatus.data; //得到选中的数据
+
+				checkData.length === 0 ? layer.msg('请选择数据') :
+				layer.confirm('确定删除吗？', function(index) {
+					//执行 Ajax 后重载
+					result[state] = '01'
+					admin.req({
+						url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
+						,type: 'post'	
+						,data: {data: JSON.stringify(data.field)}
+						,dataType: "json"
+						,done: function(data){
+							layer.msg("删除成功！", {time: 2000}),
+							result[state] = '00',
+							result[result] = !0 
+						} 
+					});	
 				});
 			}
-		})
-		,add = layer.open({// 添加
-			type: 1
-			,title: '添加'
-			,shadeClose: true
-			,shade: 0.8
-			,maxmin: !0
-			,area: ['200','526']
-			,content: $('#add')
-			,btnAlign: 'c'
-			,cancel: function(index, layero){
-				layer.close(index);
-				return false;
-			}
-		})
-		*/
-		,del = layer.confirm('是否删除该机构或页面', {// 删除
-			btn: ['确认删除','取消'] // 按钮
-		}, function(){
-			layer.msg('删除成功', {
-				time: 2000, // 2s后自动关闭 
-			});
-		}, function(){
-			layer.msg('已取消删除', {
-				time: 2000, // 2s后自动关闭 
-			});
-		})
-		,tree = layui.tree
+		}  
+		,tree = layui.tree_etc
 		,data=[{// 模拟数据
 				label:'资源管理'
 				,id:1
@@ -146,52 +162,16 @@
 				})
 				*/
 				//根据type去点击不同的form表单按钮
-				layer.msg("操作："+obj.type)  
-				return false;
+				active[obj.type] ? active[obj.type]() : '';
+				return result;
 			}
-		})
-		,form.on('submit(update_submit)', function(data){//更改表单提交为异步提交 修改
-			var fileds = data.field; 
-			$.ajax({
-				type: 'post'
-				,contentType: 'application/json'
-				,url: $('#update-form').attr("action")
-				,data: JSON.stringify(fileds)
-				,success: function(data){ 
-					layer.msg("修改成功"+data, {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-				,error: function(data){
-					layer.msg("修改失败", {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-			});
-			return false;
-		})
-		,form.on('submit(add_submit)', function(data){//更改表单提交为异步提交 修改
-			var fileds = data.field; 
-			$.ajax({
-				type: 'post'
-				,contentType: 'application/json'
-				,url: $('#add_submit').attr("action")
-				,data: JSON.stringify(fileds)
-				,success: function(data){
-					layer.msg("添加成功"+data, {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-				,error: function(data){
-					layer.msg("添加失败", {
-						time: 2000, //2s后自动关闭 
-					});
-				}
-			});
-			return false;
-		})
-		,form.render()
+		}) 
 	});
+	//操作进度 01 处理中； 00 处理完毕； 00的时候可以对结果进行处理判断 
+	var result = {
+		state: '01'
+		, result: !1
+	};
 	 
 	</script>
  </body>

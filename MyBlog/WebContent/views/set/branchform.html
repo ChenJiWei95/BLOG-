@@ -23,13 +23,13 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">创建时间</label>
 				<div class="layui-input-block">
-					<input type="text" lay-verify="title" disabled autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
+					<input type="text" name="create_time" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">修改时间</label>
 				<div class="layui-input-block">
-					<input type="text" lay-verify="title" disabled autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
+					<input type="text" name="update_time" lay-verify="title"  autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
 				</div>
 			</div>
 			<div class="layui-form-item">
@@ -51,6 +51,10 @@
 					<textarea placeholder="请输入内容" class="layui-textarea" name="msg"></textarea>
 				</div>
 			</div>  
+			<div class="layui-form-item layui-hide">
+				<button lay-submit lay-filter="layuiadmin-branch-form-submit" id="layuiadmin-branch-form-submit">确认添加</button>
+				<button lay-submit lay-filter="layuiadmin-branch-form-edit" id="layuiadmin-branch-form-edit">确认编辑</button>
+			</div>
   </div>
 
   <script src="../../layuiadmin/layui/layui.js"></script>  
@@ -60,71 +64,55 @@
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index'], function(){
-    var table = layui.table;
-    var $ = layui.$
-	,active = {
-      add: function(){
-        layer.open({
-          type: 2
-          ,title: '添加标签'
-          ,content: 'tagsform.html'
-          ,area: ['450px', '300px']
-          ,btn: ['确定', '取消']
-          ,yes: function(index, layero){
-            var othis = layero.find('iframe').contents().find("#layuiadmin-app-form-tags")
-            ,tags = othis.find('input[name="tags"]').val();
-            
-            if(!tags.replace(/\s/g, '')) return;
-            
-            table.reload('LAY-app-content-tags');
-            layer.close(index);
-          }
-        }); 
-      }
-	  ,edit: function(){
-		var checkStatus = table.checkStatus('LAY-app-content-tags')
-		,data = checkStatus.data; //得到选中的数据
-		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
-		layer.open({
-                type: 2,
-                title: "编辑分类",
-                content: "tagsform.html?id=" + data[0].id,
-                area: ["450px", "200px"],
-                btn: ["确定", "取消"],
-                yes: function(e, i) {
-                    var n = i.find("iframe").contents().find("#layuiadmin-app-form-tags"),
-                    l = n.find('input[name="tags"]').val();
-                    l.replace(/\s/g, "") && (t.update({
-                        tags: l
-                    }), layer.close(e))
-                },
-                success: function(t, e) {
-                    var iframe = t.find("iframe").contents().find("#layuiadmin-app-form-tags").click();
-                    iframe.find('input[name="tags"]').val(data[0].tags)
-					,iframe.find('textarea[name="msg"]').val(data[0].msg)
-                }
-        })
-		
-	  }
-	  ,del: function(t){
-		var checkStatus = table.checkStatus('LAY-app-content-tags')
-        ,checkData = checkStatus.data; //得到选中的数据
+		var table = layui.table
+		,$ = layui.$
+		,a = 'layuiadmin-branch-form-submit'
+		,b = 'layuiadmin-branch-form-edit;
+		//添加
+		form.on("submit("+a+")", function(data){
+			var index = parent.layer.getFrameIndex(window.name); 
+			//执行 Ajax 后重载
+			parent.result[state] = '01'
+			admin.req({
+				url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
+				,type: 'post'	
+				,data: {data: JSON.stringify(data.field)}
+				,dataType: "json"
+				,done: function(data){
+					layer.msg("添加成功！", {time: 2000})
+					parent.result[state] = '00';
+					parent.result[result] = !0;
+				} 
+				,fail: function(data){
+					parent.result[result] = !1;
+				}
+			});			  
 
-        checkData.length === 0 ? layer.msg('请选择数据') :
-		layer.confirm('确定删除吗？', function(index) {
-          
-          //执行 Ajax 后重载
-          /*
-          admin.req({
-            url: 'xxx'
-            //,……
-          });
-          */
-          table.reload('LAY-app-content-comm');
-          layer.msg('已删除');
-        });
-	  }
-    } 
+			parent.layer.close(index);
+			return !1;
+		})
+		//编辑
+		,form.on("submit("+b+")", function(data){
+			var index = parent.layer.getFrameIndex(window.name);
+			data.field['id'] = param;
+			console.log(JSON.stringify(data.field));
+			//执行 Ajax 后重载
+			$.req({
+				url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
+				,type: 'post'	
+				,data: {data: JSON.stringify(data.field)}
+				,done: function(data){
+					layer.msg("修改成功！", {time: 2000});
+					parent.result[state] = '00';
+					parent.result[result] = !0;
+				}
+				,fail: function(data){
+					parent.result[result] = !1;
+				}
+			});	
+			parent.layer.close(index);
+			return !1;
+		})
   })
   </script>
 </body>
