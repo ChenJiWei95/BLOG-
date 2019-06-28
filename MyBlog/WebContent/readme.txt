@@ -81,6 +81,15 @@ config是如何被传入
 	
 根据消息中心的操作按钮样式进行更换
 	
+进度
+	set 前后台打通
+		branch ok
+		data
+			接口
+				'http://localhost:8080/MyBlog/api/test/data/add.do'
+				'http://localhost:8080/MyBlog/api/test/data/update.do'
+				'http://localhost:8080/MyBlog/api/test/set/del.do'
+		
 	
 	
 

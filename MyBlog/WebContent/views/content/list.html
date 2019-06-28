@@ -59,8 +59,8 @@
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
           <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
-		  <button class="layui-btn layuiadmin-btn-list" data-type="edit_base">编辑基础信息</button>
-		  <button class="layui-btn layuiadmin-btn-list" data-type="edit">随笔编辑</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="edit_base">编辑信息</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="edit">编辑内容</button>
 		  <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
         </div>
         <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table> 
@@ -101,13 +101,12 @@
     //监听搜索
     form.on('submit(LAY-app-contlist-search)', function(data){
       var field = data.field;
-      
       //执行重载
       table.reload('LAY-app-content-list', {
         where: field
       });
     });
-    
+    //编辑按钮事件
     var $ = layui.$, active = {
       batchdel: function(){
         var checkStatus = table.checkStatus('LAY-app-content-list')
@@ -145,13 +144,13 @@
           }
         }); 
       }
-	  ,edit_base: function(){
+	  ,edit_base: function(){//编辑随笔的基础信息
 		var checkStatus = table.checkStatus('LAY-app-content-list')
         ,data = checkStatus.data; //得到选中的数据
 		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
         layer.open({
           type: 2
-          ,title: '添加文章'
+          ,title: '随笔基础信息编辑'
           ,content: 'listform.html'
           ,maxmin: true
           ,area: ['550px', '550px']
@@ -174,13 +173,13 @@
 		  }
         }); 
       }
-	  ,edit: function(){
+	  ,edit: function(){//编辑随笔的内容
 		var checkStatus = table.checkStatus('LAY-app-content-list')
         ,data = checkStatus.data; // 得到选中的数据
 		// data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 		layer.open({// 修改
 						type: 1
-						,title: '随笔编辑'
+						,title: '随笔内容编辑'
 						,shadeClose: true
 						,shade: 0.8
 						,maxmin: !0
