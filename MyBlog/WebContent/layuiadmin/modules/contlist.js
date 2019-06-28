@@ -1,3 +1,12 @@
+/*
+文章表格的渲染
+文章修改删除操作
+
+标签表格的渲染
+
+评论表格的渲染
+评论都删除编辑
+*/
 ;
 layui.define(["table", "form"],
 function(t) {console.log("contlist");
@@ -63,7 +72,8 @@ function(t) {console.log("contlist");
 		*/
         ,text: "对不起，加载出现异常！"
     }),
-    table.on("tool(LAY-app-content-list)",
+    /*
+	table.on("tool(LAY-app-content-list)",
     function(t) {
         var e = t.data;
         "del" === t.event ? layer.confirm("确定删除此文章？",
@@ -96,6 +106,7 @@ function(t) {console.log("contlist");
             }
         })
     }),
+	*/
     table.render({//标签加载
         elem: "#LAY-app-content-tags",
 		id: "LAY-app-content-tags",

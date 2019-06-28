@@ -20,8 +20,13 @@
 		<div class="layui-row layui-col-space15">
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
+					<div class="layui-card-header layuiadmin-card-header-auto">
+						<button class="layui-btn layuiadmin-btn-tags" data-type="add">添加</button>
+						<button class="layui-btn layuiadmin-btn-tags" data-type="edit">编辑</button>
+						<button class="layui-btn layuiadmin-btn-tags" data-type="del">删除</button>
+					 </div>
 					<div class="layui-card-body">
-						<table class="layui-hide" id="data" lay-filter="data">
+						<table class="layui-hide" id="LAY-app-set-data" lay-filter="LAY-app-set-data">
 							
 						</table> 	 
 					</div>
@@ -29,90 +34,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="add" style="padding: 30px; display: none;">
-		<form class="layui-form" id="add-form" action="../../api/test/json.do">
-			<div class="layui-form-item">
-				<label class="layui-form-label">类型代码</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_code" lay-verify="type_code" autocomplete="off" placeholder="请输类型代码" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">类型名称</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_name" lay-verify="type_name" autocomplete="off" placeholder="请输类型名称" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">值</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_value" lay-verify="type_value" autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">备注</label>
-				<div class="layui-input-block">
-					<input type="text" name="msg" lay-verify="msg" autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="add_submit">确认添加</button>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div id="edit" style="padding: 30px; display: none;">
-		<form class="layui-form" id="edit-form" action="../../api/test/json.do">
-			<div class="layui-form-item">
-				<label class="layui-form-label">ID</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_id" lay-verify="type_id" autocomplete="off" disabled placeholder="请输类型代码" class="layui-input layui-disabled">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">类型代码</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_code" lay-verify="type_code" autocomplete="off" placeholder="请输类型代码" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">类型名称</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_name" lay-verify="type_name" autocomplete="off" placeholder="请输类型名称" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">创建时间</label>
-				<div class="layui-input-block">
-					<input type="text" name="create_time" lay-verify="create_time" disabled autocomplete="off" class="layui-input layui-disabled">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">修改时间</label>
-				<div class="layui-input-block">
-					<input type="text" name="update_time" lay-verify="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">值</label>
-				<div class="layui-input-block">
-					<input type="text" name="type_value" lay-verify="type_value" autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">备注</label>
-				<div class="layui-input-block">
-					<input type="text" name="msg" lay-verify="msg" autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="edit_submit">确认修改</button>
-				</div>
-			</div>
-		</form>
-	</div>
+	
 	<script type="text/html" id="toolbar">
 		<div class="layui-btn-container">
 			<input type="button" class="layui-btn manage-button" value="添加" lay-event="add"/>
@@ -129,33 +51,78 @@
 	}).use(["table", 'index', 'console'], function() {
 		var table = layui.table
 		,$ = layui.jquery
-		,form = layui.form, addPage, editPage
-		/*测试数据
-		,data = [{ 
-			id: "0001",
-			typeCode: "state",
-			typeName: "启用状态-关",
-			createTime: "2019-05-31 16:58:30",
-			updateTime: "",
-			typeVal: "00",
-			typeMsg: "",
-		}, {
-			id: "0002",
-			typeCode: "state",
-			typeName: "启用状态-开",
-			createTime: "2019-05-31 16:58:40",
-			updateTime: "",
-			typeVal: "00",
-			typeMsg: "",
-		}]
-		*/
-		;
+		,form = layui.form, addPage, editPage 
+		,a = 'set-data-form-add'
+		,b = 'set-data-form-edit'
+		,c = 'set-form-tags'
+		,d = 'LAY-app-set-data'
+		,active = {
+			add: function(){
+				layer.open({
+				  type: 2
+				  ,title: '添加标签'
+				  ,content: 'branchform.html'
+				  ,area: ['450px', '300px']
+				  ,btn: ['确定', '取消']
+				  ,yes: function(index, layero){
+					layero.find(f).contents().find("#"+a).click();
+				  }
+				}); 
+			}
+			,edit: function(){
+				var checkStatus = table.checkStatus(d)
+				,data = checkStatus.data; //得到选中的数据
+				data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
+				layer.open({
+						type: 2,
+						title: "编辑分类",
+						content: "branchform.html?id=" + data[0].id,
+						area: ["450px", "200px"],
+						btn: ["确定", "取消"],
+						yes: function(index, layero) {
+							layero.find(f).contents().find("#"+b).click(); 
+						},
+						success: function(t, e) {
+							var iframe = t.find("iframe").contents().find("#"+c).click();
+							iframe.find('input[name='type_name']")[0].value = data[0].typeName,
+							,iframe.find('input[name='type_id']")[0].value = data[0].id,
+							,iframe.find('input[name='type_code']")[0].value = data[0].typeCode,
+							,iframe.find('input[name='type_value']")[0].value = data[0].typeVal,
+							,iframe.find('input[name='create_time']")[0].value = data[0].createTime,
+							,iframe.find('input[name='update_time']")[0].value = data[0].updateTime,
+							,iframe.find('input[name='msg']")[0].value = data[0].typeMsg);
+						}
+				})
+			
+			}
+			,del: function(t){
+				var checkStatus = table.checkStatus(d)
+				,checkData = checkStatus.data; //得到选中的数据
+
+				checkData.length === 0 ? layer.msg('请选择数据') :
+				layer.confirm('确定删除吗？', function(index) {
+					//执行 Ajax 后重载
+					result[state] = '01'
+					admin.req({
+						url: 'http://localhost:8080/MyBlog/api/test/set/del.do'
+						,type: 'post'	
+						,data: {data: JSON.stringify(data.field)}
+						,dataType: "json"
+						,done: function(data){
+							layer.msg("删除成功！", {time: 2000}),
+							result[state] = '00',
+							result[result] = !0 
+						} 
+					});	
+				});
+			}
+		};
 		table.render({
-			elem: '#data'
-			,url:'http://localhost:8080/MyBlog/api/test/json.do' 
-			//,url:'../../api/test/json.do'
-			,toolbar: '#toolbar'
-			,title: '用户数据表'
+			elem: '#' + d
+			,id: d
+			,url: 'http://localhost:8080/MyBlog/api/test/json.do' 
+			//,toolbar: '#toolbar'
+			//,title: '用户数据表'
 			,cols: [[
 				{type: 'checkbox', fixed: 'left'}
 				,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
@@ -166,163 +133,13 @@
 				,{field:'typeVal', title:'值', width:80, edit: 'text'}
 				,{field:'typeMsg', title:'备注', width:100}  
 			]]
-			,page: true
-			/*
-			,parseData: function(res){ //res 即为原始返回的数据
-				console.log("--------------------------------"+res);
-				return {
-					"code": 0
-					,"msg": "xxx"
-					,"count": 30
-					,"data": data
-				}
-			}
-			*/
-		})
-		,table.on('toolbar(data)', function(obj){//toolbar区域的点击委托事件
-			var data = table.checkStatus(obj.config.id).data;
-			switch(obj.event){
-				case 'add': 
-					addPage = layer.open({//修改
-						type: 1
-						,title: '添加数据字典'
-						,shadeClose: true
-						,shade: 0.8
-						,maxmin: !0
-						,area: ['200', '90%']
-						,content: $('#add')
-						,btnAlign: 'r'
-						,anim: 5
-						,cancel: function(index, layero){
-							layer.close(index); 
-							return false;
-						} 
-					}); 
-					break;
-				case 'edit':  
-					data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : (editPage = layer.open({//修改
-						type: 1
-						,title: '修改数据字典'
-						,shadeClose: true
-						,shade: 0.8
-						,maxmin: !0
-						,area: ['200','90%']
-						,content: $('#edit')
-						,btnAlign: 'r'
-						,anim: 5
-						,cancel: function(index, layero){
-							layer.close(index); 
-							return false;
-						} 
-					}),
-					$("#edit input[name='type_name']")[0].value = data[0].typeName,
-					$("#edit input[name='type_id']")[0].value = data[0].id,
-					$("#edit input[name='type_code']")[0].value = data[0].typeCode,
-					$("#edit input[name='type_value']")[0].value = data[0].typeVal,
-					$("#edit input[name='create_time']")[0].value = data[0].createTime,
-					$("#edit input[name='update_time']")[0].value = data[0].updateTime,
-					$("#edit input[name='msg']")[0].value = data[0].typeMsg);
-					break;
-				case 'del': 
-					layer.confirm('是否删除该项', {//删除
-						btn: ['确认删除','取消'] //按钮
-					}, function(){
-						layer.msg('删除成功', {
-							time: 2000, //2s后自动关闭 
-						});
-					}, function(){
-						layer.msg('已取消删除', {
-							time: 2000, //2s后自动关闭 
-						});
-					})
-					break;
-			}
-		})
-		,form.on('submit(add_submit)', function(data){//更改表单提交为异步提交 修改
-			var fileds = data.field
-			,that = this;
-			$.ajax({
-				type: 'post'
-				,contentType: 'application/json'
-				,url: $('#add-form').attr("action")
-				,data: JSON.stringify(fileds)
-				,success: function(data){
-					console.log("添加成功"+data);
-					layer.msg("添加成功", {
-						time: 2000, //2s后自动关闭 
-					});
-					addPage && layer.close(addPage);
-				 
-				}
-				,error: function(data){
-					layer.msg("添加失败", {
-						time: 2000, //2s后自动关闭 
-					});
-					addPage && layer.close(addPage);
-				 
-				}
-			});
-			return false;
-		})
-		,form.on('submit(edit_submit)', function(data){//更改表单提交为异步提交 修改
-			var fileds = data.field
-			,that = this;
-			$.ajax({
-				type: 'post'
-				,contentType: 'application/json'
-				,url: $('#edit-form').attr("action")
-				,data: JSON.stringify(fileds)
-				,success: function(data){
-					console.log("修改成功"+data);
-					layer.msg("修改成功", {
-						time: 2000, //2s后自动关闭 
-					});
-					editPage && layer.close(editPage);
-				 
-				}
-				,error: function(data){
-					layer.msg("修改失败", {
-						time: 2000, //2s后自动关闭 
-					});
-					editPage && layer.close(editPage);
-				 
-				}
-			});
-			return false;
-		})
-		
-		//监听行工具事件
-		/*
-		table.on('tool(data)', function(obj){
-			var data = obj.data;
-			if(obj.event === 'del'){
-				layer.confirm('真的删除行么', function(index){
-					obj.del();
-					layer.close(index);
-				});
-			} else if(obj.event === 'edit'){
-			
-			}
+			,page: !0 
+			,text: "对不起，加载出现异常！"
 		});
-			var data = obj.data;
-			//console.log(obj)
-			if(obj.event === 'del'){
-				layer.confirm('真的删除行么', function(index){
-					obj.del();
-					layer.close(index);
-				});
-			} else if(obj.event === 'edit'){
-				layer.prompt({
-					formType: 2
-					,value: data.email
-				}, function(value, index){
-					obj.update({
-					email: value
-				});
-				layer.close(index);
-			}
-		
-		*/
+		$('.layui-btn.layuiadmin-btn-list').on('click', function(){
+		  var type = $(this).data('type');
+		  active[type] ? active[type].call(this) : '';
+		});
 	});
 	 
 	</script>
