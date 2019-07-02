@@ -85,8 +85,8 @@ config是如何被传入
 		0007 小鸟浏览了你		2019-06-27 16:30:14 06
 		0008 超级管理员
 	点击可以查看详细
-	消息临时表 	ID 备注 时间   
-	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏)
+	消息临时表 	ID 备注 时间  分栏
+	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) 分栏
 	消息被查看之后就会在临时表中删除已查看的消息
 	0001 
 	小猪				2019-06-27 16:30:12
@@ -148,8 +148,25 @@ config是如何被传入
 		'http://localhost:8080/MyBlog/api/test/message/notice.do', 管理信息
 		'http://localhost:8080/MyBlog/api/test/message/aticle.do', 随笔信息
 	
-		
+	对encryptData字段 的加密
+	public static String encryptECB(String content, String key) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(Base64.decodeBase64(key.getBytes()), "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        byte[] encryptBytes = cipher.doFinal(content.getBytes("UTF-8"));
+        return Base64.encodeBase64String(encryptBytes);
+    }
+	对encryptKey字段 的加密
+	AES对称秘钥的加密
+	public static String encrypt(String key, PublicKey publicKey) throws Exception {
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		byte[] b = key.getBytes();
+		byte[] b1 = cipher.doFinal(b);
+		return Base64.encode(b1);
+	}
 	
+
 	
 
 
