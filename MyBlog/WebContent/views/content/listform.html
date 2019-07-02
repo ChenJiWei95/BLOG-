@@ -12,6 +12,12 @@
 
   <div class="layui-form" lay-filter="aticle-form-admin" id="aticle-form-admin" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
+      <label class="layui-form-label">id</label>
+      <div class="layui-input-inline">
+        <input type="text" name="id" disabled lay-verify="required" placeholder="请输入..." autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
       <label class="layui-form-label">标签</label>
       <div class="layui-input-inline">
         <input type="text" name="sign" lay-verify="required" placeholder="请输入..." autocomplete="off" class="layui-input">
@@ -60,7 +66,8 @@
       </div>
     </div>
     <div class="layui-form-item layui-hide">
-      <input type="button" lay-submit lay-filter="LAY-aticle-submit" id="LAY-aticle-submit" value="确认">
+      <input type="button" lay-submit lay-filter="LAY-aticle-add" id="LAY-aticle-add" value="确认">
+	  <input type="button" lay-submit lay-filter="LAY-aticle-update" id="LAY-aticle-update" value="确认">
     </div>
   </div>
 
@@ -72,8 +79,45 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'form'], function(){
     var $ = layui.$
-    ,form = layui.form ;
-  })
+    ,form = layui.form
+	,index = layui.index
+	,b = "LAY-aticle-add";
+	,c = "LAY-aticle-update";
+	form.on("submit("+b+")", function(data){
+		var index_ = parent.layer.getFrameIndex(window.name);
+		data.field['id'] = index.util.getParameter("id"); 
+		$.req({
+			url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
+			,type: 'post'	 
+			,done: function(data){
+				parent.oparate_active.add;
+				layer.msg("添加成功！", {time: 2000}); 
+			}
+			,fail: function(data){
+				layer.msg("添加失败！", {time: 2000}) 
+			}
+		});	
+		parent.layer.close(index_);
+		return !1;
+		
+	})
+	,form.on("submit("+c+")", function(data){
+		var index_ = parent.layer.getFrameIndex(window.name);
+		$.req({
+			url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
+			,type: 'post'	
+			,done: function(data){
+				parent.oparate_active.edit;
+				layer.msg("修改成功！", {time: 2000}); 
+			}
+			,fail: function(data){
+				layer.msg("修改失败！", {time: 2000}) 
+			}
+		});	
+		parent.layer.close(index_);
+		return !1;
+		
+	})
   </script>
 </body>
 </html>

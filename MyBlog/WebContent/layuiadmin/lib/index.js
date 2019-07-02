@@ -29,20 +29,6 @@ function(export_) {console.log("index");
     iframe = function(url, desc) {console.log("index iframe");//点击左栏 创建一个iframe窗口
         var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素
         attr = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
-		//each 遍历元素
-		/*
-		模拟测试 以下if语句可以写成 -> if(fn, 表达式, boolean)
-		var i = 0, b = 1;
-		if((function(){
-			
-		})() , b = 3 , true){
-			alert("hh");
-		}
-		
-		以上格式代码不容易读，
-		经过整改后如下 
-		
-		*/
 		elements_.each(function(e) { 
             var element_ = selectElement(this),
             n = element_.attr("lay-id");

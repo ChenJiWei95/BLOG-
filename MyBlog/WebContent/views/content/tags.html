@@ -83,11 +83,9 @@
         })
 	  }
 	  ,del: function(t){
-		console.log("删除标签 探究t输出什么参数");
-		console.log(t);
 		var checkStatus = table.checkStatus(l)
         ,checkData = checkStatus.data; //得到选中的数据
-        checkData.length === 0 ? layer.msg('请选择数据') :
+        checkData.length !== 1 ? layer.msg('请选择一项数据') :
 		layer.confirm('确定删除吗？', function(index) {
           //执行 Ajax 后重载
           admin.req({
@@ -100,7 +98,8 @@
 				table.reload(l);
 			}
 			,success: function(t){
-				console.log('req 调用了success方法 断定为初始化 参数=' + t);
+				console.log('req 调用了success方法 断定为初始化 参数=');
+				console.log(t);
 			}
           });
           

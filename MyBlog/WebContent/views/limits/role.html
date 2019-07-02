@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
 </head>
 <body>
-
   <div class="layui-fluid">   
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
@@ -36,23 +35,10 @@
 		  <button class="layui-btn layuiadmin-btn-role" data-type="edit">编辑</button>
 		  <button class="layui-btn layuiadmin-btn-role" data-type="batchdel">删除</button>
         </div>
-      
         <table id="LAY-user-back-role" lay-filter="LAY-user-back-role"></table>  
-        <script type="text/html" id="buttonTpl">
-          {{#  if(d.check == true){ }}
-            <button class="layui-btn layui-btn-xs">已审核</button>
-          {{#  } else { }}
-            <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
-          {{#  } }}
-        </script>
-        <script type="text/html" id="table-useradmin-admin">
-          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
-        </script>
       </div>
     </div>
   </div>
-
  <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
   layui.config({
@@ -62,6 +48,11 @@
   }).use(['index', 'useradmin', 'table'], function(){
     var $ = layui.$
     ,form = layui.form
+    ,a = "LAY-user-role-add"
+    ,f = "iframe"
+	,t = 'layuiadmin-form-role'
+	,b = 'LAY-user-role-update'
+	,l = 'LAY-user-back-role'
     ,table = layui.table;
     
     //搜索角色
@@ -79,21 +70,19 @@
 		batchdel: function(){
 			var checkStatus = table.checkStatus('LAY-user-back-role')
 			,checkData = checkStatus.data; //得到选中的数据
-
-			if(checkData.length === 0){
-				return layer.msg('请选择数据');
-			}
-        
+			checkData.length == 0 ? layer.msg("请选中一项") : checkData.length > 1 ? layer.msg("只能选中一项") :
 			layer.confirm('确定删除吗？', function(index) {
-            
-				//执行 Ajax 后重载
-				/*
 				admin.req({
-					url: 'xxx'
-					//,……
-				});
-				*/
-				table.reload('LAY-user-back-role');
+					url: 'http://localhost:8080/MyBlog/api/test/role/del.do'
+					,type: 'post'	
+					,data: {data: JSON.stringify(checkData.field)}
+					,dataType: "json"
+					,done: function(data){
+						layer.msg("添加成功！", {time: 2000}),
+						parent.table.reload(l);
+					} 
+				});	
+				table.reload(l);
 				layer.msg('已删除');
 			});
 		},
@@ -105,25 +94,12 @@
 				,area: ['500px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
-					var iframeWindow = window['layui-layer-iframe'+ index]
-					,submit = layero.find('iframe').contents().find("#LAY-user-role-submit");
-
-					//监听提交
-					iframeWindow.layui.form.on('submit(LAY-user-role-submit)', function(data){
-						var field = data.field; //获取提交的字段
-				  
-						//提交 Ajax 成功后，静态更新表格中的数据
-						//$.ajax({});              
-						table.reload('LAY-user-back-role');
-						layer.close(index); //关闭弹层
-					});  
-				
-					submit.trigger('click');
+					layero.find(f).contents().find("#"+a).click(); 
 				}
 			}); 
 		}
 		,edit: function(){
-			var checkStatus = table.checkStatus('LAY-user-back-role')
+			var checkStatus = table.checkStatus(l)
 			,data = checkStatus.data; //得到选中的数据
 			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 			layer.open({
@@ -132,19 +108,17 @@
                 content: "roleform.html",
                 area: ["500px", "480px"],
                 btn: ["确定", "取消"],
-                yes: function(e, t) {
-                    var l = window["layui-layer-iframe" + e],
-                    r = t.find("iframe").contents().find("#LAY-user-role-submit");
-                    l.layui.form.on("submit(LAY-user-role-submit)",
-                    function(t) {
-                        t.field;
-                        table.reload("LAY-user-back-role"),
-                        layer.close(e)
-                    }),
-                    r.trigger("click")
+                yes: function(index, layero) {
+                    layero.find(f).contents().find("#"+b).click(); 
                 },
-                success: function(e, t) {
+                success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
+					var form = e.find(f).contents().find("#"+t);
+					form.find('input[name="id"]').val(data[0].id)
+					,form.find('textarea[name="name"]').val(data[0].name)
+					,form.find('textarea[name="descr"]').val(data[0].desc)
+					,form.find('textarea[name="priority"]').val(data[0].priority)
+					//补充选项框
 				}
             })
 		}

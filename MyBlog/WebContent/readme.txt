@@ -75,9 +75,43 @@ config是如何被传入
 	表 ： id 标题（浏览通知、评论通知、点赞通知、私信）  时间 msg
 	分栏 所有、通知、私信
 	
+	id msg 时间 type(信息类型-隐藏) 
+	例如： 
+		0001 小猪赞了小花的评论 2019-06-27 16:30:12 01
+		0002 小猪评论了xxx文章 	2019-06-27 16:30:14 02 
+		0003 小猪回复了小花 	2019-06-27 16:30:14 03
+		0005 小鸟邮箱了你		2019-06-27 16:30:14 04
+		0006 小鸟留言了你		2019-06-27 16:30:14 05
+		0007 小鸟浏览了你		2019-06-27 16:30:14 06
+		0008 超级管理员
+	点击可以查看详细
+	消息临时表 	ID 备注 时间   
+	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏)
+	消息被查看之后就会在临时表中删除已查看的消息
+	0001 
+	小猪				2019-06-27 16:30:12
+		赞了小花的评论
+	0002
+	小猪				2019-06-27 16:30:12
+		[java并发]
+		这篇文章写得不错！
+	0003
+	小猪				2019-06-27 16:30:12
+		[java并发]
+		@小花：你好啊！
+	0006
+	小鸟				2019-06-27 16:30:12
+		感谢站长辛苦的劳作。
+	0005
+	小鸟				2019-06-27 16:30:12
+		小鸟于2019-06-27 16:30:12向你发起了邮箱，请查收。
+	0007
+	小鸟				2019-06-27 16:30:12
+		小鸟于2019-06-27 16:30:12浏览了xxx网页。
+	
 基本信息
 	配置管理员昵称（用于回复评论时的名称）
-	管理员信息表 
+	管理员信息表
 	
 根据消息中心的操作按钮样式进行更换
 	
@@ -85,10 +119,35 @@ config是如何被传入
 	set 前后台打通
 		branch ok
 		data
-			接口
-				'http://localhost:8080/MyBlog/api/test/data/add.do'
-				'http://localhost:8080/MyBlog/api/test/data/update.do'
-				'http://localhost:8080/MyBlog/api/test/set/del.do'
+			'http://localhost:8080/MyBlog/api/test/data/add.do'
+			'http://localhost:8080/MyBlog/api/test/data/update.do'
+			'http://localhost:8080/MyBlog/api/test/set/del.do'
+	content
+		list
+			'http://localhost:8080/MyBlog/api/test/contenList/update_conten.do'
+			'http://localhost:8080/MyBlog/api/test/contenList/del.do'
+			'http://localhost:8080/MyBlog/api/test/branch/add.do'
+			'http://localhost:8080/MyBlog/api/test/branch/update.do'
+		
+		tag
+		comment
+			'http://localhost:8080/MyBlog/api/test/contenList/comment_del.do'
+			打开原文
+	limits
+		role
+			'http://localhost:8080/MyBlog/api/test/role/add.do'
+			'http://localhost:8080/MyBlog/api/test/role/update.do'
+			'http://localhost:8080/MyBlog/api/test/role/del.do'
+		admin
+			'http://localhost:8080/MyBlog/api/test/admin/del.do'
+			'http://localhost:8080/MyBlog/api/test/admin/add.do'
+			'http://localhost:8080/MyBlog/api/test/admin/update.do'
+		
+	消息
+		'http://localhost:8080/MyBlog/api/test/message/direct.do', 私信
+		'http://localhost:8080/MyBlog/api/test/message/notice.do', 管理信息
+		'http://localhost:8080/MyBlog/api/test/message/aticle.do', 随笔信息
+	
 		
 	
 	

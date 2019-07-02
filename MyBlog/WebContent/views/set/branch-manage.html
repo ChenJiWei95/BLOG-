@@ -42,66 +42,65 @@
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form
+		,admin = layui.admin
+		,f = 'iframe'
 		,a = 'layuiadmin-branch-form-submit'
 		,b = 'layuiadmin-branch-form-edit'
 		,c = 'branch-form-tags'
 		,d = 'LAY-app-set-branch'
 		,active = {
-			add: function(){
+			add: function(obj){
 				layer.open({
 				  type: 2
-				  ,title: '添加标签'
+				  ,title: '添加分支'
 				  ,content: 'branchform.html'
 				  ,area: ['450px', '300px']
 				  ,btn: ['确定', '取消']
 				  ,yes: function(index, layero){
+					oparate_active = obj.active;
 					layero.find(f).contents().find("#"+a).click();
 				  }
 				}); 
 			}
-			,edit: function(){
-				var checkStatus = table.checkStatus(d)
-				,data = checkStatus.data; //得到选中的数据
-				data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
+			,edit: function(obj){
 				layer.open({
-						type: 2,
-						title: "编辑分类",
-						content: "branchform.html?id=" + data[0].id,
-						area: ["450px", "200px"],
-						btn: ["确定", "取消"],
-						yes: function(index, layero) {
-							layero.find(f).contents().find("#"+b).click(); 
-						},
-						success: function(t, e) {
-							var iframe = t.find("iframe").contents().find("#"+c).click();
-							iframe.find('input[name="title"]').val(data[0].title)
-							,iframe.find('input[name="priority"]').val(data[0].priority)
-							,iframe.find('input[name="url"]').val(data[0].url)
-							,iframe.find('input[name="msg"]').val(data[0].msg)
-							iframe.find('textarea[name="create_time"]').disabled = !0
-							,iframe.find('textarea[name="update_time"]').disabled = !0
-						}
+					type: 2,
+					title: "编辑当前分支",
+					content: "branchform.html?id=" + data[0].id,
+					area: ["450px", "200px"],
+					btn: ["确定", "取消"],
+					yes: function(index, layero) {
+						oparate_active = obj.active;
+						layero.find(f).contents().find("#"+b).click(); 
+					},
+					success: function(t, e) {
+						//var iframe = t.find("iframe").contents().find("#"+c).click();
+						var iframe = t.find("iframe").contents().find("#"+c);
+						iframe.find('input[name="title"]').val(obj.data[0].title)
+						,iframe.find('input[name="priority"]').val(obj.data[0].priority)
+						,iframe.find('input[name="url"]').val(obj.data[0].url)
+						,iframe.find('input[name="msg"]').val(obj.data[0].msg)
+						iframe.find('textarea[name="create_time"]').disabled = !0
+						,iframe.find('textarea[name="update_time"]').disabled = !0
+					}
 				})
-			
 			}
-			,del: function(t){
-				var checkStatus = table.checkStatus(d)
-				,checkData = checkStatus.data; //得到选中的数据
-
+			,del: function(obj){ 
 				checkData.length === 0 ? layer.msg('请选择数据') :
 				layer.confirm('确定删除吗？', function(index) {
 					//执行 Ajax 后重载
-					result[state] = '01'
 					admin.req({
 						url: 'http://localhost:8080/MyBlog/api/test/branch/del.do'
 						,type: 'post'	
-						,data: {data: JSON.stringify(data.field)}
+						,data: {data: JSON.stringify(obj.data)}
 						,dataType: "json"
 						,done: function(data){
-							layer.msg("删除成功！", {time: 2000}),
-							result[state] = '00',
-							result[result] = !0 
+							parent.oparate_active.del();
+							layer.msg("删除成功！", {time: 2000})
 						} 
+						,fail: function(data){
+							layer.msg("删除失败！", {time: 2000}) 
+						}
 					});	
 				});
 			}
@@ -134,45 +133,16 @@
 		tree.render({//分支结构创建
 			elem: '#show-manage'
 			,data: data
-			//,key: 'id'
 			,renderContent: !0
 			,click: function(obj){
-				layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+				//layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
 			}
 			,operate: function(obj){
-				//obj.type 
-				//删除 整个删除 添加 修改
-				//打开一个open 
-				/*
-				layer.open({
-					type: 2,
-					title: "编辑分类",
-					content: "tagsform.html?id=" + data[0].id,
-					area: ['450px', '300px'],
-					btn: ["确定", "取消"],
-					yes: function(index, layero) {
-						//根据type去点击不同的form表单按钮
-						layero.find(f).contents().find("#"+b).click(); 
-					},
-					success: function(e, i) {
-						//初始化 将原始数据打印在输入框中等待编辑
-						var form = e.find(f).contents().find("#"+t);
-						form.find('input[name="tags"]').val(data[0].tags)
-						,form.find('textarea[name="msg"]').val(data[0].msg)
-					}
-				})
-				*/
-				//根据type去点击不同的form表单按钮
-				active[obj.type] ? active[obj.type]() : '';
-				return result;
+				//obj.type  obj.data  obj.active
+				active[obj.type] ? active[obj.type](obj) : '';
 			}
 		}) 
-	});
-	//操作进度 01 处理中； 00 处理完毕； 00的时候可以对结果进行处理判断 
-	var result = {
-		state: '01'
-		, result: !1
-	};
+	var oparate_active;
 	 
 	</script>
  </body>

@@ -13,49 +13,55 @@
 
 </head>
 <body>
-  <div class="layui-form" lay-filter="branch-form-tags" id="branch-form-tags" style="padding-top: 30px; text-align: center;">
-			<div class="layui-form-item">
-				<label class="layui-form-label">名称</label>
-				<div class="layui-input-block">
-					<input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-				</div>
+	<div class="layui-form" lay-filter="branch-form-tags" id="branch-form-tags" style="padding-top: 30px; text-align: center;">
+		<div class="layui-form-item">
+			<label class="layui-form-label">名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">创建时间</label>
-				<div class="layui-input-block">
-					<input type="text" name="create_time" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
-				</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">属性</label>
+			<div class="layui-input-block">
+				<input type="radio" name="page" value="页面" title="页面" checked="">
+				<input type="radio" name="branch" value="分支" title="分支">
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">修改时间</label>
-				<div class="layui-input-block">
-					<input type="text" name="update_time" lay-verify="title"  autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
-				</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">创建时间</label>
+			<div class="layui-input-block">
+				<input type="text" name="create_time" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">优先级</label>
-				
-				<div class="layui-input-block">
-					<input type="text" name="priority" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-				</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">修改时间</label>
+			<div class="layui-input-block">
+				<input type="text" name="update_time" lay-verify="title"  autocomplete="off" placeholder="请输入标题" class="layui-input layui-disabled">
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">链接</label>
-				<div class="layui-input-block">
-					<input type="text" name="url" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-				</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">优先级</label>
+			<div class="layui-input-block">
+				<input type="text" name="priority" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">备注</label>
-				<div class="layui-input-block">
-					<textarea placeholder="请输入内容" class="layui-textarea" name="msg"></textarea>
-				</div>
-			</div>  
-			<div class="layui-form-item layui-hide">
-				<button lay-submit lay-filter="layuiadmin-branch-form-submit" id="layuiadmin-branch-form-submit">确认添加</button>
-				<button lay-submit lay-filter="layuiadmin-branch-form-edit" id="layuiadmin-branch-form-edit">确认编辑</button>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">链接</label>
+			<div class="layui-input-block">
+				<input type="text" name="url" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
 			</div>
-  </div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<textarea placeholder="请输入内容" class="layui-textarea" name="msg"></textarea>
+			</div>
+		</div>  
+		<div class="layui-form-item layui-hide">
+			<button lay-submit lay-filter="layuiadmin-branch-form-submit" id="layuiadmin-branch-form-submit">确认添加</button>
+			<button lay-submit lay-filter="layuiadmin-branch-form-edit" id="layuiadmin-branch-form-edit">确认编辑</button>
+		</div>
+	</div>
 
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
@@ -71,20 +77,20 @@
 		//添加
 		form.on("submit("+a+")", function(data){
 			var index = parent.layer.getFrameIndex(window.name); 
-			//执行 Ajax 后重载
-			parent.result[state] = '01'
 			admin.req({
 				url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
 				,type: 'post'	
 				,data: {data: JSON.stringify(data.field)}
 				,dataType: "json"
 				,done: function(data){
-					layer.msg("添加成功！", {time: 2000})
-					parent.result[state] = '00';
-					parent.result[result] = !0;
-				} 
+					var b = {};
+					b["label"] = "";//补充
+					b["key"] = "";//补充key 需要后台返回id
+					parent.oparate_active.add(b);
+					layer.msg("添加成功！", {time: 2000}) 
+				}
 				,fail: function(data){
-					parent.result[result] = !1;
+					layer.msg("添加失败！", {time: 2000}) 
 				}
 			});			  
 
@@ -93,8 +99,8 @@
 		})
 		//编辑
 		,form.on("submit("+b+")", function(data){
-			var index = parent.layer.getFrameIndex(window.name);
-			data.field['id'] = param;
+			var index_ = parent.layer.getFrameIndex(window.name);
+			data.field['id'] = index.util.getParameter("id");
 			console.log(JSON.stringify(data.field));
 			//执行 Ajax 后重载
 			$.req({
@@ -102,15 +108,14 @@
 				,type: 'post'	
 				,data: {data: JSON.stringify(data.field)}
 				,done: function(data){
-					layer.msg("修改成功！", {time: 2000});
-					parent.result[state] = '00';
-					parent.result[result] = !0;
+					parent.oparate_active.edit();
+					layer.msg("修改成功！", {time: 2000}); 
 				}
 				,fail: function(data){
-					parent.result[result] = !1;
+					layer.msg("修改失败！", {time: 2000}) 
 				}
 			});	
-			parent.layer.close(index);
+			parent.layer.close(index_);
 			return !1;
 		})
   })

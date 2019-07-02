@@ -52,6 +52,8 @@
 		var table = layui.table
 		,$ = layui.jquery
 		,form = layui.form, addPage, editPage 
+		,admin = layui.admin
+		,f = 'iframe'
 		,a = 'set-data-form-add'
 		,b = 'set-data-form-edit'
 		,c = 'set-form-tags'
@@ -83,7 +85,7 @@
 							layero.find(f).contents().find("#"+b).click(); 
 						},
 						success: function(t, e) {
-							var iframe = t.find("iframe").contents().find("#"+c).click();
+							var iframe = t.find("iframe").contents().find("#"+c);
 							iframe.find('input[name='type_name']")[0].value = data[0].typeName,
 							,iframe.find('input[name='type_id']")[0].value = data[0].id,
 							,iframe.find('input[name='type_code']")[0].value = data[0].typeCode,
@@ -97,8 +99,7 @@
 			}
 			,del: function(t){
 				var checkStatus = table.checkStatus(d)
-				,checkData = checkStatus.data; //得到选中的数据
-
+				,checkData = checkStatus.data; //得到选中的数据 
 				checkData.length === 0 ? layer.msg('请选择数据') :
 				layer.confirm('确定删除吗？', function(index) {
 					//执行 Ajax 后重载
@@ -120,9 +121,7 @@
 		table.render({
 			elem: '#' + d
 			,id: d
-			,url: 'http://localhost:8080/MyBlog/api/test/json.do' 
-			//,toolbar: '#toolbar'
-			//,title: '用户数据表'
+			,url: 'http://localhost:8080/MyBlog/api/test/json.do'  
 			,cols: [[
 				{type: 'checkbox', fixed: 'left'}
 				,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}

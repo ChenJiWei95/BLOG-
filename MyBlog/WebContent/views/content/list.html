@@ -39,12 +39,15 @@
             <label class="layui-form-label">文章标签</label>
             <div class="layui-input-inline">
               <select name="label">
-                <option value="">请选择标签</option>
+                <!--
+				自动生成
+				<option value="">请选择标签</option>
                 <option value="0">美食</option>
                 <option value="1">新闻</option>
                 <option value="2">八卦</option>
                 <option value="3">体育</option>
                 <option value="4">音乐</option>
+				-->
               </select>
             </div>
           </div>
@@ -60,34 +63,26 @@
         <div style="padding-bottom: 10px;">
           <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
 		  <button class="layui-btn layuiadmin-btn-list" data-type="edit_base">编辑信息</button>
-		  <button class="layui-btn layuiadmin-btn-list" data-type="edit">编辑内容</button>
-		  <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="edit">编辑随笔</button>
+		  <button class="layui-btn layuiadmin-btn-list" data-type="del">删除</button>
         </div>
         <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table> 
-        <script type="text/html" id="buttonTpl">
+        <!--
+		<script type="text/html" id="buttonTpl">
           {{#  if(d.status){ }}
             <button class="layui-btn layui-btn-xs">已发布</button>
           {{#  } else { }}
             <button class="layui-btn layui-btn-primary layui-btn-xs">待修改</button>
           {{#  } }}
         </script>
-        <script type="text/html" id="table-content-list">
+		<script type="text/html" id="table-content-list">
           <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
         </script>
+		-->
       </div>
     </div>
-  </div>
-	<div id="edit" style="padding: 30px; display: none;">
-		<form class="layui-form" id="edit-form" action="../../api/test/json.do">
-			<div class="layui-form-item"> 
-				<textarea name="mark_code" style="height: 800px;" class="layui-textarea"></textarea> 
-			</div>
-			<div class="layui-form-item">
-				<button class="layui-btn" lay-submit lay-filter="edit_submit">确认修改</button>
-			</div>
-		</form>
-	</div>
+  </div> 
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
   layui.config({
@@ -96,39 +91,19 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'contlist', 'table'], function(){
     var table = layui.table
-    ,form = layui.form;
+    ,form = layui.form
+	,admin = layui.admin;
     
-    //监听搜索
-    form.on('submit(LAY-app-contlist-search)', function(data){
-      var field = data.field;
-      //执行重载
-      table.reload('LAY-app-content-list', {
-        where: field
-      });
-    });
+    
     //编辑按钮事件
-    var $ = layui.$, active = {
-      batchdel: function(){
-        var checkStatus = table.checkStatus('LAY-app-content-list')
-        ,checkData = checkStatus.data; //得到选中的数据
-
-        if(checkData.length === 0){
-          return layer.msg('请选择数据');
-        }
-      
-        layer.confirm('确定删除吗？', function(index) {
-          
-          //执行 Ajax 后重载
-          /*
-          admin.req({
-            url: 'xxx'
-            //,……
-          });
-          */
-          table.reload('LAY-app-content-list');
-          layer.msg('已删除');
-        });
-      },
+    var $ = layui.$
+	, f = 'iframe'
+	, a = 'LAY-aticle-add'
+	, c = 'LAY-aticle-update'
+	, b = 'LAY-list-submit'
+	, l = 'LAY-app-content-list'
+	, s = 'LAY-app-contlist-search'
+	, active = {
       add: function(){
         layer.open({
           type: 2
@@ -138,31 +113,29 @@
           ,area: ['550px', '550px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
-            //点击确认触发 iframe 内容中的按钮提交
-            var submit = layero.find('iframe').contents().find("#layuiadmin-app-form-submit");
-            submit.click();
-          }
+            layero.find(f).contents().find("#"+a).click();
+          } 
         }); 
       }
-	  ,edit_base: function(){//编辑随笔的基础信息
-		var checkStatus = table.checkStatus('LAY-app-content-list')
+	  ,edit_base: function(){//编辑信息
+		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; //得到选中的数据
 		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
         layer.open({
           type: 2
-          ,title: '随笔基础信息编辑'
+          ,title: '编辑信息'
           ,content: 'listform.html'
-          ,maxmin: true
+          ,maxmin: !0
           ,area: ['550px', '550px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             // 点击确认触发 iframe 内容中的按钮提交
-            var submit = layero.find('form').contents().find("#layuiadmin-app-form-submit");
-            submit.click();
+            layero.find(f).contents().find("#"+c).click();
           }
 		  ,success: function(e, index){// 初始化
-			var iframe = e.find("iframe").contents().find("#aticle-form-admin").click();
+			var iframe = e.find("iframe").contents().find("#aticle-form-admin");
             iframe.find('input[name="sign"]').val(data[0].sign)
+			,iframe.find('input[name="id"]').val(data[0].id)
 			,iframe.find('input[name="title"]').val(data[0].title)
 			,iframe.find('input[name="create_time"]').val(data[0].create_time)
 			,iframe.find('input[name="update_time"]').val(data[0].update_time)
@@ -173,35 +146,60 @@
 		  }
         }); 
       }
-	  ,edit: function(){//编辑随笔的内容
-		var checkStatus = table.checkStatus('LAY-app-content-list')
+	  ,edit: function(){//编辑随笔
+		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; // 得到选中的数据
 		// data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 		layer.open({// 修改
-						type: 1
-						,title: '随笔内容编辑'
-						,shadeClose: true
-						,shade: 0.8
-						,maxmin: !0
-						,area: ['90%','90%']
-						,content: $('#edit')
-						,btnAlign: 'r'
-						,anim: 5
-						,cancel: function(index, layero){
-							layer.close(index); 
-							return false;
-						}
-						,success: function(e, index){
-							var form = e.find("form").contents().find("#edit-form").click();
-							form.find('textarea[name="mark_code"]').val(data[0].mark_code)
-						}
-					});
+		  type: 2
+		  ,title: '编辑随笔'
+		  ,content: 'listcontform.html'
+          ,maxmin: !0
+          ,area: ['550px', '550px']
+          ,btn: ['确定', '取消']
+          ,yes: function(index, layero){
+			layero.find(f).contents().find("#"+b).click();
+			return false;
+		  }
+		  ,success: function(e, index){// 初始化 
+			//var iframe = e.find("iframe").contents().find("#aticle-form-admin");
+			//iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
+		  } 
+		});
+	  }
+	  ,del: function() {
+		var checkStatus = table.checkStatus(d)
+		,checkData = checkStatus.data; //得到选中的数据
+		checkData.length === 0 ? layer.msg('请选择数据') :
+		layer.confirm('确定删除吗？', function(index) {
+			result[state] = '01'
+			admin.req({
+				url: 'http://localhost:8080/MyBlog/api/test/contenList/del.do'
+				,type: 'post'	
+				,data: {data: JSON.stringify(data.field)}
+				,dataType: "json"
+				,done: function(data){
+					layer.msg("删除成功！", {time: 2000}),
+					result[state] = '00',
+					result[result] = !0 
+				} 
+			});	
+		});
 	  }
     }; 
 
     $('.layui-btn.layuiadmin-btn-list').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
+    });
+	
+	//监听搜索
+    form.on('submit('+s+')', function(data){
+      var field = data.field;
+      //执行重载
+      table.reload(l, {
+        where: field
+      });
     });
 
   });

@@ -59,30 +59,14 @@
 		  <button class="layui-btn layuiadmin-btn-admin" data-type="batchdel">删除</button>
         </div>
         
-        <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>  
-        <!--
-		<script type="text/html" id="buttonTpl">
-          {{#  if(d.check == true){ }}
-            <button class="layui-btn layui-btn-xs">已审核</button>
-          {{#  } else { }}
-            <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
-          {{#  } }}
-        </script>
-		<script type="text/html" id="table-useradmin-admin">
-          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-          {{#  if(d.role == '超级管理员'){ }}
-            <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-delete"></i>删除</a>
-          {{#  } else { }}
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
-          {{#  } }}
-        </script>
-		-->
+        <table id="LAY-user-back-admin" lay-filter="LAY-user-back-admin"></table>  
       </div>
     </div>
   </div>
 
  <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
+  var table;
   layui.config({
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
@@ -90,48 +74,51 @@
   }).use(['index', 'useradmin', 'table'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,table = layui.table;
-    
+    ,s = 'LAY-user-back-search'
+	,l = 'LAY-user-back-admin'; 
+    ,table = layui.table
+	,a = 'LAY-user-admin-add'
+	,b = 'LAY-user-admin-update'
+	,f = 'layuiadmin-form-admin'
+	,i = 'iframe';
     //监听搜索
-    form.on('submit(LAY-user-back-search)', function(data){
+    form.on('submit('+s+')', function(data){
       var field = data.field;
       
       //执行重载
-      table.reload('LAY-user-back-manage', {
+      table.reload(l, {
         where: field
       });
     });
   
     //事件
     var active = {
-      batchdel: function(){
-        var checkStatus = table.checkStatus('LAY-user-back-manage')
-        ,checkData = checkStatus.data; //得到选中的数据
-
-        if(checkData.length === 0){
-          return layer.msg('请选择数据');
-        }
-        
-        layer.prompt({
-          formType: 1
-          ,title: '敏感操作，请验证口令'
-        }, function(value, index){
-          layer.close(index);
-          
-          layer.confirm('确定删除吗？', function(index) {
-            
-            //执行 Ajax 后重载
-            /*
-            admin.req({
-              url: 'xxx'
-              //,……
-            });
-            */
-            table.reload('LAY-user-back-manage');
-            layer.msg('已删除');
-          });
-        }); 
-      }
+		batchdel: function(){
+			var checkStatus = table.checkStatus(l)
+			,checkData = checkStatus.data; //得到选中的数据
+			checkData.length == 0 ? layer.msg("请选中") :
+			layer.prompt({
+			  formType: 1
+			  ,title: '敏感操作，请验证口令'
+			}, function(value, index){
+			  var data = {};
+			  data["token"] = value
+			  ,data["data"] = checkData;
+			  layer.confirm('确定删除吗？', function(index) {
+				admin.req({
+					url: 'http://localhost:8080/MyBlog/api/test/admin/del.do'
+					,type: 'post'
+					,data: {data: JSON.stringify(data)}
+					,dataType: "json"
+					,done: function(data){
+						layer.msg("删除成功！", {time: 2000}),
+						table.reload(l);
+					} 
+				});		 
+			  });
+			  layer.close(index);
+			})
+		}
 		,add: function(){
 			layer.open({
 				type: 2
@@ -140,26 +127,12 @@
 				,area: ['420px', '420px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
-					var iframeWindow = window['layui-layer-iframe'+ index]
-					,submitID = 'LAY-user-back-submit'
-					,submit = layero.find('iframe').contents().find('#'+ submitID);
-
-					//监听提交
-					iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
-						var field = data.field; //获取提交的字段
-				  
-						//提交 Ajax 成功后，静态更新表格中的数据
-						//$.ajax({});
-						table.reload('LAY-user-front-submit'); //数据刷新
-						layer.close(index); //关闭弹层
-					});  
-				
-					submit.trigger('click');
+					layero.find(i).contents().find("#"+a).click(); 
 				}
 			}); 
 		}
 		,edit: function(){
-			var checkStatus = table.checkStatus('LAY-user-back-manage')
+			var checkStatus = table.checkStatus(l)
 			,data = checkStatus.data; //得到选中的数据
 			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 			layer.open({
@@ -168,28 +141,17 @@
                 ,content: "adminform.html"
                 ,area: ['420px', '420px']
                 ,btn: ["确定", "取消"]
-                ,yes: function(e, t) {
-                    var l = window["layui-layer-iframe" + e],
-                    r = t.find("iframe").contents().find("#LAY-user-role-submit");
-                    l.layui.form.on("submit(LAY-user-role-submit)",
-                    function(t) {
-                        t.field;
-                        table.reload("LAY-user-back-manage"),
-                        layer.close(e)
-                    }),
-                    r.trigger("click")
+                ,yes: function(index, layero) {
+                    layero.find(i).contents().find("#"+b).click();
                 }
-                ,success: function(e, t) {
-					//当页面加载成功的时候会调用此方法，
-					//可以再此对页面进行初始化 管理等级初始选项、权限初始选项、select选项集
-					//e 是iframe元素
-					console.log("测试success返回的值和情况"+t + " e ");
-					console.log(e[0]);
-				}
-				,btn2: function(e, t) {
-					console.log("测试btn2返回的值和情况"+t);
-					console.log("e " + e);
-				}
+				success: function(e, index) {
+					var iframe = e.find(i).contents().find("#"+f);
+					iframe.find('input[name="id"]').val(data[0].id)
+					,iframe.find('textarea[name="loginname"]').val(data[0].loginname)
+					,iframe.find('textarea[name="phone"]').val(data[0].phone)
+					,iframe.find('textarea[name="email"]').val(data[0].email) 
+					//补充选择角色
+				} 
             })
 		}
     }  

@@ -22,15 +22,15 @@ function(e) {
     };
     table.render({//消息通知
         elem: "#LAY-app-message-all",
-        url: 'http://localhost:8080/MyBlog/api/test/message/.do',
+        url: 'http://localhost:8080/MyBlog/api/test/message/all.do',
         page: !0,
         cols: [[{
             type: "checkbox",
             fixed: "left"
         },
         {
-            field: "title",
-            title: "标题内容",
+            field: "msg",
+            title: "描述",
             minWidth: 300,
             templet: a
         },
@@ -44,15 +44,15 @@ function(e) {
     }),
     table.render({
         elem: "#LAY-app-message-notice",
-        url: layui.setter.base + "json/message/notice.js",
+        url: 'http://localhost:8080/MyBlog/api/test/message/notice.do',
         page: !0,
         cols: [[{
             type: "checkbox",
             fixed: "left"
         },
         {
-            field: "title",
-            title: "标题内容",
+            field: "msg",
+            title: "描述",
             minWidth: 300,
             templet: a
         },
@@ -66,15 +66,15 @@ function(e) {
     }),
     table.render({
         elem: "#LAY-app-message-direct",
-        url: layui.setter.base + "json/message/direct.js",
+        url: 'http://localhost:8080/MyBlog/api/test/message/direct.do',
         page: !0,
         cols: [[{
             type: "checkbox",
             fixed: "left"
         },
         {
-            field: "title",
-            title: "标题内容",
+            field: "msg",
+            title: "描述",
             minWidth: 300,
             templet: a
         },
@@ -117,9 +117,9 @@ function(e) {
     jquery(".LAY-app-message-btns .layui-btn").on("click",
     function() {
         var e = jquery(this),
-        "events" = e.data("events"),
+        events = e.data("events"),
         type = e.data("type");
-        active["events"] && active["events"].call(this, e, type)
+        active[events] && active[events].call(this, e, type)
     }),
     e("message", {})
 });

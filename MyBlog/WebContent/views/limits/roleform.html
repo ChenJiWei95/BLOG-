@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,22 +12,29 @@
 
   <div class="layui-form" lay-filter="layuiadmin-form-role" id="layuiadmin-form-role" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
-      <label class="layui-form-label">角色</label>
+	  <label class="layui-form-label">id</label>
       <div class="layui-input-block">
-        <select name="rolename">
-          <option value="0">管理员</option>
-          <option value="1">超级管理员</option>
-          <option value="2">纠错员</option>
-          <option value="3">采购员</option>
-          <option value="4">推销员</option>
-          <option value="5">运营人员</option>
-          <option value="6">编辑</option>
-        </select>
+		<input type="text" name="id" lay-verify="required" disabled autocomplete="off" class="layui-input">
+	  </div>
+	</div>　
+	<div class="layui-form-item">
+      <label class="layui-form-label">角色</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="name" lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">级别</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="priority" lay-verify="required" placeholder="级别数越高权利越大" autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">权限范围</label>
       <div class="layui-input-block">
+		<!--
+		根据页面模块自动生成选框
+		-->
         <input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="用户">
@@ -41,7 +46,7 @@
         <input type="checkbox" name="limits[]" lay-skin="primary" title="发邮件">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="发短信">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="审核">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="删库跑路">
+        <input type="checkbox" checked name="limits[]" lay-skin="primary" title="看效果">
       </div>
     </div>
     <div class="layui-form-item">
@@ -51,7 +56,8 @@
       </div>
     </div>
     <div class="layui-form-item layui-hide">
-      <button class="layui-btn" lay-submit lay-filter="LAY-user-role-submit" id="LAY-user-role-submit">提交</button>
+	  <button class="layui-btn" lay-submit lay-filter="LAY-user-role-add" id="LAY-user-role-add">添加</button>
+	  <button class="layui-btn" lay-submit lay-filter="LAY-user-role-update" id="LAY-user-role-update">修改</button>
     </div>
   </div>
 
@@ -63,7 +69,39 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'form'], function(){
     var $ = layui.$
-    ,form = layui.form ;
+    ,form = layui.form 
+	,a = "LAY-user-role-add"
+	,b = "LAY-user-role-update";
+	form.on("submit("+a+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name); 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/role/add.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
+	,form.on("submit("+b+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name); 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/role/update.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
   })
   </script>
 </body>

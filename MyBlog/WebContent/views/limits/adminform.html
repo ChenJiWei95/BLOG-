@@ -11,9 +11,14 @@
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body>
-
   <div class="layui-form" lay-filter="layuiadmin-form-admin" id="layuiadmin-form-admin" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
+      <label class="layui-form-label">ID</label>
+      <div class="layui-input-inline">
+        <input type="text" name="id" disabled lay-verify="required" placeholder="不允许操作" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
       <label class="layui-form-label">登录名</label>
       <div class="layui-input-inline">
         <input type="text" name="loginname" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
@@ -33,12 +38,24 @@
     </div>
     <div class="layui-form-item">
       <label class="layui-form-label">角色</label>
-      <div class="layui-input-inline">
-        <input type="text" name="role" lay-verify="required" placeholder="请输入角色类型" autocomplete="off" class="layui-input">
-      </div>
-    </div> 
+      <div class="layui-input-block">
+        <select name="rolename">
+          <!--
+		  自动生成角色
+		  <option value="0">管理员</option>
+          <option value="1">超级管理员</option>
+          <option value="2">纠错员</option>
+          <option value="3">采购员</option>
+          <option value="4">推销员</option>
+          <option value="5">运营人员</option>
+          <option value="6">编辑</option>
+		  -->
+        </select>
+    </div>
+    </div>
     <div class="layui-form-item layui-hide">
-      <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-back-submit" value="确认">
+      <input type="button" lay-submit lay-filter="LAY-user-admin-add" id="LAY-user-admin-add" value="确认">
+      <input type="button" lay-submit lay-filter="LAY-user-admin-update" id="LAY-user-admin-update" value="确认">
     </div>
   </div>
 
@@ -50,7 +67,39 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'form'], function(){
     var $ = layui.$
-    ,form = layui.form ;
+    ,form = layui.form 
+	,f = 'layuiadmin-form-admin'
+	,a = 'LAY-user-admin-add'
+	,b = 'LAY-user-admin-update'; 
+	form.on("submit("+a+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name); 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/admin/add.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
+	,form.on("submit("+b+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name);  
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/admin/update.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("修改成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
   })
   </script>
 </body>

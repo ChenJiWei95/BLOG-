@@ -45,12 +45,9 @@
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
           <button class="layui-btn layuiadmin-btn-comm" data-type="batchdel">删除</button>
+          <button class="layui-btn layuiadmin-btn-comm" data-type="to">查看原文</button>
         </div>
         <table id="LAY-app-content-comm" lay-filter="LAY-app-content-comm"></table>  
-        <script type="text/html" id="table-content-com">
-          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-see"></i>查看原文</a>
-          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-reply"></i>回复</a>
-        </script>
       </div>
     </div>
   </div>
@@ -64,44 +61,43 @@
   }).use(['index', 'contlist', 'table'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,table = layui.table;
-    
-    
-    //监听搜索
-    form.on('submit(LAY-app-contcomm-search)', function(data){
+    ,table = layui.table
+	,admin = layui.admin
+	,l = "LAY-app-content-comm"
+	,s = "LAY-app-contcomm-search"
+	,active = {
+	  to : function (){
+		//iframe窗口打开 
+	  }
+      ,batchdel: function(){
+        var checkStatus = table.checkStatus(l)
+        ,checkData = checkStatus.data; //得到选中的数据
+		checkData.length == 0 ? layer.msg("请选中一项") : checkData.length > 1 ? layer.msg("只能选中一项") : 
+        layer.confirm('确定删除吗？', function(index) { 
+          //执行 Ajax 后重载
+		  admin.req({
+            url: 'http://localhost:8080/MyBlog/api/test/contenList/comment_del.do'
+			,type: 'post'	
+			,data: {data: checkData}
+			,done: function(data){ 
+				layer.msg("删除成功！", {time: 2000}),
+				table.reload(l);
+			}
+			,fali: function(t){
+				console.log('异常' + t);
+				layer.msg("删除失败！", {time: 2000}),
+			}
+          });   
+        });
+      }
+    }; 
+	//监听搜索
+    form.on('submit(s)', function(data){
       var field = data.field;
-      
-      //执行重载
-      table.reload('LAY-app-content-comm', {
+      table.reload(l, {
         where: field
       });
     });
-    
-    //点击事件
-    var active = {
-      batchdel: function(){
-        var checkStatus = table.checkStatus('LAY-app-content-comm')
-        ,checkData = checkStatus.data; //得到选中的数据
-
-        if(checkData.length === 0){
-          return layer.msg('请选择数据');
-        }
-      
-        layer.confirm('确定删除吗？', function(index) {
-          
-          //执行 Ajax 后重载
-          /*
-          admin.req({
-            url: 'xxx'
-            //,……
-          });
-          */
-          table.reload('LAY-app-content-comm');
-          layer.msg('已删除');
-        });
-      }
-    }  
-
     $('.layui-btn.layuiadmin-btn-comm').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
