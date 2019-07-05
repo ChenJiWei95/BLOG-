@@ -278,6 +278,11 @@ public class TestControl {
 		
 		return object;
 	}
+	@RequestMapping("/api/test/tags.do")
+	@ResponseBody
+	public Object test11(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return response;
+	}
 	public static void main(String[] args){
 		String json = "{\r\n" + 
 				"	\"code\": 0,\r\n" + 
