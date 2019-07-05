@@ -73,7 +73,8 @@ config是如何被传入
 消息通知
 	浏览（文章、）评论（文章） 点赞（文章） 留言
 	表 ： id 标题（浏览通知、评论通知、点赞通知、私信）  时间 msg
-	分栏 所有、通知、私信
+	type 01全部 02随笔 03留言 04系统
+	isRead 00已读 01未读
 	
 	id msg 时间 type(信息类型-隐藏) 
 	例如： 
@@ -85,20 +86,19 @@ config是如何被传入
 		0007 小鸟浏览了你		2019-06-27 16:30:14 06
 		0008 超级管理员
 	点击可以查看详细
-	消息临时表 	ID 备注 时间  分栏
-	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) 分栏
+	消息临时表 	ID 备注 时间  type
+	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
+	
 	消息被查看之后就会在临时表中删除已查看的消息
 	0001 
 	小猪				2019-06-27 16:30:12
 		赞了小花的评论
 	0002
 	小猪				2019-06-27 16:30:12
-		[java并发]
-		这篇文章写得不错！
+		[java并发]这篇文章写得不错！
 	0003
 	小猪				2019-06-27 16:30:12
-		[java并发]
-		@小花：你好啊！
+		[java并发]@小花：你好啊！
 	0006
 	小鸟				2019-06-27 16:30:12
 		感谢站长辛苦的劳作。
@@ -144,9 +144,14 @@ config是如何被传入
 			'http://localhost:8080/MyBlog/api/test/admin/update.do'
 		
 	消息
-		'http://localhost:8080/MyBlog/api/test/message/direct.do', 私信
-		'http://localhost:8080/MyBlog/api/test/message/notice.do', 管理信息
+		'http://localhost:8080/MyBlog/api/test/message/direct.do', 留言
 		'http://localhost:8080/MyBlog/api/test/message/aticle.do', 随笔信息
+		'http://localhost:8080/MyBlog/api/test/message/all.do', 所有信息
+		'http://localhost:8080/MyBlog/api/test/message/sys.do', 系统信息
+		
+		'http://localhost:8080/MyBlog/api/test/message/ready.do'
+		'http://localhost:8080/MyBlog/api/test/message/readyAll.do'
+		'http://localhost:8080/MyBlog/api/test/message/del.do'
 	
 	对encryptData字段 的加密
 	public static String encryptECB(String content, String key) throws Exception {

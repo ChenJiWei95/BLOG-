@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>图片资源管理 iframe 框</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="source-form-picture" id="source-form-picture" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+	  <label class="layui-form-label">ID</label>
+      <div class="layui-input-block">
+		<input type="text" name="id"  disabled autocomplete="off" class="layui-input">
+	  </div>
+	</div>　
+	<div class="layui-form-item">
+      <label class="layui-form-label">名称</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="name" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">上传时间</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="upload_time" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">改动时间</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="update_time" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">访问路径</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="path" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">备注</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="msg" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-upload">
+	  <button type="button" class="layui-btn" id="test1">上传图片</button>
+	  <div class="layui-upload-list">
+		<img class="layui-upload-img" id="demo1">
+		<p id="demoText"></p>
+	  </div>
+	</div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">具体描述</label>
+      <div class="layui-input-block">
+        <textarea type="text" name="descr" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+	  <button class="layui-btn" lay-submit lay-filter="LAY-source-picture-upload" id="LAY-source-picture-upload">上传</button>
+	  <button class="layui-btn" lay-submit lay-filter="LAY-source-picture-update" id="LAY-source-picture-update">修改</button>
+    </div>
+  </div>
+
+  <script src="../../layuiadmin/layui/layui.js"></script>  
+  <script>
+  layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'form', 'upload'], function(){
+    var $ = layui.$
+    ,form = layui.form 
+	,upload = layui.upload
+	,a = "LAY-source-picture-upload"
+	,b = "LAY-source-picture-update"
+	//普通图片上传
+	,uploadInst = upload.render({
+		elem: '#test1'
+		,url: '/upload/'
+		,before: function(obj){
+		  //预读本地文件示例，不支持ie8
+		  obj.preview(function(index, file, result){
+			$('#demo1').attr('src', result); //图片链接（base64）
+		  });
+		}
+		,done: function(res){
+		  //如果上传失败
+		  if(res.code > 0){
+			return layer.msg('上传失败');
+		  }
+		  //上传成功
+		}
+		,error: function(){
+		  //演示失败状态，并实现重传
+		  var demoText = $('#demoText');
+		  demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+		  demoText.find('.demo-reload').on('click', function(){
+			uploadInst.upload();
+		  });
+		}
+	});
+	form.on("submit("+a+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name); 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/role/add.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
+	,form.on("submit("+b+")", function(data){
+		var index = parent.layer.getFrameIndex(window.name); 
+		//执行 Ajax 后重载
+		admin.req({
+			url: 'http://localhost:8080/MyBlog/api/test/role/update.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});			  
+		parent.layer.close(index);
+		return false;
+	})
+  })
+  </script>
+</body>
+</html>

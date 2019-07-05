@@ -26,7 +26,6 @@
           <div class="layadmin-text">
             {{ d.data.content }}
           </div>
-          
           <div style="padding-top: 30px;">
             <a href="javascript:;" layadmin-event="back" class="layui-btn layui-btn-primary layui-btn-sm">返回上级</a>
           </div>
@@ -41,7 +40,24 @@
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index']);
+  }).use(['index'], function(){
+	var index = layui.index
+	,id = index.util.getParameter("id")
+	,b = {};
+	b["id"] = id;
+	//打开之后标记为已读
+	admin.req({
+		url: 'http://localhost:8080/MyBlog/api/test/message/ready.do'
+		,type: 'post'
+		,data: {data: JSON.stringify(b)}
+		,dataType: "json"
+		,done: function(data){
+			layer.msg("标记已读成功", {
+				icon: 1
+			})
+		}
+	})
+  });
   </script>
 </body>
 </html>
