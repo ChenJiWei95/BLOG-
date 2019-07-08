@@ -3,13 +3,13 @@ package com.blog.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.Session;
+//import org.hibernate.Session;
 
-import com.rjht.Page;
-import com.rjht.exception.DBException;
+//import com.rjht.Page;
+//import com.rjht.exception.DBException;
 
 public interface BasiDao<T> {
-	Serializable save(T entity);
+	/*Serializable save(T entity);
 	Serializable save(T entity, Session session);
 	void update(T entity);
 	void update(T entity, Session session);
@@ -20,7 +20,7 @@ public interface BasiDao<T> {
 	T get(Serializable id);
 	List<T> findAll();
 	List<T> finds(T entity);
-	List<T> findsById(Serializable id);
+	List<T> findsById(Serializable id);*/
 	//public long count
 	//public Page<T> findPage
 	/**

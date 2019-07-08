@@ -129,8 +129,6 @@ public class NotifyControl {
 			e.printStackTrace();
 		}
 		
-		
-		
 	}
 	@RequestMapping("/api/fz/bindNotify.do")
 	public void bindNotify1(HttpServletRequest request, HttpServletResponse response){
@@ -259,7 +257,6 @@ public class NotifyControl {
         }
 		
 		try {
-
             HttpURLConnection conn = (HttpURLConnection) url
                     .openConnection();
             conn.setConnectTimeout(3000);

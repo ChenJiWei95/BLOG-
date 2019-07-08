@@ -5,15 +5,39 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
+//import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.blog.dao.BasiDao;
-import com.blog.dao.Session;
+//import com.blog.dao.Session;
 
 public class BasiDaoImpl<T> implements BasiDao<T> {
-	private Class<T> entityClass;
+
+	@Override
+	public void refresh(T entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void evict(T entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void flush() {
+		// TODO Auto-generated method stub
+		
+	}
+	/*private Class<T> entityClass;
 	@Autowired
 	private SessionFactory sessionFactory;
 	public BasiDaoImpl() {
@@ -119,6 +143,6 @@ public class BasiDaoImpl<T> implements BasiDao<T> {
 	public void flush() {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 	
 }
