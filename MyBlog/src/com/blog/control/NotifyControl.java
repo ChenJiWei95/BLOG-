@@ -241,10 +241,10 @@ public class NotifyControl {
 	
 	
 	public static void main(String[] args){
-		//url = new URL("http://localhost:7080/MyBlog/api/bindNotify.do");
+//		String url = "http://localhost:8080/MyBlog/api/bindNotify.do";
 		//payNotify rePayNotify bindNotify
-		String url = "http://www.chenjiwey.cn:8080/api/bindNotify.do";
-		post(url, "你好");
+		String url = "http://localhost:8080/authsys/api/channel/ls/kj/payNotify.do";
+		post(url, "encryptData=BoVx7xRdAistcNPvmdpiNtqFLaNq5E%2B7cO8uokPw1vAtbaPeSz%2F1LSIPaYgBlYOTz37ClOMtfb9kPQokT06032jqf%2FnHzmGTIfQnqE7sUVKQKIqneX%2Bf0wVvdHLv42eZYBPeOrWFAebw8DCGqEVdIxXCfm%2Fqbfc4ye1R0wy2n4BYndHYWRXK8nEv9uYpWwHBWVqJwZhJFJg1whC1egVv%2FANJGWFHAJMLL4cI5o4an101FcTvyJ%2FgaXeCtO605Sp1QQ5%2FWYx4GK98n3%2FHzujqgg%3D%3D&encryptKey=Ewe9uhiD%2Fo%2B7r4zM1Vyp0nwtJJV8MONtitsCkNm8VJgHiYbK0jypJd7x7q1uaI46sVeklpcsPJcFV2ffVPf6gMegUCOpxG1ZXBT8b9NniNMBMp2pzhbEQSOP7KN%2Fws3QELifVrmGTSIBT0KoWqHa96VXTGr0h2DWE1edb9pLTRO0vIDRlewAVDCt7zf8eAZDVuVPL1FjPB%2BTR43FyKf%2B0lAaHijv%2F82bMDq4zt0ANE3DVr3MsVnVlCZHlRo5BcHnOC3ixIGRuc80S2I6L3M%2Bw0jH9cGzUKvEL8ICUC8iNMLhFPUQ3F%2B4gzuqNZOI0k7BQcgaLLsu8tND3TSShjb06w%3D%3D&companyId=&strMerchantID=1010012910&signData=frtTlt%2F2JNvb%2Fu8WEFO2el5DFY%2FLHOQCm6SRN7cjWp%2Faa%2B1C%2F9XWRFiNNDQqNNzvBhMTdmAm6iZLwmGHod%2Fc9jq5%2FkLvD1qV%2B1x1GeCofTqBUCgvFOD7TG%2FvsohBF3B%2BTfo9R2CJjv0lyP1MVg0re%2FXMv%2FtJcz1wU3r6fFBkPFiVcwoJcES7YeBPLyjo1sBiIgRNsafVtLzEfxvpnvOhyKgf8mwnA8pHLzppZMxAdjLjPe2GQjzzs31GSa%2BoMfTaIWh8A2FQ2nQKqOAwQ8FQ01HxvCymRicu3XezH0btW1Wkf96GQQY28RAPDbWiya5cBVaPmsq%2F0yzfsH0H6q70OA%3D%3D&");
         
 	}
 	
@@ -257,15 +257,16 @@ public class NotifyControl {
             System.out.println("url异常");
             e.printStackTrace();
         }
-		
+		InputStream in = null;
+		DataOutputStream dos = null;
+		ByteArrayOutputStream baos = null;
 		try {
-
             HttpURLConnection conn = (HttpURLConnection) url
                     .openConnection();
             conn.setConnectTimeout(3000);
             //设置参数
             conn.setDoOutput(true);   //需要输出
-            conn.setDoInput(true);   //需要输入
+            conn.setDoInput(true);
             conn.setUseCaches(false);  //不允许缓存
             conn.setRequestMethod("POST");   //设置POST方式连接
             //设置请求属性
@@ -276,30 +277,32 @@ public class NotifyControl {
             //连接,也可以不用明文connect，使用下面的httpConn.getOutputStream()会自动connect
             conn.connect();
             //建立输入流，向指向的URL传入参数
-            DataOutputStream dos=new DataOutputStream(conn.getOutputStream());
+            dos=new DataOutputStream(conn.getOutputStream());
             dos.write(data.getBytes("utf-8"));
             dos.flush();
             dos.close();
             
-            InputStream in = conn.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            in = conn.getInputStream();
+            baos = new ByteArrayOutputStream();
             int len = -1;
             byte[] buffer = new byte[1024];
             while ((len = in.read(buffer)) != -1) 
                 baos.write(buffer, 0, len);
             result = new String(baos.toByteArray());
-
-            baos.flush();
-            baos.close();
-            in.close();
             
         } catch (IOException e) {
             System.out.println("io异常");
             e.printStackTrace();
-        } 
+        } finally {
+            /*try {
+            	baos.flush();
+				baos.close();
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+        }
 		return result;
 	}
-	
-	
-	
 }

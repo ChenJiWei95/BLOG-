@@ -17,10 +17,10 @@
 	
 	<!-- 数据源：DriverManagerDataSource -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://120.79.149.233:3306/C_BLOG"/>
-		<property name="username" value="chenjiwei"/>
-		<property name="password" value="cjw168999"/>
+		<property name="driverClassName" value="${mybatis.jdbc.driver}" />
+		<property name="url" value="${mybatis.jdbc.jdbcUrl}"/>
+		<property name="username" value="${mybatis.jdbc.username}"/>
+		<property name="password" value="${mybatis.jdbc.password}"/>
 	</bean>
 	
 	<!-- 

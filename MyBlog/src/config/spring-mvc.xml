@@ -29,7 +29,7 @@
     	@RequestMapping 请求方法只返回"fonts/success"
     	与此处拼接得到一个完整的链接
     	 -->
-    	<property name="suffix" value=".jsp"></property>
+    	<property name="suffix" value="${springmvc.suffix}"></property>
     </bean>
     <!-- 
     BeanNameViewResolver 视图解析方式 不只是一种解析方式

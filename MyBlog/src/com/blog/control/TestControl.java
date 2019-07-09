@@ -250,7 +250,7 @@ public class TestControl {
 		
 		return object;
 	}
-	@RequestMapping("/api/test/tags.do")
+	@RequestMapping("/api/test/tag1.do")
 	@ResponseBody
 	public Object test10(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		System.out.println("初始化");
