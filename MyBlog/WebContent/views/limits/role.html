@@ -116,8 +116,10 @@
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
 					,form.find('textarea[name="name"]').val(data[0].name)
-					,form.find('textarea[name="descr"]').val(data[0].desc)
-					,form.find('textarea[name="priority"]').val(data[0].priority)
+					,form.find('textarea[name="create_time"]').val(data[0].name)
+					,form.find('textarea[name="update_time"]').val(data[0].desc)
+					,form.find('textarea[name="desc"]').val(data[0].desc)
+					,form.find('textarea[name="limitData"]').val(data[0].priority)
 					//补充选项框
 				}
             })

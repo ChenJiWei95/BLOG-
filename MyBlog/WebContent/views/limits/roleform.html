@@ -18,7 +18,7 @@
 	  </div>
 	</div>　
 	<div class="layui-form-item">
-      <label class="layui-form-label">角色</label>
+      <label class="layui-form-label">名称</label>
       <div class="layui-input-block"> 
 		<input type="text" name="name" lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
       </div>
@@ -27,6 +27,18 @@
       <label class="layui-form-label">级别</label>
       <div class="layui-input-block"> 
 		<input type="text" name="priority" lay-verify="required" placeholder="级别数越高权利越大" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">创建时间</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="create_time" disabled autocomplete="off" class="layui-input">
+      </div>
+    </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">修改时间</label>
+      <div class="layui-input-block"> 
+		<input type="text" name="update_time" disabled autocomplete="off" class="layui-input">
       </div>
     </div>
     <div class="layui-form-item">
@@ -52,7 +64,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">具体描述</label>
       <div class="layui-input-block">
-        <textarea type="text" name="descr" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+        <textarea type="text" name="desc" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
       </div>
     </div>
     <div class="layui-form-item layui-hide">

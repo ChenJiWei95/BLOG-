@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.dao.UserDao">
+	<!-- <select id="queryUsers" parameterType="com.model.User" resultType="com.model.User" useCache="false">
+		SELECT * FROM member WHERE id=#{id}
+	</select> -->
+	<!-- 创建工单 -->
+	<!-- <select id="queryUsers" parameterType="Integer" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE id=#{id}
+	</select> -->
+	<select id="queryUserByUsername" parameterType="STRING" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE username=#{username}
+	</select>
+</mapper>

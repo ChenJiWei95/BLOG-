@@ -28,14 +28,98 @@
 
 栏	：夹表	-- ID 名称 创建时间 改动时间 显示优先级 关联夹ID 备注   {可去除 资源表代替}
 栏	：资源表-- ID 名称 创建时间 改动时间 显示优先级 链接（##/href） 关联夹ID 备注
-角色表	：表    -- ID 
-权限项	：表	-- ID 名称 创建时间 改动时间 关联页面项id 关联角色id 启用状态 备注   
-管理员	：表	-- ID 名称 昵称 账号 密码 创建时间 改动时间 角色 phone email 关联角色id 备注
-操作日志：表	-- ID 时间 描述
-文章标签：表    -- ID 标签名称 创建时间 修改时间 备注
-文章	：表    -- ID 创建时间 修改时间 文章名称 
-管理员角色关联表： ID 管理员ID 角色ID
+#角色表	：表    -- ID name create_time update_time desc 
+	CREATE TABLE role(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`name` VARCHAR(30) NULL COMMENT '角色名',  
+		`create_time` DATETIME NULL COMMENT '',  
+		`update_time` DATETIME NULL COMMENT '',  
+		`desc` VARCHAR(100) NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色表'; 
+#权限项	：表	-- ID 名称 创建时间 改动时间 关联页面项id 关联角色id 启用状态 备注 
+ 	CREATE TABLE limit_item(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`name` VARCHAR(30) NULL COMMENT '权限项名',  
+		`create_time` DATETIME NULL COMMENT '',  
+		`update_time` DATETIME NULL COMMENT '',  
+		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00',  
+		`msg` VARCHAR(100) NULL COMMENT '备注',  
+		`app_id` INT NULL COMMENT '关联页面项id',
+		`role_id` INT NULL COMMENT '关联角色id'
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限项';
+#管理员角色关联表： ID 管理员ID 角色ID 
+	CREATE TABLE admin_role_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`admin_id` CHAR(10) NULL COMMENT '管理员ID',  
+		`role_id` INT NULL COMMENT '角色ID'
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
+#管理员账户表	
+#：表	-- ID 账号 密码 创建时间 修改时间 登录状态
+	CREATE TABLE admin_account(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`username` VARCHAR(20) NULL COMMENT '',  
+		`password` VARCHAR(20) NULL COMMENT '',  
+		`create_time` DATETIME NULL COMMENT '',  
+		`update_time` DATETIME NULL COMMENT '',  
+		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00'
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员账户表'; 
+#管理员信息	：表	-- ID 名称 昵称 创建时间 改动时间 phone email 关联角色id 管理员账户关联id 备注
+	CREATE TABLE admin_infor(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`name` VARCHAR(30) NULL COMMENT '名',  
+		`name_` VARCHAR(30) NULL COMMENT '昵称，回复评论时使用',  
+		`create_time` DATETIME NULL COMMENT '',  
+		`update_time` DATETIME NULL COMMENT '',  
+		`phone` VARCHAR(20) NULL COMMENT '',  
+		`email` VARCHAR(30) NULL COMMENT '',  
+		`admin_account_id` INT NULL COMMENT '',
+		`role_id` INT NULL COMMENT '关联角色id',
+		`desc` VARCHAR(100) NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员信息表'; 
+#操作日志：表	-- ID 时间 描述
+#文章	：表    -- ID 创建时间 修改时间 文章名称 描述
+	CREATE TABLE aticle(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`name` VARCHAR(40) NULL COMMENT '文章名称',
+		`url` VARCHAR(50) NULL COMMENT '资源位置',
+		`create_time` DATETIME NULL COMMENT '',
+		`update_time` DATETIME NULL COMMENT '',
+		`good` INT NULL COMMENT '',
+		`reply` INT NULL COMMENT '',
+		`view` INT NULL COMMENT '',
+		`desc` VARCHAR(100) NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章表';
 
+#文章标签：表    -- ID 标签名称 创建时间 修改时间 备注
+	CREATE TABLE aticle_tag(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`name` VARCHAR(40) NULL COMMENT '文章名称',
+		`create_time` DATETIME NULL COMMENT '',
+		`update_time` DATETIME NULL COMMENT '', 
+		`msg` VARCHAR(50) NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签表';
+#文章标签关联	-- ID 文章id 标签id 
+	CREATE TABLE aticle_tag_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`aticle_id` INT NULL COMMENT '',
+		`tag_id` INT NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签关联表';
+	
+#消息通知 表 ： 	-- ID content type 时间 isRead msg
+#异常通知
+#ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
+	CREATE TABLE message(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`aticle_id` INT NULL COMMENT '关联文章',
+		`to` VARCHAR(30) NULL COMMENT '关联的人',
+		`self` VARCHAR(30) NULL COMMENT '操作人',
+		`type` VARCHAR(400) NULL COMMENT '',
+		`content` CHAR(2) NULL COMMENT '',
+		`time` DATETIME NULL COMMENT '', 
+		`isRead` CHAR(2) NULL COMMENT '' DEFAULT '00',
+		`msg` VARCHAR(100) NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签关联表';
+	
 样式先加载出来 
 分析需要什么数据字段
 data-name 标识
@@ -72,9 +156,9 @@ config是如何被传入
 	表 ： id 评论者 评论内容 评论时间 随笔标题 回复数 点赞数
 消息通知
 	浏览（文章、）评论（文章） 点赞（文章） 留言
-	表 ： id 标题（浏览通知、评论通知、点赞通知、私信）  时间 msg
-	type 01全部 02随笔 03留言 04系统
-	isRead 00已读 01未读
+	表 ： id 标题 type 时间 isRead msg
+	type 02随笔 03留言 04系统
+	isRead 00已读 01未读 
 	
 	id msg 时间 type(信息类型-隐藏) 
 	例如： 
@@ -86,7 +170,7 @@ config是如何被传入
 		0007 小鸟浏览了你		2019-06-27 16:30:14 06
 		0008 超级管理员
 	点击可以查看详细
-	消息临时表 	ID 备注 时间  type
+	消息临时表 	ID 备注 时间 type  取消
 	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
 	
 	消息被查看之后就会在临时表中删除已查看的消息

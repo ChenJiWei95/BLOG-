@@ -139,13 +139,14 @@
 			,iframe.find('input[name="title"]').val(data[0].title)
 			,iframe.find('input[name="create_time"]').val(data[0].create_time)
 			,iframe.find('input[name="update_time"]').val(data[0].update_time)
-			,iframe.find('input[name="url"]').val(data[0].url)
 			,iframe.find('input[name="comment_num"]').val(data[0].comment_num)
 			,iframe.find('input[name="good_num"]').val(data[0].good_num)
+			,iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
 			,iframe.find('input[name="visit_num"]').val(data[0].visit_num)
 		  }
         }); 
       }
+	  /*
 	  ,edit: function(){//编辑随笔
 		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; // 得到选中的数据
@@ -167,6 +168,7 @@
 		  } 
 		});
 	  }
+	  */
 	  ,del: function() {
 		var checkStatus = table.checkStatus(d)
 		,checkData = checkStatus.data; //得到选中的数据
