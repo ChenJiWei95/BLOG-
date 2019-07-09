@@ -27,6 +27,6 @@
 	</settings>
     <!-- 配置mapper -->
     <mappers>
-    	<mapper resource="com/work_order_system/mapper/EmployeeMapper.xml" />
+    	<mapper resource="com/blog/mapper/UserMapper.xml" />
     </mappers>
 </configuration>

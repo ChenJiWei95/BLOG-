@@ -12,15 +12,15 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath*:/config/config.properties"
-		ignore-resource-not-found="true" ignore-unresolvable="true" />
+	<!-- <context:property-placeholder location="classpath*:/config.properties"
+		ignore-resource-not-found="true" ignore-unresolvable="true" /> -->
 	
 	<!-- 数据源：DriverManagerDataSource -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${mybatis.jdbc.driver}" />
-		<property name="url" value="${mybatis.jdbc.jdbcUrl}"/>
-		<property name="username" value="${mybatis.jdbc.username}"/>
-		<property name="password" value="${mybatis.jdbc.password}"/>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://120.79.149.233:3306/C_BLOG"/>
+		<property name="username" value="chenjiwei"/>
+		<property name="password" value="cjw168999"/>
 	</bean>
 	
 	<!-- 
@@ -33,15 +33,15 @@
 	</bean>
 	
 	<!-- 3.mybatis自动扫描加载Sql映射文件、接口：MapperScannerConfigurer sqlSessionFactory
-	basePackage：指定sql映射文件、接口所在的包（自动扫描） -->
+	basePackage：指定sql接口所在的包（自动扫描）注意：不是映射文件 -->
+	<!-- 将mybatis实现的接口注入到spring容器中 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.mapper" />
+		<property name="basePackage" value="com.blog.dao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	
 	<!-- 4.事务管理：DataSourceTransactionManager dataSource： 引用上面定义的 数据源 -->
-	<bean id="txManager" 
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
@@ -52,9 +52,8 @@
 	
 	<!-- 支持国际化 解析器 -->
 	<!-- 默认语言 -->
-	<bean id="localeResolver"
-		class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
-		<property name="defaultLocale" value="${locale}" />
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+		<property name="defaultLocale" value="zh_CN" />
 	</bean>
 	
 </beans>

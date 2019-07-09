@@ -3,6 +3,7 @@
 # 目录
 * [页面分析](#页面分析)
 * [数据库分析](#数据库分析)
+* [项目遇到的问题](#项目遇到的问题)
 
 # 页面分析
 	首页：
@@ -196,4 +197,46 @@
 		FOREIGN KEY (`life_share_id`) REFERENCES life_share(`id`) 
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限字段表'; 
 
+# 项目遇到的问题    
+
+* 1、  Error creating bean 
+	with name 'userServiceImpl': Injection of resource dependencies failed;
+
+	org.springframework.beans.factory.BeanCreationException: Error creating bean 
+	with name 'userServiceImpl': Injection of resource dependencies failed; nested
+	 exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No 
+	qualifying bean of type [com.blog.dao.UserDao] found for dependency 
+	[com.blog.dao.UserDao]: expected at least 1 bean which qualifies as autowire
+	 candidate for this dependency. Dependency annotations: 
+	 {@javax.annotation.Resource(shareable=true, lookup=, name=, description=, 
+	 authenticationType=CONTAINER, type=class java.lang.Object, mappedName=)}
+	 
+	遇到 了一个依赖异常，也是mybatis在spring中未能创建bean的异常，因为配置的问题。  
+	这个问题一开始遇到则进行了一次狂对比，跟之前项目。后来无果则静下心来，从原理出发，  
+	得到配置文件的问题。如下  
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+		<property name="basePackage" value="com.blog.dao" />  
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+	</bean>  
+	property name="basePackage" 中value值填的是接口包名，跟映射xml无关  
+	原理是此配置是将mybatis实现的接口注入到spring容器中
+	学习链接：
+	注解：https://blog.csdn.net/wchazm/article/details/82870973
+	基础：https://www.cnblogs.com/honger/p/9519300.html
+		 http://www.bubuko.com/infodetail-2042251.html
+	
+# 测试结果  
+
+* 数据库的连接测试    7/9 User
+
+	Creating a new SqlSession
+	SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a466a07] was 	not registered for synchronization because synchronization is not active
+	JDBC Connection [com.mysql.jdbc.JDBC4Connection@259d9139] will not be managed by 	Spring
+	==>  Preparing: SELECT * FROM user WHERE username=? 
+	==> Parameters: root(String)
+	<==    Columns: id, username, password
+	<==        Row: 1, root, 123456
+	<==      Total: 1
+	Closing non transactional SqlSession 	[org.apache.ibatis.session.defaults.DefaultSqlSession@5a466a07]
+	username:[id:1, username:root, password:123456]
 
