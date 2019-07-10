@@ -28,6 +28,184 @@
 
 栏	：夹表	-- ID 名称 创建时间 改动时间 显示优先级 关联夹ID 备注   {可去除 资源表代替}
 栏	：资源表-- ID 名称 创建时间 改动时间 显示优先级 链接（##/href） 关联夹ID 备注
+文章概述表 article   
+
+		文章ID 文章标题 最新操作时间 图片地址 简要描述 评论数 点赞数 浏览数   
+		id article_name op_time pit_url simp_desc（固定字数） comment_count good_count browse_count  
+	CREATE TABLE article(  
+		`id` INT NOT NULL auto_increment primary key COMMENT '文章ID',  
+		`article_name` VARCHAR(50) NULL COMMENT '文章名称',  
+		`op_time` DATETIME NULL COMMENT '最新操作时间',	  
+		`pit_url` VARCHAR(100) NULL COMMENT '图片路径',  
+		`simp_desc` VARCHAR(100) NULL COMMENT '简易描述，固定字数',  
+		`comment_count` INT NULL COMMENT '评论数',  
+		`good_count` INT NULL COMMENT '点赞数',  
+		`browse_count` INT NULL COMMENT '浏览数'  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章概述表';  
+	
+文章详细表 article_infor   
+		文章信息表ID 文章内容 文章概述表（外键）  
+		id content_url article_id  
+	CREATE TABLE article_infor(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文章信息表ID',  
+		`content_url` VARCHAR(50) NULL COMMENT '文章内容路径',  
+		`article_id` INT COMMENT '文章概述表 外键',  
+		FOREIGN KEY (`article_id`) REFERENCES article(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章详细表';  
+
+#文章概述表&文章详细表
+	CREATE TABLE a_infor_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`a_id` INT NULL COMMENT '文章概述表id',  
+		`a_infor_id` INT NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章概述表&文章详细表';
+
+文章标签关联表 article_tag_relate   
+
+		文章标签关联表ID 标签表（外键） 文章概述表（外键）  
+		id article_tag_id article_id  
+	CREATE TABLE article_tag_relate(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文章标签关联表ID',  
+		`article_tag_id` INT NULL COMMENT '标签表（外键）',  
+		`article_id` INT NULL COMMENT '文章概述表（外键）',  
+		FOREIGN KEY (`article_id`) REFERENCES article(`id`),  
+		FOREIGN KEY (`article_tag_id`) REFERENCES article_tag(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章标签关联表';  	
+  
+文章操作时间表 article_opar   
+	
+		文章操作时间表ID 时间 文章概述表（外键）  
+		id op_time article_id  
+	CREATE TABLE article_opar(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文章操作时间表ID',  
+		`op_time` DATETIME NULL COMMENT '时间',  
+		`article_id` INT NULL COMMENT '文章概述表（外键）',  
+		FOREIGN KEY (`article_id`) REFERENCES article(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章操作时间表';  
+	  
+评论表  article_comment   
+	
+		评论表ID 评论人 时间 评论内容 点赞数 回复数 文章概述表（外键）  
+		id name time content good_count reply_count article_id  
+	CREATE TABLE article_comment(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '评论表ID',  
+		`name` VARCHAR(20) NULL COMMENT '评论人',  
+		`time` DATETIME NULL COMMENT '时间',  
+		`content` VARCHAR(500) NULL COMMENT '评论内容',  
+		`good_count` INT NULL COMMENT '点赞数',  
+		`reply_count` INT NULL COMMENT '回复数',  
+		`article_id` INT NULL COMMENT '文章概述表（外键）',   
+		FOREIGN KEY (`article_id`) REFERENCES article(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章评论表';	  
+  
+子评论评论表 article_child_comment   
+	
+		子评论评论表ID 评论人 时间 评论内容 点赞数 评论表（外键）  
+		id name time content good_id article_comment_id 
+	CREATE TABLE article_child_comment(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '子评论评论表ID',  
+		`name` VARCHAR(20) NULL COMMENT '评论人',  
+		`time` DATETIME NULL COMMENT '时间',  
+		`content` VARCHAR(500) NULL COMMENT '评论内容',   
+		`good_id` INT NULL COMMENT '点赞数',   
+		`article_comment_id` INT NULL COMMENT '评论表（外键）',  
+		FOREIGN KEY (`article_comment_id`) REFERENCES article_comment(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章子评论表';  	
+  
+文章标签表 article_tag   
+	
+		标签表ID 标签名  
+		id tag_name  
+		通过标签获取文章概述表  
+			select destint 文章概述表id from 标签表, 文章标签表 where 标签表.id = 文章标签表.标签表id  
+	CREATE TABLE article_tag(    
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '文章标签表ID',  
+		`tag_name` VARCHAR(30) NULL COMMENT '标签名'  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '文章标签表';  
+		  
+生活分享概要表 life_share   
+	
+		生活分享概要表ID 时间 分享内容 权限字段表（all frends private）  
+		id time content life_share_grant_fields_id 
+	CREATE TABLE life_share(   
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '生活分享概要表ID',  
+		`time` DATETIME NULL COMMENT '时间',  
+		`content` VARCHAR(500) NULL COMMENT '分享内容',  
+		`life_share_grant_fields_id` INT NULL COMMENT '权限字段表'  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '生活分享概要表';  
+	  
+生活分享图片表 life_share_picture 
+	  
+		生活分享图片表ID url 生活分享概要表（外键）  
+		id pit_url life_share_id  
+	CREATE TABLE life_share_picture(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '生活分享图片表ID',  
+		`url` VARCHAR(100) NULL COMMENT '分享图片路径',  
+		`life_share_id` INT NULL COMMENT '生活分享概要表（外键）',  
+		FOREIGN KEY (`life_share_id`) REFERENCES life_share(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '生活分享图片表';  
+  
+生活分享评论表 life_share_comment  
+	
+		生活分享评论表ID 评论人名称 评论内容 时间 生活分享概要表（外键）  
+		id name content time life_share_id  
+	CREATE TABLE life_share_comment(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '生活分享评论表ID',  
+		`name` CHAR(8) NULL COMMENT '评论人名称',  
+		`content` VARCHAR(500) NULL COMMENT '评论内容',  
+		`time` DATETIME NULL COMMENT '时间',  
+		`life_share_id` INT NULL COMMENT '生活分享概要表（外键）',  
+		FOREIGN KEY (`life_share_id`) REFERENCES life_share(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '生活分享评论表';  
+	   
+生活分享评论子表 life_share_child_comment   
+	
+		生活分享评论子表ID 评论人名称 评论内容 时间 生活分享概要表（外键）  
+		id name content time life_share_comment_id  
+	CREATE TABLE life_share_child_comment(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '生活分享评论子表ID',  
+		`name` CHAR(8) NULL COMMENT '评论人名称',  
+		`content` VARCHAR(500) NULL COMMENT '评论内容',  
+		`time` DATETIME NULL COMMENT '时间',  
+		`life_share_comment_id` INT NULL COMMENT '生活分享概要表（外键）',  
+		FOREIGN KEY (`life_share_comment_id`) REFERENCES life_share(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '生活分享评论子表';  
+
+
+ 
+#权限人和权限字段关系表 life_share_grant  
+	
+		#权限人和权限字段关系表ID 权限人表（外键） 权限字段表（外键）  
+		#id life_share_grant_peo_id life_share_grant_fields_id  
+	CREATE TABLE life_share_grant(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '权限人和权限字段关系表ID',  
+		`life_share_grant_peo_id` INT NULL COMMENT '权限人表（外键）',  
+		`life_share_grant_fields_id` INT NULL COMMENT '权限字段表（外键）',  
+		FOREIGN KEY (`life_share_grant_peo_id`) REFERENCES life_share_grant_peo(`id`),  
+		FOREIGN KEY (`life_share_grant_fields_id`) REFERENCES life_share_grant_fields(`id`)  
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限人和权限字段关系表';  
+	  
+#权限人表 life_share_grant_peo    生活分享权限人  
+	
+		#权限人和权限字段关系表ID 名称  
+		#id name   
+	CREATE TABLE life_share_grant_peo(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '权限人表ID',  
+		`name` CHAR(10) NULL COMMENT '名称' 
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT '权限人表';  
+	  
+#权限字段表 life_share_grant_fields   生活分享权限字段 all frends private 
+	 
+		#权限字段表ID 字段 生活分享概要表（外键）  
+		#id fields life_share_id  
+		#输入名字查找权限人表，获取权限字段表id，然后获取权限字段，将查询条件设置为all+字段  
+	CREATE TABLE life_share_grant_fields(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '权限字段表ID',  
+		`fields` CHAR(10) NULL COMMENT '字段',  
+		`life_share_id` INT NULL COMMENT '生活分享概要表（外键）',  
+		FOREIGN KEY (`life_share_id`) REFERENCES life_share(`id`) 
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限字段表'; 
+
 #角色表	：表    -- ID name create_time update_time desc 
 	CREATE TABLE role(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
@@ -44,15 +222,17 @@
 		`update_time` DATETIME NULL COMMENT '',  
 		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00',  
 		`msg` VARCHAR(100) NULL COMMENT '备注',  
-		`app_id` INT NULL COMMENT '关联页面项id',
-		`role_id` INT NULL COMMENT '关联角色id'
+		`app_id` INT NULL COMMENT '关联页面项id' 
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限项';
-#管理员角色关联表： ID 管理员ID 角色ID 
-	CREATE TABLE admin_role_relation(  
+#角色&权限项：表 -- ID role_id limit_item_id
+	CREATE TABLE role_limit_relation(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
-		`admin_id` CHAR(10) NULL COMMENT '管理员ID',  
-		`role_id` INT NULL COMMENT '角色ID'
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
+		`limit_item_id` CHAR(10) NULL COMMENT '管理员ID',  
+		`role_id` INT NULL COMMENT '角色ID',
+		FOREIGN KEY (`limit_item_id`) REFERENCES limit_item(`id`),
+		FOREIGN KEY (`role_id`) REFERENCES role(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色&权限项';
+
 #管理员账户表	
 #：表	-- ID 账号 密码 创建时间 修改时间 登录状态
 	CREATE TABLE admin_account(  
@@ -63,6 +243,14 @@
 		`update_time` DATETIME NULL COMMENT '',  
 		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00'
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员账户表'; 
+#管理员角色关联表： ID 管理员ID 角色ID 
+	CREATE TABLE admin_role_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`admin_id` CHAR(10) NULL COMMENT '管理员ID',  
+		`role_id` INT NULL COMMENT '角色ID',
+		FOREIGN KEY (`admin_id`) REFERENCES admin_account(`id`),
+		FOREIGN KEY (`role_id`) REFERENCES role(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
 #管理员信息	：表	-- ID 名称 昵称 创建时间 改动时间 phone email 关联角色id 管理员账户关联id 备注
 	CREATE TABLE admin_infor(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
@@ -76,9 +264,18 @@
 		`role_id` INT NULL COMMENT '关联角色id',
 		`desc` VARCHAR(100) NULL COMMENT ''
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员信息表'; 
+#管理员账户表&信息：-- ID admin_account_id admin_infor_id
+	CREATE TABLE aaccount_ainfor_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`admin_account_id` CHAR(10) NULL COMMENT '管理员ID',  
+		`admin_infor_id` INT NULL COMMENT '角色ID',
+		FOREIGN KEY (`admin_account_id`) REFERENCES admin_account(`id`),
+		FOREIGN KEY (`admin_infor_id`) REFERENCES admin_infor(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员账户表&信息';
 #操作日志：表	-- ID 时间 描述
+
 #文章	：表    -- ID 创建时间 修改时间 文章名称 描述
-	CREATE TABLE aticle(  
+	CREATE TABLE article(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
 		`name` VARCHAR(40) NULL COMMENT '文章名称',
 		`url` VARCHAR(50) NULL COMMENT '资源位置',
@@ -91,7 +288,7 @@
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章表';
 
 #文章标签：表    -- ID 标签名称 创建时间 修改时间 备注
-	CREATE TABLE aticle_tag(  
+	CREATE TABLE article_tag(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
 		`name` VARCHAR(40) NULL COMMENT '文章名称',
 		`create_time` DATETIME NULL COMMENT '',
@@ -99,9 +296,9 @@
 		`msg` VARCHAR(50) NULL COMMENT ''
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签表';
 #文章标签关联	-- ID 文章id 标签id 
-	CREATE TABLE aticle_tag_relation(  
+	CREATE TABLE article_tag_relation(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-		`aticle_id` INT NULL COMMENT '',
+		`article_id` INT NULL COMMENT '',
 		`tag_id` INT NULL COMMENT ''
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签关联表';
 	
@@ -110,7 +307,7 @@
 #ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
 	CREATE TABLE message(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-		`aticle_id` INT NULL COMMENT '关联文章',
+		`article_id` INT NULL COMMENT '关联文章',
 		`to` VARCHAR(30) NULL COMMENT '关联的人',
 		`self` VARCHAR(30) NULL COMMENT '操作人',
 		`type` VARCHAR(400) NULL COMMENT '',
@@ -120,6 +317,103 @@
 		`msg` VARCHAR(100) NULL COMMENT ''
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章标签关联表';
 	
+#消息&用户
+	CREATE TABLE aaccount_ainfor_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`message_id` INT NULL COMMENT ' ',  
+		`user_account_id` INT NULL COMMENT ' ',
+		FOREIGN KEY (`message_id`) REFERENCES user_account(`id`),
+		FOREIGN KEY (`user_account_id`) REFERENCES user_info(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='消息&用户';
+{
+  "transcode": "050",
+  "merchno": "zb2018091201",
+  "dsorderid": "SYS20190710113452",
+  "sign": "9136fd8d1d333cef5f7a3226b40594a3",
+  "version": "0001",
+  "ordersn": "SYS20190710113452",
+  "idcard": "152825196605270023",
+  "bankcard": "6228480876257129869",
+  "mobile": "15184739306",
+  "username": "乌兰其其格",
+  "futureRateValue": "0.65",
+  "fixAmount": "200",
+  "methodname": "register"
+}	
+{
+  "transcode": "050",
+  "merchno": "dj2018120816161",
+  "dsorderid": "EFB7B84596A1415F94A1A82EE74984DB",
+  "sign": "66a74733e998c5d45443e751444057ba",
+  "version": "0100",
+  "ordersn": "7678e785f37a49138f1e1f8a36017255",
+  "idcard": "42092119951017495x",
+  "bankcard": "6225768653360949",
+  "mobile": "15071255813",
+  "username": "黄磊",
+  "futureRateValue": "0.75",
+  "fixAmount": "100",
+  "methodname": "register"
+}	
+
+#用户 
+	CREATE TABLE user_account(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`username` VARCHAR(30) NULL COMMENT '',
+		`password` VARCHAR(30) NULL COMMENT '',
+		`create_time` DATETIME NULL COMMENT '',
+		`update_time` DATETIME NULL COMMENT ''
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户';
+#信息
+	CREATE TABLE user_info(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+		`name` VARCHAR(30) NULL COMMENT '昵称',
+		`desc` VARCHAR(255) NULL COMMENT '',
+		`msg` VARCHAR(255) NULL COMMENT '',
+		`pit` VARCHAR(100) NULL COMMENT '头像地址'
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='信息';
+#用户&信息
+	CREATE TABLE u_account_infor_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`user_account_id` INT NULL COMMENT ' ',  
+		`user_infor_id` INT NULL COMMENT ' ',
+		FOREIGN KEY (`user_account_id`) REFERENCES user_account(`id`),
+		FOREIGN KEY (`user_infor_id`) REFERENCES user_info(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户&信息';
+#用户浏览权限 权限可以创建 文章设置关联权限
+#ID name create_time update_time msg
+	CREATE TABLE u_authority(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`create_time` DATETIME NULL COMMENT ' ',  
+		`update_time` DATETIME NULL COMMENT ' ',  
+		`msg` CHAR(100) NULL COMMENT ' '
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户权限';
+#用户&权限
+	CREATE TABLE u_user_authority_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`user_account_id` INT NULL COMMENT ' ',  
+		`authority_id` INT NULL COMMENT ' ',
+		FOREIGN KEY (`user_account_id`) REFERENCES user_account(`id`),
+		FOREIGN KEY (`authority_id`) REFERENCES u_authority(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户&信息';
+#文章&权限
+	CREATE TABLE u_article_authority_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`article_id` INT NULL COMMENT ' ',  
+		`authority_id` INT NULL COMMENT ' ',
+		FOREIGN KEY (`article_id`) REFERENCES article(`id`),
+		FOREIGN KEY (`authority_id`) REFERENCES u_authority(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='文章&权限';
+#分享&权限
+	CREATE TABLE u_share_authority_relation(  
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`share_id` INT NULL COMMENT ' ',  
+		`authority_id` INT NULL COMMENT ' ',
+		FOREIGN KEY (`share_id`) REFERENCES life_share(`id`),
+		FOREIGN KEY (`authority_id`) REFERENCES u_authority(`id`)
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='分享&权限';
+public
+private
 样式先加载出来 
 分析需要什么数据字段
 data-name 标识
@@ -229,7 +523,7 @@ config是如何被传入
 		
 	消息
 		'http://localhost:8080/MyBlog/api/test/message/direct.do', 留言
-		'http://localhost:8080/MyBlog/api/test/message/aticle.do', 随笔信息
+		'http://localhost:8080/MyBlog/api/test/message/article.do', 随笔信息
 		'http://localhost:8080/MyBlog/api/test/message/all.do', 所有信息
 		'http://localhost:8080/MyBlog/api/test/message/sys.do', 系统信息
 		

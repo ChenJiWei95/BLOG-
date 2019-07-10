@@ -9,64 +9,80 @@
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body>
-
-  <div class="layui-form" lay-filter="aticle-form-admin" id="aticle-form-admin" style="padding: 20px 30px 0 0;">
-    <div class="layui-form-item">
-      <label class="layui-form-label">id</label>
-      <div class="layui-input-inline">
-        <input type="text" name="id" disabled lay-verify="required" placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">标签</label>
-      <div class="layui-input-inline">
-        <input type="text" name="sign" lay-verify="required" placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">标题</label>
-      <div class="layui-input-inline">
-        <input type="text" name="title" placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">创建时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="create_time" disabled placeholder="请输入..." disabled autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">修改时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="update_time" disabled placeholder="请输入..." disabled autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">评论数</label>
-      <div class="layui-input-inline">
-        <input type="text" name="comment_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">点赞数</label>
-      <div class="layui-input-inline">
-        <input type="text" name="good_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">浏览数</label>
-      <div class="layui-input-inline">
-        <input type="text" name="visit_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
-      </div>
-    </div> 
-	<div class="layui-form-item"> 
-		<textarea name="mark_code" style="height: 800px;" class="layui-textarea"></textarea> 
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<div class="layui-form" lay-filter="aticle-form-admin" id="aticle-form-admin" style="padding: 20px 30px 0 0;">
+				<div class="layui-form-item">
+				  <div class="layui-inline">
+					  <label class="layui-form-label">ID</label>
+					  <div class="layui-input-inline">
+					    <div class="layui-form-mid layui-word-aux id">000000</div>
+						<input type="text" name="id" lay-verify="required" placeholder="请输入..." autocomplete="off" class="layui-input layui-hide">
+					  </div> 
+				  </div>
+				  <div class="layui-inline">
+					  <label class="layui-form-label">标题</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="title" autocomplete="off" class="layui-input">
+					  </div>  
+				  </div>
+				</div> 
+				<div class="layui-form-item">
+					<label class="layui-form-label">标签</label>
+					<div class="layui-input-block"> 
+						<input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
+						<input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
+						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
+						<input type="checkbox" name="limits[]" lay-skin="primary" title="用户">
+					</div>
+				</div>  
+				<div class="layui-form-item">
+				  <div class="layui-inline">
+					  <label class="layui-form-label">创建时间</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="create_time" disabled disabled autocomplete="off" class="layui-input">
+					  </div>
+				  </div>
+				  <div class="layui-inline">
+					  <label class="layui-form-label">修改时间</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="update_time" disabled disabled autocomplete="off" class="layui-input">
+					  </div>
+				  </div>
+				</div>
+				<div class="layui-form-item">
+				  <div class="layui-inline">
+					  <label class="layui-form-label">评论数</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="comment_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
+					  </div>
+				  </div>
+				  <div class="layui-inline">
+					  <label class="layui-form-label">点赞数</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="good_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
+					  </div>
+				  </div>
+				  <div class="layui-inline">
+					  <label class="layui-form-label">浏览数</label>
+					  <div class="layui-input-inline">
+						<input type="text" name="visit_num" disabled placeholder="请输入..." autocomplete="off" class="layui-input">
+					  </div>
+				  </div>
+				</div>  
+				<div class="layui-form-item"> 
+					<label class="layui-form-label">随笔</label>
+					<div class="layui-input-block">
+						<textarea name="mark_code" class="layui-textarea"></textarea> 
+					</div> 
+				</div>
+				<div class="layui-form-item layui-hide">
+				  <input type="button" lay-submit lay-filter="LAY-aticle-add" id="LAY-aticle-add" value="确认">
+				  <input type="button" lay-submit lay-filter="LAY-aticle-update" id="LAY-aticle-update" value="确认">
+				</div>
+			</div>
+		</div>
 	</div>
-    <div class="layui-form-item layui-hide">
-      <input type="button" lay-submit lay-filter="LAY-aticle-add" id="LAY-aticle-add" value="确认">
-	  <input type="button" lay-submit lay-filter="LAY-aticle-update" id="LAY-aticle-update" value="确认">
-    </div>
-  </div>
 
   <script src="../../layuiadmin/layui/layui.js"></script>
   <script>
