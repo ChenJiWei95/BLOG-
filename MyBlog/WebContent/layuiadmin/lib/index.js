@@ -44,7 +44,7 @@ function(export_) {console.log("index");
 				id: url,
 				attr: attr
 			}));
-		} 
+		}
         else {
 			console.log("存在顶栏标签 则直接修改链接" + url);
             var u = admin.tabsBody(admin.tabsPage.index).find(".layadmin-iframe");

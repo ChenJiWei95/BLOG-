@@ -91,7 +91,7 @@
 				type: 2
 				,title: '添加新角色'
 				,content: 'roleform.html'
-				,area: ['500px', '480px']
+				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
 					layero.find(f).contents().find("#"+a).click(); 
@@ -106,7 +106,7 @@
                 type: 2,
                 title: "编辑角色",
                 content: "roleform.html",
-                area: ["500px", "480px"],
+                area: ["420px", "480px"],
                 btn: ["确定", "取消"],
                 yes: function(index, layero) {
                     layero.find(f).contents().find("#"+b).click(); 
@@ -116,8 +116,8 @@
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
 					,form.find('textarea[name="name"]').val(data[0].name)
-					,form.find('textarea[name="create_time"]').val(data[0].name)
-					,form.find('textarea[name="update_time"]').val(data[0].desc)
+					,form.find('.create_time').text(data[0].name)
+					,form.find('.update_time').text(data[0].desc)
 					,form.find('textarea[name="desc"]').val(data[0].desc)
 					,form.find('textarea[name="limitData"]').val(data[0].priority)
 					//补充选项框

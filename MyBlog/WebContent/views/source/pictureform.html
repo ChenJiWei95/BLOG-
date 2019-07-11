@@ -12,46 +12,49 @@
 
   <div class="layui-form" lay-filter="source-form-picture" id="source-form-picture" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
-	  <label class="layui-form-label">ID</label>
-      <div class="layui-input-block">
-		<input type="text" name="id"  disabled autocomplete="off" class="layui-input">
-	  </div>
-	</div>　
+		<div class="layui-inline">
+		  <label class="layui-form-label">ID</label>
+		  <div class="layui-input-inline"> 
+			<input type="text" name="id" disabled placeholder="000000" autocomplete="off" class="layui-input layui-disabled">
+		  </div>
+		</div>
+		<div class="layui-inline">
+		  <label class="layui-form-label">名称</label>
+		  <div class="layui-input-inline"> 
+			<input type="text" name="name" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+		  </div>
+		</div>
+	</div>　 
 	<div class="layui-form-item">
-      <label class="layui-form-label">名称</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="name" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">上传时间</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="upload_time" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-	<div class="layui-form-item">
-      <label class="layui-form-label">改动时间</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="update_time" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
-      </div>
+		<div class="layui-inline">
+		  <label class="layui-form-label">上传时间</label>
+		  <div class="layui-input-inline"> 
+			<input type="text" name="upload_time" disabled autocomplete="off" class="layui-input layui-disabled">
+		  </div>
+		</div>
+		<div class="layui-inline">
+		  <label class="layui-form-label">修改时间</label>
+		  <div class="layui-input-inline"> 
+			<input type="text" name="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
+		  </div>
+		</div>
     </div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">备注</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="msg" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
-      </div>
+        <label class="layui-form-label">图片</label>
+        <div class="layui-input-inline">
+			<input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址" value="https://c-ssl.duitang.com/uploads/item/201607/20/20160720161857_NcJZE.jpeg" class="layui-input">
+        </div>
+		<div class="layui-input-inline layui-btn-container" style="width: auto;">
+			<button type="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+				<i class="layui-icon">&#xe67c;</i>上传图片
+			</button>
+			<button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+        </div>
     </div>
-    <div class="layui-upload">
-	  <button type="button" class="layui-btn" id="test1">图片</button>
-	  <div class="layui-upload-list">
-		<img class="layui-upload-img" id="demo1">
-		<p id="demoText"></p>
-	  </div>
-	</div> 
     <div class="layui-form-item">
-      <label class="layui-form-label">具体描述</label>
+      <label class="layui-form-label">描述</label>
       <div class="layui-input-block">
-        <textarea type="text" name="descr" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+        <textarea type="text" name="descr" autocomplete="off" class="layui-textarea"></textarea>
       </div>
     </div>
     <div class="layui-form-item layui-hide">
@@ -66,14 +69,13 @@
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'form', 'upload'], function(){
+  }).use(['index', 'form', 'set'], function(){
     var $ = layui.$
-    ,form = layui.form 
-	,upload = layui.upload
+    ,form = layui.form  
 	,a = "LAY-source-picture-upload"
-	,b = "LAY-source-picture-update"
+	,b = "LAY-source-picture-update";
 	//普通图片上传
-	,uploadInst = upload.render({
+	/*,uploadInst = upload.render({
 		elem: '#test1'
 		,url: '/upload/'
 		,before: function(obj){
@@ -97,7 +99,7 @@
 			uploadInst.upload();
 		  });
 		}
-	});
+	});*/ 
 	form.on("submit("+a+")", function(data){
 		var index = parent.layer.getFrameIndex(window.name); 
 		//执行 Ajax 后重载

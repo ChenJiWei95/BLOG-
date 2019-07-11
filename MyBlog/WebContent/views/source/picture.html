@@ -55,6 +55,48 @@
 	,l = 'LAY-source-picture'
     ,table = layui.table;
     
+	table.render({
+        elem: "#"+a,
+        url: '',
+        cols: [[{
+            type: "checkbox",
+            fixed: "left"
+        },
+        {
+            field: "id",
+            width: 100,
+            title: "ID",
+            sort: !0
+        },
+        {
+            field: "name",
+            title: "名称",
+            minWidth: 100
+        }, 
+		{
+            field: "create_time",
+            title: "上传时间",
+            sort: !0
+        },
+        {
+            field: "update_time",
+            title: "修改时间",
+            sort: !0
+        },
+		{
+            field: "descr",
+            title: "描述"
+        },
+		{
+            field: "img",
+            title: "图片"
+        }]],
+        page: !0,
+        limit: 30,
+        height: "full-220",
+        text: "对不起，加载出现异常！"
+    });
+	
     //搜索角色
     form.on('select(LAY-user-adminrole-type)', function(data){
 		//执行重载
@@ -90,8 +132,8 @@
 			layer.open({
 				type: 2
 				,title: '添加新角色'
-				,content: 'roleform.html'
-				,area: ['500px', '480px']
+				,content: 'pictureform.html'
+				,area: ['600px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
 					layero.find(f).contents().find("#"+a).click(); 
@@ -105,8 +147,8 @@
 			layer.open({
                 type: 2,
                 title: "编辑角色",
-                content: "roleform.html",
-                area: ["500px", "480px"],
+                content: "pictureform.html",
+                area: ["600px", "480px"],
                 btn: ["确定", "取消"],
                 yes: function(index, layero) {
                     layero.find(f).contents().find("#"+b).click(); 
@@ -115,15 +157,17 @@
 					//这是渲染完之后调用 可以用于初始化
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
+					,form.find('.id').text(data[0].id)
 					,form.find('textarea[name="name"]').val(data[0].name)
+					,form.find('create_time').text(data[0].priority)
+					,form.find('update_time').text(data[0].priority)
 					,form.find('textarea[name="descr"]').val(data[0].desc)
-					,form.find('textarea[name="priority"]').val(data[0].priority)
 					//补充选项框
 				}
             })
 		}
     }  
-    $('.layui-btn.layuiadmin-btn-role').on('click', function(){
+    $('.layui-btn.layuiadmin-btn-picture').on('click', function(){
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';
     });

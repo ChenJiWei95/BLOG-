@@ -39,15 +39,8 @@
             <label class="layui-form-label">文章标签</label>
             <div class="layui-input-inline">
               <select name="label">
-                <!--
-				自动生成
-				<option value="">请选择标签</option>
-                <option value="0">美食</option>
-                <option value="1">新闻</option>
-                <option value="2">八卦</option>
-                <option value="3">体育</option>
-                <option value="4">音乐</option>
-				-->
+			    <option value="">请选择标签</option>
+                <option value="0">美食</option> 
               </select>
             </div>
           </div>
@@ -94,7 +87,6 @@
     ,form = layui.form
 	,admin = layui.admin;
     
-    
     //编辑按钮事件
     var $ = layui.$
 	, f = 'iframe'
@@ -135,23 +127,23 @@
           }
 		  ,success: function(e, index){// 初始化
 			var iframe = e.find("iframe").contents().find("#aticle-form-admin");
-            iframe.find('input[name="sign"]').val(data[0].sign)
-			,iframe.find('input[name="id"]').val(data[0].id)
+            iframe.find('input[name="checkbox"]').checked = !0
 			,iframe.find('input[name="title"]').val(data[0].title)
-			,iframe.find('input[name="create_time"]').val(data[0].create_time)
-			,iframe.find('input[name="update_time"]').val(data[0].update_time)
-			,iframe.find('input[name="comment_num"]').val(data[0].comment_num)
-			,iframe.find('input[name="good_num"]').val(data[0].good_num)
+			
+			,iframe.find('.id"]').val(data[0].id)
+			,iframe.find('.create_time').val(data[0].create_time)
+			,iframe.find('.update_time').val(data[0].update_time)
+			,iframe.find('.comment"]').val(data[0].comment_num)
+			,iframe.find('.good"]').val(data[0].good_num)
 			,iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
-			,iframe.find('input[name="visit_num"]').val(data[0].visit_num)
+			,iframe.find('.view"]').val(data[0].visit_num)
 		  }
         }); 
       }
-	  /*
 	  ,edit: function(){//编辑随笔
 		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; // 得到选中的数据
-		// data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
+		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 		layer.open({// 修改
 		  type: 2
 		  ,title: '编辑随笔'
@@ -169,7 +161,6 @@
 		  } 
 		});
 	  }
-	  */
 	  ,del: function() {
 		var checkStatus = table.checkStatus(d)
 		,checkData = checkStatus.data; //得到选中的数据
@@ -184,7 +175,7 @@
 				,done: function(data){
 					layer.msg("删除成功！", {time: 2000}),
 					result[state] = '00',
-					result[result] = !0 
+					result[result] = !0
 				} 
 			});	
 		});

@@ -18,26 +18,26 @@
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
         <div class="layui-form-item">
           <div class="layui-inline">
-            <label class="layui-form-label">登录名</label>
-            <div class="layui-input-block">
+            <label class="layui-form-label">账户</label>
+            <div class="layui-input-inline">
               <input type="text" name="loginname" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">手机</label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
               <input type="text" name="telphone" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">邮箱</label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
               <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">角色</label>
-            <div class="layui-input-block">
+            <div class="layui-input-inline">
               <select name="role">
                 <option value="0">管理员</option>
                 <option value="1">超级管理员</option>
@@ -75,7 +75,7 @@
     var $ = layui.$
     ,form = layui.form
     ,s = 'LAY-user-back-search'
-	,l = 'LAY-user-back-admin'; 
+	,l = 'LAY-user-back-admin'
     ,table = layui.table
 	,a = 'LAY-user-admin-add'
 	,b = 'LAY-user-admin-update'
@@ -90,7 +90,6 @@
         where: field
       });
     });
-  
     //事件
     var active = {
 		batchdel: function(){
@@ -144,12 +143,13 @@
                 ,yes: function(index, layero) {
                     layero.find(i).contents().find("#"+b).click();
                 }
-				success: function(e, index) {
+				,success: function(e, index) {
 					var iframe = e.find(i).contents().find("#"+f);
-					iframe.find('input[name="id"]').val(data[0].id)
-					,iframe.find('textarea[name="loginname"]').val(data[0].loginname)
-					,iframe.find('textarea[name="phone"]').val(data[0].phone)
-					,iframe.find('textarea[name="email"]').val(data[0].email) 
+					iframe.find('input[name="id"]').val(data[0].id) 
+					,iframe.find('input[name="loginname"]').val(data[0].loginname)
+					,iframe.find('input[name="phone"]').val(data[0].phone)
+					,iframe.find('input[name="email"]').val(data[0].email) 
+					,iframe.find('textarea[name="msg"]').val(data[0].msg) 
 					//补充选择角色
 				} 
             })
@@ -159,6 +159,92 @@
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
     });
+	table.render({//管理员的加载
+        elem: "#LAY-user-back-admin",
+        url: 'http://localhost:8080/MyBlog/api/test/admin.do',
+        cols: [[{
+            type: "checkbox",
+            fixed: "left"
+        },
+        {
+            field: "id",
+            width: 80,
+            title: "ID",
+            sort: !0
+        },
+        {
+            field: "account",
+            title: "账户"
+        },
+        {
+            field: "phone",
+            title: "手机"
+        },
+        {
+            field: "email",
+            title: "邮箱"
+        },
+        {
+            field: "role",
+            title: "角色"
+        },
+        {
+            field: "create_time",
+            title: "加入时间",
+            sort: !0
+        }
+		,{
+            field: "update_time",
+            title: "修改时间",
+            sort: !0
+        }
+		,{
+            field: "msg",
+            title: "描述", 
+        }
+		]],
+        text: "对不起，加载出现异常！"
+    });
+	table.on("tool(LAY-user-back-admin)",
+    function(e) {
+        e.data;
+        if ("del" === e.event) layer.prompt({
+            formType: 1,
+            title: "敏感操作，请验证口令"
+        },
+        function(t, index) {
+            layer.close(index),
+            layer.confirm("确定删除此管理员？",
+            function(t) {
+                console.log(e),
+                e.del(),
+                layer.close(t)
+            })
+        });
+        else if ("edit" === e.event) {
+            t(e.tr);
+            layer.open({
+                type: 2,
+                title: "编辑管理员",
+                content: "../../views/user/administrators/adminform.html",
+                area: ["420px", "420px"],
+                btn: ["确定", "取消"],
+                yes: function(e, t) {
+                    var l = window["layui-layer-iframe" + e],
+                    r = "LAY-user-back-submit",
+                    n = t.find("iframe").contents().find("#" + r);
+                    l.layui.form.on("submit(" + r + ")",
+                    function(t) {
+                        t.field;
+                        table.reload("LAY-user-front-submit"),
+                        layer.close(e)
+                    }),
+                    n.trigger("click")
+                },
+                success: function(e, t) {}
+            })
+        }
+    })
   });
   </script>
 </body>

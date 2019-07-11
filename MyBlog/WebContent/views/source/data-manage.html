@@ -57,13 +57,13 @@
 		,a = 'set-data-form-add'
 		,b = 'set-data-form-edit'
 		,c = 'set-form-tags'
-		,d = 'LAY-app-set-data'
+		,d = 'source-data-form'
 		,active = {
 			add: function(){
 				layer.open({
 				  type: 2
 				  ,title: '添加标签'
-				  ,content: 'branchform.html'
+				  ,content: 'dataform.html'
 				  ,area: ['450px', '300px']
 				  ,btn: ['确定', '取消']
 				  ,yes: function(index, layero){
@@ -78,7 +78,7 @@
 				layer.open({
 						type: 2,
 						title: "编辑分类",
-						content: "branchform.html?id=" + data[0].id,
+						content: "dataform.html?id=" + data[0].id,
 						area: ["450px", "200px"],
 						btn: ["确定", "取消"],
 						yes: function(index, layero) {
@@ -86,16 +86,15 @@
 						},
 						success: function(t, e) {
 							var iframe = t.find("iframe").contents().find("#"+c);
-							iframe.find('input[name='type_name']")[0].value = data[0].typeName,
-							,iframe.find('input[name='type_id']")[0].value = data[0].id,
-							,iframe.find('input[name='type_code']")[0].value = data[0].typeCode,
-							,iframe.find('input[name='type_value']")[0].value = data[0].typeVal,
-							,iframe.find('input[name='create_time']")[0].value = data[0].createTime,
-							,iframe.find('input[name='update_time']")[0].value = data[0].updateTime,
-							,iframe.find('input[name='msg']")[0].value = data[0].typeMsg);
+							iframe.find('input[name="type_name"]')[0].value = data[0].typeName
+							,iframe.find('input[name="id"]')[0].value = data[0].id 
+							,iframe.find('input[name="type_code"]')[0].value = data[0].typeCode
+							,iframe.find('input[name="type_value"]')[0].value = data[0].typeVal
+							,iframe.find('input["create_time"]')[0].value = (data[0].createTime)
+							,iframe.find('input["update_time"]')[0].value = (data[0].updateTime)
+							,iframe.find('textarea[name="msg"]')[0].value = data[0].typeMsg;
 						}
 				})
-			
 			}
 			,del: function(t){
 				var checkStatus = table.checkStatus(d)
@@ -135,7 +134,7 @@
 			,page: !0 
 			,text: "对不起，加载出现异常！"
 		});
-		$('.layui-btn.layuiadmin-btn-list').on('click', function(){
+		$('.layui-btn.layuiadmin-btn-tags').on('click', function(){
 		  var type = $(this).data('type');
 		  active[type] ? active[type].call(this) : '';
 		});

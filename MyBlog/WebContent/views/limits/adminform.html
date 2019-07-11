@@ -10,16 +10,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
 </head>
-<body>
+<body style="padding-right:20px">
   <div class="layui-form" lay-filter="layuiadmin-form-admin" id="layuiadmin-form-admin" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
       <label class="layui-form-label">ID</label>
-      <div class="layui-input-inline">
-        <input type="text" name="id" disabled lay-verify="required" placeholder="不允许操作" autocomplete="off" class="layui-input">
+      <div class="layui-input-inline"> 
+        <input type="text" name="id" disabled lay-verify="required" placeholder="000000" autocomplete="off" class="layui-input layui-disabled">
       </div>
     </div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">登录名</label>
+      <label class="layui-form-label">账户</label>
       <div class="layui-input-inline">
         <input type="text" name="loginname" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
       </div>
@@ -40,6 +40,8 @@
       <label class="layui-form-label">角色</label>
       <div class="layui-input-block">
         <select name="rolename">
+		  <option value="0">管理员</option>
+          <option value="1">超级管理员</option>
           <!--
 		  自动生成角色
 		  <option value="0">管理员</option>
@@ -51,14 +53,19 @@
           <option value="6">编辑</option>
 		  -->
         </select>
+      </div>
     </div>
+	<div class="layui-form-item">
+      <label class="layui-form-label">描述信息</label>
+      <div class="layui-input-inline">
+        <textarea class="layui-textarea" name="msg" placeholder="请输入描述信息"></textarea>
+      </div>
     </div>
     <div class="layui-form-item layui-hide">
       <input type="button" lay-submit lay-filter="LAY-user-admin-add" id="LAY-user-admin-add" value="确认">
       <input type="button" lay-submit lay-filter="LAY-user-admin-update" id="LAY-user-admin-update" value="确认">
     </div>
   </div>
-
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
   layui.config({

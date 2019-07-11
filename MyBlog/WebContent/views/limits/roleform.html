@@ -8,51 +8,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
 </head>
-<body>
-
+<body style="padding-right=20px">
   <div class="layui-form" lay-filter="layuiadmin-form-role" id="layuiadmin-form-role" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
-	  <label class="layui-form-label">id</label>
-      <div class="layui-input-block">
-		<div class="layui-form-mid layui-word-aux id">辅助文字</div>
-		<input type="text" name="id" lay-verify="required" autocomplete="off" class="layui-input layui-hide">
-	  </div>
-	</div>　
+      <label class="layui-form-label">ID</label>
+      <div class="layui-input-inline"> 
+        <input type="text" name="id" disabled placeholder="000000" autocomplete="off" class="layui-input layui-disabled">
+      </div>
+    </div>
 	<div class="layui-form-item">
       <label class="layui-form-label">名称</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="name" lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <input type="text" name="type_name" lay-verify="required" autocomplete="off" class="layui-input">
       </div>
     </div>
-	<div class="layui-form-item">
+    <div class="layui-form-item">
       <label class="layui-form-label">级别</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="priority" placeholder="级别数越高权利越大" autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <input type="text" name="级别" lay-verify="number" placeholder="级别数越高权利越大" autocomplete="off" class="layui-input">
       </div>
     </div>
-	<div class="layui-form-item">
+    <div class="layui-form-item">
       <label class="layui-form-label">创建时间</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="create_time" disabled autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <input type="text" name="create_time" disabled autocomplete="off" class="layui-input layui-disabled">
       </div>
     </div>
 	<div class="layui-form-item">
       <label class="layui-form-label">修改时间</label>
-      <div class="layui-input-block"> 
-		<input type="text" name="update_time" disabled autocomplete="off" class="layui-input">
+      <div class="layui-input-inline">
+        <input type="text" name="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
       </div>
-    </div>
-    <div class="layui-form-item">
+    </div> 
+	<div class="layui-form-item">
       <label class="layui-form-label">权限范围</label>
-      <div class="layui-input-block">
-		<!--
-		根据页面模块自动生成选框
-		-->
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="用户">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="角色">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="评论审核">
+      <div class="layui-input-block">  
         <input type="checkbox" name="limits[]" lay-skin="primary" title="发货">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="采购">
         <input type="checkbox" name="limits[]" lay-skin="primary" title="系统设置">
@@ -62,19 +52,19 @@
         <input type="checkbox" checked name="limits[]" lay-skin="primary" title="看效果">
       </div>
     </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">具体描述</label>
+	<div class="layui-form-item">
+      <label class="layui-form-label">描述信息</label>
       <div class="layui-input-block">
-        <textarea type="text" name="desc" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+        <textarea class="layui-textarea" name="msg" placeholder="请输入描述信息"></textarea>
       </div>
-    </div>
+    </div>	   
     <div class="layui-form-item layui-hide">
 	  <button class="layui-btn" lay-submit lay-filter="LAY-user-role-add" id="LAY-user-role-add">添加</button>
 	  <button class="layui-btn" lay-submit lay-filter="LAY-user-role-update" id="LAY-user-role-update">修改</button>
     </div>
   </div>
 
-  <script src="../../layuiadmin/layui/layui.js"></script>  
+  <script src="../../layuiadmin/layui/layui.js"></script>
   <script>
   layui.config({
     base: '../../layuiadmin/' //静态资源所在路径
@@ -83,6 +73,7 @@
   }).use(['index', 'form'], function(){
     var $ = layui.$
     ,form = layui.form 
+	,index = layui.index
 	,a = "LAY-user-role-add"
 	,b = "LAY-user-role-update";
 	form.on("submit("+a+")", function(data){

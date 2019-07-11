@@ -11,23 +11,37 @@ function(t) {
         nickname: function(t, i) {
             return new RegExp("^[a-zA-Z0-9_一-龥\\s·]+$").test(t) ? /(^\_)|(\__)|(\_+$)/.test(t) ? "用户名首尾不能出现下划线'_'": /^\d+\d+\d$/.test(t) ? "用户名不能全为数字": void 0 : "用户名不能有特殊字符"
         },
-        pass: [/^[\S]{6,12}$/, "密码必须6到12位，且不能出现空格"],
+        pass: [/^[\S]{6,20}$/, "密码必须6到20位，且不能出现空格"],
         repass: function(t) {
             if (t !== i("#LAY_password").val()) return "两次密码输入不一致"
         }
     }),
+	// 站点的设置
     n.on("submit(set_website)",
     function(t) {
         return e.msg(JSON.stringify(t.field)),
         !1
     }),
+	// 邮件服务
     n.on("submit(set_system_email)",
     function(t) {
         return e.msg(JSON.stringify(t.field)),
         !1
     }),
+	// 当期管理员的基本信息
     n.on("submit(setmyinfo)",
     function(t) {
+		/*
+		a.req({
+			url: 'http://localhost:8080/MyBlog/api/test/role/add.do'
+			,type: 'post'	
+			,dataType: "json"
+			,done: function(data){
+				layer.msg("添加成功！", {time: 2000}),
+				parent.table.reload(l);
+			} 
+		});
+		*/
         return e.msg(JSON.stringify(t.field)),
         !1
     });
