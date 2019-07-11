@@ -106,18 +106,19 @@ public class HttpUtils {
 		CloseableHttpResponse response = null;
 
 		// 设置http参数
-
 		try {
+			// 创建httpClient实例对象
 			httpclient = HttpClientUtil.getHttpClient();
+			// 创建post请求方法实例对象
 			httpPost = new HttpPost(url);
 
 			// httpPost.addHeader(HttpHeaders.USER_AGENT,
 			// "Mozilla/4.7 (compatible; MSIE 8.0; Windows NT 6.1; Maxthon;)");
 			//
 			// Map<String, String> headerMap = new HashMap<String, String>();
-			// headerMap.put("Accept", "application/json");
-			// headerMap.put("Content-Type",
-			// "application/x-www-form-urlencoded");
+			// headerMap.put("Accept", "application/json"); // 接收格式
+			// headerMap.put("Content-Type",	
+			// "application/x-www-form-urlencoded");		// 请求格式
 
 			if (headerMap != null && headerMap.size() > 0) {
 				BasicHeader h = null;
@@ -131,6 +132,7 @@ public class HttpUtils {
 			}
 
 			if (reqparams != null && reqparams.size() > 0) {
+				// 创建键值参数对象数组，大小为参数的个数
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(reqparams.keySet().size());
 				for (String key : reqparams.keySet()) {
 					nameValuePairs.add(new BasicNameValuePair(key, reqparams.get(key) == null ? "" : reqparams.get(key)));
@@ -140,18 +142,18 @@ public class HttpUtils {
 
 			response = httpclient.execute(httpPost);
 			StatusLine statusLine = response.getStatusLine();
+			// 判断请求结果
 			if (statusLine.getStatusCode() != 200) {
 //				logger.warn("HttpUtils httpPost statusLine.getStatusCode() != 200 " + statusLine.getStatusCode() + "=" + statusLine.getReasonPhrase());
 				try {
 					entity = response.getEntity();
 //					logger.warn("HttpUtils httpPost response:" + EntityUtils.toString(entity, "UTF-8"));
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			
 				return null;
 			}
 			entity = response.getEntity();
-
 			return entity == null ? null : EntityUtils.toString(entity, "UTF-8");
 
 		} catch (Exception e) {

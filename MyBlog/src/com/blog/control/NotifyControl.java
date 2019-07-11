@@ -129,8 +129,6 @@ public class NotifyControl {
 			e.printStackTrace();
 		}
 		
-		
-		
 	}
 	@RequestMapping("/api/fz/bindNotify.do")
 	public void bindNotify1(HttpServletRequest request, HttpServletResponse response){
