@@ -9,89 +9,45 @@
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body>
-	<div class="layui-fluid">
-		<div class="layui-card">
-			<div class="layui-form" lay-filter="aticle-form-admin" id="aticle-form-admin" style="padding: 20px 30px 0 0;">
-				<div class="layui-form-item">
-				  <div class="layui-inline">
-					  <label class="layui-form-label">ID</label>
-					  <div class="layui-input-inline">
-					    <div class="layui-form-mid layui-word-aux id">000000</div>
-					  </div> 
-				  </div>
-				  <div class="layui-inline">
-					  <label class="layui-form-label">标题</label>
-					  <div class="layui-input-inline">
-						<input type="text" name="title" autocomplete="off" class="layui-input">
-					  </div>  
-				  </div>
-				</div> 
-				<div class="layui-form-item">
-					<label class="layui-form-label">标签</label>
-					<div class="layui-input-block"> 
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
-						<input type="checkbox" name="limits[]" lay-skin="primary" title="用户">
-					</div>
-				</div>  
-				<div class="layui-form-item">
-				  <div class="layui-inline"> 
-					  <label class="layui-form-label">创建时间</label>
-					  <div class="layui-input-inline">
-					    <div class="layui-form-mid layui-word-aux crate_time">2019-08-08</div>
-					  </div>
-				  </div>
-				  <div class="layui-inline">
-					  <label class="layui-form-label">修改时间</label>
-					  <div class="layui-input-inline">
-						<div class="layui-form-mid layui-word-aux update_time">2019-08-09</div>
-					  </div>
-				  </div>
-				</div>
-				<div class="layui-form-item">
-				  <div class="layui-inline">
-					  <label class="layui-form-label">评论数</label>
-					  <div class="layui-input-inline">
-						<div class="layui-form-mid layui-word-aux comment">666</div>
-					  </div>
-				  </div>
-				  <div class="layui-inline">
-					  <label class="layui-form-label">点赞数</label>
-					  <div class="layui-input-inline">
-						<div class="layui-form-mid layui-word-aux good">666</div>
-					  </div>
-				  </div>
-				  <div class="layui-inline">
-					  <label class="layui-form-label">浏览数</label>
-					  <div class="layui-input-inline">
-						<div class="layui-form-mid layui-word-aux view">666</div>
-					  </div>
-				  </div>
-				</div>  
-				<!--
-				<div class="layui-form-item"> 
-					<label class="layui-form-label">随笔</label>
-					<div class="layui-input-block">
-						<textarea name="mark_code" style="min-height: 356px;" class="layui-textarea"></textarea> 
-					</div> 
-				</div>
-				-->
-				<div class="layui-form-item layui-hide">
-				  <input type="button" lay-submit lay-filter="LAY-aticle-add" id="LAY-aticle-add" value="确认">
-				  <input type="button" lay-submit lay-filter="LAY-aticle-update" id="LAY-aticle-update" value="确认">
-				</div>
-			</div>
-		</div>
-	</div>
-
+  <div class="layui-form" lay-filter="source-data-form" id="source-data-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">ID</label>
+      <div class="layui-input-inline"> 
+        <input type="text" name="id" disabled value="000000" autocomplete="off" class="layui-input layui-disabled">
+      </div>
+    </div> 
+	<div class="layui-form-item">
+	  <label class="layui-form-label">标题</label>
+      <div class="layui-input-inline"> 
+        <input type="text" name="title" autocomplete="off" class="layui-input">
+      </div>
+	</div> 
+	<div class="layui-form-item">
+      <label class="layui-form-label">访问权限</label>
+      <div class="layui-input-inline">
+        <select name="authority">
+		  <option value="0"></option>
+          <option value="1">public</option>
+		  <option value="2">private</option> 		  
+        </select>
+      </div>
+    </div>
+	<div class="layui-form-item">
+	  <label class="layui-form-label">标签</label>
+	  <div class="layui-input-block">
+	    <input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
+		<input type="checkbox" name="limits[]" lay-skin="primary" title="内容系统">
+		<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
+		<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
+		<input type="checkbox" name="limits[]" lay-skin="primary" title="社区系统">
+	  </div>
+	</div> 
+	<div class="layui-form-item">
+	  <label class="layui-form-label">随笔</label>
+	  <div class="layui-input-block">
+		<textarea name="mark_code" style="min-height: 356px;" class="layui-textarea"></textarea> 
+	  </div>
+	</div>  
   <script src="../../layuiadmin/layui/layui.js"></script>
   <script>
   layui.config({
@@ -133,7 +89,7 @@
 				layer.msg("修改成功！", {time: 2000}); 
 			}
 			,fail: function(data){
-				layer.msg("修改失败！", {time: 2000}) 
+				layer.msg("修改失败！", {time: 2000}); 
 			}
 		});	
 		parent.layer.close(index_);

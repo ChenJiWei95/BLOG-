@@ -97,13 +97,12 @@
 	, s = 'LAY-app-contlist-search'
 	, active = {
       add: function(){
-	  
         layer.open({
           type: 2
           ,title: '添加文章'
           ,content: 'listform.html'
           ,maxmin: true
-          ,area: ['800px', '500px']
+          ,area: ['1100px', '500px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             layero.find(f).contents().find("#"+a).click();
@@ -119,7 +118,7 @@
           ,title: '编辑信息'
           ,content: 'listform.html'
           ,maxmin: !0
-          ,area: ['800px', '500px']
+          ,area: ['1100px', '500px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             // 点击确认触发 iframe 内容中的按钮提交
@@ -129,14 +128,13 @@
 			var iframe = e.find("iframe").contents().find("#aticle-form-admin");
             iframe.find('input[name="checkbox"]').checked = !0
 			,iframe.find('input[name="title"]').val(data[0].title)
-			
-			,iframe.find('.id"]').val(data[0].id)
-			,iframe.find('.create_time').val(data[0].create_time)
-			,iframe.find('.update_time').val(data[0].update_time)
-			,iframe.find('.comment"]').val(data[0].comment_num)
-			,iframe.find('.good"]').val(data[0].good_num)
+			,iframe.find('input[name="id"]').val(data[0].id)
+			,iframe.find('input[name="create_time"]').val(data[0].create_time)
+			,iframe.find('input[name="update_time"]').val(data[0].update_time)
+			,iframe.find('input[name="comment"]').val(data[0].comment_num)
+			,iframe.find('input[name="good"]').val(data[0].good_num)
 			,iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
-			,iframe.find('.view"]').val(data[0].visit_num)
+			//,iframe.find('input[name="view"]').val(data[0].visit_num)
 		  }
         }); 
       }
@@ -149,7 +147,7 @@
 		  ,title: '编辑随笔'
 		  ,content: 'listcontform.html'
           ,maxmin: !0
-          ,area: ['550px', '550px']
+          ,area: ['800px', '550px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
 			layero.find(f).contents().find("#"+b).click();
