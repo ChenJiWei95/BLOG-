@@ -92,7 +92,7 @@
 	, f = 'iframe'
 	, a = 'LAY-aticle-add'
 	, c = 'LAY-aticle-update'
-	, b = 'LAY-list-submit'
+	, b = 'edit_submit'
 	, l = 'LAY-app-content-list'
 	, s = 'LAY-app-contlist-search'
 	, active = {
@@ -102,7 +102,7 @@
           ,title: '添加文章'
           ,content: 'listform.html'
           ,maxmin: true
-          ,area: ['1100px', '500px']
+          ,area: 'auto'
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             layero.find(f).contents().find("#"+a).click();
@@ -112,28 +112,31 @@
 	  ,edit_base: function(){//编辑信息
 		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; //得到选中的数据
-		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
+		//data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
         layer.open({
           type: 2
           ,title: '编辑信息'
           ,content: 'listform.html'
           ,maxmin: !0
-          ,area: ['1100px', '500px']
+          ,area: 'auto'
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             // 点击确认触发 iframe 内容中的按钮提交
             layero.find(f).contents().find("#"+c).click();
+			return !1;
           }
 		  ,success: function(e, index){// 初始化
 			var iframe = e.find("iframe").contents().find("#aticle-form-admin");
-            iframe.find('input[name="checkbox"]').checked = !0
+            iframe.find('input[data-type=1]').checked = !0
 			,iframe.find('input[name="title"]').val(data[0].title)
 			,iframe.find('input[name="id"]').val(data[0].id)
 			,iframe.find('input[name="create_time"]').val(data[0].create_time)
 			,iframe.find('input[name="update_time"]').val(data[0].update_time)
 			,iframe.find('input[name="comment"]').val(data[0].comment_num)
 			,iframe.find('input[name="good"]').val(data[0].good_num)
-			,iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
+			,iframe.find('textarea[name="mark_code"]').addClass('layui-disabled')
+			,iframe.find('textarea[name="mark_code"]').disabled = !0
+			
 			//,iframe.find('input[name="view"]').val(data[0].visit_num)
 		  }
         }); 
@@ -141,19 +144,23 @@
 	  ,edit: function(){//编辑随笔
 		var checkStatus = table.checkStatus(l)
         ,data = checkStatus.data; // 得到选中的数据
-		data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
+		//data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 		layer.open({// 修改
 		  type: 2
 		  ,title: '编辑随笔'
 		  ,content: 'listcontform.html'
           ,maxmin: !0
-          ,area: ['800px', '550px']
+          ,area: 'auto'
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
 			layero.find(f).contents().find("#"+b).click();
-			return false;
+			return !1;
 		  }
 		  ,success: function(e, index){// 初始化 
+		    var iframe = e.find("iframe").contents().find("#aticle-form-admin"); 
+			iframe.find('input[name="title"]').val(data[0].title)
+			,iframe.find('input[name="id"]').val(data[0].id)
+			,iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
 			//var iframe = e.find("iframe").contents().find("#aticle-form-admin");
 			//iframe.find('textarea[name="mark_code"]').val(data[0].mark_code)
 		  } 

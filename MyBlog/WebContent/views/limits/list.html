@@ -146,7 +146,7 @@
 				,success: function(e, index) {
 					var iframe = e.find(i).contents().find("#"+f);
 					iframe.find('input[name="id"]').val(data[0].id) 
-					,iframe.find('input[name="loginname"]').val(data[0].loginname)
+					,iframe.find('input[name="loginname"]').val(data[0].account)
 					,iframe.find('input[name="phone"]').val(data[0].phone)
 					,iframe.find('input[name="email"]').val(data[0].email) 
 					,iframe.find('textarea[name="msg"]').val(data[0].msg) 
