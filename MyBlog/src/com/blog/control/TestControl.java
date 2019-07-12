@@ -35,9 +35,8 @@ public class TestControl {
 		logger.error("全路径："+url);
 		logger.error("路径:" + System.getProperty("catalina.home"));
 		//return "index";
-*/	
+		*/	
 		System.out.println(ActionUtil.read(request));
-		
 		ActionUtil.returnRes(response, "success");
 	}
 	@RequestMapping("/api/test1.do")
@@ -237,12 +236,12 @@ public class TestControl {
 		object_.put("id", "0001");
 		object_.put("account", "root");
 		object_.put("pass", "cjw168999");
-		object_.put("role", "超级管理员"); 
+		object_.put("role", "超级管理员");
 		object_.put("create_time", "2019-06-11");
 		object_.put("update_time", "");
 		object_.put("phone", "1111111111");
-		object_.put("email", "2222222222"); 
-		object_.put("msg", "xxx"); 
+		object_.put("email", "2222222222");
+		object_.put("msg", "xxx");
 		arr.add(object_);
 		
 		object_ = new JSONObject();
@@ -253,12 +252,10 @@ public class TestControl {
 		object_.put("create_time", "2019-06-11");
 		object_.put("update_time", "2019-06-12");
 		object_.put("phone", "1111111111");
-		object_.put("email", "333333333"); 
-		object_.put("msg", "xxx"); 
+		object_.put("email", "333333333");
+		object_.put("msg", "xxx");
 		arr.add(object_);
-		
 		object.put("data", arr);
-		
 		return object;
 	}
 	@RequestMapping("/api/test/tag1.do")
@@ -289,10 +286,12 @@ public class TestControl {
 		
 		return object;
 	}
-	@RequestMapping("/api/test/tags.do")
+	@RequestMapping("/api/test/tagsxxx.do")
 	@ResponseBody
 	public Object test11(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		return response;
+		JSONObject object = new JSONObject();
+		object.put("result", "success");
+		return object;
 	}
 	public static void main(String[] args){
 		String json = "{\r\n" + 
@@ -322,15 +321,31 @@ public class TestControl {
 	}
 	@RequestMapping("/api/test/str.do")
 	@ResponseBody
-	public String test3(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		return "success";
+	public Object test3(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		JSONObject object = new JSONObject();
+		object.put("result", "success");
+		return object;
 	}
 	@RequestMapping("/api/test/admin/index.do")
 	public String test4(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		return "../../../views/admin_view";
 	}
-}
-class Result{
-	private String result = "success";
-	private String msg = "成功";
-}
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

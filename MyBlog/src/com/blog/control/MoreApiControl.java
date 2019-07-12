@@ -49,9 +49,7 @@ public class MoreApiControl {
 	public void sendEmail(HttpServletRequest request, HttpServletResponse response){
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> res = new HashMap<String, String>();
-		
 	    try {
-	    	
 	    	String data = ActionUtil.read(request);
 	    	Map<String, String> mapData = mapper.readValue(data, Map.class);
 	    	
@@ -61,7 +59,6 @@ public class MoreApiControl {
 				ActionUtil.returnRes(response, JSONObject.fromObject(response).toString());
 				return ;
 	    	}
-	    	
 	    	String to = mapData.get("to");
 		    Properties props = new Properties();
 		    props.setProperty("mail.smtp.auth", "true");
@@ -78,13 +75,11 @@ public class MoreApiControl {
 			transport.sendMessage(msg,  
 			        new Address[]{new InternetAddress(to)});
 			transport.close();
-			
 		} catch (MessagingException | IOException e) {
 			e.printStackTrace();
 			res.put("resCode", Constant.RESCODE_0001);
 			res.put("resDesc", "发送失败，"+e.getMessage());
 		} 
-	    
 	    res.put("resCode", Constant.RESCODE_0000);
 		res.put("resDesc", "发送成功");
 	    try {
@@ -92,13 +87,9 @@ public class MoreApiControl {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-	    
 	}
 	
 	public static void main(String[] args){
 	 	    
 	}
-	
-	
-	 
 }
