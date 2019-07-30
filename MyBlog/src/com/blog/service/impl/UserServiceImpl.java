@@ -17,7 +17,7 @@ public class UserServiceImpl extends BasiServiceImpl implements UserService  {
 	
 	public void test() {
 		try {
-			User user = userDao.queryUserByUsername("root");
+			User user = userDao.getById(1);
 			System.out.println("username:" + user.toString());
 		} catch (Exception e) {
 			e.printStackTrace();

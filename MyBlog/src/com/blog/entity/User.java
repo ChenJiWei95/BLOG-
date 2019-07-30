@@ -8,6 +8,7 @@ public class User {
 	private Integer id;
 	private String username;
 	private String password;
+	private String tableName;
 	
 	public Integer getId() {
 		return id;
@@ -26,6 +27,12 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getTableName() {
+		return tableName;
+	}
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 	
 	public String toString() {
