@@ -225,6 +225,8 @@
 	基础：https://www.cnblogs.com/honger/p/9519300.html
 		 http://www.bubuko.com/infodetail-2042251.html
 	
+* 2、Invalid bound statement (not found): com.blog.dao.UserDao.getTest2
+	
 # 测试结果  
 
 * 数据库的连接测试    7/9 User

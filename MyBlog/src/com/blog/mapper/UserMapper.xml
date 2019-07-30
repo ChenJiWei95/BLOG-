@@ -7,23 +7,37 @@
 	<!-- 创建工单 -->
 	<!-- <select id="queryUsers" parameterType="Integer" resultType="com.blog.entity.User" useCache="false">
 		SELECT * FROM user WHERE id=#{id}
-	</select> -->
-	<select id="queryUserByUsername" parameterType="STRING" resultType="com.blog.entity.User" useCache="false">
-		SELECT * FROM user WHERE username=#{username}
+	</select> --> 
+	
+	<!-- 测试 ${} $和#的区别 -->
+	<select id="getTest" parameterType="com.blog.entity.Eq" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user ${content}
 	</select>
-	<select id="getById" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
-		SELECT * FROM user WHERE id=#{id}
-	</select>
-	<select id="get" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
+	
+	<select id="getTest2" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
 		SELECT * FROM user WHERE id=#{id}
 	</select>
 	
-	<resultMap id="employees" type="com.work_order_system.model.Employee">
+	<!-- 通过id查找user -->
+	<select id="getById" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE id=#{id}
+	</select>
+	
+	<!-- 通过实体类所传的条件进行查找 -->
+	<select id="get" parameterType="com.blog.entity.User" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE id=#{id} 	
+		<if test="id!=null"> AND username = #{username} </if>
+		<if test="current_employee_id!=null"> AND password = #{password} </if>
+	</select>
+	
+	<!-- user集合 -->
+	<resultMap id="userList" type="com.blog.entity.User">
 		<id column="id" property="id"></id>
 		<result property="username" column="username"/>
 		<result property="password" column="password"/>
 	</resultMap>
-	<select id="gets" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
+	<!-- 根据不同条件去查找；返回集合 --> 
+	<select id="gets" parameterType="INTEGER" resultMap="userList" useCache="false">
 		SELECT * FROM user WHERE id=#{id}
 	</select>
 	

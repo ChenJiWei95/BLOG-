@@ -9,6 +9,7 @@ public class User {
 	private String username;
 	private String password;
 	private String tableName;
+	private String content;
 	
 	public Integer getId() {
 		return id;
@@ -33,6 +34,12 @@ public class User {
 	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 	public String toString() {

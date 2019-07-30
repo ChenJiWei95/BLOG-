@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.blog.entity.Eq;
+import com.blog.entity.User;
+
 
 
 
@@ -23,5 +26,8 @@ public interface BaseDao<T> {
 	void save(T t) throws Exception;
 	void update(T t) throws Exception;
 	void delete(T t) throws Exception;
+	
+	User getTest(Eq content) throws Exception;
+	User getTest2(Integer id) throws Exception;
 
 }
