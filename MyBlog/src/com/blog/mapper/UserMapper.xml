@@ -10,13 +10,29 @@
 	</select> --> 
 	
 	<!-- 测试 ${} $和#的区别 需要另外编写防sql注入处理 -->
-	<select id="getTest" parameterType="com.blog.entity.Eq" resultType="com.blog.entity.User" useCache="false">
-		SELECT * FROM user ${content}
+	<select id="getTest" parameterType="com.blog.entity.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<if test="whereSql!=null"> ${whereSql}</if>
+		<if test="orderBySql!=null"> ${orderBySql}</if>
+		<if test="limitSql!=null"> ${limitSql}</if>
 	</select>
+	
+	<!-- 测试模板 -->
+	<update id="updateTest" parameterType="com.blog.entity.EqAdapter">
+		update ${table} set ${updateSql}
+		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
+		<if test="whereSql!=null"> ${whereSql}</if>
+	</update>
+	
+	<insert id="insertTest" parameterType="com.blog.entity.EqAdapter">
+		${insertSql}
+	</insert>
 	
 	<select id="getTest2" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
 		SELECT * FROM user WHERE id=#{id}
 	</select>
+	
+	
 	
 	<!-- 通过id查找user -->
 	<select id="getById" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">

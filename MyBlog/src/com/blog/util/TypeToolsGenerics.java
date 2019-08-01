@@ -3,6 +3,8 @@ package com.blog.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blog.exception.UnconvertibleException;
+
 /**
  * 
  * <b>获取一个对象的类型工具类<b>
@@ -23,6 +25,7 @@ public class TypeToolsGenerics
         typeMap.put("java.lang.Character", "char");  
         typeMap.put("java.lang.Boolean", "boolean");  
         typeMap.put("java.lang.String", "string");
+        typeMap.put("java.sql.Timestamp", "timestamp");
     }  
     public final static <T> String getType(T t) {  
         if(t == null){ return null; }  
@@ -49,8 +52,31 @@ public class TypeToolsGenerics
     		case "double" : return Double.parseDouble(currentParame);
     		case "float" : return Float.parseFloat(currentParame);
     		case "boolean" : return Boolean.parseBoolean(currentParame);
+    		case "timestamp" : return java.sql.Timestamp.valueOf(currentParame);
     		default : System.out.println("该类型，不受理："+ t.getClass());
     	}
 		return currentParame;
     }
+    
+    /**
+	 * 转换成sql类型
+	 * <p>	 
+	 * @param type
+	 * @return
+	 * @throws UnconvertibleException
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public final static <T> String transTypeForSql(T t) throws UnconvertibleException{
+		
+		String temp = "";
+		switch(getType(t)){
+			case "string" : temp = "VARCHAR"; break;
+			case "timestamp" : temp = "TIMESTAMP"; break;
+			case "int" : temp = "INTEGER"; break;
+			default : throw new UnconvertibleException(t);
+		}
+		return temp;
+	}
 } 

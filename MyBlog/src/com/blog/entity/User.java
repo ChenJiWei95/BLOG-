@@ -2,7 +2,7 @@ package com.blog.entity;
 
 /**
  * 
- * @author cjw
+ * @author cjwstart
  */
 public class User {
 	private Integer id;
