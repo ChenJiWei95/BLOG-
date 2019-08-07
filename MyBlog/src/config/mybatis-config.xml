@@ -28,5 +28,6 @@
     <!-- 配置mapper -->
     <mappers>
     	<mapper resource="com/blog/mapper/UserMapper.xml" />
+    	<mapper resource="com/blog/mapper/RelateMapper.xml" />
     </mappers>
 </configuration>

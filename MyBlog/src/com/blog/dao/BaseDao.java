@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.blog.entity.EqAdapter;
+import com.blog.entity.Relate;
 import com.blog.entity.User;
 
 
@@ -24,12 +25,14 @@ public interface BaseDao<T> {
 	List<T> gets(T t) throws Exception;
 	void save(T t) throws Exception;
 	void update(T t) throws Exception;
-	void delete(T t) throws Exception;
+	void delete(T t) throws Exception; 
 	
 	List<T> getTest(EqAdapter eq) throws Exception;
 	void updateTest(EqAdapter eq) throws Exception;
 	void insertTest(EqAdapter eq) throws Exception;
 	
 	User getTest2(Integer id) throws Exception;
+	
+	List<Relate> relateTest () throws Exception;
 
 }

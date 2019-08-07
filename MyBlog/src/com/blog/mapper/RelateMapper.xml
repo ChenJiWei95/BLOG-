@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.dao.RelateDao">
+	
+	<!-- 多表关联测试 -->
+	<resultMap id="relate" type="com.blog.entity.Relate">
+		<id column="id" property="id"></id>
+		<collection property="target_"
+					javaType="com.blog.entity.Target_"
+					select="com.blog.entity.Target_"
+					column="id">
+			<id column="id_Target_" property="id_Target_"></id>
+			<result property="name_Target_" column="name_Target_"/>
+		</collection>
+		<collection property="target__"
+					javaType="LIST"
+					select="com.blog.entity.Target__"
+					column="id">
+			<id column="id_Target__" property="id_Target__"></id>
+			<result property="name_Target__" column="name_Target__"/>
+		</collection>
+	</resultMap>
+	<select id="relateTest" parameterType="com.blog.entity.Relate" resultMap="relate" useCache="false">
+		select a.id_Target_, a.name_Target_, b.id_Target__, b.name_Target__
+			from target_ a, target__ b, relate ab
+			where a.id_Target_ = ab.target_ AND b.id_Target__ = ab.target__ AND ab.target_ = '1';
+	</select>
+	<!-- <select id="getTest" parameterType="com.blog.entity.Relate" resultMap="relate" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<if test="whereSql!=null"> ${whereSql}</if>
+		<if test="orderBySql!=null"> ${orderBySql}</if>
+		<if test="limitSql!=null"> ${limitSql}</if>
+	</select> -->
+	
+</mapper>
