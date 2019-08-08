@@ -1,6 +1,27 @@
 package com.blog.entity;
 
 public class Target_ {
+	public final static String TABLE_FIELD 					= "target_"		;
+	public final static String BRIGE_TABLE_FIELD 			= "relate"		;
+	public final static String BRIGE_KEY_FIELD 				= "target_"		;
+	public final static String BRIGE_ASSOCIATION_KEY_FIELD 	= "target__"	;
+	public final static String ASSOCIATION_TABLE_FIELD		= "target__"	;
+	public final static String ASSOCIATION_TABLE_ID_FIELD 	= "id_Target__"	;
+	
+	public static void main(String[] args){
+		String[] arr = {
+				"table_field"
+				, "brige_table_field"
+				, "brige_key_field"
+				, "brige_association_key_field"
+				, "association_table_field"
+				, "association_table_id_field"
+				};
+		for (String field : arr){
+			System.out.println(field.toUpperCase());
+		}
+	}
+	
 	private String id_Target_;
 	private String name_Target_;
 	public String getId_Target_() {

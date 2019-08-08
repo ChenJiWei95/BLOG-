@@ -1,11 +1,13 @@
 package com.blog.entity;
 
+import java.util.ArrayList;
+
 public class Relate {
 	private String id;
 	private String name;
 	
-	private Target_ target_;
-	private Target__ target__;
+	private ArrayList<Target_> target_;
+	private ArrayList<Target__> target__;
 	public String getId() {
 		return id;
 	}
@@ -18,16 +20,17 @@ public class Relate {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Target_ getTarget_() {
+	public ArrayList<Target_> getTarget_() {
 		return target_;
 	}
-	public void setTarget_(Target_ target_) {
+	public void setTarget_(ArrayList<Target_> target_) {
 		this.target_ = target_;
 	}
-	public Target__ getTarget__() {
+	public ArrayList<Target__> getTarget__() {
 		return target__;
 	}
-	public void setTarget__(Target__ target__) {
+	public void setTarget__(ArrayList<Target__> target__) {
 		this.target__ = target__;
 	}
+	 
 }

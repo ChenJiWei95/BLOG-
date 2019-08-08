@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.blog.entity.EqAdapter;
 import com.blog.entity.Relate;
+import com.blog.entity.Target__;
 import com.blog.entity.User;
 
 
@@ -22,7 +23,7 @@ import com.blog.entity.User;
 public interface BaseDao<T> {
 	T getById(Integer id) throws Exception;
 	T get(T t) throws Exception;
-	List<T> gets(T t) throws Exception;
+	List<T> gets() throws Exception;
 	void save(T t) throws Exception;
 	void update(T t) throws Exception;
 	void delete(T t) throws Exception; 
@@ -34,5 +35,16 @@ public interface BaseDao<T> {
 	User getTest2(Integer id) throws Exception;
 	
 	List<Relate> relateTest () throws Exception;
+	
+	/**
+	 * 查找关联对象集 通过中间表
+	 * <p>	 
+	 * @param eq
+	 * @return
+	 * List<Target__>
+	 * @see
+	 * @since 1.0
+	 */
+	List<Target__> associate(EqAdapter eq);
 
 }

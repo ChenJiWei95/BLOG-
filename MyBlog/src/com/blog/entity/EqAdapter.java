@@ -3,7 +3,6 @@ package com.blog.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.blog.exception.UnconvertibleException;
 import com.blog.util.TypeToolsGenerics;
 /**
  * <b>适配类 -- 实体类和mybatis配置的文件的中间类，达到更高的复用效果</b>
@@ -25,42 +24,74 @@ import com.blog.util.TypeToolsGenerics;
  */
 public class EqAdapter{
 	
-	private final String WHERE_FIX = "WHERE";
-	private final String AND_FIX = "AND";
-	private final String ORDER_BY_FIX = "ORDER BY ";
-	private final String LIMIT_FIX = "LIMIT ";
+	private final String WHERE_FIX 		= "WHERE"		;
+	private final String AND_FIX 		= "AND"			;
+	private final String ORDER_BY_FIX 	= "ORDER BY "	;
+	private final String LIMIT_FIX 		= "LIMIT "		;
 	 
-	private String table; //表名 
-	private String orderBySql;		//排序
-	private String limitSql;		//分页
-	private String columnSql;		//查找的列
-	private Map<String, Object> eqMap;
-	private Map<String, Object> updateMap;
+	protected String id						; // 主键 
+	private String table					; // 表名 
+	private String orderBySql				; // 排序
+	private String limitSql					; // 分页
+	private String columnSql				; // 结果		集字符 
+	private Map<String, Object> eqAndPutMap	; // 条件&插入	集 
+	private Map<String, Object> updateMap	; // 修改     	集 
+	
+	// 关联对象
+	private String brige_table				; // 桥接表 名
+	private String brige_key				; // 桥接表 对应本类字段
+	private String brige_association_key	; // 桥接表 对应关联类字段
+	private String association_table		; // 关联表 名
+	private String association_table_id		; // 关联表 id字段
 	
 	public EqAdapter(){
-		columnSql = "*";
+		columnSql = "*"; 
 	}
 	
-	public String getWhereSql() throws Exception {
-		if(eqMap == null)
-			throw new Exception("集合为空：map = " + eqMap);
+	public String getWhereSqlOfAssociation() throws Exception {
+		if(eqAndPutMap == null)
+			throw new Exception("集合为空：map = " + eqAndPutMap);
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);
 		
-		int len = eqMap.size();
-		if(len > 0){
-			StringBuilder whereSql = new StringBuilder(WHERE_FIX);
-			for(Map.Entry<String, Object> item : eqMap.entrySet()){
-				whereSql	.append(" `"+ item.getKey() +"` = ")
-						.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
-								? "'"+item.getValue()+"' " 
-								: (item.getValue()) + " ")
-						.append(AND_FIX);
-			}
-			whereSql.delete(whereSql.length()-4, whereSql.length());
-			return whereSql.toString();
-		}else return "";
+		StringBuilder whereSql = new StringBuilder(WHERE_FIX);
+		whereSql.append(" "+getBrige_table()+"."+getBrige_key()+" = ");
+		whereSql.append(getTable()+"."+getId()+" ").append(AND_FIX);
+		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
+			whereSql	.append(" `"+ item.getKey() +"` = ")
+					.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
+							? "'"+item.getValue()+"' " 
+							: (item.getValue()) + " ")
+					.append(AND_FIX);
+		}
+		whereSql.delete(whereSql.length()-4, whereSql.length());
+		return whereSql.toString(); 
 	}
+	
+	public String getWhereSql() throws Exception {
+		if(eqAndPutMap == null)
+			throw new Exception("集合为空：map = " + eqAndPutMap);
+		if(table == null || "".equals(table))
+			throw new Exception("table = " + table);
+		if(eqAndPutMap.size() < 0)
+			return "";
+		
+		return createEqSql();	
+	}
+
+	protected String createEqSql() {
+		StringBuilder whereSql = new StringBuilder(WHERE_FIX);
+		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
+			whereSql	.append(" `"+ item.getKey() +"` = ")
+					.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
+							? "'"+item.getValue()+"' " 
+							: (item.getValue()) + " ")
+					.append(AND_FIX);
+		}
+		whereSql.delete(whereSql.length()-4, whereSql.length());
+		return whereSql.toString();
+	}
+	
 	public String getUpdateSql() throws Exception {
 		
 		if(updateMap == null || updateMap.size() == 0)
@@ -79,16 +110,17 @@ public class EqAdapter{
 		updateSql.deleteCharAt(updateSql.length()-1);
 		return updateSql.toString();	
 	}
+	
 	public String getInsertSql() throws Exception{
 		
-		if(eqMap == null || eqMap.size() == 0)
-			throw new Exception("集合为空或者集合元素不能为零：map = " + eqMap);
+		if(eqAndPutMap == null || eqAndPutMap.size() == 0)
+			throw new Exception("集合为空或者集合元素不能为零：map = " + eqAndPutMap);
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);
 		
 		StringBuilder cloumns = new StringBuilder();
 		StringBuilder values = new StringBuilder();
-		for(Map.Entry<String, Object> item : eqMap.entrySet())
+		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet())
 		{
 			if(item.getKey() == null || "".equals(item.getKey()))
 				continue;
@@ -104,19 +136,73 @@ public class EqAdapter{
 		.append("values(").append(values.deleteCharAt(values.length()-1)).append(");");
 		return insertSql.toString();
 	}
+	
+	public String getId() {
+		return cloumnUtil(id);
+	}
+
+	public String getBrige_table() {
+		return cloumnUtil(brige_table);
+	}
+
+	public String getBrige_key() {
+		return cloumnUtil(brige_key);
+	}
+
+	public String getBrige_association_key() {
+		return cloumnUtil(brige_association_key);
+	}
+
+	public String getAssociation_table() {
+		return cloumnUtil(association_table);
+	}
+
+	public String getAssociation_table_id() {
+		return cloumnUtil(association_table_id);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	public void setBrige_table(String brige_table) {
+		this.brige_table = brige_table;
+	}
+
+	public void setBrige_key(String brige_key) {
+		this.brige_key = brige_key;
+	}
+
+	public void setBrige_association_key(String brige_association_key) {
+		this.brige_association_key = brige_association_key;
+	}
+
+	public void setAssociation_table(String association_table) {
+		this.association_table = association_table;
+	}
+
+	public void setAssociation_table_id(String association_table_id) {
+		this.association_table_id = association_table_id;
+	}
+
 	public String getOrderBySql() {
 		return orderBySql;
 	}
+	
 	public String getLimitSql() {
 		return limitSql;
 	}
+	
 	public String getTable() {
-		return table;
+		return cloumnUtil(table);
 	}
+	
 	public String getColumnSql() {
 		return columnSql;
 	}
 	
+	private String cloumnUtil(String cloumn){
+		return "`" + cloumn + "`";
+	}
 
 	/**
 	 * 自定义查找列名 否则默认‘*’
@@ -177,19 +263,6 @@ public class EqAdapter{
 	/**
 	 * 设置查询条件
 	 * <p>	 
-	 * @param map
-	 * void
-	 * @see
-	 * @since 1.0
-	 */
-	public void eq(Map<String, Object> map){
-		
-		this.eqMap = map;
-	}
-	
-	/**
-	 * 设置查询条件
-	 * <p>	 
 	 * @param key
 	 * @param value
 	 * void
@@ -201,9 +274,25 @@ public class EqAdapter{
 		if((key == null || "".equals(key)) 
 			&& (value == null || "".equals(value))) 
 			throw new NullPointerException("key="+key+", value="+value);
-		if(eqMap == null) eqMap = new HashMap<>();
-		eqMap.put(key, value);
+		if(eqAndPutMap == null) eqAndPutMap = new HashMap<>();
+		eqAndPutMap.put(key, value);
 	} 
+	
+	/**
+	 * 设置查询条件
+	 * <p>	 
+	 * @param map
+	 * void
+	 * @see
+	 * @since 1.0
+	 */
+	public void eq(Map<String, Object> map){
+		if(eqAndPutMap != null)
+			this.eqAndPutMap.putAll(map);
+		else 
+			this.eqAndPutMap = map;
+	}
+	
 	/**
 	 * 设置修改项
 	 * <p>	 
@@ -262,6 +351,6 @@ public class EqAdapter{
 	}
 	
 	public void setTable(String table) {
-		this.table = "`"+table+"`";
+		this.table = table;
 	}
 }

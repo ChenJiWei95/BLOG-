@@ -47,7 +47,7 @@
 	</select>
 	
 	<!-- 多表关联测试 -->
-	<resultMap id="group" type="com.blog.entity.Relate">
+	<!-- <resultMap id="group" type="com.blog.entity.Relate">
 		<id column="id" property="id"></id>
 		<result property="name" column="name"/>
 		<collection property="target_"
@@ -64,17 +64,14 @@
 			<id column="id" property="id"></id>
 			<result property="name__" column="name__"/>
 		</collection>
-	</resultMap>
+	</resultMap> -->
 	
 	<!-- user集合 -->
-	<resultMap id="userList" type="com.blog.entity.User">
-		<id column="id" property="id"></id>
-		<result property="username" column="username"/>
-		<result property="password" column="password"/>
+	<resultMap id="userList" type="com.blog.entity.User"> 
 	</resultMap>
 	<!-- 根据不同条件去查找；返回集合 --> 
-	<select id="gets" parameterType="INTEGER" resultMap="userList" useCache="false">
-		SELECT * FROM user WHERE id=#{id}
+	<select id="gets" resultMap="userList" useCache="false">
+		SELECT * FROM user
 	</select>
 	 
 	
