@@ -1,12 +1,12 @@
 package com.blog.entity;
 
 public class Target_ {
-	public final static String TABLE_FIELD 					= "target_"		;
-	public final static String BRIGE_TABLE_FIELD 			= "relate"		;
-	public final static String BRIGE_KEY_FIELD 				= "target_"		;
-	public final static String BRIGE_ASSOCIATION_KEY_FIELD 	= "target__"	;
-	public final static String ASSOCIATION_TABLE_FIELD		= "target__"	;
-	public final static String ASSOCIATION_TABLE_ID_FIELD 	= "id_Target__"	;
+	public final static String TABLE 					= "target_"		;//主表名
+	public final static String BRIGE_TABLE 				= "relate"		;//中间表名
+	public final static String BRIGE_KEY 				= "target_"		;//中间表关联的主表键 	为空则没有
+	public final static String BRIGE_ASSOCIATION_KEY 	= "target__"	;//中间表关联的次表键	为空则没有
+	public final static String ASSOCIATION_TABLE		= "target__"	;//次表名
+	public final static String ASSOCIATION_TABLE_ID 	= "id_Target__"	;//次表ID
 	
 	public static void main(String[] args){
 		String[] arr = {

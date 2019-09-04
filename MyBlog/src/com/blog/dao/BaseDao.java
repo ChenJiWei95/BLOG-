@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.blog.entity.EqAdapter;
 import com.blog.entity.Relate;
 import com.blog.entity.Target__;
 import com.blog.entity.User;
+import com.blog.util.sql.EqAdapter;
 
 
 

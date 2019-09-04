@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.blog.service.UserService;
 import com.blog.service.impl.UserServiceImpl;
 import com.blog.util.ActionUtil;
 
@@ -25,7 +26,7 @@ public class TestControl {
 	public static Logger logger = LogManager.getLogger(TestControl.class);
 	
 	@Autowired
-	private UserServiceImpl userServiceImpl;
+	private UserService userServiceImpl;
 	
 	//请求 http://localhost:8080/MyBlog/api/test.do
 	@RequestMapping("/api/test.do")

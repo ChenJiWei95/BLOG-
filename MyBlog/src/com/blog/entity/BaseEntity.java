@@ -1,5 +1,7 @@
 package com.blog.entity;
 
+import com.blog.util.sql.EqAdapter;
+
 /**
  * 
  * @author cjwstart

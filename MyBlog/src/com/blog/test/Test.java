@@ -1,4 +1,11 @@
 package com.blog.test;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.event.ListSelectionEvent;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger; 
 /**
@@ -13,14 +20,39 @@ import org.apache.log4j.Logger;
  */
 public class Test {
 	private static Logger log = LogManager.getLogger(Test.class);
-	public static void main(String[] args){
-		log.info("hello word");
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException{
+	/*	log.info("hello word");
 		log.error("hello word");
 		log.fatal("hello word");
 		log.debug("hello word");
 		log.info("hello word");
 		log.trace("我是trace");
  
-		log.trace("退出程序.");
+		log.trace("退出程序.");*/
+		Class<?> clazz = PrivateClass.class;// 获取PrivateClass整个类
+		PrivateClass pc = (PrivateClass) clazz.newInstance();// 创建一个实例
+		/*pc.setName("cjw");
+		pc.setAge("24");
+		pc.setLarge("lagere");*/
+
+		Field[] fs = clazz.getDeclaredFields();// 获取PrivateClass所有属性
+		for (int i = 0; i < fs.length; i++) {
+			fs[i].setAccessible(true);// 将目标属性设置为可以访问
+			List<String> fields = new ArrayList<>(fs.length);
+			if(fs[i].get(pc) != null) {
+				fields.add(fs[i].getName());
+				
+			} 
+			switch(fs[i].getModifiers()) {
+				case 2 : 	System.out.println("private " + 2); 		break;
+				case 1 : 	System.out.println("public " + 1); 			break;
+				case 9 : 	System.out.println("static " + 9); 			break;
+				case 17 : 	System.out.println("public final " + 17); 	break;
+				case 18 : 	System.out.println("private final " + 18); 	break;
+			}
+//			System.out.println(fields.toArray().length);
+			fs[i].set(pc, "null");//将属性值重新赋值
+			System.out.println("赋值后：" + fs[i].getName() + ":" + fs[i].get(pc));
+		} 
 	}
 }

@@ -3,6 +3,7 @@
 # 目录
 * [页面分析](#页面分析)
 * [数据库分析](#数据库分析)
+* [使用自定义封装的JDBC注意](#使用自定义封装的JDBC)
 * [项目遇到的问题](#项目遇到的问题)
 
 # 页面分析
@@ -196,6 +197,14 @@
 		`life_share_id` INT NULL COMMENT '生活分享概要表（外键）',  
 		FOREIGN KEY (`life_share_id`) REFERENCES life_share(`id`) 
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限字段表'; 
+
+# 使用自定义封装的JDBC
+	该封装 是跟mybatis结合的，主要是数据库的交互更简便   
+	注意：  
+		字段修饰符必须用private修饰
+		字段名必须和数据库字段对应
+		使用BaseInterface接口时不能使用set给Eq设置参数 统一用接口
+	
 
 # 项目遇到的问题    
 
