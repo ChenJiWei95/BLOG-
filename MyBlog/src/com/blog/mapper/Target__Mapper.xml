@@ -18,8 +18,10 @@
 				DISTINCT ${brige_table}.${brige_association_key} 
 			FROM 
 				${brige_table}, ${table} 
-			${whereSqlOfAssociation}
-			);
+				${whereSqlOfAssociation}
+			)
+		<if test="orderBySql!=null"> ${orderBySql}</if>
+		<if test="limitSql!=null"> ${limitSql}</if>
 	<!-- SELECT
 		{cloumn} 
 	FROM

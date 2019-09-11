@@ -38,7 +38,10 @@
 		base: '../../layuiadmin/' //静态资源所在路径
 	}).extend({
 		index: 'lib/index' //主入口模块
+		,tree_etc: 'modules/tree_etc'
 	}).use(["tree_etc", 'index', 'console', 'element'], function() {
+		// 子页面调用 active
+		var oparate_active;
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form
@@ -54,11 +57,10 @@
 				  type: 2
 				  ,title: '添加分支'
 				  ,content: 'branchform.html'
-				  ,area: ['450px', '300px']
+				  ,area: ['420px', '420px']
 				  ,btn: ['确定', '取消']
 				  ,yes: function(index, layero){
-					oparate_active = obj.active;
-					layero.find(f).contents().find("#"+a).click();
+					layero.find(f).contents().find("#"+a).click(); 		// 子窗口 按钮触发点击
 				  }
 				}); 
 			}
@@ -67,14 +69,14 @@
 					type: 2,
 					title: "编辑当前分支",
 					content: "branchform.html?id=" + data[0].id,
-					area: ["450px", "200px"],
+					area: ['420px', '420px'],
 					btn: ["确定", "取消"],
 					yes: function(index, layero) {
-						oparate_active = obj.active;
-						layero.find(f).contents().find("#"+b).click(); 
+						layero.find(f).contents().find("#"+b).click(); 	// 子窗口 按钮触发点击
 					},
 					success: function(t, e) {
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
+						// 初始化
 						var iframe = t.find("iframe").contents().find("#"+c);
 						iframe.find('input[name="title"]').val(obj.data[0].title)
 						,iframe.find('input[name="priority"]').val(obj.data[0].priority)
@@ -95,7 +97,7 @@
 						,data: {data: JSON.stringify(obj.data)}
 						,dataType: "json"
 						,done: function(data){
-							parent.oparate_active.del();
+							obj.active.del();
 							layer.msg("删除成功！", {time: 2000})
 						} 
 						,fail: function(data){
@@ -135,14 +137,18 @@
 			,data: data
 			,renderContent: !0
 			,click: function(obj){
-				//layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+				layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
 			}
 			,operate: function(obj){
 				//obj.type  obj.data  obj.active
-				active[obj.type] ? active[obj.type](obj) : '';
+				console.log("回调operate");
+				oparate_active = obj.active;
+				console.log(obj);
+				console.log(obj.active);
+				'function' == typeof active[obj.type] ? active[obj.type](obj) : '';
 			}
 		}) 
-	var oparate_active;
+		
 	}); 
 	</script>
  </body>

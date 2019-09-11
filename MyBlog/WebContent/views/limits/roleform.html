@@ -70,11 +70,12 @@
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'form'], function(){
-    var $ = layui.$
+  }).use(['index', 'form', 'admin'], function(){
+    var $ = layui.$ 
     ,form = layui.form 
-	,index = layui.index
-	,a = "LAY-user-role-add"
+	,index = layui.index 
+	,admin = layui.admin 
+	,a = "LAY-user-role-add" 
 	,b = "LAY-user-role-update";
 	form.on("submit("+a+")", function(data){
 		var index = parent.layer.getFrameIndex(window.name); 

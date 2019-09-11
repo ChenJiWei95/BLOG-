@@ -10,4 +10,5 @@ public class DeleteAdapter extends EqAdapter {
 		
 		return super.getWhereSql();
 	}	
+	 	
 }

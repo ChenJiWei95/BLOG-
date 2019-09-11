@@ -15,7 +15,7 @@
     <div class="layui-form-item">
       <label class="layui-form-label">ID</label>
       <div class="layui-input-inline"> 
-        <input type="text" name="id" disabled lay-verify="required" placeholder="000000" autocomplete="off" class="layui-input layui-disabled">
+        <input type="text" name="id" disabled placeholder="xxxxxx" autocomplete="off" class="layui-input layui-disabled">
       </div>
     </div>
 	<div class="layui-form-item">
@@ -72,9 +72,10 @@
     base: '../../layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'form'], function(){
+  }).use(['index', 'form', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form 
+	,admin = layui.admin
 	,f = 'layuiadmin-form-admin'
 	,a = 'LAY-user-admin-add'
 	,b = 'LAY-user-admin-update'; 

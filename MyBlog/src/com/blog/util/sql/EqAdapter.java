@@ -1,6 +1,7 @@
 package com.blog.util.sql;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,13 @@ public abstract class EqAdapter{
 	private Map<String, Object> eqAndPutMap	; // 条件&插入	集 
 	private Map<String, Object> updateMap	; // 修改     	集 
 	
+	private BaseInterface parame;
+
 	public EqAdapter(){
+	}
+	
+	public BaseInterface getParame() {
+		return parame;
 	}
 	
 	// 条件语句
@@ -114,7 +121,10 @@ public abstract class EqAdapter{
 	}
 
 	public void setUpdateMap(Map<String, Object> updateMap) {
-		this.updateMap = updateMap;
+		if(this.updateMap!=null)
+			this.updateMap.putAll(updateMap);
+		else
+			this.updateMap = updateMap;
 	}
 
 	public Map<String, Object> getEqAndPutMap() {
@@ -122,7 +132,10 @@ public abstract class EqAdapter{
 	}
 
 	public void setEqAndPutMap(Map<String, Object> eqAndPutMap) {
-		this.eqAndPutMap = eqAndPutMap;
+		if(this.eqAndPutMap!=null)
+			this.eqAndPutMap.putAll(eqAndPutMap);
+		else
+			this.eqAndPutMap = eqAndPutMap;
 	}
 
 	public String getColumns() {
@@ -249,12 +262,32 @@ public abstract class EqAdapter{
 	public EqAdapter setBrige_key(String brige_key) { return this;}
 	public EqAdapter setBrige_association_key(String brige_association_key) { return this;}
 	public EqAdapter setAssociation_table(String association_table) { return this;}
-	public EqAdapter setAssociation_table_id(String association_table_id) { return this;}
-	public EqAdapter setAssociaInterface(AssociaInterface associaInterface) { return this;}
+	public EqAdapter setAssociation_table_id(String association_table_id) { return this;} 
 
+	// 输入必要参数
+	@SuppressWarnings("unchecked")
+	public EqAdapter setParame(BaseInterface associaInterface) {
+		if(associaInterface != null) {
+			Class<AssociaInterface> clazz = (Class<AssociaInterface>) associaInterface.getClass();
+			Class<?> thisClazz = this.getClass();
+			String[] fields = {"table"};
+			try {
+				for(String field : fields) {
+					String field_ = field.substring(0,1).toUpperCase().concat(field.substring(1).toLowerCase());
+					// 将associaInterface接口的数据反射写入adapter fields集中的字段
+					thisClazz.getMethod("set" + field_, String.class)
+						.invoke(this, clazz.getMethod("get" + field_).invoke(associaInterface));
+				}
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+		return this; 
+	}	
+	
 	// 只获取private修饰的字段
 	// 获取所有字段集合
-	protected String [] parseColumnOfObjectAll(Object target) throws InstantiationException, IllegalAccessException {
+	protected Object [] parseColumnOfObjectAll(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
 		List<String> fields = null;
@@ -265,7 +298,7 @@ public abstract class EqAdapter{
 			if(fs[i].getModifiers() == 2)
 				fields.add(fs[i].getName());
 		} 
-		return (String[]) fields.toArray();
+		return fields.toArray();
 	}
 	// 只获取private修饰的字段
 	// 获取非空字段的集合

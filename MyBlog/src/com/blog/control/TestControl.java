@@ -2,8 +2,6 @@ package com.blog.control;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,8 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.blog.entity.User;
 import com.blog.service.UserService;
-import com.blog.service.impl.UserServiceImpl;
 import com.blog.util.ActionUtil;
 
 import net.sf.json.JSONArray;
@@ -42,6 +40,9 @@ public class TestControl {
 	}
 	@RequestMapping("/api/test1.do")
 	public void test1(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		User u = new User();
+		u.setId(1);
+		System.out.println(userServiceImpl.get(u));
 		userServiceImpl.test();
 	}
 	@RequestMapping("/api/test/json.do")
@@ -330,6 +331,13 @@ public class TestControl {
 	@RequestMapping("/api/test/admin/index.do")
 	public String test4(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		return "../../../views/admin_view";
+	}
+	@RequestMapping("/api/test/branch/add.do")
+	@ResponseBody
+	public Object branchAdd(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		JSONObject object = new JSONObject();
+		object.put("result", "success");
+		return object;
 	}
 } 
 

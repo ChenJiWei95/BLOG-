@@ -219,12 +219,12 @@
 				,icon: 'layui-icon-set'
 				,children: [{ 
 					key: 6
-					,href: 'set/branch-manage.html'
+					,href: 'source/branch-manage.html'
 					,desc: '机构管理'
 				}
 				,{
 					key: 7
-					,href: 'set/data-manage.html'
+					,href: 'source/data-manage.html'
 					,desc: '数据字典'
 				}
 				,{

@@ -8,22 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.blog.dao.RelateDao;
 import com.blog.dao.Target_Dao;
 import com.blog.dao.UserDao;
-import com.blog.entity.Target_;
-import com.blog.entity.Target__;
+import com.blog.entity.User;
 import com.blog.service.UserService;
 import com.blog.util.sql.AssociaInterface;
-import com.blog.util.sql.EqAdapter;
-import com.blog.util.sql.SelectAdapter;
 
 @Service("userServiceImpl")
 @Transactional
-public class UserServiceImpl extends BasiServiceImpl implements UserService, AssociaInterface  {
+public class UserServiceImpl extends BasiServiceImpl<User, Object> implements UserService, AssociaInterface  {
 	@Resource
-	UserDao userDao;
-	@Resource
-	RelateDao relateDao;
-	@Resource
-	Target_Dao target_Dao;
+	UserDao userDao; 
 	
 	public void test() {
 		try {
@@ -45,9 +38,21 @@ public class UserServiceImpl extends BasiServiceImpl implements UserService, Ass
 			// 查询
 			/*User u = new User();
 			u.setId(1);
-			EqAdapter eq = new SelectAdapter().setTable("user").setOrderByASC("id").setLimit(0).setTarget(u);
+			EqAdapter eq = new SelectAdapter()
+					.setParame(this)
+					.setOrderByASC("id")
+					.setLimit(0)
+					.setTarget(u);
 			ArrayList<User> user = (ArrayList<User>) userDao.getTest(eq);
 			System.out.println("username:" + user.toString());*/
+			
+			// 删除
+			/*User u = new User();
+			u.setId(6);
+			EqAdapter eq = new SelectAdapter()
+					.setParame(this)
+					.setTarget(u);
+			userDao.deleteTest(eq);*/
 			
 //			List<Relate> relate = relateDao.relateTest();
 //			System.out.println(relate);
@@ -56,19 +61,23 @@ public class UserServiceImpl extends BasiServiceImpl implements UserService, Ass
 			
 			// 查找关联对象集合 根据只中间表去关联
 //			for (User u : userDao.gets())
-//				System.out.println(u.toString());
+//				System.out.println(u.toString());、
+			/*Target_ u = new Target_();
+			u.setId_Target_("1");
 			EqAdapter eq = new SelectAdapter()
+			.setParame(this)
+			.setTable("target_")
+			.setTarget(u);
 			.setTable(Target_.TABLE)
 			.eq("id_Target_", "1")
-			/*.setId("id_Target_")
+			.setId("id_Target_")
 			.setBrige_table(Target_.BRIGE_TABLE)
 			.setBrige_key(Target_.BRIGE_KEY)
 			.setBrige_association_key(Target_.BRIGE_ASSOCIATION_KEY)
 			.setAssociation_table(Target_.ASSOCIATION_TABLE)
-			.setAssociation_table_id(Target_.ASSOCIATION_TABLE_ID)*/
-			.setAssociaInterface(this);
+			.setAssociation_table_id(Target_.ASSOCIATION_TABLE_ID)
 			for (Target__ t : target_Dao.associate(eq))
-				System.out.println(t.getName_Target__());
+				System.out.println(t.getName_Target__());*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,23 +90,23 @@ public class UserServiceImpl extends BasiServiceImpl implements UserService, Ass
 	}
 	@Override
 	public String getBrige_table() {
-		return Target_.BRIGE_TABLE;
+		return "relate";
 	}
 	@Override
 	public String getBrige_key() {
-		return Target_.BRIGE_KEY;
+		return "target_";
 	}
 	@Override
 	public String getBrige_association_key() {
-		return Target_.BRIGE_ASSOCIATION_KEY;
+		return "target__";
 	}
 	@Override
 	public String getAssociation_table() {
-		return Target_.ASSOCIATION_TABLE;
+		return "target__";
 	}
 	@Override
 	public String getAssociation_table_id() {
-		return Target_.ASSOCIATION_TABLE_ID;
+		return "id_Target__";
 	}
 	@Override
 	public String getId() {
@@ -105,7 +114,8 @@ public class UserServiceImpl extends BasiServiceImpl implements UserService, Ass
 	}
 	@Override
 	public String getTable() {
-		return "";
+		return "user";
+//		return "";
 	}
 }
 

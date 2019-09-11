@@ -12,9 +12,7 @@ public class UpdateAdapter extends EqAdapter {
 		String table = this.getTable();
 		if(updateMap == null)
 			updateMap = new HashMap<String, Object>();
-		System.out.println(target);
 		updateMap.putAll(parseMapOfObject(target));
-		System.out.println(updateMap.size());
 		
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);

@@ -1,3 +1,6 @@
+/*
+左导航栏的生成
+*/
 ;
 layui.define("jquery",
 function (e){console.log('navTree');

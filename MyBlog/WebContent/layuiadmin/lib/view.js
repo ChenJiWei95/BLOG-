@@ -49,8 +49,8 @@ function(e) {
         return delete e.success,
         delete e.error,
         t.ajax(t.extend({
-            type: "get",
-            dataType: "json",
+            type: "post",
+            dataType: "json", 
             success: function(t) {// done 成功回调
                 var n = o.statusCode;
 				// 判断 数据状态正常
@@ -58,16 +58,18 @@ function(e) {
                 // 判断 登录状态
 				else if (t[o.statusName] == n.logout) i.exit();
                 else {
+					console.log("success error");
                     var r = ["<cite>Error：</cite> " + (t[o.msgName] || "返回状态码异常"), s()].join("");
-                    i.error(r)
+                    layer.msg(a);
                 }
                 "function" == typeof a && a(t)
             },
-            error: function(e, t) {
+            error: function(o, t) {
                 var a = ["请求异常，请重试<br><cite>错误信息：</cite>" + t, s()].join("");
-                i.error(a),
-				'function' == typeof e.fail && e.fail(t);
-                "function" == typeof a && a(res)
+                //i.error(a),
+				layer.msg(a);
+				'function' == typeof e.fail && e.fail(o);
+                "function" == typeof a && a(res);
             }
         },
         e))
@@ -87,6 +89,7 @@ function(e) {
             shadeClose: !0,
             closeBtn: !1,
             success: function(e, r) {
+				console.log("初始化 。。。 ");
                 var o = t('<i class="layui-icon" close>&#x1006;</i>');
                 e.append(o),
                 o.on("click",

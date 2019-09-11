@@ -1,7 +1,6 @@
 package com.blog.util.sql;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.blog.util.TypeToolsGenerics;
@@ -20,7 +19,6 @@ public class SelectAdapter extends EqAdapter {
 	private String brige_association_key	; // 桥接表 对应关联类字段
 	private String association_table		; // 关联表 名
 	private String association_table_id		; // 关联表 id字段	
-	private AssociaInterface associaInterface;
 	
 	public String getOrderBySql() {
 		return orderBySql;
@@ -56,15 +54,48 @@ public class SelectAdapter extends EqAdapter {
 		return limitSql;
 	}
 	
+	public String getColumnSql() {
+		String columns = this.getColumns();
+		if(columns != null && !"".equals(columns))
+			return columns; 
+		return "*";
+	}
+	
+	@SuppressWarnings("unchecked")
+	public EqAdapter setParame(BaseInterface associaInterface) {
+		super.setParame(associaInterface);
+		
+		if(associaInterface == null)
+			throw new NullPointerException("setParame 参数不能为空:"+associaInterface);
+		Class<AssociaInterface> clazz = (Class<AssociaInterface>) associaInterface.getClass();
+		Class<?> thisClazz = this.getClass();
+		String[] fields = {"brige_table", "brige_key", "brige_association_key", "association_table", "association_table_id", "id"};
+		try {
+			for(String field : fields) {
+				String field_ = field.substring(0,1).toUpperCase().concat(field.substring(1).toLowerCase());
+				// 将associaInterface接口的数据反射写入adapter fields集中的字段
+				thisClazz.getMethod("set" + field_, String.class)
+					.invoke(this, clazz.getMethod("get" + field_).invoke(associaInterface));
+			}
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return this;
+	}
+	
 	// 关联查询的条件
 	public String getWhereSqlOfAssociation() throws Exception {
-		Map<String, Object> eqAndPutMap = this.getEqAndPutMap();
-		String table = this.getTable();
-		if(eqAndPutMap == null)
-			throw new Exception("集合为空：map = " + eqAndPutMap);
-		if(table == null || "".equals(table))
-			throw new Exception("table = " + table);
 		
+		String table = this.getTable();
+		Object target = this.getTarget();
+		if(target != null)  
+			eq(parseMapOfObject(target));
+		if(table == null || "".equals(table))
+			throw new NullPointerException("table不能为空 :" + table);
+		
+		Map<String, Object> eqAndPutMap = this.getEqAndPutMap();
+		if(eqAndPutMap == null || eqAndPutMap.size() == 0)
+			throw new NullPointerException("条件查询结果集为空：map = " + eqAndPutMap);
 		StringBuilder whereSql = new StringBuilder(WHERE_FIX);
 		whereSql.append(" "+getBrige_table()+"."+getBrige_key()+" = ");
 		whereSql.append(getTable()+"."+getId()+" ").append(AND_FIX);
@@ -79,27 +110,6 @@ public class SelectAdapter extends EqAdapter {
 		return whereSql.toString();
 	}
 	
-	public AssociaInterface getAssociaInterface() {
-		return associaInterface;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public EqAdapter setAssociaInterface(AssociaInterface associaInterface) {
-		Class<AssociaInterface> clazz = (Class<AssociaInterface>) associaInterface.getClass();
-		Class<?> thisClazz = this.getClass();
-		String[] fields = {"brige_table", "brige_key", "brige_association_key", "association_table", "association_table_id", "id"};
-		try {
-			for(String field : fields) {
-				String field_ = field.substring(0,1).toUpperCase().concat(field.substring(1).toLowerCase());
-				// 将associaInterface接口的数据反射写入adapter fields集中的字段
-				thisClazz.getMethod("set" + field_, String.class)
-					.invoke(this, clazz.getMethod("get" + field_).invoke(associaInterface));
-			}
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return this; 
-	}
 	//limit start, size
 	/**
 	 * 分页

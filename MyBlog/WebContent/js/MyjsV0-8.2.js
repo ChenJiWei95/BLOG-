@@ -155,6 +155,124 @@
 			toJSON:function(jsonObj) {return new ObjectParseJSON().parseJSON(jsonObj)},
 		},
 	}
+	/*
+	-
+	输入
+		20190909 这种格式的输入，确认初始日期
+	-
+	输出
+		默认返回yyyy-mm-dd
+		输出根据style方法自定义样式 下方有案例
+	-
+	方法
+		init
+		next
+		pre
+		style
+	-
+	使用案例
+		// 创建对象
+		var s = new DateUtil();
+		//s.isDayType = false;
+		// 自定义样式
+		s.style = function(date){
+			return date.year + "=" + date.month + "=" + date.date;
+		}
+		// 确认初始日期
+		s.init("20190909");
+		// 循环十次
+		for(var i = 0, len = 10; i < len; i++){
+			//console.log("pre "+s.pre());	
+			console.log("next "+s.next());
+		}
+		out:	2019=08=10
+				...
+	*/
+	function DateUtil(paramDate){
+		// true则为日期模式 否则为月模式
+		this.isDayType = true;
+		// 是否为第一次运行
+		var isFirst = true;
+		// 初始化 赋值是上一天或上一月
+		
+		this.current = paramDate != undefined && paramDate != "" ? new Date(parse(paramDate)) : new Date();
+		this.init = function(paramDate){
+			this.current = paramDate != undefined && paramDate != "" ? new Date(parse(paramDate)) : new Date();
+			/*
+			if(this.isDayType){
+				this.current = new Date(this.current.getTime() + 86400000);
+			}else { 
+				var temp = new Date(this.current.getTime() + 86400000*28);
+				while(this.current.getDate() != temp.getDate()){
+					//alert(this.current.getDate() + " " + temp.getDate());
+					temp = new Date(temp.getTime() + 86400000);
+				}
+				this.current = temp;
+			}
+			*/
+		}
+		
+		/*
+		第一次 输出自身
+		非第一次 相应输出
+		*/
+		this.next = function(){ // 下一天或下一个月 右
+			if(isFirst){
+				isFirst = false;
+			}else {
+				if(this.isDayType){
+					this.current = new Date(this.current.getTime() + 86400000);
+				}else {
+					var temp = new Date(this.current.getTime() + 86400000*28);
+					while(this.current.getDate() != temp.getDate()){
+						temp = new Date(temp.getTime() + 86400000);
+					}
+					this.current = temp;
+				}
+			}
+			
+			var _date = {
+				year : this.current.getFullYear(),
+				month : full(this.current.getMonth() + 1),
+				date : full(this.current.getDate())
+			}
+			return this.style(_date);
+		}
+		 
+		this.pre = function(){ // 上一天或上一个月 左
+			if(isFirst){
+				isFirst = false;
+			}else {
+				if(this.isDayType){
+					this.current = new Date(this.current.getTime() - 86400000);
+				}else {
+					var temp = new Date(this.current.getTime() - 86400000*28);
+					while(this.current.getDate() != temp.getDate()){
+						temp = new Date(temp.getTime() - 86400000);
+					}
+					this.current = temp;
+				}
+			}
+			
+			var _date = {
+				year : this.current.getFullYear(),
+				month : full(this.current.getMonth() + 1),
+				date : full(this.current.getDate())
+			} 
+			return this.style(_date);
+		}
+		function parse (paramDate){ // 转换 为标准时间字符串
+			return new Date(paramDate.substring(0,4)+"-"+paramDate.substring(4,6)+"-"+paramDate.substring(6,8));
+		}
+		function full(num){// 填充
+			if(num>9)
+				return num;
+			return "0"+num;
+		} 
+		this.style = function(date, fn){
+			return date.year + "-" + date.month + "-" + date.date;
+		}
+	}
 	//兼容作用 建议使用$$中的异常处理
 	var exception = {
 		Exception:function(msg){

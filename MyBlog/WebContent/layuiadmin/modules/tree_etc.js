@@ -30,7 +30,7 @@ function(e) {console.log("tree ");
             config: i
         }
     },
-    l = "tree",
+    l = "tree_etc",
     t = "layui-tree",
     s = "layui-tree-set",
     d = "layui-tree-iconClick",
@@ -210,6 +210,7 @@ function(e) {console.log("tree ");
         m = t.children("." + u);
         t.children(".layui-tree-btnGroup").on("click", ".layui-icon", //绑定事件
         function(t) {
+			console.log("operate 绑定operate")
             layui.stope(t);
             var u = i(this).data("type"),
             k = e.children("." + p),
@@ -223,7 +224,7 @@ function(e) {console.log("tree ");
 				add: function(data){//data {label:'名称', key:'id'}
 					k[0] || (l.showLine ? (m.find("." + d).addClass("layui-tree-icon"), m.find("." + d).children(".layui-icon").addClass(c).removeClass("layui-icon-file")) : m.find(".layui-tree-iconArrow").removeClass("hide"), e.append('<div class="layui-tree-pack"></div>'));
 					//var x = l.operate && l.operate(g),
-					if(data == undefined) throws Exception("data="+data);
+					if(data == undefined) throw new Exception("data="+data);
 					if (r.tree(e.children("." + p), [data]), l.showLine) if (k[0]) k.hasClass(C) || k.addClass(C),
 					e.find("." + p).each(function() {
 						i(this).children("." + s).last().addClass(y)
@@ -256,10 +257,10 @@ function(e) {console.log("tree ");
 						var i = e.val().trim();
 						i = i ? i: "未命名",
 						e.remove(),
-						m.children(".layui-tree-txt").html(i),
-						g.data.label = i,
+						m.children(".layui-tree-txt").html(i);
+						g.data.label = i
 						//l.operate && l.operate(g)
-					};
+					}
 					m.children(".layui-tree-editInput").blur(function() {
 						S(i(this))
 					}),
@@ -319,6 +320,7 @@ function(e) {console.log("tree ");
 					e.remove()
 				}
 			};
+			g["active"] = active;
 			l.operate && l.operate(g)  
         })
     },

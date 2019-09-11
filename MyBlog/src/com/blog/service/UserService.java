@@ -1,5 +1,7 @@
 package com.blog.service;
 
-public interface UserService extends BasiService {
+import com.blog.entity.User;
+
+public interface UserService extends BasiService<User, Object>{
 	void test();
 }

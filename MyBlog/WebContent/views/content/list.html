@@ -101,8 +101,8 @@
           type: 2
           ,title: '添加文章'
           ,content: 'listform.html'
-          ,maxmin: true
-          ,area: 'auto'
+          ,maxmin: !0
+          ,area: ['420px', '420px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             layero.find(f).contents().find("#"+a).click();
@@ -118,7 +118,7 @@
           ,title: '编辑信息'
           ,content: 'listform.html'
           ,maxmin: !0
-          ,area: 'auto'
+          ,area: ['420px', '420px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
             // 点击确认触发 iframe 内容中的按钮提交
@@ -150,7 +150,7 @@
 		  ,title: '编辑随笔'
 		  ,content: 'listcontform.html'
           ,maxmin: !0
-          ,area: 'auto'
+          ,area: ['420px', '420px']
           ,btn: ['确定', '取消']
           ,yes: function(index, layero){
 			layero.find(f).contents().find("#"+b).click();

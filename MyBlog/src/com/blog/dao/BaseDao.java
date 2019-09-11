@@ -20,21 +20,36 @@ import com.blog.util.sql.EqAdapter;
  * @contact qq 676342073
  * @date 2014-9-26 下午12:14:17
  */
-public interface BaseDao<T> {
-	T getById(Integer id) throws Exception;
-	T get(T t) throws Exception;
-	List<T> gets() throws Exception;
-	void save(T t) throws Exception;
-	void update(T t) throws Exception;
-	void delete(T t) throws Exception; 
+public interface BaseDao<T> { 
 	
-	List<T> getTest(EqAdapter eq) throws Exception;
-	void updateTest(EqAdapter eq) throws Exception;
-	void insertTest(EqAdapter eq) throws Exception;
+	/**
+	 * 删除
+	 * @param eq
+	 * @throws Exception
+	 */
+	void delete(EqAdapter eq) throws Exception;  
 	
-	User getTest2(Integer id) throws Exception;
+	/**
+	 * 查询
+	 * @param eq
+	 * @return
+	 * @throws Exception
+	 */
+	List<T> get(EqAdapter eq) throws Exception;
 	
-	List<Relate> relateTest () throws Exception;
+	/**
+	 * 修改
+	 * @param eq
+	 * @throws Exception
+	 */
+	void update(EqAdapter eq) throws Exception;
+	
+	/**
+	 * 插入
+	 * @param eq
+	 * @throws Exception
+	 */
+	void insert(EqAdapter eq) throws Exception;
 	
 	/**
 	 * 查找关联对象集 通过中间表
@@ -46,5 +61,4 @@ public interface BaseDao<T> {
 	 * @since 1.0
 	 */
 	List<Target__> associate(EqAdapter eq);
-
 }
