@@ -5,16 +5,15 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.blog.dao.RelateDao;
-import com.blog.dao.Target_Dao;
 import com.blog.dao.UserDao;
+import com.blog.entity.Clazz;
 import com.blog.entity.User;
 import com.blog.service.UserService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service("userServiceImpl")
 @Transactional
-public class UserServiceImpl extends BasiServiceImpl<User, Object> implements UserService, AssociaInterface  {
+public class UserServiceImpl extends BasiServiceImpl<User, Clazz> implements UserService<User, Clazz>, AssociaInterface  {
 	@Resource
 	UserDao userDao; 
 	
@@ -68,14 +67,14 @@ public class UserServiceImpl extends BasiServiceImpl<User, Object> implements Us
 			.setParame(this)
 			.setTable("target_")
 			.setTarget(u);
-			.setTable(Target_.TABLE)
-			.eq("id_Target_", "1")
-			.setId("id_Target_")
-			.setBrige_table(Target_.BRIGE_TABLE)
-			.setBrige_key(Target_.BRIGE_KEY)
-			.setBrige_association_key(Target_.BRIGE_ASSOCIATION_KEY)
-			.setAssociation_table(Target_.ASSOCIATION_TABLE)
-			.setAssociation_table_id(Target_.ASSOCIATION_TABLE_ID)
+//			.setTable(Target_.TABLE)
+//			.eq("id_Target_", "1")
+//			.setId("id_Target_")
+//			.setBrige_table(Target_.BRIGE_TABLE)
+//			.setBrige_key(Target_.BRIGE_KEY)
+//			.setBrige_association_key(Target_.BRIGE_ASSOCIATION_KEY)
+//			.setAssociation_table(Target_.ASSOCIATION_TABLE)
+//			.setAssociation_table_id(Target_.ASSOCIATION_TABLE_ID)
 			for (Target__ t : target_Dao.associate(eq))
 				System.out.println(t.getName_Target__());*/
 		} catch (Exception e) {
@@ -90,27 +89,27 @@ public class UserServiceImpl extends BasiServiceImpl<User, Object> implements Us
 	}
 	@Override
 	public String getBrige_table() {
-		return "relate";
+		return "user_class";
 	}
 	@Override
 	public String getBrige_key() {
-		return "target_";
+		return "user_id";
 	}
 	@Override
 	public String getBrige_association_key() {
-		return "target__";
+		return "class_id";
 	}
 	@Override
 	public String getAssociation_table() {
-		return "target__";
+		return "class";
 	}
 	@Override
 	public String getAssociation_table_id() {
-		return "id_Target__";
+		return "id";
 	}
 	@Override
 	public String getId() {
-		return "id_Target_";
+		return "id";
 	}
 	@Override
 	public String getTable() {

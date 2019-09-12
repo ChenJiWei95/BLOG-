@@ -1,6 +1,7 @@
 package com.blog.control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.blog.entity.Clazz;
 import com.blog.entity.User;
 import com.blog.service.UserService;
 import com.blog.util.ActionUtil;
@@ -38,12 +40,48 @@ public class TestControl {
 		System.out.println(ActionUtil.read(request));
 		ActionUtil.returnRes(response, "success");
 	}
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/api/test1.do")
 	public void test1(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		User u = new User();
+		// 单个查询
+		/*User u = new User();
 		u.setId(1);
 		System.out.println(userServiceImpl.get(u));
-		userServiceImpl.test();
+		userServiceImpl.test();*/
+		
+		// 多个查询
+		User u = new User();
+		u.setPassword("%8%");
+		List<User> list = userServiceImpl.getOfOrderBySortAndLimit(u, "desc", "id", 0, 5);
+		for(User u_ : list)
+			System.out.println(u_.toString());
+		
+		// 删除
+		/*User u = new User();
+		u.setId(6);
+		userServiceImpl.delete(u);*/
+		
+		// 插入
+		/*User u = new User();
+		u.setUsername("cjw1");
+		u.setPassword("66666668");
+		userServiceImpl.insert(u);*/
+		
+		// 修改
+		/*User u = new User();
+		u.setUsername("cjx");
+		u.setPassword("8888888888");
+		Map<String, Object> eq = new HashMap<>(1);
+		eq.put("id", 7);
+		userServiceImpl.update(u, eq);*/
+		
+		// 关联
+		
+		/*User u = new User();
+		u.setId(1);
+		List<Clazz> list = userServiceImpl.getAssociat(u);
+		for(Clazz u_ : list)
+			System.out.println(u_.toString());*/
 	}
 	@RequestMapping("/api/test/json.do")
 	@ResponseBody

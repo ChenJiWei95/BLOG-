@@ -5,16 +5,25 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.blog.dao.BaseDao;
+import com.blog.dao.UserDao;
 import com.blog.service.BasiService;
 import com.blog.util.sql.AssociaInterface;
 import com.blog.util.sql.EqAdapter;
+import com.blog.util.sql.InsertAdapter;
 import com.blog.util.sql.SelectAdapter;
-
+import com.blog.util.sql.UpdateAdapter;
+/**
+ * 基类 实现基本的增删查改
+ * @author Administrator
+ *
+ * @param <T>
+ * @param <V>
+ */
 public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterface{
 
 	@Resource
-	BaseDao<T> baseDao;
+	UserDao userDao;
+	@SuppressWarnings("unchecked")
 	@Override
 	public T get(T t) {
 		EqAdapter sql = new SelectAdapter()
@@ -22,63 +31,67 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setLimit(0, 1)
 				.setTarget(t);
 		try {
-			return (T) baseDao.get(sql).get(0);
+			return (T) userDao.get(sql).get(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> gets(T t) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t);
 		try {
-			return baseDao.get(sql);
+			return (List<T>) userDao.get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> getOfOrderBy(T t, String sort) {
+	public List<T> getOfOrderBySort(T t, String sort, String column) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t);
 		sort = sort.toLowerCase();
 		if("asc".equals(sort))
-			sql.setOrderByASC(sort);
+			sql.setOrderByASC(column);
 		else if("desc".equals(sort))
-			sql.setOrderByDESC(sort);
+			sql.setOrderByDESC(column);
 		try {
-			return baseDao.get(sql);
+			return (List<T>) userDao.get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> getOfOrderByAndLimit(T t, String sort, int start, int size) {
+	public List<T> getOfOrderBySortAndLimit(T t, String sort, String column, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t)
 				.setLimit(start, size);
 		sort = sort.toLowerCase();
 		if("asc".equals(sort))
-			sql.setOrderByASC(sort);
+			sql.setOrderByASC(column);
 		else if("desc".equals(sort))
-			sql.setOrderByDESC(sort);
+			sql.setOrderByDESC(column);
 		try {
-			return baseDao.get(sql);
+			return (List<T>) userDao.get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> getOfLimit(T t, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
@@ -86,7 +99,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setTarget(t)
 				.setLimit(start, size);
 		try {
-			return baseDao.get(sql);
+			return (List<T>) userDao.get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -95,88 +108,144 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 
 	@Override
 	public void delete(T t) {
-		// TODO Auto-generated method stub
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t);
+		try {
+			userDao.delete(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public void update(T t, Map<String, Object> eq) {
-		// TODO Auto-generated method stub
-		
+		EqAdapter sql = new UpdateAdapter()
+				.setParame(this)
+				.eq(eq)
+				.setTarget(t)
+				;
+		try {
+			userDao.update(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void insert(T t) {
-		// TODO Auto-generated method stub
-		
+		EqAdapter sql = new InsertAdapter()
+				.setParame(this)
+				.setTarget(t); 
+		try {
+			userDao.insert(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<V> getAssociat(T t) {
-		// TODO Auto-generated method stub
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t);
+		try {
+			return (List<V>) userDao.associate(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<V> getAssociatOfOrderBy(T t, String sort) {
-		// TODO Auto-generated method stub
+	public List<V> getAssociatOfOrderBySort(T t, String sort, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t);
+		sort = sort.toLowerCase();
+		if("asc".equals(sort))
+			sql.setOrderByASC(column);
+		else if("desc".equals(sort))
+			sql.setOrderByDESC(column);
+		try {
+			return (List<V>) userDao.associate(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<V> getAssociatOfOrderByAndLimit(T t, String sort, int start, int size) {
-		// TODO Auto-generated method stub
+	public List<V> getAssociatOfOrderBySortAndLimit(T t, String sort, String column, int start, int size) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setLimit(start, size);
+		sort = sort.toLowerCase();
+		if("asc".equals(sort))
+			sql.setOrderByASC(column);
+		else if("desc".equals(sort))
+			sql.setOrderByDESC(column);
+		
+		try {
+			return (List<V>) userDao.associate(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<V> getAssociatOfLimit(T t, int start, int size) {
-		// TODO Auto-generated method stub
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setLimit(start, size);
+		try {
+			return (List<V>) userDao.associate(sql);
+		} catch (Exception e) {	
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public String getTable() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBrige_table() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBrige_key() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBrige_association_key() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAssociation_table() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAssociation_table_id() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	 
-	
 }

@@ -67,11 +67,12 @@ public abstract class EqAdapter{
 	}
 
 	protected String createEqSql() {
-		StringBuilder whereSql = new StringBuilder(WHERE_FIX);
+		StringBuilder whereSql = new StringBuilder();
 		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
-			whereSql	.append(" `"+ item.getKey() +"` = ")
-					.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
-							? "'"+item.getValue()+"' " 
+			whereSql.append(" `" + item.getKey() + "` ")
+					.append((isLike(((String) item.getValue()).trim()) ? " LIKE " : " = "))
+					.append("string".equals(TypeToolsGenerics.getType(item.getValue()))
+							? "'"+item.getValue()+"' "
 							: (item.getValue()) + " ")
 					.append(AND_FIX);
 		}
@@ -79,7 +80,13 @@ public abstract class EqAdapter{
 		return whereSql.toString();
 	}
 	
-	
+	protected boolean isLike(String value) {
+		if(value.length() > 0) 
+			return value.charAt(0) == '%' 
+				? (value.charAt(value.length()-1) == '%' ? true : false) 
+				: false; 
+		return false; 
+	}
 	
 	public String getInsertSql() throws Exception{
 		
@@ -263,6 +270,8 @@ public abstract class EqAdapter{
 	public EqAdapter setBrige_association_key(String brige_association_key) { return this;}
 	public EqAdapter setAssociation_table(String association_table) { return this;}
 	public EqAdapter setAssociation_table_id(String association_table_id) { return this;} 
+	public EqAdapter like(String cloumn, String likeStr) {return this;}
+	public EqAdapter setSql(String sql) {return this;}
 
 	// 输入必要参数
 	@SuppressWarnings("unchecked")
