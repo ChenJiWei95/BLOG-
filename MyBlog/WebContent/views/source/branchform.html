@@ -23,7 +23,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">属性</label>
 			<div class="layui-input-block">
-				<input type="radio" name="page" value="页面" title="页面" checked="">
+				<input type="radio" name="page" value="页面" title="页面" >
 				<input type="radio" name="branch" value="分支" title="分支">
 			</div>
 		</div>
@@ -80,6 +80,7 @@
 		layer.msg("测试！", {time: 2000});
 		//添加
 		form.on("submit("+a+")", function(data){
+			layer.msg("添加中...", {time: 16000}); 
 			var index = parent.layer.getFrameIndex(window.name); 
 			$.ajax({
 				url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
@@ -99,7 +100,7 @@
 					}, 2000);
 				}	
 				,error: function(data){
-					layer.msg("添加失败！");
+					layer.msg("系统异常，添加失败！");
 					setTimeout(function(){
 						parent.layer.close(index);
 					}, 2000); 
@@ -109,6 +110,7 @@
 		})
 		//编辑
 		,form.on("submit("+b+")", function(data){
+			layer.msg("修改中...", {time: 16000}); 
 			var index_ = parent.layer.getFrameIndex(window.name);
 			data.field['id'] = index.util.getParameter("id");
 			console.log(JSON.stringify(data.field));
@@ -125,7 +127,7 @@
 					}, 2000);
 				}
 				,error: function(data){
-					layer.msg("测试！", {time: 2000});
+					layer.msg("系统异常，修改失败！", {time: 2000}); 
 					setTimeout(function(){
 						parent.layer.close(index_);
 					}, 2000);

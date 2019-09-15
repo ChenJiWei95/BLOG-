@@ -192,6 +192,22 @@
 				}]
 			}
 			,{
+				dataName: 'source'
+				,desc: '资源管理'
+				,key: 2
+				,icon: 'layui-icon-app'
+				,children: [{ 
+					key: 6
+					,href: 'source/branch-manage.html'
+					,desc: '菜单管理'
+				}
+				,{
+					key: 7
+					,href: 'source/data-manage.html'
+					,desc: '数据字典'
+				}]
+			}
+			,{
 				dataName: 'privilege'
 				,desc: '权限管理'
 				,key: 1
@@ -217,17 +233,7 @@
 				,desc: '设置'
 				,key: 2
 				,icon: 'layui-icon-set'
-				,children: [{ 
-					key: 6
-					,href: 'source/branch-manage.html'
-					,desc: '机构管理'
-				}
-				,{
-					key: 7
-					,href: 'source/data-manage.html'
-					,desc: '数据字典'
-				}
-				,{
+				,children: [{
 					key: 6
 					,desc: '系统设置'
 					,children: [{

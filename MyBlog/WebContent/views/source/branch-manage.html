@@ -33,15 +33,14 @@
 	</div>  
 	<script src="../../layuiadmin/layui/layui.js?t=1"></script>
 	<script>
-	
+	var oparate_active;// 子页面调用 active
 	layui.config({
-		base: '../../layuiadmin/' //静态资源所在路径
+		base: '../../layuiadmin/' // 静态资源所在路径
 	}).extend({
-		index: 'lib/index' //主入口模块
+		index: 'lib/index' // 主入口模块
 		,tree_etc: 'modules/tree_etc'
 	}).use(["tree_etc", 'index', 'console', 'element'], function() {
-		// 子页面调用 active
-		var oparate_active;
+		
 		var layer  = layui.layer
 		,$ = layui.jquery
 		,form = layui.form

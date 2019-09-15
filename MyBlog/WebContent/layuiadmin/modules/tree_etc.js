@@ -65,12 +65,25 @@ function(e) {console.log("tree ");
         emptyText: "暂无数据"
     },
     m.prototype.render = function() {console.log("tree.render");//render的内置方法
-        var that = this,
+	    // 1 初始化layui-tree元素 , showCheckbox 添加属性layui-form， showLine 添加属性layui-tree-line
+	    // 2 调用tree 渲染界面
+	    // 3 存在layui-tree组件 清除掉；
+	    // 4 判断是否showSearch 加载响应的界面；
+	    // 5 if layui-tree-set长度==0
+	    // 		注入emptyText标签，
+	    //   else
+	    //		否则判断draggable--that.drag()，
+	    //		判断showCheckbox--form.render("checkbox"),
+	    //   		循环对每一个layui-tree-set
+	    // 				没有layui-tree-pack 添加class属性layui-tree-setHide
+	    //				
+	    // 6 最后返回 void obj 这是undefined的写法；
+    	var that = this,
         config = that.config,
         r = i('<div class="layui-tree' + (config.showCheckbox ? " layui-form": "") + (config.showLine ? " layui-tree-line": "") + '"></div>');
-        that.tree(r);
-        var outTarget = i(config.elem),
-        s = outTarget.next("." + t);
+        that.tree(r);// 调用tree 渲染界面
+        var outTarget = i(config.elem)
+        ,s = outTarget.next("." + t);
         return s[0] && s.remove(),
         config.showSearch && r.prepend('<input type="text" class="layui-input layui-tree-search" placeholder="请输入关键字进行过滤">'),
         that.elem = r,
@@ -82,7 +95,7 @@ function(e) {console.log("tree ");
             i(this).next()[0] || i(this).parents(".layui-tree-set").eq(0).next()[0] || i(this).addClass(y)
         }), void that.events())
     },
-    m.prototype.tree = function(e, data_) {console.log("tree.tree");//渲染 不管是初始渲染还是新增元素的渲染都会调用此
+    m.prototype.tree = function(e, data_) {console.log("tree.tree");//渲染 不管是初始渲染还是新增元素的渲染都会调用此, 初始渲染第二个参数data_不传使用config.data
         //进行元素的渲染 
 		//递归渲染子元素
 		//绑定对应的事件
