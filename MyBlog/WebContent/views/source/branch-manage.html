@@ -86,24 +86,20 @@
 					}
 				})
 			}
-			,del: function(obj){ 
-				checkData.length === 0 ? layer.msg('请选择数据') :
-				layer.confirm('确定删除吗？', function(index) {
-					//执行 Ajax 后重载
-					admin.req({
-						url: 'http://localhost:8080/MyBlog/api/test/branch/del.do'
-						,type: 'post'	
-						,data: {data: JSON.stringify(obj.data)}
-						,dataType: "json"
-						,done: function(data){
-							obj.active.del();
-							layer.msg("删除成功！", {time: 2000})
-						} 
-						,fail: function(data){
-							layer.msg("删除失败！", {time: 2000}) 
-						}
-					});	
-				});
+			,del: function(obj){  
+				$.ajax({
+					url: 'http://localhost:8080/MyBlog/api/test/branch/del.do'
+					,type: 'post'	
+					,data: {data: JSON.stringify(obj.data)}
+					,dataType: "json"
+					,success: function(data){
+						obj.active.del();
+						layer.msg("删除成功！")
+					} 
+					,error: function(data){
+						layer.msg("服务器异常，删除失败！") 
+					}
+				});		
 			}
 		}  
 		,tree = layui.tree_etc
@@ -138,11 +134,12 @@
 			elem: '#show-manage'
 			,data: data
 			,renderContent: !0
-			/*
 			,click: function(obj){
-				layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+				// 点击layui-tree-txt 提示节点信息
+				if(obj.type == 1){ 
+					layer.msg('type：' + obj.type + '；状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+				}
 			}
-			*/
 			,operate: function(obj){
 				//obj.type  obj.data  obj.active
 				console.log("回调operate");

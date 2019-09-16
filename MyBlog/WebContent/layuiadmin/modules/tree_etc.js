@@ -128,7 +128,7 @@ function(e) {console.log("tree ");
                 return config.isJump && itemData.href ? '<a href="' + itemData.href + '" target="_blank" class="layui-tree-txt">' + (itemData.label || "未命名") + "</a>": '<span class="layui-tree-txt">' + (itemData.label || "未命名") + "</span>"
             } (), "</div>",
             function() {
-                return config.renderContent ? ['<div class="layui-btn-group layui-tree-btnGroup">', '<i class="layui-icon layui-icon-add-1"  data-type="add"></i>', '<i class="layui-icon layui-icon-edit" data-type="edit"></i>', '<i class="layui-icon layui-icon-delete" data-type="del"></i>', "</div>"].join("") : ""
+                return config.renderContent ? ['<div class="layui-btn-group layui-tree-btnGroup">', itemData.isTab ? '<i class="layui-icon layui-icon-add-1"  data-type="add"></i>' : '', '<i class="layui-icon layui-icon-edit" data-type="edit"></i>', '<i class="layui-icon layui-icon-delete" data-type="del"></i>', "</div>"].join("") : ""
             } (), "</div></div>"].join(""));//最后会得到一个符合条件的值，需在外围添加括号，每个选值以逗号隔开；o变量是一个[]集合 然后调用join("")拼接出来的字符串
             hasChilds && (o.append(h), that.tree(h, itemData.children)),//存在子元素递归调用
             e.append(o),
@@ -139,39 +139,46 @@ function(e) {console.log("tree ");
             config.renderContent && that.operate(o, itemData)		//绑定对应的事件
         })
     },
-    m.prototype.spread = function(e, i) {console.log("tree.spread");// 点击事件 回调click方法
+    m.prototype.spread = function(e, key) {console.log("tree.spread");// 点击事件 回调click方法
 		// f = "layui-tree-spread",
 		// p = "layui-tree-pack",
 		// s = "layui-tree-set",
         var that = this,
+        t = "close",
         config = that.config,
         r = e.children("." + o),// o = "layui-tree-entry",
 		// u = "layui-tree-main", d = "layui-tree-iconClick",
         l = config.expandClick ? r.children("." + u) : r.find("." + d);
         l.on("click",//点击
-        function() {
-            var that = e.children("." + p),
-            r = l.children(".layui-icon")[0] ? l.children(".layui-icon") : l.find(".layui-tree-icon").children(".layui-icon"),
-            t = "";
-            if (that[0]) {
-                if (e.hasClass(f)) e.removeClass(f),
-                that.slideUp(200),
-                r.removeClass(h).addClass(c),
-                t = "close";
-                else if (e.addClass(f), that.slideDown(200), r.addClass(h).removeClass(c), t = "open", config.accordion) {
-                    var d = e.siblings("." + s);
-                    d.removeClass(f),
-                    d.children("." + p).slideUp(200),
-                    d.find(".layui-tree-icon").children(".layui-icon").removeClass(h).addClass(c)
-                }
-            } else {
-				t = "normal";
-				layer.msg('子项为空');
-			}
+        function(target) {
+        	var type = 0;
+        	if(i(target.target).attr("class").indexOf("layui-icon") != -1) {
+        		var that = e.children("." + p),
+                r = l.children(".layui-icon")[0] ? l.children(".layui-icon") : l.find(".layui-tree-icon").children(".layui-icon");
+                
+                if (that[0]) {
+                    if (e.hasClass(f)) e.removeClass(f),
+                    that.slideUp(200),
+                    r.removeClass(h).addClass(c),
+                    t = "close";
+                    else if (e.addClass(f), that.slideDown(200), r.addClass(h).removeClass(c), t = "open", config.accordion) {
+                        var d = e.siblings("." + s);
+                        d.removeClass(f),
+                        d.children("." + p).slideUp(200),
+                        d.find(".layui-tree-icon").children(".layui-icon").removeClass(h).addClass(c)
+                    }
+                } else if(i(target.target).attr("class").indexOf("layui-icon-file") == -1){
+    				t = "normal";
+    				layer.msg('此菜单为空');
+    			}
+        	} else if (i(target.target).attr("class").indexOf("layui-tree-txt") != -1) {
+        		type = 1;
+        	}
             config.click && config.click({// 回调click方法
-                elem: e,
-                state: t,	// close、open
-                data: i		// key
+                elem	: e,
+                state	: t,	// close、open
+                data	: key,	// key
+                type	: type	// 返回 0 - 代表展开键点击  1 - 代表菜单名点击
             })
         })
     },

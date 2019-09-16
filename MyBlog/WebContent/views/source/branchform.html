@@ -41,8 +41,9 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">链接</label>
 			<div class="layui-input-block">
-				<input type="text" name="url" lay-verify="title" autocomplete="off" placeholder="请输入" class="layui-input">
+				<input type="text" name="url" id="url" lay-verify="title" autocomplete="off" placeholder="请输入" class="layui-input">
 			</div>
+			<input type="checkbox" id="tag_check" onclick = "checkBox(this)" name="tag_check" lay-skin="primary" title="设置为菜单">
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">备注</label>
@@ -69,63 +70,82 @@
 		,a = 'layuiadmin-branch-form-submit'
 		,b = 'layuiadmin-branch-form-edit'
 		,index = layui.index
-		,form = layui.form;
+		,form = layui.form
+		,clickOne = !0;
 		layer.msg("测试！", {time: 2000});
+		
+		console.log("tag_check ---------------------- ");
+		console.log($("#tag_check"));
+		function checkBox(e){
+			console.log("bool ---------------------- ");
+			console.log(e.checked);
+			if(e.checked == !0) {
+				$("#url").addClass("layui-disabled");
+				$("#url").disabled = !0;
+				$("#url").val = "####";
+			}else {
+				$("#url").removeClass("layui-disabled");
+				$("#url").disabled = !1;
+				$("#url").val = "";
+			}
+		}
+		document.getElementsById("tag_check").onclick = function(e){
+			console.log(e.target.checked);
+		}
+		
 		//添加
 		form.on("submit("+a+")", function(data){
-			layer.msg("添加中...", {time: 16000}); 
-			var index = parent.layer.getFrameIndex(window.name); 
-			$.ajax({
-				url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
-				,type: 'post'	
-				,data: {data: JSON.stringify(data.field)}
-				,dataType: "json"
-				,success: function(data){
-					console.log("请求成功，" + data);
-					var b = {};
-					b["label"] = "新标签";//补充
-					b["key"] = "100012";//补充key 需要后台返回id	
-					console.log('success add');
-					parent.oparate_active.add(b);
-					layer.msg("添加成功！"); 
-					setTimeout(function(){
+			if(clickOne){
+				clickOne = !1;
+				layer.msg("添加中...", {time: 16000}); 
+				var index = parent.layer.getFrameIndex(window.name); 
+				$.ajax({
+					url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
+					,type: 'post'	
+					,data: {data: JSON.stringify(data.field)}
+					,dataType: "json"
+					,success: function(data){
+						console.log("请求成功，" + data);
+						var b = {};
+						b["label"] = "新标签";//补充
+						b["key"] = "100012";//补充key 需要后台返回id	
+						console.log('success add');
+						parent.oparate_active.add(b);
+						parent.layer.msg("添加成功！"); 
 						parent.layer.close(index);
-					}, 2000);
-				}	
-				,error: function(data){
-					layer.msg("系统异常，添加失败！");
-					setTimeout(function(){
+					}	
+					,error: function(data){
+						parent.layer.msg("系统异常，添加失败！");
 						parent.layer.close(index);
-					}, 2000); 
-				}
-			});	
+					}
+				});	
+			}
 			return !1;
 		})
 		//编辑
 		,form.on("submit("+b+")", function(data){
-			layer.msg("修改中...", {time: 16000}); 
-			var index_ = parent.layer.getFrameIndex(window.name);
-			data.field['id'] = index.util.getParameter("id");
-			console.log(JSON.stringify(data.field));
-			//执行 Ajax 后重载
-			$.ajax({
-				url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
-				,type: 'post'	
-				,data: {data: JSON.stringify(data.field)}
-				,success: function(data){
-					parent.oparate_active.edit();
-					layer.msg("修改成功！", {time: 2000}); 
-					setTimeout(function(){
+			if(clickOne){
+				clickOne = !1;
+				layer.msg("修改中...", {time: 16000}); 
+				var index_ = parent.layer.getFrameIndex(window.name);
+				data.field['id'] = index.util.getParameter("id");
+				console.log(JSON.stringify(data.field));
+				//执行 Ajax 后重载
+				$.ajax({
+					url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
+					,type: 'post'	
+					,data: {data: JSON.stringify(data.field)}
+					,success: function(data){
+						parent.oparate_active.edit();
+						parent.layer.msg("修改成功！", {time: 2000}); 
 						parent.layer.close(index_);
-					}, 2000);
-				}
-				,error: function(data){
-					layer.msg("系统异常，修改失败！", {time: 2000}); 
-					setTimeout(function(){
+					}
+					,error: function(data){
+						parent.layer.msg("系统异常，修改失败！", {time: 2000}); 
 						parent.layer.close(index_);
-					}, 2000);
-				}
-			});	
+					}
+				});	
+			}
 			return !1;
 		}); 
   })
