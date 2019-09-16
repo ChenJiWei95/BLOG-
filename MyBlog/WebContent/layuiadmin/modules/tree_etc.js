@@ -96,24 +96,30 @@ function(e) {console.log("tree ");
         }), void that.events())
     },
     m.prototype.tree = function(e, data_) {console.log("tree.tree");//渲染 不管是初始渲染还是新增元素的渲染都会调用此, 初始渲染第二个参数data_不传使用config.data
-        //进行元素的渲染 
-		//递归渲染子元素
-		//绑定对应的事件
+        // 进行元素的渲染 
+		// 递归渲染子元素
+		// 绑定对应的事件
+		
+		// B处理
+		// 判断是菜单级别
+		// i标签 添加layui-icon-addition属性
+		// i标签 的父元素 span标签 添加layui-tree-icon属性
 		var that = this,
         config = that.config,
         data = data_ || config.data;
         layui.each(data, function(a, itemData) {
-            function t(e) {//判断
+            function t(e) {//判断 key是否在spread中存在
                 return 0 != config.spread.length && i.inArray(e, config.spread) != -1
             }
-            function d(e) {//判断
+            function d(e) {//判断 key是否在checked中存在
                 return 0 != config.checked.length && i.inArray(e, config.checked) != -1
             }
             var hasChilds = itemData.children && itemData.children.length > 0,
             h = i('<div class="layui-tree-pack" style="' + (t(itemData[config.key]) ? "display: block;": "") + '"></div>'),
             o = i(["<div " + (config.key ? 'data-key="' + (itemData[config.key] || "") + '"': "") + ' class="layui-tree-set' + (t(itemData[config.key]) ? " layui-tree-spread": "") + (d(itemData[config.key]) ? " layui-tree-checkedFirst": "") + '">', "<div " + (config.draggable && !itemData.fixed ? 'draggable="true"': "") + ' class="layui-tree-entry">', '<div class="layui-tree-main layui-inline">',
             function() {
-                return config.showLine ? hasChilds ? '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon ' + (t(itemData[config.key]) ? "layui-icon-subtraction": "layui-icon-addition") + '"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow ' + (hasChilds ? "": "hide") + '"></i></span>'
+				// B处理 return config.showLine ? isTab ? ... 
+                return config.showLine ? itemData.isTab ? '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon ' + (t(itemData[config.key]) ? "layui-icon-subtraction": "layui-icon-addition") + '"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>': '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow ' + (hasChilds ? "": "hide") + '"></i></span>'
             } (),
             function() {
                 return config.showCheckbox ? '<input type="checkbox" name="layuiTreeCheck" lay-skin="primary" ' + (itemData.disabled ? "disabled": "") + ">": ""
@@ -123,8 +129,8 @@ function(e) {console.log("tree ");
             } (), "</div>",
             function() {
                 return config.renderContent ? ['<div class="layui-btn-group layui-tree-btnGroup">', '<i class="layui-icon layui-icon-add-1"  data-type="add"></i>', '<i class="layui-icon layui-icon-edit" data-type="edit"></i>', '<i class="layui-icon layui-icon-delete" data-type="del"></i>', "</div>"].join("") : ""
-            } (), "</div></div>"].join(""));//最后会得到一个符合条件的值，需在外围添加括号，每个选值以逗号隔开
-            hasChilds && (o.append(h), that.tree(h, itemData.children)),//符合c条件则继续往下执行
+            } (), "</div></div>"].join(""));//最后会得到一个符合条件的值，需在外围添加括号，每个选值以逗号隔开；o变量是一个[]集合 然后调用join("")拼接出来的字符串
+            hasChilds && (o.append(h), that.tree(h, itemData.children)),//存在子元素递归调用
             e.append(o),
             o.prev("." + s)[0] && o.prev().children(".layui-tree-pack").addClass("layui-tree-showLine"),
             hasChilds || o.parent(".layui-tree-pack").addClass("layui-tree-lineExtend"),//有子元素则递归创建
@@ -158,7 +164,10 @@ function(e) {console.log("tree ");
                     d.children("." + p).slideUp(200),
                     d.find(".layui-tree-icon").children(".layui-icon").removeClass(h).addClass(c)
                 }
-            } else t = "normal";
+            } else {
+				t = "normal";
+				layer.msg('子项为空');
+			}
             config.click && config.click({// 回调click方法
                 elem: e,
                 state: t,	// close、open
@@ -221,9 +230,10 @@ function(e) {console.log("tree ");
         l = r.config,
         t = e.children("." + o),
         m = t.children("." + u);
+		console.log("operate 绑定operate");
         t.children(".layui-tree-btnGroup").on("click", ".layui-icon", //绑定事件
         function(t) {
-			console.log("operate 绑定operate")
+			console.log("点击operate")
             layui.stope(t);
             var u = i(this).data("type"),
             k = e.children("." + p),
@@ -237,7 +247,7 @@ function(e) {console.log("tree ");
 				add: function(data){//data {label:'名称', key:'id'}
 					k[0] || (l.showLine ? (m.find("." + d).addClass("layui-tree-icon"), m.find("." + d).children(".layui-icon").addClass(c).removeClass("layui-icon-file")) : m.find(".layui-tree-iconArrow").removeClass("hide"), e.append('<div class="layui-tree-pack"></div>'));
 					//var x = l.operate && l.operate(g),
-					if(data == undefined) throw new Exception("data="+data);
+					if(data == void 0) throw new Exception("data="+data);
 					if (r.tree(e.children("." + p), [data]), l.showLine) if (k[0]) k.hasClass(C) || k.addClass(C),
 					e.find("." + p).each(function() {
 						i(this).children("." + s).last().addClass(y)

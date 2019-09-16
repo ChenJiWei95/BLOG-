@@ -110,18 +110,21 @@
 		,data=[{// 模拟数据
 				label:'资源管理'
 				,id:1
+				,isTab:!0
 				,children:[{
 					label:'机构管理'
 					,id:23
 				}
 				,{
 					label:'数据字典'
+					,isTab:!0
 					,id:24
 				}]
 			}
 			,{
 				label:'权限管理'
 				,id:2
+				,isTab:!0
 				,children:[{
 					label:'访客用户'
 					,id:25
@@ -135,9 +138,11 @@
 			elem: '#show-manage'
 			,data: data
 			,renderContent: !0
+			/*
 			,click: function(obj){
 				layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
 			}
+			*/
 			,operate: function(obj){
 				//obj.type  obj.data  obj.active
 				console.log("回调operate");
