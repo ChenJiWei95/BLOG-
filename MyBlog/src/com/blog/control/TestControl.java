@@ -16,13 +16,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.blog.entity.Clazz;
+import com.blog.entity.Menu;
 import com.blog.entity.User;
+import com.blog.service.MenuService;
 import com.blog.service.UserService;
-import com.blog.util.ActionUtil;
+import com.blog.util.ActionUtil; 
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @Controller
 public class TestControl {
@@ -30,6 +32,9 @@ public class TestControl {
 	
 	@Autowired
 	private UserService userServiceImpl;
+	
+	@Autowired
+	private MenuService menuServiceImpl;
 	
 	//请求 http://localhost:8080/MyBlog/api/test.do
 	@RequestMapping("/api/test.do")
@@ -373,36 +378,64 @@ public class TestControl {
 	public String test4(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		return "../../../views/admin_view";
 	}
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/api/test/branch/add.do")
 	@ResponseBody
 	public Object branchAdd(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		Map<String, String> map = getRequestParameterMap(request);
 		System.out.println("添加接受参数："+map);
+		
+		JSONObject resultObject = (JSONObject) JSONObject.parse(map.get("data"));
+		
+		Menu m = new Menu(); 
+		m.setId(resultObject.getString("id"));
+		m.setName(resultObject.getString("name"));
+		m.setPriority(resultObject.getString("priority"));
+		m.setCreate_time(com.blog.util.TimeUtil.getDatetime());
+		m.setUrl(resultObject.getString("url"));
+		m.setRelate_id(map.get("relateId"));
+		m.setMsg(resultObject.getString("msg"));
+		menuServiceImpl.insert(m);
+		
 		JSONObject obj1 = new JSONObject();
-		obj1.put("id", "3-1");
-		obj1.put("label", map.get("name"));
-		obj1.put("isTab", ((String) map.get("url")).indexOf("####") == -1 ? false : true);
-		obj1.put("priority", map.get("priority"));
-		obj1.put("url", map.get("url"));
-		obj1.put("create_time", "2019-09-09");
-		obj1.put("update_time", "2019-09-09");
-		obj1.put("msg", map.get("msg"));
+		obj1.put("id", m.getId());
+		obj1.put("label", m.getName());
+		obj1.put("isTab", m.getUrl().indexOf("####") == -1 ? false : true);
+		obj1.put("priority", m.getPriority());
+		obj1.put("url", m.getUrl());
+		obj1.put("create_time", m.getCreate_time());
+		obj1.put("msg", m.getMsg());
+		
 		return obj1;
 	}
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/api/test/branch/update.do")
 	@ResponseBody
 	public Object branchUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		Map<String, String> map = getRequestParameterMap(request);
 		System.out.println("修改接受参数："+map);
+		
+		JSONObject resultObject = (JSONObject) JSONObject.parse(map.get("data"));
+		
+		Menu m = new Menu(); 
+		m.setName(resultObject.getString("name"));
+		m.setPriority(resultObject.getString("priority"));
+		m.setUpdate_time(com.blog.util.TimeUtil.getDatetime());
+		m.setUrl(resultObject.getString("url"));
+		m.setMsg(resultObject.getString("msg"));
+		Map<String, String> eq = new HashMap<>();
+		eq.put("id", resultObject.getString("id"));
+		menuServiceImpl.update(m, eq);
+		
 		JSONObject obj1 = new JSONObject();
-		obj1.put("id", map.get("id"));
-		obj1.put("label", map.get("name"));
-		obj1.put("isTab", ((String) map.get("url")).indexOf("####") == -1 ? false : true);
-		obj1.put("priority", map.get("priority"));
-		obj1.put("url", map.get("url"));
-		obj1.put("create_time", "2019-09-09");
-		obj1.put("update_time", "2019-09-09");
-		obj1.put("msg", map.get("msg"));
+		obj1.put("id", resultObject.getString("id"));
+		obj1.put("label", resultObject.get("name"));
+		obj1.put("isTab", ((String) resultObject.get("url")).indexOf("####") == -1 ? false : true);
+		obj1.put("priority", resultObject.get("priority"));
+		obj1.put("url", resultObject.get("url"));
+		obj1.put("create_time", resultObject.getString("create_time"));
+		obj1.put("update_time", m.getUpdate_time());
+		obj1.put("msg", resultObject.get("msg"));
 		return obj1;
 	}
 	@RequestMapping("/api/test/branch/del.do")

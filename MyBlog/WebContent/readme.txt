@@ -28,6 +28,18 @@
 
 栏	：夹表	-- ID 名称 创建时间 改动时间 显示优先级 关联夹ID 备注   {可去除 资源表代替}
 栏	：资源表-- ID 名称 创建时间 改动时间 显示优先级 链接（##/href） 关联夹ID 备注
+# 菜单表 
+# id label priority url create_time update_time msg
+	CREATE TABLE menu(
+		`id` VARCHAR(16) NOT NULL primary key COMMENT 'ID',
+		`relate_id` VARCHAR(16) NULL COMMENT '上级菜单ID',
+		`name` VARCHAR(50) NULL COMMENT '菜单名称',
+		`priority` INT DEFAULT 5 COMMENT '显示优先级',
+		`create_time` DATETIME NULL COMMENT '创建时间',
+		`update_time` DATETIME NULL COMMENT '最新操作时间',
+		`url` VARCHAR(100) NULL COMMENT '路径',
+		`msg` VARCHAR(100) NULL COMMENT '简易描述，固定字数'
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '菜单表';  
 
 文章概述表 article   
 

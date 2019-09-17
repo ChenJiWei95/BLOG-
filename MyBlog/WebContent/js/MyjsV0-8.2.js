@@ -155,6 +155,20 @@
 			toJSON:function(jsonObj) {return new ObjectParseJSON().parseJSON(jsonObj)},
 		},
 	}
+	function randomId(){
+		var date = new Date();
+		function full(num){// 填充
+			if(num>9)
+				return num;
+			return "0"+num;
+		} 
+		var _date = {
+			year : date.getFullYear(),
+			month : full(date.getMonth() + 1),
+			date : full(date.getDate())
+		};
+		return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
+	}
 	/*
 	-
 	输入
@@ -200,7 +214,7 @@
 			this.current = paramDate != undefined && paramDate != "" ? new Date(parse(paramDate)) : new Date();
 			/*
 			if(this.isDayType){
-				this.current = new Date(this.current.getTime() + 86400000);
+				this.current = new Date(this.current. 	() + 86400000);
 			}else { 
 				var temp = new Date(this.current.getTime() + 86400000*28);
 				while(this.current.getDate() != temp.getDate()){

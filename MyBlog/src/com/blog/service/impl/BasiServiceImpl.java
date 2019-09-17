@@ -3,9 +3,7 @@ package com.blog.service.impl;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import com.blog.dao.UserDao;
+import com.blog.dao.BaseDao;
 import com.blog.service.BasiService;
 import com.blog.util.sql.AssociaInterface;
 import com.blog.util.sql.EqAdapter;
@@ -21,9 +19,6 @@ import com.blog.util.sql.UpdateAdapter;
  */
 public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterface{
 
-	@Resource
-	UserDao userDao;
-	@SuppressWarnings("unchecked")
 	@Override
 	public T get(T t) {
 		EqAdapter sql = new SelectAdapter()
@@ -31,28 +26,26 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setLimit(0, 1)
 				.setTarget(t);
 		try {
-			return (T) userDao.get(sql).get(0);
+			return (T) getDao().get(sql).get(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> gets(T t) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t);
 		try {
-			return (List<T>) userDao.get(sql);
+			return (List<T>) getDao().get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> getOfOrderBySort(T t, String sort, String column) {
 		EqAdapter sql = new SelectAdapter()
@@ -64,14 +57,13 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		else if("desc".equals(sort))
 			sql.setOrderByDESC(column);
 		try {
-			return (List<T>) userDao.get(sql);
+			return (List<T>) getDao().get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> getOfOrderBySortAndLimit(T t, String sort, String column, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
@@ -84,14 +76,13 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		else if("desc".equals(sort))
 			sql.setOrderByDESC(column);
 		try {
-			return (List<T>) userDao.get(sql);
+			return (List<T>) getDao().get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> getOfLimit(T t, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
@@ -99,7 +90,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setTarget(t)
 				.setLimit(start, size);
 		try {
-			return (List<T>) userDao.get(sql);
+			return (List<T>) getDao().get(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +103,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setParame(this)
 				.setTarget(t);
 		try {
-			userDao.delete(sql);
+			getDao().delete(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -127,7 +118,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setTarget(t)
 				;
 		try {
-			userDao.update(sql);
+			getDao().update(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -139,7 +130,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setParame(this)
 				.setTarget(t); 
 		try {
-			userDao.insert(sql);
+			getDao().insert(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,7 +143,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setParame(this)
 				.setTarget(t);
 		try {
-			return (List<V>) userDao.associate(sql);
+			return (List<V>) getDao().associate(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -171,7 +162,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		else if("desc".equals(sort))
 			sql.setOrderByDESC(column);
 		try {
-			return (List<V>) userDao.associate(sql);
+			return (List<V>) getDao().associate(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -192,7 +183,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 			sql.setOrderByDESC(column);
 		
 		try {
-			return (List<V>) userDao.associate(sql);
+			return (List<V>) getDao().associate(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -207,7 +198,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setTarget(t)
 				.setLimit(start, size);
 		try {
-			return (List<V>) userDao.associate(sql);
+			return (List<V>) getDao().associate(sql);
 		} catch (Exception e) {	
 			e.printStackTrace();
 		}
@@ -246,6 +237,12 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 
 	@Override
 	public String getId() {
+		return null;
+	}
+
+	@Override
+	public BaseDao<T> getDao() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

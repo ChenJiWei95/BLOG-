@@ -30,5 +30,6 @@
     	<mapper resource="com/blog/mapper/UserMapper.xml" />
     	<mapper resource="com/blog/mapper/RelateMapper.xml" />
     	<mapper resource="com/blog/mapper/Target__Mapper.xml" />
+    	<mapper resource="com/blog/mapper/MenuMapper.xml" />
     </mappers>
 </configuration>

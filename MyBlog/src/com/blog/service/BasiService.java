@@ -3,7 +3,11 @@ package com.blog.service;
 import java.util.List;
 import java.util.Map;
 
+import com.blog.dao.BaseDao;
+import com.blog.entity.Menu;
+
 public interface BasiService<T, V> {
+	BaseDao<T> getDao();
 	/**
 	 * 查询单个
 	 * @param t 条件实体 

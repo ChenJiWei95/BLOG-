@@ -78,8 +78,9 @@
 		,b = 'layuiadmin-branch-form-edit'
 		,d = 'tag_check'
 		,index = layui.index
+		,relateId = index.util.getParameter("relateId")
 		,form = layui.form
-		,clickOne = !0;
+		,clickOne = !0;			// 只允许点击一次
 		
 		// 
 		form.on("checkbox("+d+")", function(data){
@@ -97,14 +98,14 @@
 				$.ajax({
 					url: 'http://localhost:8080/MyBlog/api/test/branch/add.do'
 					,type: 'post'	
-					,data: {data: JSON.stringify(data.field)}
+					,data: {data: JSON.stringify(data.field), relateId: relateId}
 					,dataType: "json"
 					,success: function(data){
 						console.log("请求成功，" + data);
 						// data 返回的数据 传入add中生成新功能
 						var b = {};
 						b["label"] = data.name;//补充
-						b["key"] = data.;//补充key 需要后台返回id	
+						b["key"] = data.id;//补充key 需要后台返回id	
 						console.log('success add');
 						parent.oparate_active.add(data);
 						parent.layer.msg("添加成功！"); 
@@ -145,6 +146,7 @@
 			}
 			return !1;
 		}); 
+		
   })
   
   
