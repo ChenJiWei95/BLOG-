@@ -14,10 +14,15 @@
 </head>
 <body style="padding-right=20px">
 	<div class="layui-form" lay-filter="branch-form-tags" id="branch-form-tags" style="padding:  20px 30px 0 0; text-align: center; background: #fff">
+		<div class="layui-hide">
+			<div class="layui-input-block">
+				<input type="text" name="id" lay-verify="id" autocomplete="off">
+			</div>
+		</div> 
 		<div class="layui-form-item">
 			<label class="layui-form-label">名称</label>
 			<div class="layui-input-block">
-				<input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入" class="layui-input">
+				<input type="text" name="name" lay-verify="name" autocomplete="off" placeholder="请输入" class="layui-input">
 			</div>
 		</div> 
 		<div class="layui-form-item">
@@ -40,10 +45,12 @@
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">链接</label>
-			<div class="layui-input-block">
+			<div class="layui-input-inline">
 				<input type="text" name="url" id="url" lay-verify="title" autocomplete="off" placeholder="请输入" class="layui-input">
 			</div>
-			<input type="checkbox" id="tag_check" onclick = "checkBox(this)" name="tag_check" lay-skin="primary" title="设置为菜单">
+			<div class="layui-input-inline">
+				<input type="checkbox" id="tag_check" lay-filter="tag_check" name="tag_check" title="设置为菜单">
+			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">备注</label>
@@ -60,40 +67,28 @@
   <script src="../../layuiadmin/layui/layui.js"></script>  
   <script>
   layui.config({
-    base: '../../layuiadmin/' //静态资源所在路径
+    base: '../../layuiadmin/' // 静态资源所在路径
   }).extend({
-    index: 'lib/index' //主入口模块
+    index: 'lib/index' // 主入口模块
   }).use(['index', 'form'], function(){
 		var table = layui.table
 		,$ = layui.$
 		,admin = layui.admin
 		,a = 'layuiadmin-branch-form-submit'
 		,b = 'layuiadmin-branch-form-edit'
+		,d = 'tag_check'
 		,index = layui.index
 		,form = layui.form
 		,clickOne = !0;
-		layer.msg("测试！", {time: 2000});
 		
-		console.log("tag_check ---------------------- ");
-		console.log($("#tag_check"));
-		function checkBox(e){
-			console.log("bool ---------------------- ");
-			console.log(e.checked);
-			if(e.checked == !0) {
-				$("#url").addClass("layui-disabled");
-				$("#url").disabled = !0;
-				$("#url").val = "####";
-			}else {
-				$("#url").removeClass("layui-disabled");
-				$("#url").disabled = !1;
-				$("#url").val = "";
-			}
-		}
-		document.getElementsById("tag_check").onclick = function(e){
-			console.log(e.target.checked);
-		}
+		// 
+		form.on("checkbox("+d+")", function(data){
+			console.log(data);
+			if(this.checked) $("#url").addClass("layui-disabled"), $("#url").attr("disabled", ""), $("#url").val("####");
+			else $("#url").removeClass("layui-disabled"), $("#url").removeAttr("disabled"), $("#url").val("");
+		});
 		
-		//添加
+		// 添加
 		form.on("submit("+a+")", function(data){
 			if(clickOne){
 				clickOne = !1;
@@ -106,11 +101,12 @@
 					,dataType: "json"
 					,success: function(data){
 						console.log("请求成功，" + data);
+						// data 返回的数据 传入add中生成新功能
 						var b = {};
-						b["label"] = "新标签";//补充
-						b["key"] = "100012";//补充key 需要后台返回id	
+						b["label"] = data.name;//补充
+						b["key"] = data.;//补充key 需要后台返回id	
 						console.log('success add');
-						parent.oparate_active.add(b);
+						parent.oparate_active.add(data);
 						parent.layer.msg("添加成功！"); 
 						parent.layer.close(index);
 					}	
@@ -122,7 +118,7 @@
 			}
 			return !1;
 		})
-		//编辑
+		// 编辑
 		,form.on("submit("+b+")", function(data){
 			if(clickOne){
 				clickOne = !1;
@@ -130,14 +126,15 @@
 				var index_ = parent.layer.getFrameIndex(window.name);
 				data.field['id'] = index.util.getParameter("id");
 				console.log(JSON.stringify(data.field));
-				//执行 Ajax 后重载
+				// 执行 Ajax 后重载
 				$.ajax({
 					url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
 					,type: 'post'	
 					,data: {data: JSON.stringify(data.field)}
 					,success: function(data){
-						parent.oparate_active.edit();
+						parent.oparate_active.edit(data);
 						parent.layer.msg("修改成功！", {time: 2000}); 
+						parent.initAjax();
 						parent.layer.close(index_);
 					}
 					,error: function(data){

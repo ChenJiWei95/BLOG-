@@ -139,15 +139,16 @@ function(e) {console.log("tree ");
             config.renderContent && that.operate(o, itemData)		//绑定对应的事件
         })
     },
-    m.prototype.spread = function(e, key) {console.log("tree.spread");// 点击事件 回调click方法
+    m.prototype.spread = function(e, itemData) {console.log("tree.spread");// 点击事件 回调click方法
 		// f = "layui-tree-spread",
 		// p = "layui-tree-pack",
 		// s = "layui-tree-set",
+    	// u = "layui-tree-main", 
+    	// d = "layui-tree-iconClick",
         var that = this,
         t = "close",
         config = that.config,
         r = e.children("." + o),// o = "layui-tree-entry",
-		// u = "layui-tree-main", d = "layui-tree-iconClick",
         l = config.expandClick ? r.children("." + u) : r.find("." + d);
         l.on("click",//点击
         function(target) {
@@ -177,7 +178,7 @@ function(e) {console.log("tree ");
             config.click && config.click({// 回调click方法
                 elem	: e,
                 state	: t,	// close、open
-                data	: key,	// key
+                data	: itemData,	// itemData
                 type	: type	// 返回 0 - 代表展开键点击  1 - 代表菜单名点击
             })
         })
@@ -278,7 +279,7 @@ function(e) {console.log("tree ");
 					}
 					a.render("checkbox")
 				}
-				,edit: function() {
+				,edit: function(data) {
 					var A = m.children(".layui-tree-txt").html();
 					m.children(".layui-tree-txt").html(""),
 					m.append('<input type="text" class="layui-inline layui-tree-editInput">'),
@@ -289,7 +290,6 @@ function(e) {console.log("tree ");
 						e.remove(),
 						m.children(".layui-tree-txt").html(i);
 						g.data.label = i
-						//l.operate && l.operate(g)
 					}
 					m.children(".layui-tree-editInput").blur(function() {
 						S(i(this))

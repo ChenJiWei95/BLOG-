@@ -34,6 +34,7 @@
 	<script src="../../layuiadmin/layui/layui.js?t=1"></script>
 	<script>
 	var oparate_active;// 子页面调用 active
+	var initAjax;
 	layui.config({
 		base: '../../layuiadmin/' // 静态资源所在路径
 	}).extend({
@@ -53,21 +54,28 @@
 		,active = {
 			add: function(obj){
 				layer.open({
-				  type: 2
-				  ,title: '添加分支'
-				  ,content: 'branchform.html'
-				  ,area: ['420px', '420px']
-				  ,btn: ['确定', '取消']
-				  ,yes: function(index, layero){
-					layero.find(f).contents().find("#"+a).click(); 		// 子窗口 按钮触发点击
-				  }
+				  	type: 2
+				  	,title: '添加分支'
+				  	,content: 'branchform.html'
+				  	,area: ['420px', '420px']
+				  	,btn: ['确定', '取消']
+				  	,yes: function(index, layero){
+						layero.find(f).contents().find("#"+a).click(); 		// 子窗口 按钮触发点击
+				  	},
+				  	success: function(t, e) {
+						//var iframe = t.find("iframe").contents().find("#"+c).click();
+						// 初始化
+						var iframe = t.find("iframe").contents().find("#"+c);
+						iframe.find('input[name="id"]').val(obj.data.id)
+						,iframe.find('input[name="tag_check"]').removeAttr("disabled").removeClass("layui-disabled")
+				  	}
 				}); 
 			}
 			,edit: function(obj){
 				layer.open({
 					type: 2,
 					title: "编辑当前分支",
-					content: "branchform.html?id=" + data[0].id,
+					content: "branchform.html?id=" + obj.data.id,
 					area: ['420px', '420px'],
 					btn: ["确定", "取消"],
 					yes: function(index, layero) {
@@ -77,12 +85,16 @@
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
 						// 初始化
 						var iframe = t.find("iframe").contents().find("#"+c);
-						iframe.find('input[name="title"]').val(obj.data[0].title)
-						,iframe.find('input[name="priority"]').val(obj.data[0].priority)
-						,iframe.find('input[name="url"]').val(obj.data[0].url)
-						,iframe.find('input[name="msg"]').val(obj.data[0].msg)
-						iframe.find('textarea[name="create_time"]').disabled = !0
-						,iframe.find('textarea[name="update_time"]').disabled = !0
+						iframe.find('input[name="name"]').val(obj.data.label)
+						,iframe.find('input[name="id"]').val(obj.data.id)
+						,iframe.find('input[name="priority"]').val(obj.data.priority)
+						,iframe.find('input[name="url"]').val(obj.data.url)
+						,iframe.find('textarea[name="msg"]').val(obj.data.msg)
+						,iframe.find('input[name="create_time"]').val(obj.data.create_time)
+						,iframe.find('input[name="update_time"]').val(obj.data.update_time)
+						,iframe.find('input[name="create_time"]').attr("disabled", "")
+						,iframe.find('input[name="update_time"]').attr("disabled", "")
+						,iframe.find('input[name="tag_check"]').attr("disabled", "").addClass("layui-disabled")
 					}
 				})
 			}
@@ -129,27 +141,41 @@
 					label:'后台管理员'
 					,id:26
 				}]
-		}];
-		tree.render({//分支结构创建
-			elem: '#show-manage'
-			,data: data
-			,renderContent: !0
-			,click: function(obj){
-				// 点击layui-tree-txt 提示节点信息
-				if(obj.type == 1){ 
-					layer.msg('type：' + obj.type + '；状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+		}]; 
+		initAjax = function(){
+			$.ajax(
+				{
+					url: 'http://localhost:8080/MyBlog/api/test/branch/init.do'
+					,type: 'post'	
+					,dataType: "json"
+					,success: function(data){
+						tree.render({//分支结构创建
+							elem: '#show-manage'
+							,data: data
+							,renderContent: !0
+							,click: function(obj){
+								// 点击layui-tree-txt 提示节点信息
+								if(obj.type == 1){ 
+									layer.msg('type：' + obj.type + '；状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+								}
+							}
+							,operate: function(obj){
+								//obj.type  obj.data  obj.active obj.elem
+								console.log("回调operate");
+								oparate_active = obj.active;
+								console.log(obj);
+								console.log(obj.active);
+								'function' == typeof active[obj.type] ? active[obj.type](obj) : '';
+							}
+						}) 
+					} 
+					,error: function(data){
+						layer.msg("服务器异常！") 
+					}
 				}
-			}
-			,operate: function(obj){
-				//obj.type  obj.data  obj.active
-				console.log("回调operate");
-				oparate_active = obj.active;
-				console.log(obj);
-				console.log(obj.active);
-				'function' == typeof active[obj.type] ? active[obj.type](obj) : '';
-			}
-		}) 
-		
+			);
+		}
+		initAjax();
 	}); 
 	</script>
  </body>

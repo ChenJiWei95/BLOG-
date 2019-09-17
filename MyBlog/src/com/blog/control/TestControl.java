@@ -1,7 +1,10 @@
 package com.blog.control;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -373,9 +376,146 @@ public class TestControl {
 	@RequestMapping("/api/test/branch/add.do")
 	@ResponseBody
 	public Object branchAdd(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		Map<String, String> map = getRequestParameterMap(request);
+		System.out.println("添加接受参数："+map);
+		JSONObject obj1 = new JSONObject();
+		obj1.put("id", "3-1");
+		obj1.put("label", map.get("name"));
+		obj1.put("isTab", ((String) map.get("url")).indexOf("####") == -1 ? false : true);
+		obj1.put("priority", map.get("priority"));
+		obj1.put("url", map.get("url"));
+		obj1.put("create_time", "2019-09-09");
+		obj1.put("update_time", "2019-09-09");
+		obj1.put("msg", map.get("msg"));
+		return obj1;
+	}
+	@RequestMapping("/api/test/branch/update.do")
+	@ResponseBody
+	public Object branchUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		Map<String, String> map = getRequestParameterMap(request);
+		System.out.println("修改接受参数："+map);
+		JSONObject obj1 = new JSONObject();
+		obj1.put("id", map.get("id"));
+		obj1.put("label", map.get("name"));
+		obj1.put("isTab", ((String) map.get("url")).indexOf("####") == -1 ? false : true);
+		obj1.put("priority", map.get("priority"));
+		obj1.put("url", map.get("url"));
+		obj1.put("create_time", "2019-09-09");
+		obj1.put("update_time", "2019-09-09");
+		obj1.put("msg", map.get("msg"));
+		return obj1;
+	}
+	@RequestMapping("/api/test/branch/del.do")
+	@ResponseBody
+	public Object branchDel(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		Map<String, String> map = getRequestParameterMap(request);
+		System.out.println("删除接受参数："+map);
 		JSONObject object = new JSONObject();
 		object.put("result", "success");
 		return object;
+	}
+	@RequestMapping("/api/test/branch/init.do")
+	@ResponseBody
+	public JSONArray branchInit(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		JSONObject obj1 = new JSONObject();
+		obj1.put("id", "2");
+		obj1.put("label", "菜单管理");
+		obj1.put("isTab", false);
+		obj1.put("priority", "1");
+		obj1.put("url", "http://localhost:8080/MyBlog/views/tagmanage.jsp");
+		obj1.put("create_time", "2019-09-09");
+		obj1.put("update_time", "2019-09-09");
+		obj1.put("msg", "备注");
+		
+		JSONObject obj2 = new JSONObject();
+		obj2.put("id", "3");
+		obj2.put("label", "数据字典");
+		obj2.put("isTab", true);
+		obj2.put("priority", "1");
+		obj2.put("url", "####");
+		obj2.put("create_time", "2019-09-09");
+		obj2.put("update_time", "2019-09-09");
+		obj2.put("msg", "备注");
+		
+		JSONArray arr_1 = new JSONArray();
+		arr_1.add(obj1);
+		arr_1.add(obj2);
+		
+		JSONObject object = new JSONObject();
+		// id label priority url create_time update_time msg
+		object.put("id", "1");
+		object.put("label", "资源管理");
+		object.put("isTab", true);
+		object.put("priority", "1");
+		object.put("url", "####");
+		object.put("create_time", "2019-09-09");
+		object.put("update_time", "2019-09-09");
+		object.put("msg", "备注");
+		object.put("children", arr_1);
+		
+		JSONObject obj1_1 = new JSONObject();
+		obj1_1.put("id", "4");
+		obj1_1.put("label", "访客管理");
+		obj1_1.put("isTab", false);
+		obj1_1.put("priority", "1");
+		obj1_1.put("url", "http://localhost:8080/MyBlog/views/usermanage.jsp");
+		obj1_1.put("create_time", "2019-09-09");
+		obj1_1.put("update_time", "2019-09-09");
+		obj1_1.put("msg", "备注");
+		
+		JSONObject obj2_2 = new JSONObject();
+		obj2_2.put("id", "5");
+		obj2_2.put("label", "后天管理员");
+		obj2_2.put("isTab", false);
+		obj2_2.put("priority", "1");
+		obj2_2.put("url", "http://localhost:8080/MyBlog/views/adminmanage.jsp");
+		obj2_2.put("create_time", "2019-09-09");
+		obj2_2.put("update_time", "2019-09-09");
+		obj2_2.put("msg", "备注");
+		
+		JSONArray arr_1_1 = new JSONArray();
+		arr_1_1.add(obj1_1);
+		arr_1_1.add(obj2_2);
+		
+		JSONObject object_1 = new JSONObject();
+		// id label priority url create_time update_time msg
+		object_1.put("id", "6");
+		object_1.put("label", "权限管理");
+		object_1.put("isTab", true);
+		object_1.put("priority", "1");
+		object_1.put("url", "####");
+		object_1.put("create_time", "2019-09-09");
+		object_1.put("update_time", "2019-09-09");
+		object_1.put("msg", "备注");
+		object_1.put("children", arr_1_1);
+		
+		JSONArray arr = new JSONArray();
+		arr.add(object);
+		arr.add(object_1);
+		System.out.println("初始化:"+arr.toString());
+		return arr;
+	}
+	public static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
+		logger.info("getRequestParameterMap");
+		Map<String, String> params = new HashMap<String, String>();
+		try {
+			Map<String, String[]> requestParams = request.getParameterMap();
+			logger.info("do");
+			for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
+				String name = (String) iter.next();
+				String[] values = (String[]) requestParams.get(name);
+				System.out.println("name:"+name+", values:"+values);
+				String valueStr = "";
+				for (int i = 0; i < values.length; i++) {
+					valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+				}
+					params.put(name, valueStr);
+			}
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
+		return params;
 	}
 } 
 
