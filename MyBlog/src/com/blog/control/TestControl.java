@@ -438,18 +438,26 @@ public class TestControl {
 		obj1.put("msg", resultObject.get("msg"));
 		return obj1;
 	}
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/api/test/branch/del.do")
 	@ResponseBody
 	public Object branchDel(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		Map<String, String> map = getRequestParameterMap(request);
 		System.out.println("删除接受参数："+map);
+		
+		JSONObject resultObject = (JSONObject) JSONObject.parse(map.get("data"));
+		
+		Menu m = new Menu();
+		m.setId(resultObject.getString("id"));
+		menuServiceImpl.delete(m);
+		
 		JSONObject object = new JSONObject();
 		object.put("result", "success");
 		return object;
 	}
 	@RequestMapping("/api/test/branch/init.do")
 	@ResponseBody
-	public JSONArray branchInit(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public JSONObject branchInit(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 		JSONObject obj1 = new JSONObject();
 		obj1.put("id", "2");
@@ -527,7 +535,14 @@ public class TestControl {
 		arr.add(object);
 		arr.add(object_1);
 		System.out.println("初始化:"+arr.toString());
-		return arr;
+		
+		JSONObject resultObj = new JSONObject();
+		resultObj.put("responseCode", "success");
+		resultObj.put("responseMsg", "初始化成功！");
+		resultObj.put("data", arr);
+		String[] strs = {"1"};
+		resultObj.put("spread", strs);
+		return resultObj;
 	}
 	public static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
 		logger.info("getRequestParameterMap");

@@ -121,17 +121,17 @@
 		})
 		// 编辑
 		,form.on("submit("+b+")", function(data){
+			var spread = index.util.getParameter("spread");
 			if(clickOne){
 				clickOne = !1;
 				layer.msg("修改中...", {time: 16000}); 
-				var index_ = parent.layer.getFrameIndex(window.name);
-				data.field['id'] = index.util.getParameter("id");
+				var index_ = parent.layer.getFrameIndex(window.name); 
 				console.log(JSON.stringify(data.field));
 				// 执行 Ajax 后重载
 				$.ajax({
 					url: 'http://localhost:8080/MyBlog/api/test/branch/update.do'
 					,type: 'post'	
-					,data: {data: JSON.stringify(data.field)}
+					,data: {data: JSON.stringify(data.field), spread: spread}
 					,success: function(data){
 						parent.oparate_active.edit(data);
 						parent.layer.msg("修改成功！", {time: 2000}); 

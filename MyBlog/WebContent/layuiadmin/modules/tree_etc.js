@@ -149,7 +149,12 @@ function(e) {console.log("tree ");
         t = "close",
         config = that.config,
         r = e.children("." + o),// o = "layui-tree-entry",
-        l = config.expandClick ? r.children("." + u) : r.find("." + d);
+        l = config.expandClick ? r.children("." + u) : r.find("." + d)
+		,hasArr = function(v){
+			for (var i = 0, len = that.config.spread.length; i < len; i++)
+				if(that.config.spread[i] == v) return i
+			return void 0;
+		};
         l.on("click",//点击
         function(target) {
         	var type = 0;
@@ -158,11 +163,16 @@ function(e) {console.log("tree ");
                 r = l.children(".layui-icon")[0] ? l.children(".layui-icon") : l.find(".layui-tree-icon").children(".layui-icon");
                 
                 if (that[0]) {
-                    if (e.hasClass(f)) e.removeClass(f),
-                    that.slideUp(200),
-                    r.removeClass(h).addClass(c),
-                    t = "close";
-                    else if (e.addClass(f), that.slideDown(200), r.addClass(h).removeClass(c), t = "open", config.accordion) {
+                    if (e.hasClass(f)) {
+						e.removeClass(f),
+						that.slideUp(200),
+						r.removeClass(h).addClass(c), 
+						t = "close";
+						console.log("=============================close:"+hasArr(itemData.id));
+						hasArr(itemData.id) != void 0 && that.config.spread.splice(hasArr(itemData.id), 1);
+					} else if (e.addClass(f), that.slideDown(200), r.addClass(h).removeClass(c), t = "open", config.accordion) {
+						that.config.spread.push(itemData.id);
+						console.log("=============================open:"+that.config.spread);
                         var d = e.siblings("." + s);
                         d.removeClass(f),
                         d.children("." + p).slideUp(200),
@@ -230,7 +240,7 @@ function(e) {console.log("tree ");
             }
         })
     },
-    m.prototype.operate = function(e, n) {console.log("tree.operate");// 回调方法operate
+    m.prototype.operate = function(e, itemData) {console.log("tree.operate");// 回调方法operate
 		// o = "layui-tree-entry",
 		// u = "layui-tree-main",
 		// p = "layui-tree-pack",
@@ -242,14 +252,16 @@ function(e) {console.log("tree ");
         t.children(".layui-tree-btnGroup").on("click", ".layui-icon", //绑定事件
         function(t) {
 			console.log("点击operate")
+			console.log(itemData);
             layui.stope(t);
             var u = i(this).data("type"),
             k = e.children("." + p),
             g = {
-                data: n,
-                type: u,
-                elem: e,
-				active: active
+                data: itemData
+                ,type: u
+                ,elem: e
+				,active: active
+				,spread: r.spread
             }
 			,active = {
 				add: function(data){//data {label:'名称', key:'id'}

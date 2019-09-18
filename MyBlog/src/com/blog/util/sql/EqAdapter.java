@@ -73,7 +73,7 @@ public abstract class EqAdapter{
 					.append((isLike(((String) item.getValue()).trim()) ? " LIKE " : " = "))
 					.append("string".equals(TypeToolsGenerics.getType(item.getValue()))
 							? "'"+item.getValue()+"' "
-							: (item.getValue()) + " ")
+							: (item.getValue() == null ? "NULL" : item.getValue()) + " ")
 					.append(AND_FIX);
 		}
 		whereSql.delete(whereSql.length()-4, whereSql.length());

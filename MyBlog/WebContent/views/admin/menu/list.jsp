@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
  <head>
@@ -5,7 +7,7 @@
   <meta name="Author" content="cjw">
   <meta name="Keywords" content="">
   <meta name="Description" content="">
-  <title>机构管理</title>
+  <title>æºæç®¡ç</title>
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
   <style>
@@ -21,7 +23,7 @@
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
 					<div class="layui-card-header layuiadmin-card-header-auto">
-						<input type="button" class="layui-btn manage-button" value="添加"/> 
+						<input type="button" class="layui-btn manage-button" value="æ·»å "/> 
 					</div>
 					<div class="layui-card-body">
 						<div class="layui-collapse" id="show-manage">
@@ -33,12 +35,12 @@
 	</div>  
 	<script src="../../layuiadmin/layui/layui.js?t=1"></script>
 	<script>
-	var oparate_active;// 子页面调用 active
+	var oparate_active;// å­é¡µé¢è°ç¨ active
 	var initAjax;
 	layui.config({
-		base: '../../layuiadmin/' // 静态资源所在路径
+		base: '../../layuiadmin/' // éæèµæºæå¨è·¯å¾
 	}).extend({
-		index: 'lib/index' // 主入口模块
+		index: 'lib/index' // ä¸»å¥å£æ¨¡å
 		,tree_etc: 'modules/tree_etc'
 	}).use(["tree_etc", 'index', 'console', 'element'], function() {
 		
@@ -55,16 +57,16 @@
 			add: function(obj){
 				layer.open({
 				  	type: 2
-				  	,title: '添加分支'
+				  	,title: 'æ·»å åæ¯'
 				  	,content: 'branchform.html?relateId='+obj.data.id
 				  	,area: ['420px', '420px']
-				  	,btn: ['确定', '取消']
+				  	,btn: ['ç¡®å®', 'åæ¶']
 				  	,yes: function(index, layero){
-						layero.find(f).contents().find("#"+a).click(); 		// 子窗口 按钮触发点击
+						layero.find(f).contents().find("#"+a).click(); 		// å­çªå£ æé®è§¦åç¹å»
 				  	},
 				  	success: function(t, e) {
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
-						// 初始化
+						// åå§å
 						var iframe = t.find("iframe").contents().find("#"+c);
 						iframe.find('input[name="id"]').val(randomId())
 						,iframe.find('input[name="tag_check"]').removeAttr("disabled").removeClass("layui-disabled")
@@ -76,16 +78,16 @@
 				console.log(obj.spread);
 				layer.open({
 					type: 2,
-					title: "编辑当前分支",
+					title: "ç¼è¾å½ååæ¯",
 					content: "branchform.html?spread="+obj.spread.join(","),
 					area: ['420px', '420px'],
-					btn: ["确定", "取消"],
+					btn: ["ç¡®å®", "åæ¶"],
 					yes: function(index, layero) {
-						layero.find(f).contents().find("#"+b).click(); 	// 子窗口 按钮触发点击
+						layero.find(f).contents().find("#"+b).click(); 	// å­çªå£ æé®è§¦åç¹å»
 					},
 					success: function(t, e) {
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
-						// 初始化
+						// åå§å
 						var iframe = t.find("iframe").contents().find("#"+c);
 						iframe.find('input[name="name"]').val(obj.data.label)
 						,iframe.find('input[name="id"]').val(obj.data.id)
@@ -108,39 +110,39 @@
 					,dataType: "json"
 					,success: function(data){
 						obj.active.del();
-						layer.msg("删除成功！")
+						layer.msg("å é¤æåï¼")
 					} 
 					,error: function(data){
-						layer.msg("服务器异常，删除失败！") 
+						layer.msg("æå¡å¨å¼å¸¸ï¼å é¤å¤±è´¥ï¼") 
 					}
 				});		
 			}
 		}  
 		,tree = layui.tree_etc
-		,data=[{// 模拟数据
-				label:'资源管理'
+		,data=[{// æ¨¡ææ°æ®
+				label:'èµæºç®¡ç'
 				,id:1
 				,isTab:!0
 				,children:[{
-					label:'机构管理'
+					label:'æºæç®¡ç'
 					,id:23
 				}
 				,{
-					label:'数据字典'
+					label:'æ°æ®å­å¸'
 					,isTab:!0
 					,id:24
 				}]
 			}
 			,{
-				label:'权限管理'
+				label:'æéç®¡ç'
 				,id:2
 				,isTab:!0
 				,children:[{
-					label:'访客用户'
+					label:'è®¿å®¢ç¨æ·'
 					,id:25
 				}
 				,{
-					label:'后台管理员'
+					label:'åå°ç®¡çå'
 					,id:26
 				}]
 		}]; 
@@ -156,20 +158,20 @@
 							return ;
 						}
 						console.log(data.spread);
-						tree.render({//分支结构创建
+						tree.render({//åæ¯ç»æåå»º
 							elem: '#show-manage'
 							,data: data.data
 							,spread: data.spread
 							,renderContent: !0
 							,click: function(obj){
-								// 点击layui-tree-txt 提示节点信息
+								// ç¹å»layui-tree-txt æç¤ºèç¹ä¿¡æ¯
 								if(obj.type == 1){ 
-									layer.msg('type：' + obj.type + '；状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+									layer.msg('typeï¼' + obj.type + 'ï¼ç¶æï¼'+ obj.state + '<br>èç¹æ°æ®ï¼' + JSON.stringify(obj.data))
 								}
 							}
 							,operate: function(obj){
 								//obj.type  obj.data  obj.active obj.elem
-								console.log("回调operate");
+								console.log("åè°operate");
 								oparate_active = obj.active;
 								console.log(obj);
 								console.log(obj.active);
@@ -178,7 +180,7 @@
 						}) 
 					} 
 					,error: function(data){
-						layer.msg("服务器异常！") 
+						layer.msg("æå¡å¨å¼å¸¸ï¼") 
 					}
 				}
 			);
@@ -186,7 +188,7 @@
 		initAjax();
 		function randomId(){
 			var date = new Date();
-			function full(num){// 填充
+			function full(num){// å¡«å
 				if(num>9)
 					return num;
 				return "0"+num;
