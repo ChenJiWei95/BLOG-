@@ -166,7 +166,7 @@ function(e) {console.log("tree ");
                     if (e.hasClass(f)) {
 						e.removeClass(f),
 						that.slideUp(200),
-						r.removeClass(h).addClass(c), 
+						r.removeClass(h).addClass(c),
 						t = "close";
 						console.log("=============================close:"+hasArr(itemData.id));
 						hasArr(itemData.id) != void 0 && that.config.spread.splice(hasArr(itemData.id), 1);

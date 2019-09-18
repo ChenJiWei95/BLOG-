@@ -234,4 +234,7 @@ public class MenuControl {
 		}
 		return params;
 	}
+	protected String basePath(HttpServletRequest request){
+		return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
+	}
 }

@@ -124,7 +124,7 @@
       <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
   </div>
-
+  <h1 id="h11"><%=basePath%></h1>
   <script src="../layuiadmin/layui/layui.js"></script>
   <script>
   
@@ -134,7 +134,10 @@
 	  navTree: 'lib/navTree', //主入口模块
 	  index: 'lib/index'
   }).use('navTree', function () {
-	console.log("加载");
+	  var $ = layui.jquery
+	  ,layer = layui.layer;
+	  console.log($("#h11").html());
+	console.log("加载"); 
 	/*
 	
 	*/
