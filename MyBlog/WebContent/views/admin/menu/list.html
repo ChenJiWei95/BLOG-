@@ -5,7 +5,7 @@
   <meta name="Author" content="cjw">
   <meta name="Keywords" content="">
   <meta name="Description" content="">
-  <title>机构管理</title>
+  <title>菜单管理</title>
   <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
   <style>
@@ -21,7 +21,7 @@
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
 					<div class="layui-card-header layuiadmin-card-header-auto">
-						<input type="button" class="layui-btn manage-button" value="添加"/> 
+						<input type="button" class="layui-btn menu-button" value="添加"/> 
 					</div>
 					<div class="layui-card-body">
 						<div class="layui-collapse" id="show-manage">
@@ -51,6 +51,46 @@
 		,b = 'layuiadmin-branch-form-edit'
 		,c = 'branch-form-tags'
 		,d = 'LAY-app-set-branch'
+		,that_active = {
+			add: function(o){
+				layer.open({
+				  	type: 2
+				  	,title: '添加分支'
+				  	,content: 'branchform.html?'
+				  	,area: ['420px', '420px']
+				  	,btn: ['确定', '取消']
+				  	,yes: function(index, layero){
+						$.ajax{
+							url: 'add.do'
+							,type: 'post'
+							,data: {data: JSON.stringify(data.field)}
+							,dataType: "json"
+							,success: function(data){
+								console.log("请求成功，" + data);
+								// data 返回的数据 传入add中生成新功能
+								console.log('success add');
+								parent.oparate_active.add(data);
+								parent.layer.msg("添加成功！");
+								parent.layer.close(index);
+							}	
+							,error: function(data){
+								parent.layer.msg("系统异常，添加失败！");
+								parent.layer.close(index);
+							}
+						}
+				  	},
+				  	success: function(t, e) {
+						//var iframe = t.find("iframe").contents().find("#"+c).click();
+						// 初始化
+						var iframe = t.find("iframe").contents().find("#"+c);
+						iframe.find('input[name="id"]').val(randomId())
+						,iframe.find('input[name="url"]').val("####")
+						,iframe.find('input[name="tag_check"]').attr("disabled", "").addClass("layui-disabled")
+						,iframe.find('input[name="url"]').attr("disabled", "").addClass("layui-disabled")
+				  	}
+				}); 
+			}
+		}
 		,active = {
 			add: function(obj){
 				layer.open({
@@ -198,6 +238,10 @@
 			};
 			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
 		}
+		$('.layui-btn.menu-button').on('click', function(){
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
 	}); 
 	</script>
  </body>

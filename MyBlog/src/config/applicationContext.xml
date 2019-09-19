@@ -32,6 +32,10 @@
 		<property name="configLocation" value="classpath:config/mybatis-config.xml" />
 	</bean>
 	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000"></property>
+	</bean> 
+	
 	<!-- 3.mybatis自动扫描加载Sql映射文件、接口：MapperScannerConfigurer sqlSessionFactory
 	basePackage：指定sql接口所在的包（自动扫描）注意：不是映射文件 -->
 	<!-- 将mybatis实现的接口注入到spring容器中 -->

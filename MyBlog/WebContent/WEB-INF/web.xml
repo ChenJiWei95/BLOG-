@@ -42,6 +42,10 @@
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>*.chtml</url-pattern>
+	</servlet-mapping>
 	
 	<!-- 解决工程编码过滤器 -->
 	<filter>

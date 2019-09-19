@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 public class Test {
 	private static Logger log = LogManager.getLogger(Test.class);
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException{
+		
 	/*	log.info("hello word");
 		log.error("hello word");
 		log.fatal("hello word");
@@ -33,9 +34,9 @@ public class Test {
 		log.trace("我是trace");
  
 		log.trace("退出程序.");*/
-		Class<?> clazz = PrivateClass.class;// 获取PrivateClass整个类
+		/*Class<?> clazz = PrivateClass.class;// 获取PrivateClass整个类
 		PrivateClass pc = (PrivateClass) clazz.newInstance();// 创建一个实例
-		/*pc.setName("cjw");
+*/		/*pc.setName("cjw");
 		pc.setAge("24");
 		pc.setLarge("lagere");*/
 
@@ -58,7 +59,7 @@ public class Test {
 			fs[i].set(pc, "null");//将属性值重新赋值
 			System.out.println("赋值后：" + fs[i].getName() + ":" + fs[i].get(pc));
 		} */
-		String endDate, startDate;
+		/*String endDate, startDate;
 		SimpleDateFormat formatter;
 		Date date1 = new Date();
         //获取String类型的时间
@@ -67,13 +68,13 @@ public class Test {
     	date1 = calendar.getTime(); //这个时间就是日期往后推一天的结果 
         formatter = new SimpleDateFormat("yyyyMMdd");
         endDate = formatter.format(date1);
-		/*for (int i = 0; i <10; i++){
+		for (int i = 0; i <10; i++){
 			calendar.add(calendar.DATE,-i);//把日期往后增加一天.整数往后推,负数往前移动
-		}	*/
+		}	
 		calendar.add(calendar.DATE,-10);
 		date1 = calendar.getTime(); //这个时间就是日期往后推一天的结果 
         formatter = new SimpleDateFormat("yyyyMMdd");
         startDate = formatter.format(date1);//取十天
-        System.out.println(startDate + " " + endDate);
+        System.out.println(startDate + " " + endDate);*/
 	}
 }

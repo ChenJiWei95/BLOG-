@@ -2,6 +2,7 @@ package com.blog.control;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -32,6 +33,11 @@ import javax.mail.internet.MimeUtility;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -241,10 +247,44 @@ public class NotifyControl {
 	public static void main(String[] args){
 		//url = new URL("http://localhost:7080/MyBlog/api/bindNotify.do");
 		//payNotify rePayNotify bindNotify
-		String url = "http://www.chenjiwey.cn:8080/api/bindNotify.do";
-		post(url, "你好");
-        
+//		String url = "http://www.chenjiwey.cn:8080/api/bindNotify.do";
+//		post(url, "你好");
+		System.out.println(post("http://v.juhe.cn/certificates/typeList.php?key=6866ed735f47cce6d5d7ac2b9cf05b2", ""));
 	}
+	
+	public static String post1(String type, File file) throws Exception {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String result = null;
+        // HttpClient请求的相关设置，可以不用配置，用默认的参数，这里设置连接和超时时长(毫秒)
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(30000).setSocketTimeout(30000).build();
+        try {
+            HttpPost httppost = new HttpPost("http://v.juhe.cn/certificates/query.php");
+            // FileBody封装File类型的参数
+            FileBody bin = new FileBody(file);
+            // StringBody封装String类型的参数
+            StringBody keyBody = new StringBody(key, ContentType.TEXT_PLAIN);
+            StringBody typeBody = new StringBody(type, ContentType.TEXT_PLAIN);
+            // addPart将参数传入，并指定参数名称
+            HttpEntity reqEntity = MultipartEntityBuilder.create()
+                    .addPart("pic", bin).addPart("key", keyBody)
+                    .addPart("cardType", typeBody).build();
+            httppost.setEntity(reqEntity);
+            httppost.setConfig(config);
+            // 执行网络请求并返回结果
+            response = httpClient.execute(httppost);
+            HttpEntity resEntity = response.getEntity();
+            if (resEntity != null) {
+                result =IOUtils.toString(resEntity.getContent(), "UTF-8");
+            }
+            EntityUtils.consume(resEntity);
+        } finally {
+            response.close();
+            httpClient.close();
+        }
+        // 得到的是JSON类型的数据需要第三方解析JSON的jar包来解析
+        return result;
+    }
 	
 	public static String post(String urlStr, String data){
 		String result = "";

@@ -1,4 +1,9 @@
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 
 <!DOCTYPE html>
 <html>
@@ -8,7 +13,7 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <!--<link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">-->
 
 </head>
@@ -64,10 +69,10 @@
 		</div>
 	</div>
 
-  <script src="../../layuiadmin/layui/layui.js"></script>  
+  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
   layui.config({
-    base: '../../layuiadmin/' // 静态资源所在路径
+    base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
   }).extend({
     index: 'lib/index' // 主入口模块
   }).use(['index', 'form'], function(){
