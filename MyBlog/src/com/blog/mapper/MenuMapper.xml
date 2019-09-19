@@ -10,8 +10,9 @@
 	<select id="get" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		SELECT ${columnSql} FROM ${table}
 		<where>
-			<if test="whereSql!=null"> ${whereSql}</if>
-			<if test="likeSql!=null"> ${likeSql}</if>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
 		</where> 
 		<if test="orderBySql!=null"> ${orderBySql}</if>
 		<if test="limitSql!=null"> ${limitSql}</if>
@@ -21,8 +22,9 @@
 	<update id="update" parameterType="com.blog.util.sql.EqAdapter">
 		update ${table} set ${updateSql}
 		<where>
+		  	1=1 
 			<if test="whereSql!=null"> ${whereSql}</if>
-			<if test="likeSql!=null"> ${likeSql}</if>
+			<if test="likeSql!=null"> AND ${likeSql}</if>
 		</where> 
 		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
 	</update>
@@ -30,8 +32,9 @@
 	<delete id="delete" parameterType="com.blog.util.sql.EqAdapter">
 		delete from ${table} 
 		<where>
+			1=1 
 			<if test="whereSql!=null"> ${whereSql}</if>
-			<if test="likeSql!=null"> ${likeSql}</if>
+			<if test="likeSql!=null"> AND ${likeSql}</if>
 		</where> 
 		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
 	</delete>

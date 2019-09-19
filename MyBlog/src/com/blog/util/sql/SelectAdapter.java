@@ -11,8 +11,7 @@ import com.blog.util.TypeToolsGenerics;
  */
 public class SelectAdapter extends EqAdapter {
 	private String orderBySql				; // 排序
-	private String limitSql					; // 分页
-	private String likeSql					; // 模糊查询
+	private String limitSql					; // 分页 
 	private String sql						;
 	
 	// 关联对象 
@@ -21,12 +20,9 @@ public class SelectAdapter extends EqAdapter {
 	private String brige_association_key	; // 桥接表 对应关联类字段 
 	private String association_table		; // 关联表 名 
 	private String association_table_id		; // 关联表 id字段	
-	
-	public String getLikeSql() {
-		return likeSql;
-	}
+	 
 	public EqAdapter like(String cloumn, String likeStr) {
-		this.likeSql = cloumnUtil(cloumn) + "LIKE" + likeStr;
+		setLike(cloumnUtil(cloumn) + " LIKE '" + likeStr + "'");
 		return this;
 	}
 	public String getOrderBySql() {

@@ -10,6 +10,12 @@ public class Menu {
 	private String msg;
 	private String relate_id;
 	
+	public String toString(){
+		return "["+"id="+id+", name="+name+", priority="+priority+
+				", url="+url+", create_time="+create_time+
+				", update_time="+update_time+", msg="+msg+", relate_id="+relate_id+"]";
+	}
+	
 	public String getId() {
 		return id;
 	}

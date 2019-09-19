@@ -14,6 +14,7 @@ import com.blog.util.TypeToolsGenerics;
  * <p>
  * 作用：
  * 1、生成条件语句
+ * 	有id=NULL 的查询时，用eq集合
  * 2、排序
  * 3、自定义查询字段
  * 4、分页
@@ -43,6 +44,8 @@ public abstract class EqAdapter{
 	private Map<String, Object> eqAndPutMap	; // 条件&插入	集 
 	private Map<String, Object> updateMap	; // 修改     	集 
 	
+	private String like;
+	
 	private BaseInterface parame;
 
 	public EqAdapter(){
@@ -69,24 +72,23 @@ public abstract class EqAdapter{
 	protected String createEqSql() {
 		StringBuilder whereSql = new StringBuilder();
 		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
-			whereSql.append(" `" + item.getKey() + "` ")
-					.append((isLike(((String) item.getValue()).trim()) ? " LIKE " : " = "))
+			whereSql.append(AND_FIX)
+					.append(" `" + item.getKey() + "` = ")
+//					.append((isLike(((String) item.getValue()).trim()) ? " LIKE " : " = "))
 					.append("string".equals(TypeToolsGenerics.getType(item.getValue()))
 							? "'"+item.getValue()+"' "
-							: (item.getValue() == null ? "NULL" : item.getValue()) + " ")
-					.append(AND_FIX);
+							: (item.getValue() == null ? "NULL" : item.getValue()) + " "); 	
 		}
-		whereSql.delete(whereSql.length()-4, whereSql.length());
 		return whereSql.toString();
 	}
 	
-	protected boolean isLike(String value) {
+	/*protected boolean isLike(String value) {
 		if(value.length() > 0) 
 			return value.charAt(0) == '%' 
 				? (value.charAt(value.length()-1) == '%' ? true : false) 
 				: false; 
 		return false; 
-	}
+	}*/
 	
 	public String getInsertSql() throws Exception{
 		
@@ -259,6 +261,9 @@ public abstract class EqAdapter{
 		this.target = target;
 		return this;
 	}
+	public String getLikeSql() {
+		return getLike();
+	}
 	
 	public EqAdapter setOrderByDESC(String columnName) {return this;}
 	public EqAdapter setOrderByASC(String columnName) {return this;}
@@ -295,7 +300,7 @@ public abstract class EqAdapter{
 	}	
 	
 	// 只获取private修饰的字段
-	// 获取所有字段集合
+	// 获取所有字段 属性集合
 	protected Object [] parseColumnOfObjectAll(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
@@ -310,7 +315,7 @@ public abstract class EqAdapter{
 		return fields.toArray();
 	}
 	// 只获取private修饰的字段
-	// 获取非空字段的集合
+	// 获取字段值非空的 值数组集
 	protected String [] parseColumnOfObject(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
@@ -325,7 +330,7 @@ public abstract class EqAdapter{
 		return (String[]) fields.toArray();
 	}
 	// 只获取private修饰的字段
-	// 获取非空字段的键值
+	// 获取字段值非空的 键值
 	protected Map<String, Object> parseMapOfObject(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
@@ -340,7 +345,7 @@ public abstract class EqAdapter{
 		return map;
 	}
 	// 只获取private修饰的字段
-	// 获取非空字段的值
+	// 获取字段值非空的 值
 	protected Object [] parseValuesOfObject(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
@@ -353,6 +358,14 @@ public abstract class EqAdapter{
 				fields.add(fs[i].get(target));
 		} 
 		return (Object[]) fields.toArray();
+	}
+
+	public String getLike() {
+		return like;
+	}
+
+	public void setLike(String like) {
+		this.like = like;
 	}
 	
 }

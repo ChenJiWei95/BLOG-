@@ -241,8 +241,19 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
-	public BaseDao<T> getDao() {
-		// TODO Auto-generated method stub
+	public BaseDao<T> getDao() { 
 		return null;
+	}
+
+	@Override
+	public void delete(Map<String, Object> eq) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq(eq);
+		try {
+			getDao().delete(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

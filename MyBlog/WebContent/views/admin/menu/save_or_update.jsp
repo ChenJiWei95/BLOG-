@@ -20,8 +20,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body style="padding-right=20px">
 	<div class="layui-form" lay-filter="branch-form-tags" id="branch-form-tags" style="padding:  20px 30px 0 0; text-align: center; background: #fff">
 		<div class="layui-hide">
+			<label class="layui-form-label">ID</label>
 			<div class="layui-input-block">
-				<input type="text" name="id" lay-verify="id" autocomplete="off">
+				<input type="text" name="id" lay-verify="id" autocomplete="off" class="layui-input">
 			</div>
 		</div> 
 		<div class="layui-form-item">
@@ -99,11 +100,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(clickOne){
 				clickOne = !1;
 				layer.msg("添加中...", {time: 16000}); 
-				var index = parent.layer.getFrameIndex(window.name); 
+				var index = parent.layer.getFrameIndex(window.name)
+				,dataTemp = data.field;
+				dataTemp["relate_id"] = relateId;
 				$.ajax({
 					url: 'add.do'
 					,type: 'post'	
-					,data: {data: JSON.stringify(data.field), relateId: relateId}
+					,data: dataTemp
 					,dataType: "json"
 					,success: function(data){
 						console.log("请求成功，" + data);
@@ -111,8 +114,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						var b = {};
 						b["label"] = data.name;//补充
 						b["key"] = data.id;//补充key 需要后台返回id	
-						console.log('success add');
-						parent.oparate_active.add(data);
+						console.log('success add'); 
+						if(relateId == void 0 || relateId == '')
+							parent.initAjax();
+						else
+							parent.oparate_active.add(data);
 						parent.layer.msg("添加成功！"); 
 						parent.layer.close(index);
 					}	
@@ -126,7 +132,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		})
 		// 编辑
 		,form.on("submit("+b+")", function(data){
-			var spread = index.util.getParameter("spread");
+			var spread = index.util.getParameter("spread")
+			,dataTemp = data.field;
+			dataTemp["spread"] = spread;
 			if(clickOne){
 				clickOne = !1;
 				layer.msg("修改中...", {time: 16000}); 
@@ -136,7 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$.ajax({
 					url: 'update.do'
 					,type: 'post'	
-					,data: {data: JSON.stringify(data.field), spread: spread}
+					,data: dataTemp
 					,success: function(data){
 						parent.oparate_active.edit(data);
 						parent.layer.msg("修改成功！", {time: 2000}); 

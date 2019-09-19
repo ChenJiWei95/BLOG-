@@ -27,10 +27,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
 					<div class="layui-card-header layuiadmin-card-header-auto">
-						<input type="button" class="layui-btn manage-button" data-type="add" value="添加"/> 
-						
+						<button class="layui-btn manage-button" data-type="add">添加</button>  
 					</div>
-					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+					<div class="layui-card-body">
+						<div class="layui-collapse" id="show-manage">
+						</div>	  	 
+					</div>
+					<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 					  <legend>常规使用：普通图片上传</legend>
 					</fieldset>
 					 
@@ -40,18 +43,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					    <img class="layui-upload-img" id="demo1">
 					    <p id="demoText"></p>
 					  </div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
 	</div>  
 	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
-	<script>
-	
-
-
-	var oparate_active;// 子页面调用 active
-	var initAjax;
+	<script>  
+	var oparate_active, isDataOfNull, initAjax;// 子页面调用 active 
 	layui.config({
 		base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
 	}).extend({
@@ -59,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		,tree_etc: 'modules/tree_etc'
 	}).use(["tree_etc", 'index', 'console', 'element', 'upload'], function() {
 		
-		var layer  = layui.layer
+		var layer  = layui.layer 
 		,$ = layui.jquery
 		,form = layui.form
 		,admin = layui.admin
@@ -72,29 +71,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			add: function(o){
 				layer.open({
 				  	type: 2
-				  	,title: '添加分支'
-				  	,content: 'branchform.html?'
+				  	,title: '添加'
+				  	,content: 'save_or_update.chtml'
 				  	,area: ['420px', '420px']
 				  	,btn: ['确定', '取消']
 				  	,yes: function(index, layero){
-						$.ajax({
-							url: 'add.do'
-								,type: 'post'
-								,data: {data: JSON.stringify(data.field)}
-								,dataType: "json"
-								,success: function(data){
-									console.log("请求成功，" + data);
-									// data 返回的数据 传入add中生成新功能
-									console.log('success add');
-									parent.oparate_active.add(data);
-									parent.layer.msg("添加成功！");
-									parent.layer.close(index);
-								}	
-								,error: function(data){
-									parent.layer.msg("系统异常，添加失败！");
-									parent.layer.close(index);
-								}
-							});
+						layero.find(f).contents().find("#"+a).click(); 		// 子窗口 按钮触发点击
 				  	},
 				  	success: function(t, e) {
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
@@ -112,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			add: function(obj){
 				layer.open({
 				  	type: 2
-				  	,title: '添加分支'
+				  	,title: '添加'
 				  	,content: 'save_or_update.chtml?relateId='+obj.data.id
 				  	,area: ['420px', '420px']
 				  	,btn: ['确定', '取消']
@@ -133,7 +115,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				console.log(obj.spread);
 				layer.open({
 					type: 2,
-					title: "编辑当前分支",
+					title: "编辑",
 					content: "save_or_update.chtml?spread="+obj.spread.join(","),
 					area: ['420px', '420px'],
 					btn: ["确定", "取消"],
@@ -159,9 +141,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 			,del: function(obj){  
 				$.ajax({
-					url: 'remove.do'
+					url: 'remove.do'  
 					,type: 'post'	
-					,data: {data: JSON.stringify(obj.data)}
+					,data: {id: obj.data.id}
 					,dataType: "json"
 					,success: function(data){
 						obj.active.del();
@@ -170,7 +152,37 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					,error: function(data){
 						layer.msg("服务器异常，删除失败！") 
 					}
-				});		
+				});	
+			}
+			,show: function(data){
+				layer.open({
+			        type: 2
+			        ,title: "查看"
+			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			        ,id: 'layerDemo'+'auto' //防止重复弹出
+			        ,content: 'save_or_update.chtml'
+			        ,area: ['420px', '420px']
+			        ,btn: '关闭'
+			        ,btnAlign: 'c' //按钮居中
+			        ,shade: 0.3 //不显示遮罩
+			        ,yes: function(){
+			          layer.closeAll();
+			        }
+					,success: function(t, e) {
+						//var iframe = t.find("iframe").contents().find("#"+c).click();
+						// 初始化
+						var iframe = t.find("iframe").contents().find("#"+c); 
+						iframe.find('input[name="name"]').val(data.label)
+						,iframe.find('input[name="id"]').val(data.id)
+						,iframe.find('input[name="priority"]').val(data.priority)
+						,iframe.find('input[name="url"]').val(data.url)
+						,iframe.find('textarea[name="msg"]').val(data.msg)
+						,iframe.find('input[name="create_time"]').val(data.create_time)
+						,iframe.find('input[name="update_time"]').val(data.update_time)
+						,iframe.find('input[name="tag_check"]').addClass("layui-hide")
+						,iframe.find(".layui-hide").eq(0).removeClass("layui-hide").addClass("layui-form-item");
+					}
+				});
 			}
 		}  
 		,tree = layui.tree_etc
@@ -203,9 +215,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}]; 
 		initAjax = function(){
 			$.ajax(
-				{
-					//url: 'init.do'
-					url: 'http://localhost:8080/MyBlog/api/test/branch/init.do'
+				{ 
+					url: 'init.do'
 					,type: 'post'	
 					,dataType: "json"
 					,success: function(data){
@@ -213,7 +224,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							layer.msg(data.responseMsg);
 							return ;
 						}
-						console.log(data.spread);
+						isDataOfNull = data.data.length == 0 ? true : isDataOfNull;
+						console.log("data.spread"+data.spread);
 						tree.render({//分支结构创建
 							elem: '#show-manage'
 							,data: data.data
@@ -222,7 +234,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							,click: function(obj){
 								// 点击layui-tree-txt 提示节点信息
 								if(obj.type == 1){ 
-									layer.msg('type：' + obj.type + '；状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(obj.data))
+									active['show'](obj.data);
 								}
 							}
 							,operate: function(obj){
@@ -241,14 +253,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			);
 		}
-		//initAjax();
+		initAjax();
 		function randomId(){
 			var date = new Date();
 			function full(num){// 填充
 				if(num>9)
 					return num;
 				return "0"+num;
-			} 
+			}
 			var _date = {
 				year : date.getFullYear(),
 				month : full(date.getMonth() + 1),
@@ -256,14 +268,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			};
 			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
 		}
-		$('.layui-btn.menu-button').on('click', function(){
+		$('.layui-btn.manage-button').on('click', function(){
 			var type = $(this).data('type');
-			active[type] ? active[type].call(this) : '';
+			layer.msg(type);
+			that_active[type] ? that_active[type].call(this) : '';
 		});
 		
-		var upload = layui.upload;
-		/* var token = "${param.token}"
-		var applicationCode = "${param.applicationCode}"; */
+		/* $('.layuiadmin-btn-list').on('click', function(){ 
+			layer.msg('测试');
+		}); */
+		
+		/* var upload = layui.upload; 
 		//普通图片上传
 		  var uploadInst = upload.render({
 		    elem: '#test1'
@@ -289,7 +304,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        uploadInst.upload();
 		      });
 		    }
-		  });
+		  }); */
 	}); 
 	</script>
  </body>

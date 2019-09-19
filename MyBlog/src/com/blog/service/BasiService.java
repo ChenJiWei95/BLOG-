@@ -50,6 +50,11 @@ public interface BasiService<T, V> {
 	 */
 	void delete(T t);
 	/**
+	 * 删除 
+	 * @param t 条件实体
+	 */
+	void delete(Map<String, Object> eq); 
+	/**
 	 * 修改
 	 * @param t 修改内容实体
 	 * @param eq 条件

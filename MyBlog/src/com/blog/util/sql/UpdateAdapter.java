@@ -6,13 +6,9 @@ import java.util.Map;
 import com.blog.util.TypeToolsGenerics;
 
 public class UpdateAdapter extends EqAdapter { 
-	private String likeSql					; // 模糊查询
 	
-	public String getLikeSql() {
-		return likeSql;
-	}
 	public EqAdapter like(String cloumn, String likeStr) {
-		this.likeSql = cloumnUtil(cloumn) + "LIKE" + likeStr;
+		setLike(cloumnUtil(cloumn) + " LIKE '" + likeStr + "'");
 		return this;
 	}
 	
