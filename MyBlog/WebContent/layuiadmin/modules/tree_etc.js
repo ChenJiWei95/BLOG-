@@ -261,7 +261,7 @@ function(e) {console.log("tree ");
                 ,type: u
                 ,elem: e
 				,active: active
-				,spread: r.spread
+				,spread: l.spread
             }
 			,active = {
 				add: function(data){//data {label:'名称', key:'id'}
