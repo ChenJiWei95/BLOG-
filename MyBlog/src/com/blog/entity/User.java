@@ -4,7 +4,7 @@ package com.blog.entity;
  * 
  * @author cjwstart
  */
-public class User {
+public class User extends Base{
 	private Integer id;
 	private String username;
 	private String password;
@@ -41,12 +41,5 @@ public class User {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	public String toString() {
-		StringBuilder sb = new StringBuilder("[");
-		sb.append("id:" + id).append(", ");
-		sb.append("username:" + username).append(", ");
-		sb.append("password:" + password).append("]");
-		return sb.toString();
-	}
+	 
 }

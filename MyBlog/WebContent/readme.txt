@@ -29,7 +29,7 @@
 栏	：夹表	-- ID 名称 创建时间 改动时间 显示优先级 关联夹ID 备注   {可去除 资源表代替}
 栏	：资源表-- ID 名称 创建时间 改动时间 显示优先级 链接（##/href） 关联夹ID 备注
 # 菜单表 
-# id label priority url create_time update_time msg
+# id name priority url create_time update_time msg
 	CREATE TABLE menu(
 		`id` VARCHAR(16) NOT NULL primary key COMMENT 'ID',
 		`relate_id` VARCHAR(16) NULL COMMENT '上级菜单ID',
@@ -40,6 +40,16 @@
 		`url` VARCHAR(100) NULL COMMENT '路径',
 		`msg` VARCHAR(100) NULL COMMENT '简易描述，固定字数'
 	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '菜单表';  
+# 网站后台基础信息表
+# id name url update_time msg spread
+	CREATE TABLE website_back_base(
+		`id` VARCHAR(16) NOT NULL primary key COMMENT 'ID',
+		`name` VARCHAR(50) NULL COMMENT '后台名称',
+		`update_time` DATETIME NULL COMMENT '更新时间',
+		`url` VARCHAR(100) NULL COMMENT '后台名称点击路径',
+		`msg` VARCHAR(100) NULL COMMENT '简易描述'
+		`spread` VARCHAR(100) NULL COMMENT '菜单管理展开记忆集'
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT '网站后台基础信息表';  
 
 文章概述表 article   
 
@@ -221,62 +231,57 @@
 
 #角色表	：表    -- ID name create_time update_time desc 
 	CREATE TABLE role(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`id` VARCHAR(16) NOT NULL PRIMARY KEY COMMENT 'ID',  
 		`name` VARCHAR(30) NULL COMMENT '角色名',  
 		`create_time` DATETIME NULL COMMENT '',  
 		`update_time` DATETIME NULL COMMENT '',  
 		`desc` VARCHAR(100) NULL COMMENT ''
 	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色表'; 
 #权限项	：表	-- ID 名称 创建时间 改动时间 关联页面项id 关联角色id 启用状态 备注 
- 	CREATE TABLE limit_item(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+ 	CREATE TABLE role_item(  
+		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
 		`name` VARCHAR(30) NULL COMMENT '权限项名',  
-		`create_time` DATETIME NULL COMMENT '',  
-		`update_time` DATETIME NULL COMMENT '',  
+		`create_time` VARCHAR(30) NULL COMMENT '',  
+		`update_time` VARCHAR(30) NULL COMMENT '',  
 		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00',  
 		`msg` VARCHAR(100) NULL COMMENT '备注',  
-		`app_id` INT NULL COMMENT '关联页面项id' 
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='权限项';
+		`app_id` VARCHAR(16) NULL COMMENT '关联页面项id' 
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='权限项';
 #角色&权限项：表 -- ID role_id limit_item_id
-	CREATE TABLE role_limit_relation(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
-		`limit_item_id` CHAR(10) NULL COMMENT '管理员ID',  
-		`role_id` INT NULL COMMENT '角色ID',
-		FOREIGN KEY (`limit_item_id`) REFERENCES limit_item(`id`),
-		FOREIGN KEY (`role_id`) REFERENCES role(`id`)
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色&权限项';
+	CREATE TABLE role_item_brige(   
+		`item_id` VARCHAR(16) NULL COMMENT '管理员ID',  
+		`role_id` VARCHAR(16) NULL COMMENT '角色ID'
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='角色&权限项';
 
 #管理员账户表	
 #：表	-- ID 账号 密码 创建时间 修改时间 登录状态
-	CREATE TABLE admin_account(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+	CREATE TABLE admin(  
+		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
 		`username` VARCHAR(20) NULL COMMENT '',  
-		`password` VARCHAR(20) NULL COMMENT '',  
-		`create_time` DATETIME NULL COMMENT '',  
-		`update_time` DATETIME NULL COMMENT '',  
+		`password` VARCHAR(20) NULL COMMENT '',   
+		`login_count` tinyint COMMENT '输入密码错误次数' DEFAULT 0,
 		`state` CHAR(2) NULL COMMENT '启用状态' DEFAULT '00'
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员账户表'; 
+	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员账户表';  
 #管理员角色关联表： ID 管理员ID 角色ID 
-	CREATE TABLE admin_role_relation(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
-		`admin_id` CHAR(10) NULL COMMENT '管理员ID',  
-		`role_id` INT NULL COMMENT '角色ID',
-		FOREIGN KEY (`admin_id`) REFERENCES admin_account(`id`),
-		FOREIGN KEY (`role_id`) REFERENCES role(`id`)
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
+	CREATE TABLE admin_role_brige(   
+		`admin_id` VARCHAR(16) NULL COMMENT '管理员信息ID',  
+		`role_id` VARCHAR(16) NULL COMMENT '角色ID' 
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
 #管理员信息	：表	-- ID 名称 昵称 创建时间 改动时间 phone email 关联角色id 管理员账户关联id 备注
 	CREATE TABLE admin_infor(  
-		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  
+		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
 		`name` VARCHAR(30) NULL COMMENT '名',  
 		`name_` VARCHAR(30) NULL COMMENT '昵称，回复评论时使用',  
-		`create_time` DATETIME NULL COMMENT '',  
-		`update_time` DATETIME NULL COMMENT '',  
+		`create_time` VARCHAR(30) NULL COMMENT '',  
+		`update_time` VARCHAR(30) NULL COMMENT '',  
 		`phone` VARCHAR(20) NULL COMMENT '',  
-		`email` VARCHAR(30) NULL COMMENT '',  
-		`admin_account_id` INT NULL COMMENT '',
-		`role_id` INT NULL COMMENT '关联角色id',
+		`email` VARCHAR(30) NULL COMMENT '',   
+		`create_time` VARCHAR(30) NULL COMMENT '',  
+		`update_time` VARCHAR(30) NULL COMMENT '', 
+		`role_id` VARCHAR(16) NOT NULL COMMENT '关联角色id',
+		`admin_id` VARCHAR(16) NOT NULL COMMENT '管理员id',
 		`desc` VARCHAR(100) NULL COMMENT ''
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='管理员信息表'; 
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='管理员信息表'; 
 #管理员账户表&信息：-- ID admin_account_id admin_infor_id
 	CREATE TABLE aaccount_ainfor_relation(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  

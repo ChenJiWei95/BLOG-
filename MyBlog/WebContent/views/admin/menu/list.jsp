@@ -50,7 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>  
 	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
 	<script>  
-	var oparate_active, isDataOfNull, initAjax;// 子页面调用 active 
+	var oparate_active, initAjax;// 子页面调用 active 
 	layui.config({
 		base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
 	}).extend({
@@ -110,9 +110,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				}); 
 			}
-			,edit: function(obj){
-				console.log("=========================================");
-				console.log(obj.spread);
+			,edit: function(obj){ 
 				layer.open({
 					type: 2,
 					title: "编辑",
@@ -130,6 +128,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						,iframe.find('input[name="id"]').val(obj.data.id)
 						,iframe.find('input[name="priority"]').val(obj.data.priority)
 						,iframe.find('input[name="url"]').val(obj.data.url)
+						,iframe.find('select[name="icon"]').val(obj.data.icon)
 						,iframe.find('textarea[name="msg"]').val(obj.data.msg)
 						,iframe.find('input[name="create_time"]').val(obj.data.create_time)
 						,iframe.find('input[name="update_time"]').val(obj.data.update_time)
@@ -175,6 +174,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						iframe.find('input[name="name"]').val(data.label)
 						,iframe.find('input[name="id"]').val(data.id)
 						,iframe.find('input[name="priority"]').val(data.priority)
+						,iframe.find('select[name="icon"]').val(obj.data.icon)
 						,iframe.find('input[name="url"]').val(data.url)
 						,iframe.find('textarea[name="msg"]').val(data.msg)
 						,iframe.find('input[name="create_time"]').val(data.create_time)
@@ -185,34 +185,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				});
 			}
 		}  
-		,tree = layui.tree_etc
-		,data=[{// 模拟数据
-				label:'资源管理'
-				,id:1
-				,isTab:!0
-				,children:[{
-					label:'机构管理'
-					,id:23
-				}
-				,{
-					label:'数据字典'
-					,isTab:!0
-					,id:24
-				}]
-			}
-			,{
-				label:'权限管理'
-				,id:2
-				,isTab:!0
-				,children:[{
-					label:'访客用户'
-					,id:25
-				}
-				,{
-					label:'后台管理员'
-					,id:26
-				}]
-		}]; 
+		,tree = layui.tree_etc; 
 		initAjax = function(){
 			$.ajax(
 				{ 
@@ -223,13 +196,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						if(data.responseCode != "success") {
 							layer.msg(data.responseMsg);
 							return ;
+						} 
+						var tempSpread;
+						if(data.spread != void 0 && "" != data.spread){
+							tempSpread = data.spread.split('|');
 						}
-						isDataOfNull = data.data.length == 0 ? true : isDataOfNull;
 						console.log("data.spread"+data.spread);
 						tree.render({//分支结构创建
 							elem: '#show-manage'
 							,data: data.data
-							,spread: data.spread
+							,spread: tempSpread
 							,renderContent: !0
 							,click: function(obj){
 								// 点击layui-tree-txt 提示节点信息
@@ -270,7 +246,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 		$('.layui-btn.manage-button').on('click', function(){
 			var type = $(this).data('type');
-			layer.msg(type);
 			that_active[type] ? that_active[type].call(this) : '';
 		});
 		

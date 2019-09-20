@@ -5,38 +5,37 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.blog.dao.AdminInforDao;
 import com.blog.dao.BaseDao;
-import com.blog.dao.MenuDao;
-import com.blog.entity.Clazz;
-import com.blog.entity.Menu;
-import com.blog.service.MenuService;
+import com.blog.entity.AdminInfor;
+import com.blog.service.AdminInforService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements MenuService<Menu, Clazz>, AssociaInterface  {
+public class AdminInforServiceImpl extends BasiServiceImpl<AdminInfor, Object> implements AdminInforService<AdminInfor, Object>, AssociaInterface  {
 	@Resource
-	MenuDao menuDao; 
+	AdminInforDao adminInfor; 
 	
-	public BaseDao<Menu> getDao(){
-		return menuDao;
+	public BaseDao<AdminInfor> getDao(){
+		return adminInfor;
 	}
 	
 	@Override
 	public String getBrige_table() {
-		return "";
+		return "role_item_brige";
 	}
 	@Override
 	public String getBrige_key() {
-		return "";
+		return "role_id";
 	}
 	@Override
 	public String getBrige_association_key() {
-		return "";
+		return "item_id";
 	}
 	@Override
 	public String getAssociation_table() {
-		return "";
+		return "role_item";
 	}
 	@Override
 	public String getAssociation_table_id() {
@@ -48,7 +47,7 @@ public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements Men
 	}
 	@Override
 	public String getTable() {
-		return "menu";
+		return "admin_infor";
 	}
 }
 

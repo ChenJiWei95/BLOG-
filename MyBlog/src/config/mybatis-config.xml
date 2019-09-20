@@ -21,15 +21,16 @@
     </environments> -->
     
     <!-- 配置mapper -->
-	<settings>
-        <!-- 打印查询语句 -->
+	<!-- <settings>
+        打印查询语句
         <setting name="logImpl" value="STDOUT_LOGGING" />
-	</settings>
+	</settings> -->
     <!-- 配置mapper -->
     <mappers>
     	<mapper resource="com/blog/mapper/UserMapper.xml" />
     	<mapper resource="com/blog/mapper/RelateMapper.xml" />
     	<mapper resource="com/blog/mapper/Target__Mapper.xml" />
     	<mapper resource="com/blog/mapper/MenuMapper.xml" />
+    	<mapper resource="com/blog/mapper/WebSiteBaseMapper.xml" />
     </mappers>
 </configuration>

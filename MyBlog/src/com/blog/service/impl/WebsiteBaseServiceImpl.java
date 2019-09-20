@@ -6,20 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.dao.BaseDao;
-import com.blog.dao.MenuDao;
-import com.blog.entity.Clazz;
-import com.blog.entity.Menu;
-import com.blog.service.MenuService;
+import com.blog.dao.WebsiteBaseDao;
+import com.blog.entity.WebsiteBase;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements MenuService<Menu, Clazz>, AssociaInterface  {
+public class WebsiteBaseServiceImpl extends BasiServiceImpl<WebsiteBase, Object> implements WebsiteBaseService<WebsiteBase, Object>, AssociaInterface  {
 	@Resource
-	MenuDao menuDao; 
+	WebsiteBaseDao websiteBaseDao; 
 	
-	public BaseDao<Menu> getDao(){
-		return menuDao;
+	public BaseDao<WebsiteBase> getDao(){
+		return websiteBaseDao;
 	}
 	
 	@Override
@@ -48,7 +47,7 @@ public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements Men
 	}
 	@Override
 	public String getTable() {
-		return "menu";
+		return "website_base";
 	}
 }
 

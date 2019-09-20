@@ -2,8 +2,6 @@ package com.blog.control.admin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,10 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -29,48 +25,48 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.blog.control.BaseControl;
 import com.blog.entity.Menu;
+import com.blog.entity.WebsiteBase;
 import com.blog.service.MenuService;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
 import com.blog.util.GsonUtil;
 
-@Controller("menuControl")
+@Controller
 //admin/menu/editMovieInfo.do
 @RequestMapping("/admin/menu")
-public class MenuControl {
+public class MenuControl extends BaseControl{
 	
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private MenuService menuServiceImpl;
 	
+	@Autowired
+	private WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
-	public String listview1(String agentno,ModelMap model){
-		return "../../views/admin/menu/list"; 
+	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+		String base = basePath(request);
+		return "../../views/admin/menu/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
-	public String save_or_update(String agentno,ModelMap model){
-		return "../../views/admin/menu/save_or_update"; 
-	}
-	// 返回 页面 showitem.chtml
-	@RequestMapping("/showitem.chtml") 
-	public String showitem(String agentno,ModelMap model){
-		return "../../views/admin/menu/showitem"; 
-	}	
+	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
+		String base = basePath(request);
+		return "../../views/admin/menu/save_or_update";
+	} 
 	
 	/**
 	* 有file文件时
@@ -155,6 +151,13 @@ public class MenuControl {
 		System.out.println(ActionUtil.read(request));
 		ActionUtil.returnRes(response, "success");
 	}
+	/**
+	 * File类型 证件识别
+	 * @param type
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	public static String post(String type, File file) throws Exception {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -208,6 +211,10 @@ public class MenuControl {
 		return object;
 	}
 	
+	/**
+	 * 递归 删除关联菜单
+	 * @param id
+	 */
 	@SuppressWarnings("unchecked")
 	protected void remove_(String id){
 		// 递归删除关联
@@ -225,14 +232,20 @@ public class MenuControl {
 		}
 		list = null;		
 	}
-	// 删除
+	
+	/**
+	 * 删除 
+	 * @param menu
+	 * @return
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(Menu menu) throws IOException{
 		System.out.println("删除："+menu.toString());
 		
-		remove_(menu.getId());
+//		remove_(menu.getId());
 		// 删除主要对象  
 		menuServiceImpl.delete(menu);
 		
@@ -241,30 +254,43 @@ public class MenuControl {
 		return object;
 	}
 	
-	// 修改
+	/**
+	 * 修改
+	 * @param menu
+	 * @param spread
+	 * @return
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("update.do")
 	@ResponseBody
 	public Object update(Menu menu, String spread) throws IOException{ 
 		System.out.println("修改接收参数："+menu.toString()+" spread="+spread); 
 		  
-		menu.setUpdate_time(com.blog.util.TimeUtil.getDatetime()); 
+		menu.setUpdate_time(getNowTime()); 
 		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
 		Map<String, String> eq = new HashMap<>();
 		eq.put("id", menu.getId());
 		menuServiceImpl.update(menu, eq);
+		
+		WebsiteBase base = new WebsiteBase();
+		base.setSpread(spread);
+		Map<String, Object> eq_ = new HashMap<>(1);
+		eq_.put("id", "1");
+		websiteBaseServiceImpl.update(base, eq_);
 		
 		JSONObject json = jsonToJSONObject(menu);
 		json.remove("name");
 		json.put("label", menu.getName());
 		json.put("isTab", menu.getUrl().indexOf("####") == -1 ? false : true); 
 		return json;
-	}
+	} 
 	
-	protected JSONObject jsonToJSONObject(Menu menu){
-		return JSONObject.parseObject(GsonUtil.objToJson(menu));
-	}
-	
+	/**
+	 * 递归初始化
+	 * @param id
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	protected JSONArray init_(String id){
 		JSONArray jsonArray = null;
@@ -286,7 +312,12 @@ public class MenuControl {
 		}
 		return jsonArray;
 	}
-	// 初始化
+	
+	/**
+	 * 初始化
+	 * @return
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("init.do")
 	@ResponseBody
@@ -307,35 +338,20 @@ public class MenuControl {
 			jsonArray.add(object); 
 		} 
 		
+		WebsiteBase base = new WebsiteBase();
+		base.setId("1"); 
+		base = websiteBaseServiceImpl.get(base);
+//		System.out.println(base.toString());
+		
 		JSONObject resultObj = new JSONObject();
 		resultObj.put("responseCode", "success");
 		resultObj.put("responseMsg", "初始化成功！");
 		resultObj.put("data", jsonArray);
-		String[] strs = {"1"};
-		resultObj.put("spread", strs);
-		System.out.println("初始化返回数据："+resultObj.toString());
+		resultObj.put("spread", base.getSpread());
+//		System.out.println("初始化返回数据："+resultObj.toString());
 		return resultObj;
 	}
-	protected static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
-		Map<String, String> params = new HashMap<String, String>();
-		try {
-			Map<String, String[]> requestParams = request.getParameterMap();
-			for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
-				String name = (String) iter.next();
-				String[] values = (String[]) requestParams.get(name);
-				System.out.println("name:"+name+", values:"+values);
-				String valueStr = "";
-				for (int i = 0; i < values.length; i++) {
-					valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-				}
-					params.put(name, valueStr);
-			}
-		} catch (Exception e) {
-			 e.printStackTrace();
-		}
-		return params;
-	}
-	protected String basePath(HttpServletRequest request){
-		return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
-	}
+	
+	
+	
 }

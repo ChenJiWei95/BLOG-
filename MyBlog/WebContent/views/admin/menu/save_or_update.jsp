@@ -44,9 +44,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		</div>
 		<div class="layui-form-item">
+			<label class="layui-form-label">图标</label>
+			<div class="layui-input-inline">
+			  <select name="icon">
+				<option value="">请选图标</option>
+				<option value="layui-icon-app">应用</option>
+				<option value="layui-icon-component">资源</option>
+				<option value="layui-icon-user">权限</option>
+				<option value="layui-icon-home">主页</option>
+				<option value="layui-icon-console">控制</option>
+				<option value="layui-icon-usernamee">用户名</option>
+				<option value="layui-icon-auz">授权</option>
+				<option value="layui-icon-set">设置</option>
+				<option value="layui-icon-util">工具</option>
+			  </select>
+			</div>
+		</div>
+		<div class="layui-form-item">
 			<label class="layui-form-label">优先级</label>
 			<div class="layui-input-block">
-				<input type="text" name="priority" lay-verify="title" autocomplete="off" placeholder="请输入" class="layui-input">
+				<input type="text" name="priority" lay-verify="number" autocomplete="off" placeholder="请输入" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">

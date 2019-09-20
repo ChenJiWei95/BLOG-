@@ -1,15 +1,13 @@
 package com.blog.entity;
 
-public class Menu extends Base{
+public class RoleItem extends Base{
 	private String id;
 	private String name;
-	private String priority;
-	private String url;
 	private String create_time;
 	private String update_time;
 	private String msg;
-	private String relate_id; 
-	private String icon;
+	private String state;
+	private String app_id;
 	
 	public String getId() {
 		return id;
@@ -22,18 +20,6 @@ public class Menu extends Base{
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public String getPriority() {
-		return priority;
-	}
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
 	}
 	public String getCreate_time() {
 		return create_time;
@@ -53,16 +39,16 @@ public class Menu extends Base{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public String getRelate_id() {
-		return relate_id;
+	public String getState() {
+		return state;
 	}
-	public void setRelate_id(String relate_id) {
-		this.relate_id = relate_id;
+	public void setState(String state) {
+		this.state = state;
 	}
-	public String getIcon() {
-		return icon;
+	public String getApp_id() {
+		return app_id;
 	}
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+	public void setApp_id(String app_id) {
+		this.app_id = app_id;
+	}  
 }

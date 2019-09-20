@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="cjw">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>机构管理</title>
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
+  <style>
+	*{margin: 0; padding: 0;}
+	.manage-button, .layui-card {border-radius: 5px;}
+	.manage-button {background: #555;}
+
+  </style>
+ </head>
+ <body layadmin-themealias="default">
+	<div class="layui-fluid">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12"> 
+				<div class="layui-card layui-circle">
+					<div class="layui-card-header layuiadmin-card-header-auto">
+						<button class="layui-btn layuiadmin-btn-tags" data-type="add">添加</button>
+						<button class="layui-btn layuiadmin-btn-tags" data-type="edit">编辑</button>
+						<button class="layui-btn layuiadmin-btn-tags" data-type="del">删除</button>
+					 </div>
+					<div class="layui-card-body">
+						<table class="layui-hide" id="LAY-app-set-data" lay-filter="LAY-app-set-data">
+							
+						</table> 	 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<input type="button" class="layui-btn manage-button" value="添加" lay-event="add"/>
+			<input type="button" class="layui-btn manage-button" value="编辑" lay-event="edit"/>
+			<input type="button" class="layui-btn manage-button" value="删除" lay-event="del"/>
+		</div>
+	</script>
+	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
+	<script>
+	layui.config({
+		base: '<%=basePath%>layuiadmin/' //静态资源所在路径
+	}).extend({
+		index: 'lib/index' //主入口模块
+	}).use(["table", 'index', 'console'], function() {
+		var table = layui.table
+		,$ = layui.jquery
+		,form = layui.form, addPage, editPage 
+		,admin = layui.admin
+		,f = 'iframe'
+		,a = 'set-data-form-add'
+		,b = 'set-data-form-edit'
+		,c = 'set-form-tags'
+		,d = 'source-data-form'
+		,active = {
+			add: function(){
+				layer.open({
+				  type: 2
+				  ,title: '添加标签'
+				  ,content: 'save_or_update.chtml'
+				  ,area: ['450px', '300px']
+				  ,btn: ['确定', '取消']
+				  ,yes: function(index, layero){
+					layero.find(f).contents().find("#"+a).click();
+				  }
+				}); 
+			}
+			,edit: function(){
+				var checkStatus = table.checkStatus(d)
+				,data = checkStatus.data; //得到选中的数据
+				data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
+				layer.open({
+						type: 2,
+						title: "编辑分类",
+						content: "save_or_update.chtml?id=" + data[0].id,
+						area: ["450px", "200px"],
+						btn: ["确定", "取消"],
+						yes: function(index, layero) {
+							layero.find(f).contents().find("#"+b).click(); 
+						},
+						success: function(t, e) {
+							var iframe = t.find("iframe").contents().find("#"+c);
+							iframe.find('input[name="type_name"]')[0].value = data[0].typeName
+							,iframe.find('input[name="id"]')[0].value = data[0].id 
+							,iframe.find('input[name="type_code"]')[0].value = data[0].typeCode
+							,iframe.find('input[name="type_value"]')[0].value = data[0].typeVal
+							,iframe.find('input["create_time"]')[0].value = (data[0].createTime)
+							,iframe.find('input["update_time"]')[0].value = (data[0].updateTime)
+							,iframe.find('textarea[name="msg"]')[0].value = data[0].typeMsg;
+						}
+				})
+			}
+			,del: function(t){
+				var checkStatus = table.checkStatus(d)
+				,checkData = checkStatus.data; //得到选中的数据 
+				checkData.length === 0 ? layer.msg('请选择数据') :
+				layer.confirm('确定删除吗？', function(index) {
+					//执行 Ajax 后重载
+					result[state] = '01'
+					admin.req({
+						url: 'remove.do'
+						,type: 'post'	
+						,data: {data: JSON.stringify(data.field)}
+						,dataType: "json"
+						,done: function(data){
+							layer.msg("删除成功！", {time: 2000}),
+							result[state] = '00',
+							result[result] = !0 
+						} 
+					});	
+				});
+			}
+		};
+		table.render({
+			elem: '#' + d
+			,id: d
+			,url: 'list.do'  
+			,cols: [[
+				{type: 'checkbox', fixed: 'left'}
+				,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+				,{field:'typeCode', title:'类型代码', width:120, edit: 'text', sort: true}
+				,{field:'typeName', title:'名称', width:150, edit: 'text', sort: true}
+				,{field:'createTime', title:'创建时间', width:150, edit: 'text', sort: true}
+				,{field:'updateTime', title:'修改时间', width:150, edit: 'text', sort: true}
+				,{field:'typeVal', title:'值', width:80, edit: 'text'}
+				,{field:'typeMsg', title:'备注', width:100}  
+			]]
+			,page: !0 
+			,text: "对不起，加载出现异常！"
+		});
+		$('.layui-btn.layuiadmin-btn-tags').on('click', function(){
+		  var type = $(this).data('type');
+		  active[type] ? active[type].call(this) : '';
+		});
+	});
+	 
+	</script>
+ </body>
+</html>
