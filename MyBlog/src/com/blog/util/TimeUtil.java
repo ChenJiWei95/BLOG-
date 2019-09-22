@@ -28,6 +28,10 @@ import java.util.Date;
  *
  */
 public class TimeUtil {
+	// 返回16位随机id
+	public static String randomId (){
+		return TimeUtil.getDatetime("yyyyMMddHHmmss")+String.valueOf(System.currentTimeMillis()).substring(11);
+	}
 	/**
 	 * 
 	 * 获取时间类型为yyyy-MM-dd HH:mm:ss
@@ -39,6 +43,11 @@ public class TimeUtil {
 	public static String getDatetime(){
 		Date datetime=new Date();
 		SimpleDateFormat st=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return st.format(datetime);
+	}
+	public static String getDatetime(String format){
+		Date datetime=new Date();
+		SimpleDateFormat st=new SimpleDateFormat(format);
 		return st.format(datetime);
 	}
 	/**
@@ -68,6 +77,6 @@ public class TimeUtil {
 		return st.format(datetime);
 	}
 	public static void main(String[] args){
-		System.out.println(getTime()) ;
+		System.out.println(randomId()) ;
 	}
 }

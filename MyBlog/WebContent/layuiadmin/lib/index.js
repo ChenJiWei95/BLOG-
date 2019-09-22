@@ -25,6 +25,20 @@ function(export_) {console.log("index");
 			}
 			return '';
 		}
+    	,randomId: function(){
+			var date = new Date();
+			function full(num){// 填充
+				if(num>9)
+					return num;
+				return "0"+num;
+			}
+			var _date = {
+				year : date.getFullYear(),
+				month : full(date.getMonth() + 1),
+				date : full(date.getDate())
+			};
+			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
+		}
 	},
     iframe = function(url, desc) {console.log("index iframe");//点击左栏 创建一个iframe窗口
         var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素

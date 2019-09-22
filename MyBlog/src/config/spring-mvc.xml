@@ -8,7 +8,12 @@
     http://www.springframework.org/schema/context/spring-context-4.0.xsd
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
-    <!-- 注解扫描包 -->
+    <!-- 注解扫描包 
+     ②自动扫描web包 ,将带有注解的类 纳入spring容器管理 
+	<context:component-scan base-package="com.blog.service">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan> 
+    -->
     <context:component-scan base-package="com"/>
     
     <!-- 开启注解 -->
@@ -54,6 +59,7 @@
 	 	</property>
 	</bean>
     -->
+    
 	<bean id="bundleViewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
   		<property name="basename">
    			<value>views</value>

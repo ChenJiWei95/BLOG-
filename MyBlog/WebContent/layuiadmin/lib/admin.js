@@ -27,6 +27,20 @@ function(e) {console.log("admin");
     P = { 
         v: "1.2.1 std",
         req: l.req,
+        randomId: function(){
+			var date = new Date();
+			function full(num){// 填充
+				if(num>9)
+					return num;
+				return "0"+num;
+			}
+			var _date = {
+				year : date.getFullYear(),
+				month : full(date.getMonth() + 1),
+				date : full(date.getDate())
+			};
+			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
+		},
         exit: l.exit,
         escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);
             return String(e || "").replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;")

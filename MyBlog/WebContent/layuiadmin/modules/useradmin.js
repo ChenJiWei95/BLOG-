@@ -101,34 +101,6 @@ function(e) {
                 success: function(e, t) {}
             })
         }
-    }), 
-    table.render({//角色的加载
-        elem: "#LAY-user-back-role",
-        //url: layui.setter.base + "json/useradmin/role.js",
-        url: 'http://localhost:8080/MyBlog/api/test/role.do',
-        cols: [[{
-            type: "checkbox",
-            fixed: "left"
-        },
-        {
-            field: "id",
-            width: 80,
-            title: "ID",
-            sort: !0
-        },
-        {
-            field: "rolename",
-            title: "角色名"
-        },
-        {
-            field: "limits",
-            title: "拥有权限"
-        },
-        {
-            field: "descr",
-            title: "具体描述"
-        }]],
-        text: "对不起，加载出现异常！"
     }),
     /*
 	table.on("tool(LAY-user-back-role)",

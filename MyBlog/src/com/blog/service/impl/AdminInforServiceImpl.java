@@ -12,13 +12,12 @@ import com.blog.service.AdminInforService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
-@Transactional
-public class AdminInforServiceImpl extends BasiServiceImpl<AdminInfor, Object> implements AdminInforService<AdminInfor, Object>, AssociaInterface  {
+public class AdminInforServiceImpl extends BasiServiceImpl<AdminInfor, Object> implements AdminInforService, AssociaInterface  {
 	@Resource
-	AdminInforDao adminInfor; 
+	AdminInforDao adminInforDao; 
 	
 	public BaseDao<AdminInfor> getDao(){
-		return adminInfor;
+		return adminInforDao;
 	}
 	
 	@Override

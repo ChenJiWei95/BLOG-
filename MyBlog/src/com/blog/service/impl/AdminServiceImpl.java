@@ -13,7 +13,7 @@ import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class AdminServiceImpl extends BasiServiceImpl<Admin, Object> implements AdminService<Admin, Object>, AssociaInterface  {
+public class AdminServiceImpl extends BasiServiceImpl<Admin, Object> implements AdminService, AssociaInterface  {
 	@Resource
 	AdminDao adminDao; 
 	

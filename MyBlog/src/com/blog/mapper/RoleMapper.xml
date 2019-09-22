@@ -37,7 +37,7 @@
 			<if test="likeSql!=null"> AND ${likeSql}</if>
 		</where> 
 		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
-	</delete>
+	</delete>	
 	
 	<insert id="insert" parameterType="com.blog.util.sql.EqAdapter">
 		insert into ${table}(${columnSql}) values(${values});

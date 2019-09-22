@@ -1,5 +1,7 @@
 package com.blog.service;
 
-public interface WebsiteBaseService<T, V> extends BasiService<T, V>{
+import com.blog.entity.WebsiteBase;
+
+public interface WebsiteBaseService extends BasiService<WebsiteBase, Object>{
 	
 }

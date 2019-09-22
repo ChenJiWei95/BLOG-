@@ -54,6 +54,24 @@
 	-->
 	<tx:annotation-driven transaction-manager="txManager"/>
 	
+	<!-- 配置事务特性 ，配置add、delete和update开始的方法，事务传播特性为required -->
+    <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="init*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="*" read-only="true" />
+        </tx:attributes>
+    </tx:advice> -->
+ 
+    <!-- 配置那些类的方法进行事务管理 -->
+    <!-- <aop:config>
+        <aop:pointcut id="allManagerMethod" expression="execution (* com.blog.service.*.impl.*.*(..))" />
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" /> -->
+	
 	<!-- 支持国际化 解析器 -->
 	<!-- 默认语言 -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">

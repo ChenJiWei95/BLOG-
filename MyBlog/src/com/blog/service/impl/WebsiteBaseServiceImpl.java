@@ -13,7 +13,7 @@ import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class WebsiteBaseServiceImpl extends BasiServiceImpl<WebsiteBase, Object> implements WebsiteBaseService<WebsiteBase, Object>, AssociaInterface  {
+public class WebsiteBaseServiceImpl extends BasiServiceImpl<WebsiteBase, Object> implements WebsiteBaseService, AssociaInterface  {
 	@Resource
 	WebsiteBaseDao websiteBaseDao; 
 	

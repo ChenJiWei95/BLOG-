@@ -14,7 +14,7 @@ import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class RoleServiceImpl extends BasiServiceImpl<Role, RoleItem> implements RoleService<Role, RoleItem>, AssociaInterface  {
+public class RoleServiceImpl extends BasiServiceImpl<Role, RoleItem> implements RoleService, AssociaInterface  {
 	@Resource
 	RoleDao roleDao; 
 	

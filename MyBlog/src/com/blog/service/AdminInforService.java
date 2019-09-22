@@ -1,5 +1,7 @@
 package com.blog.service;
 
-public interface AdminInforService<T, V> extends BasiService<T, V>{
+import com.blog.entity.AdminInfor;
+
+public interface AdminInforService extends BasiService<AdminInfor, Object>{
 	
 }

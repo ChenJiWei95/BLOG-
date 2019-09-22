@@ -30,7 +30,7 @@ public class MainControl extends BaseControl{
 	@Autowired
 	MenuService menuServiceImpl;
 	@Autowired
-	WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	WebsiteBaseService websiteBaseServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
@@ -38,6 +38,11 @@ public class MainControl extends BaseControl{
 		String base = basePath(request);
 		return "../../views/admin_view";
 	}	
+	@RequestMapping("/aly_control.chtml")
+	public String control(HttpServletRequest request, String agentno, ModelMap model){
+		String base = basePath(request);
+		return "redirect:https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard";
+	}
 	
 	/**
 	 * 递归初始化

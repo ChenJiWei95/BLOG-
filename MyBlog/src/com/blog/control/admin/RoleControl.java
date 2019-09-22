@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,75 +18,99 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
 import com.blog.entity.Menu;
+import com.blog.entity.Role;
+import com.blog.entity.RoleItem;
 import com.blog.entity.WebsiteBase;
 import com.blog.service.MenuService;
+import com.blog.service.RoleItemService;
+import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.util.Message;
+import com.blog.util.TimeUtil;
 
 @Controller
 // 数据字典
 @RequestMapping("/admin/role")
 public class RoleControl extends BaseControl{
 	
-	@SuppressWarnings("rawtypes")
 	@Autowired
 	private MenuService menuServiceImpl;
+	@Autowired
+	private RoleService roleServiceImpl;
+	@Autowired
+	private RoleItemService roleItemService;
 	
 	@Autowired
-	private WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	private WebsiteBaseService websiteBaseServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
-	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		String base = basePath(request);
+	public String listview1(ModelMap model){ 
 		return "../../views/admin/role/list";
 	}
 	// 返回 页面 
+	@Transactional
 	@RequestMapping("/save_or_update.chtml") 
-	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
-		String base = basePath(request);
+	public String save_or_update(String type, String id, ModelMap model){
+		// 添加 查找所有页面传入 
+		List<Menu> list = menuServiceImpl.gets("url != '####'");
+//		for(Menu item : list) System.out.println(item);
+		model.addAttribute("apps", list);
+		if("0".equals(type)){
+			model.addAttribute("type", true);
+		}else if ("1".equals(type)){
+			// 修改 查找已授权的页面传入 获取appid
+			List list_ = roleServiceImpl.gets("role_id = '"+id+"'");
+			model.addAttribute("roleItems", list_);
+			model.addAttribute("type", false );
+		}
+			
 		return "../../views/admin/role/save_or_update";
-	} 
+	}  
 	
 	// 添加
-	@SuppressWarnings("unchecked")
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(Menu menu) throws IOException{ 
-		System.out.println("添加接收参数："+menu.toString()); 
-		 
-		menu.setCreate_time(com.blog.util.TimeUtil.getDatetime());  
-		menu.setRelate_id(menu.getRelate_id() == null ? "" : menu.getRelate_id());
-		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		menuServiceImpl.insert(menu);
-		
-		JSONObject object = jsonToJSONObject(menu);
-		object.remove("name");
-		object.put("label", menu.getName());
-		object.put("isTab", menu.getUrl().indexOf("####") == -1 ? false : true); 
-		
-		return object;
+	@Transactional
+	public Object add(Role role, HttpServletRequest request) throws IOException{ 
+		try{
+			role.setCreate_time(getNowTime());
+			Map<String, String> params = getRequestParameterMap(request);
+			roleServiceImpl.insert(role);
+			params.remove("id");  params.remove("desc"); params.remove("state");  params.remove("create_time");  params.remove("update_time");  params.remove("name"); 
+			Role roleItem;
+			for(String item : params.keySet()) {
+				roleItem = new Role();
+				roleItem.setId(TimeUtil.randomId());
+				roleItem.setCreate_time(getNowTime());
+				roleItem.setApp_id(item.substring(0, item.indexOf("|")));
+				roleItem.setRole_id(role.getId());
+				roleItem.setName(item.substring(item.indexOf("|")+1));
+				roleItem.setDesc("角色授权项");
+				roleServiceImpl.insert(roleItem);
+			}
+			// JSONObject object = jsonToJSONObject();
+			return Message.success("请求成功", role);
+		}catch(Exception e){
+			return Message.error("请求失败："+e.getMessage(), role);
+		}
 	}
 	
 	/**
 	 * 递归 删除关联菜单
 	 * @param id
 	 */
-	@SuppressWarnings("unchecked")
-	protected void remove_(String id){
+	protected StringBuilder remove_(String id){
 		// 递归删除关联
 		Menu m = new Menu();
 		m.setRelate_id(id);
 		List<Menu> list = menuServiceImpl.gets(m);
-		Map<String, Object> eq = null;
+		StringBuilder sb = new StringBuilder();
 		if(list != null && list.size() > 0){
-			eq = new HashMap<>(1);
-			for(Menu item : list){
-				remove_(item.getId());
-				eq.put("id", item.getId());
-				menuServiceImpl.delete(eq);
-			}
+			for(Menu item : list)
+				sb.append(" AND id = " + item.getId() + remove_(item.getId()));
 		}
-		list = null;		
+		return sb;		
 	}
 	
 	/**
@@ -94,15 +119,15 @@ public class RoleControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("remove.do")
 	@ResponseBody
-	public Object remove(Menu menu) throws IOException{
-		System.out.println("删除："+menu.toString());
+	@Transactional
+	public Object remove(Role role) throws IOException{
+		System.out.println(role);
 		
-//		remove_(menu.getId());
 		// 删除主要对象  
-		menuServiceImpl.delete(menu);
+		
+		roleServiceImpl.delete("id = "+role.getId()+remove_(role.getId()));
 		
 		JSONObject object = new JSONObject();
 		object.put("result", "success");
@@ -116,29 +141,58 @@ public class RoleControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Menu menu, String spread) throws IOException{ 
-		System.out.println("修改接收参数："+menu.toString()+" spread="+spread); 
-		  
-		menu.setUpdate_time(getNowTime()); 
-		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		Map<String, String> eq = new HashMap<>();
-		eq.put("id", menu.getId());
-		menuServiceImpl.update(menu, eq);
-		
-		WebsiteBase base = new WebsiteBase();
-		base.setSpread(spread);
-		Map<String, Object> eq_ = new HashMap<>(1);
-		eq_.put("id", "1");
-		websiteBaseServiceImpl.update(base, eq_);
-		
-		JSONObject json = jsonToJSONObject(menu);
-		json.remove("name");
-		json.put("label", menu.getName());
-		json.put("isTab", menu.getUrl().indexOf("####") == -1 ? false : true); 
-		return json;
+	@Transactional
+	public Object update(Role role, HttpServletRequest request) throws IOException{ 
+		try{
+			/*Map<String, String> params = getRequestParameterMap(request);
+			Map<String, Object> eq = new HashMap<>(1);
+			eq.put("id", role.getId());
+			role.setUpdate_time(getNowTime());
+			roleServiceImpl.update(role, eq);
+			params.remove("id");  params.remove("desc"); params.remove("state");  params.remove("create_time");  params.remove("update_time");  params.remove("name"); 
+			Role roleItem;
+			List<Role> list_ = roleServiceImpl.gets("role_id = '"+role.getId()+"'");
+			boolean isContain;
+			for(String item : params.keySet()) {
+				isContain = false;
+				for(Role role_ : list_){
+					if(role_.getApp_id().equals(item.substring(0, item.indexOf("|")))){
+						isContain = true;
+						break;
+					}
+				} 
+				if(!isContain){
+					roleItem = new Role();
+					roleItem.setId(TimeUtil.randomId());
+					roleItem.setCreate_time(getNowTime());
+					roleItem.setApp_id(item.substring(0, item.indexOf("|")));
+					roleItem.setRole_id(role.getId());
+					roleItem.setName(item.substring(item.indexOf("|")+1));
+					roleItem.setDesc("角色授权项");
+					roleServiceImpl.insert(roleItem);
+				}
+			}
+			if(params.size() < list_.size()){
+				for(Role role_ : list_){
+					isContain = false;
+					for(String item : params.keySet()) {
+						if(role_.getApp_id().equals(item.substring(0, item.indexOf("|")))){
+							isContain = true;
+							break;
+						}
+					}
+					if(!isContain){
+						roleServiceImpl.delete("app_id = "+ role_.getApp_id());
+					}
+				} 
+				
+			}*/
+			return Message.success("请求成功", role);
+		}catch(Exception e){
+			return Message.error("请求失败："+e.getMessage(), role);
+		}
 	} 
 	
 	/**
@@ -146,7 +200,6 @@ public class RoleControl extends BaseControl{
 	 * @param id
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	protected JSONArray init_(String id){
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
@@ -173,12 +226,17 @@ public class RoleControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("list.do")
 	@ResponseBody
-	public JSONObject init() throws IOException{
-		
-		 return null;
+	@Transactional
+	public Message init() throws IOException{
+		List<Role> list = null;
+		try{
+			list = roleServiceImpl.gets("`state` IS NOT NULL ");
+		}catch(Exception e){
+			return Message.error(e.getMessage(), null);
+		}
+		return Message.success("请求成功", listToJSONArray(list));
 	}
 	
 	

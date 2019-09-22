@@ -231,12 +231,12 @@
 
 #角色表	：表    -- ID name create_time update_time desc 
 	CREATE TABLE role(  
-		`id` VARCHAR(16) NOT NULL PRIMARY KEY COMMENT 'ID',  
+		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
 		`name` VARCHAR(30) NULL COMMENT '角色名',  
 		`create_time` DATETIME NULL COMMENT '',  
 		`update_time` DATETIME NULL COMMENT '',  
 		`desc` VARCHAR(100) NULL COMMENT ''
-	)ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='角色表'; 
+	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='角色表'; 
 #权限项	：表	-- ID 名称 创建时间 改动时间 关联页面项id 关联角色id 启用状态 备注 
  	CREATE TABLE role_item(  
 		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
@@ -268,20 +268,19 @@
 		`role_id` VARCHAR(16) NULL COMMENT '角色ID' 
 	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='管理员角色关联表';
 #管理员信息	：表	-- ID 名称 昵称 创建时间 改动时间 phone email 关联角色id 管理员账户关联id 备注
-	CREATE TABLE admin_infor(  
-		`id` VARCHAR(16) NOT NULL COMMENT 'ID',  
-		`name` VARCHAR(30) NULL COMMENT '名',  
-		`name_` VARCHAR(30) NULL COMMENT '昵称，回复评论时使用',  
-		`create_time` VARCHAR(30) NULL COMMENT '',  
-		`update_time` VARCHAR(30) NULL COMMENT '',  
-		`phone` VARCHAR(20) NULL COMMENT '',  
-		`email` VARCHAR(30) NULL COMMENT '',   
-		`create_time` VARCHAR(30) NULL COMMENT '',  
-		`update_time` VARCHAR(30) NULL COMMENT '', 
-		`role_id` VARCHAR(16) NOT NULL COMMENT '关联角色id',
-		`admin_id` VARCHAR(16) NOT NULL COMMENT '管理员id',
-		`desc` VARCHAR(100) NULL COMMENT ''
-	)ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='管理员信息表'; 
+	CREATE TABLE `C_BLOG`.`Untitled`  (
+	  `id` varchar(16) NOT NULL COMMENT 'ID',
+	  `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名',
+	  `name_` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '昵称，回复评论时使用',
+	  `create_time` varchar(30) NULL DEFAULT NULL,
+	  `update_time` varchar(30) NULL DEFAULT NULL,
+	  `phone` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  `email` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  `admin_id` varchar(16) NULL DEFAULT NULL,
+	  `role_id` varchar(16) NULL DEFAULT NULL COMMENT '关联角色id',
+	  `desc` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  PRIMARY KEY (`id`) USING BTREE
+	) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员信息表' ROW_FORMAT = Compact; 
 #管理员账户表&信息：-- ID admin_account_id admin_infor_id
 	CREATE TABLE aaccount_ainfor_relation(  
 		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',  

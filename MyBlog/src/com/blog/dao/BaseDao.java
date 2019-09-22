@@ -22,6 +22,7 @@ import com.blog.util.sql.EqAdapter;
  */
 public interface BaseDao<T> { 
 	
+	
 	/**
 	 * 删除
 	 * @param eq
@@ -36,6 +37,14 @@ public interface BaseDao<T> {
 	 * @throws Exception
 	 */
 	List<T> get(EqAdapter eq) throws Exception;
+	
+	/**
+	 * 查询
+	 * @param sql
+	 * @return
+	 * @throws Exception
+	 */
+	List<T> find(EqAdapter eq) throws Exception;
 	
 	/**
 	 * 修改

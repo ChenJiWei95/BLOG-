@@ -6,7 +6,16 @@ public class Role extends Base{
 	private String create_time;
 	private String update_time;
 	private String desc;
+	private String state;
+	private String app_id;
+	private String role_id;
 	
+	public String getRole_id() {
+		return role_id;
+	}
+	public void setRole_id(String role_id) {
+		this.role_id = role_id;
+	}
 	public String getId() {
 		return id;
 	}
@@ -38,5 +47,17 @@ public class Role extends Base{
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getApp_id() {
+		return app_id;
+	}
+	public void setApp_id(String app_id) {
+		this.app_id = app_id;
+	} 
 	 
 }

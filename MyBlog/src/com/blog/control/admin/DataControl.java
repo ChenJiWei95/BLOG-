@@ -31,7 +31,7 @@ public class DataControl extends BaseControl{
 	private MenuService menuServiceImpl;
 	
 	@Autowired
-	private WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	private WebsiteBaseService websiteBaseServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 

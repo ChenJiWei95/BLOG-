@@ -32,6 +32,19 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	@Override
+	public T get(String eq) {
+		EqAdapter adapter = new SelectAdapter()
+				.setParame(this)
+				.setLimit(0, 1)
+				.setEqSql(eq);
+		try {
+			return (T) getDao().get(adapter).get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	public List<T> gets(T t) {
@@ -255,5 +268,126 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<T> gets(String eq) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq);
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void delete(String eq) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq);
+		try {
+			getDao().delete(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void update(T t, String eq) {
+		EqAdapter sql = new UpdateAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setTarget(t)
+				;
+		try {
+			getDao().update(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public List<T> find(String sql) {
+		EqAdapter adapter = new SelectAdapter()
+				.setParame(this)
+				.setSql(sql);
+		try {
+			return getDao().find(adapter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public T getForColum(String eq, Object column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setLimit(0, 1)
+				.setColumns(column)
+				.setEqSql(eq);
+		try {
+			return getDao().get(sql).get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> gets(String eq, Object column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setColumns(column);
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> gets(T t, Object... column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setColumns(column);
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public T get(T t, Object column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setLimit(0, 1)
+				.setColumns(column)
+				.setTarget(t);
+		try {
+			return getDao().get(sql).get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+ 
+	@Override
+	public T getForColumn(Object column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setLimit(0, 1)
+				.setColumns(column);
+		try {
+			return getDao().get(sql).get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

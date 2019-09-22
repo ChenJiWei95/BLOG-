@@ -7,6 +7,8 @@ import com.blog.dao.BaseDao;
 import com.blog.entity.Menu;
 
 public interface BasiService<T, V> {
+	List<T> find(String sql);
+	
 	BaseDao<T> getDao();
 	/**
 	 * 查询单个
@@ -14,12 +16,36 @@ public interface BasiService<T, V> {
 	 * @return
 	 */
 	T get(T t);
+	T get(T t, Object column);
+	T get(String eq); 
+	T getForColum(String eq, Object column); 
+	T getForColumn(Object column); 
 	/**
 	 * 查询集合
 	 * @param t 条件实体
 	 * @return
 	 */
 	List<T> gets(T t);
+	/**
+	 * 查询集合
+	 * @param t 条件实体
+	 * @return
+	 */
+	List<T> gets(T t, Object... column);
+	/**
+	 * 查询集合
+	 * 不用写where前缀 
+	 * @param eq 条件语句
+	 * @return
+	 */
+	List<T> gets(String eq);
+	/**
+	 * 查询集合
+	 * 不用写where前缀 
+	 * @param eq 条件语句
+	 * @return
+	 */
+	List<T> gets(String eq, Object column);
 	/**
 	 * 排序
 	 * @param t 条件实体
@@ -53,6 +79,11 @@ public interface BasiService<T, V> {
 	 * 删除 
 	 * @param t 条件实体
 	 */
+	void delete(String eq);
+	/**
+	 * 删除 
+	 * @param t 条件实体
+	 */
 	void delete(Map<String, Object> eq); 
 	/**
 	 * 修改
@@ -60,6 +91,12 @@ public interface BasiService<T, V> {
 	 * @param eq 条件
 	 */
 	void update(T t, Map<String, Object> eq);
+	/**
+	 * 修改
+	 * @param t 修改内容实体
+	 * @param eq 条件
+	 */
+	void update(T t, String eq);
 	/**
 	 * 插入
 	 * @param t

@@ -1,5 +1,8 @@
 package com.blog.service;
 
-public interface RoleService<T, V> extends BasiService<T, V>{
+import com.blog.entity.Role;
+import com.blog.entity.RoleItem;
+
+public interface RoleService extends BasiService<Role, RoleItem>{
 	
 }

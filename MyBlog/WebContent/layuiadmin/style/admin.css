@@ -5,6 +5,9 @@ html #layuicss-layuiAdmin {
 	width: 1989px
 }
 
+.c-button, .layui-card {border-radius: 5px;}
+.c-button {background: #555;}
+
 ::-webkit-input-placeholder {
 	color: #ccc
 }

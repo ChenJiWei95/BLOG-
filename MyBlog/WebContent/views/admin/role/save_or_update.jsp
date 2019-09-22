@@ -1,9 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+    
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -17,24 +21,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body style="padding-right=20px">
   <div class="layui-form" lay-filter="layuiadmin-form-role" id="layuiadmin-form-role" style="padding: 20px 30px 0 0;">
-    <div class="layui-form-item">
-      <label class="layui-form-label">ID</label>
-      <div class="layui-input-inline"> 
-        <input type="text" name="id" disabled placeholder="000000" autocomplete="off" class="layui-input layui-disabled">
-      </div>
-    </div>
+    <div class="layui-hide">
+		<label class="layui-form-label">ID</label>
+		<div class="layui-input-block">
+			<input type="text" name="id" lay-verify="id" autocomplete="off" class="layui-input">
+		</div>
+	</div> 
 	<div class="layui-form-item">
       <label class="layui-form-label">名称</label>
       <div class="layui-input-inline">
-        <input type="text" name="type_name" lay-verify="required" autocomplete="off" class="layui-input">
+        <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
       </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">级别</label>
-      <div class="layui-input-inline">
-        <input type="text" name="级别" lay-verify="number" placeholder="级别数越高权利越大" autocomplete="off" class="layui-input">
-      </div>
-    </div>
+    </div> 
     <div class="layui-form-item">
       <label class="layui-form-label">创建时间</label>
       <div class="layui-input-inline">
@@ -47,22 +45,46 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <input type="text" name="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
       </div>
     </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">启用状态</label>
+      <div class="layui-input-inline">
+        <select name="state">
+        	<option value="01">禁用</option>
+			<option value="00">启用</option>
+        </select>
+      </div>
+    </div>
 	<div class="layui-form-item">
       <label class="layui-form-label">权限范围</label>
-      <div class="layui-input-block">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="发货">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="采购">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="系统设置">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="发邮件">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="发短信">
-        <input type="checkbox" name="limits[]" lay-skin="primary" title="审核">
-        <input type="checkbox" checked name="limits[]" lay-skin="primary" title="看效果">
+      <div class="layui-input-block"> 
+        <c:choose>
+        	<c:when test="${type}">
+        		<!-- 循环输出所有未授权的模块 -->
+	        	<c:forEach begin="0" items="${apps}" step="1" var="Menu" varStatus="varsta">
+				   	 <input type="checkbox" name="${Menu.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}">
+				</c:forEach>
+        	</c:when>
+        	<c:otherwise>
+        		<!-- 循环判断已授权和未授权的模块 -->
+        		<c:forEach begin="0" items="${apps}" step="1" var="Menu" varStatus="varsta"> 
+        			<c:set var="iscontain" value="false" />
+        			<c:forEach begin="0" items="${roleItems}" step="1" var="Role" varStatus="varsta">
+        				<c:if test="${Menu.id eq Role.app_id}">
+        					<c:set var="iscontain" value="true"/>
+        				</c:if> 
+        			</c:forEach>  
+        			<c:if test="${iscontain}"><input type="checkbox" checked  name="${Menu.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
+        			<c:if test="${!iscontain}"><input type="checkbox" name="${Menu.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
+				</c:forEach>
+				
+        	</c:otherwise>
+        </c:choose>  
       </div>
     </div>
 	<div class="layui-form-item">
       <label class="layui-form-label">描述信息</label>
       <div class="layui-input-block">
-        <textarea class="layui-textarea" name="msg" placeholder="请输入描述信息"></textarea>
+        <textarea class="layui-textarea" name="desc" placeholder="请输入描述信息"></textarea>
       </div>
     </div>
     <div class="layui-form-item layui-hide">
@@ -74,7 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
   layui.config({
-    base: '<%=basePath%>layuiadmin/' //静态资源所在路径
+    base: '<%=basePath%>layuiadmin/' //静态资源所在路径	
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'form', 'admin'], function(){
@@ -83,37 +105,84 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,index = layui.index 
 	,admin = layui.admin 
 	,a = "LAY-user-role-add" 
-	,b = "LAY-user-role-update";
+	,b = "LAY-user-role-update"
+	,l = "LAY-user-back-role";
 	form.on("submit("+a+")", function(data){
-		var index = parent.layer.getFrameIndex(window.name); 
+		var index = parent.layer.getFrameIndex(window.name);
+		var c = parent.layer.load(2);
 		//执行 Ajax 后重载
-		admin.req({
+		$.ajax({
 			url: 'add.do'
-			,type: 'post'	
+			,type: 'post'
+			,data: data.field
 			,dataType: "json"
-			,done: function(data){
-				layer.msg("添加成功！", {time: 2000}),
-				parent.table.reload(l);
-			} 
+			,success: function(data){
+				console.log(data);
+				Message(data, {
+					success: function(data, msg){
+						parent.layer.close(c),
+						parent.layer.msg("添加成功！"),
+						parent.layer.close(index);
+						parent.table.reload("#"+l);
+					}
+					,error: function(data, msg){
+						parent.layer.close(c),
+						parent.layer.msg("添加失败！" + data.content),
+						parent.layer.close(index)
+					}	
+				}) 
+			},error: function(data){
+				parent.layer.close(c),
+				parent.layer.msg("服务器异常，添加失败！"),
+				parent.layer.close(index);
+			}
 		});			  
-		parent.layer.close(index);
+		
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
-		var index = parent.layer.getFrameIndex(window.name); 
-		//执行 Ajax 后重载
-		admin.req({
-			url: 'update.do'
-			,type: 'post'	
-			,dataType: "json"
-			,done: function(data){
-				layer.msg("添加成功！", {time: 2000}),
-				parent.table.reload(l);
+		cajax({
+			method: 'update'
+			,data: data.field
+			,success: function(data, msg){
+				parent.layer.close(c),
+				parent.layer.msg("修改成功！"),
+				parent.layer.close(index)
+			}
+			,error: function(data, msg){
+				parent.layer.close(c),
+				parent.layer.msg("修改失败！" + msg),
+				parent.layer.close(index)
 			} 
-		});			  
-		parent.layer.close(index);
+		});	  
 		return false;
-	})
+	});
+	function Message(data, fn){
+		data.code == '0' && 'function' == typeof fn.success && fn.success(data.data, data.msg);
+		data.code == '2' && 'function' == typeof fn.error && fn.error(data.data, data.msg);
+	} 
+	function cajax(object){
+		var index = parent.layer.getFrameIndex(window.name); 
+		object.method != 'update' && object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+		var c = parent.layer.load(2)
+		,fn = {success: object.success, error: object.error};
+		//执行 Ajax 后重载
+		$.ajax({
+			url: object.method + '.do'
+			,type: 'post'	
+			,data: data
+			,dataType: "json"
+			,success: function(data){
+				Message(data, fn) 
+			} 
+			,error: function(data){
+				parent.layer.close(c),
+				parent.layer.msg("服务器异常，操作失败！"+data.msg),
+				'function' == typeof object.serverError && object.serverError(data, data.msg);
+				parent.layer.close(index)
+			}
+		});	
+	}
   })
   </script>
 </body>

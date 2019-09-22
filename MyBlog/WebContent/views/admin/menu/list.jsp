@@ -60,6 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 		var layer  = layui.layer 
 		,$ = layui.jquery
+		,index = layui.index
 		,form = layui.form
 		,admin = layui.admin
 		,f = 'iframe'
@@ -82,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
 						// 初始化
 						var iframe = t.find("iframe").contents().find("#"+c);
-						iframe.find('input[name="id"]').val(randomId())
+						iframe.find('input[name="id"]').val(index.util.randomId())
 						,iframe.find('input[name="url"]').val("####")
 						,iframe.find('input[name="tag_check"]').attr("disabled", "").addClass("layui-disabled")
 						,iframe.find('input[name="url"]').attr("disabled", "").addClass("layui-disabled")
@@ -230,20 +231,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			);
 		}
 		initAjax();
-		function randomId(){
-			var date = new Date();
-			function full(num){// 填充
-				if(num>9)
-					return num;
-				return "0"+num;
-			}
-			var _date = {
-				year : date.getFullYear(),
-				month : full(date.getMonth() + 1),
-				date : full(date.getDate())
-			};
-			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
-		}
+		
 		$('.layui-btn.manage-button').on('click', function(){
 			var type = $(this).data('type');
 			that_active[type] ? that_active[type].call(this) : '';

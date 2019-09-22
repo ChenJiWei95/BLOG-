@@ -13,7 +13,7 @@ import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class RoleItemServiceImpl extends BasiServiceImpl<RoleItem, Object> implements RoleItemService<RoleItem, Object>, AssociaInterface  {
+public class RoleItemServiceImpl extends BasiServiceImpl<RoleItem, Object> implements RoleItemService, AssociaInterface  {
 	@Resource
 	RoleItemDao roleItemDao; 
 	

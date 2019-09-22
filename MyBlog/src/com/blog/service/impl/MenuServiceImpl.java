@@ -14,7 +14,7 @@ import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements MenuService<Menu, Clazz>, AssociaInterface  {
+public class MenuServiceImpl extends BasiServiceImpl<Menu, Clazz> implements MenuService, AssociaInterface  {
 	@Resource
 	MenuDao menuDao; 
 	

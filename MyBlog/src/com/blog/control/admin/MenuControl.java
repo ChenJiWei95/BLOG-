@@ -3,7 +3,6 @@ package com.blog.control.admin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,30 +40,27 @@ import com.blog.entity.WebsiteBase;
 import com.blog.service.MenuService;
 import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
-import com.blog.util.GsonUtil;
 
+@SuppressWarnings("deprecation")
 @Controller
 //admin/menu/editMovieInfo.do
 @RequestMapping("/admin/menu")
 public class MenuControl extends BaseControl{
 	
-	@SuppressWarnings("rawtypes")
 	@Autowired
 	private MenuService menuServiceImpl;
 	
 	@Autowired
-	private WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	private WebsiteBaseService websiteBaseServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		String base = basePath(request);
 		return "../../views/admin/menu/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
-		String base = basePath(request);
 		return "../../views/admin/menu/save_or_update";
 	} 
 	
@@ -86,6 +82,7 @@ public class MenuControl extends BaseControl{
         return result1.toString(); 
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static String editMovieInfo(MultipartFile file) throws ClientProtocolException, IOException { 
 		CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -192,7 +189,6 @@ public class MenuControl extends BaseControl{
         return result;
     }
 	// 添加
-	@SuppressWarnings("unchecked")
 	@RequestMapping("add.do")
 	@ResponseBody
 	public Object add(Menu menu) throws IOException{ 
@@ -215,22 +211,17 @@ public class MenuControl extends BaseControl{
 	 * 递归 删除关联菜单
 	 * @param id
 	 */
-	@SuppressWarnings("unchecked")
-	protected void remove_(String id){
+	protected StringBuilder remove_(String id){
 		// 递归删除关联
 		Menu m = new Menu();
 		m.setRelate_id(id);
 		List<Menu> list = menuServiceImpl.gets(m);
-		Map<String, Object> eq = null;
+		StringBuilder sb = new StringBuilder();
 		if(list != null && list.size() > 0){
-			eq = new HashMap<>(1);
-			for(Menu item : list){
-				remove_(item.getId());
-				eq.put("id", item.getId());
-				menuServiceImpl.delete(eq);
-			}
+			for(Menu item : list)
+				sb.append(" AND id = " + item.getId() + remove_(item.getId()));
 		}
-		list = null;		
+		return sb;		
 	}
 	
 	/**
@@ -239,15 +230,13 @@ public class MenuControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(Menu menu) throws IOException{
 		System.out.println("删除："+menu.toString());
 		
-//		remove_(menu.getId());
 		// 删除主要对象  
-		menuServiceImpl.delete(menu);
+		menuServiceImpl.delete("id = "+menu.getId() + remove_(menu.getId()));
 		
 		JSONObject object = new JSONObject();
 		object.put("result", "success");
@@ -261,7 +250,6 @@ public class MenuControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("update.do")
 	@ResponseBody
 	public Object update(Menu menu, String spread) throws IOException{ 
@@ -269,7 +257,7 @@ public class MenuControl extends BaseControl{
 		  
 		menu.setUpdate_time(getNowTime()); 
 		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		Map<String, String> eq = new HashMap<>();
+		Map<String, Object> eq = new HashMap<>();
 		eq.put("id", menu.getId());
 		menuServiceImpl.update(menu, eq);
 		
@@ -291,7 +279,6 @@ public class MenuControl extends BaseControl{
 	 * @param id
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	protected JSONArray init_(String id){
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
@@ -318,7 +305,6 @@ public class MenuControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("init.do")
 	@ResponseBody
 	public JSONObject init() throws IOException{

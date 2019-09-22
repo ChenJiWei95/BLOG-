@@ -27,9 +27,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </div>
           <div class="layui-inline">
             <select name="rolename" lay-filter="LAY-user-adminrole-type">
-              <option value="-1">全部角色</option>
-              <option value="0">管理员</option>
-              <option value="1">超级管理员</option>
+              <option value="####">全部角色</option> 
+              <c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
+				<option value="${Role.id}">${Role.name}</option>
+			  </c:forEach>
 			  <!--后面的自动添加进来-->
             </select>
           </div>
@@ -37,21 +38,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn layuiadmin-btn-role" data-type="add">添加</button>
-		  <button class="layui-btn layuiadmin-btn-role" data-type="edit">编辑</button>
-		  <button class="layui-btn layuiadmin-btn-role" data-type="batchdel">删除</button>
+          <button class="layui-btn layuiadmin-btn-role c-button" data-type="add">添加</button>
+		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="edit">编辑</button>
+		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="del">删除</button>
         </div>
-        <table id="LAY-user-back-role" lay-filter="LAY-user-back-role"></table>  
+        <table id="LAY-user-back-role" lay-filter="LAY-user-back-role" ></table>  
       </div>
     </div>
   </div>
- <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
+ <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
+  <script type="text/html" id="stateTPL">
+  {{#  if(d.state === '01'){ }}
+    <span style="color: red;">{{ '禁用' }}</span>
+  {{#  } else { }}
+    <span style="color: #5FB878;">{{ '启用' }}</span>
+  {{#  } }}
+  </script> 
   <script>
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "LAY-user-role-add"
@@ -59,12 +67,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,t = 'layuiadmin-form-role'
 	,b = 'LAY-user-role-update'
 	,l = 'LAY-user-back-role'
-    ,table = layui.table;
+	,m = 'LAY-user-adminrole-type'
+    ,table = layui.table
+    ,admin = layui.admin;
+   
     
     //搜索角色
-    form.on('select(LAY-user-adminrole-type)', function(data){
+    form.on('select('+m+')', function(data){
 		//执行重载
-		table.reload('LAY-user-back-role', {
+		table.reload(l, {
 			where: {
 				role: data.value
 			}
@@ -73,19 +84,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
     //事件
     var active = {
-		batchdel: function(){
-			var checkStatus = table.checkStatus('LAY-user-back-role')
+		del: function(){
+			var checkStatus = table.checkStatus(l)
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中一项") : checkData.length > 1 ? layer.msg("只能选中一项") :
 			layer.confirm('确定删除吗？', function(index) {
-				admin.req({
+				$.ajax({
 					url: 'remove.do'
 					,type: 'post'
-					,data: {data: JSON.stringify(checkData.field)}
+					,data: checkData[0].id
 					,dataType: "json"
-					,done: function(data){
-						layer.msg("添加成功！", {time: 2000}),
+					,success: function(data){
+						layer.msg("添加成功！"),
 						parent.table.reload(l);
+					}
+					,error: function(data){
+						layer.msg("服务器异常！添加失败！"+data)
 					}
 				});
 				table.reload(l);
@@ -95,12 +109,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		add: function(){
 			layer.open({
 				type: 2
-				,title: '添加新角色'
-				,content: 'save_or_update.chtml'
+				,title: '添加角色'
+				,content: 'save_or_update.chtml?type=0'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
 					layero.find(f).contents().find("#"+a).click();
+				}
+				,success: function(e, index) {
+					var iframe = e.find(f).contents().find("#"+t);
+					iframe.find('input[name="id"]').val(admin.randomId())
 				}
 			});
 		}
@@ -111,43 +129,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
                 type: 2,
                 title: "编辑角色",
-                content: "save_or_update.chtml",
+                content: "save_or_update.chtml?type=1&id="+data[0].id,
                 area: ["420px", "480px"],
                 btn: ["确定", "取消"],
                 yes: function(index, layero) {
                     layero.find(f).contents().find("#"+b).click();
                 },
                 success: function(e, index) {
+                	console.log(data);
 					//这是渲染完之后调用 可以用于初始化
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
-					,form.find('textarea[name="name"]').val(data[0].name)
-					,form.find('.create_time').text(data[0].name)
-					,form.find('.update_time').text(data[0].desc)
-					,form.find('textarea[name="desc"]').val(data[0].desc)
-					,form.find('textarea[name="limitData"]').val(data[0].priority)
+					,form.find('input[name="name"]').val(data[0].name)
+					,form.find('input[name="create_time"]').val(data[0].create_time)
+					,form.find('input[name="update_time"]').val(data[0].update_time)
+					,form.find('select[name="state"]').val(data[0].state)
+					,form.find('textarea[name="desc"]').val(data[0].desc) 
 					//补充选项框
 				}
             })
+            console.log(data);
 		}
-    }  
-    table.render({
-		elem: '#' + d
-		,id: d
-		,url: 'list.do'  
-		,cols: [[
-			{type: 'checkbox', fixed: 'left'}
-			,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
-			,{field:'typeCode', title:'类型代码', width:120, edit: 'text', sort: true}
-			,{field:'typeName', title:'名称', width:150, edit: 'text', sort: true}
-			,{field:'createTime', title:'创建时间', width:150, edit: 'text', sort: true}
-			,{field:'updateTime', title:'修改时间', width:150, edit: 'text', sort: true}
-			,{field:'typeVal', title:'值', width:80, edit: 'text'}
-			,{field:'typeMsg', title:'备注', width:100}  
-		]]
-		,page: !0 
-		,text: "对不起，加载出现异常！"
-	});
+    };  
+    table.render({//角色的加载
+        elem: "#"+l,
+        url: 'list.do',
+        cols: [[
+        	{type:"checkbox", fixed:"left"}
+        	,{field:"id", title:"ID", sort:!0, width:180}
+        	,{field:"name", title:"角色名", width:150}
+        	,{field:'create_time', title:'创建时间', width:170, sort: true}
+			,{field:'update_time', title:'修改时间', width:170, sort: true}
+        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
+        	,{field:"desc", title:"具体描述"}
+        ]],
+        text: "对不起，加载出现异常！"
+    }); 
     $('.layui-btn.layuiadmin-btn-role').on('click', function(){
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';

@@ -1,5 +1,7 @@
 package com.blog.service;
 
-public interface AdminService<T, V> extends BasiService<T, V>{
+import com.blog.entity.Admin;
+
+public interface AdminService extends BasiService<Admin, Object>{
 	
 }

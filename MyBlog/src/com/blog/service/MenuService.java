@@ -1,6 +1,7 @@
 package com.blog.service;
 
-import com.blog.entity.User;
+import com.blog.entity.Clazz;
+import com.blog.entity.Menu;
 
-public interface MenuService<T, V> extends BasiService<T, V>{
+public interface MenuService extends BasiService<Menu, Clazz>{
 }

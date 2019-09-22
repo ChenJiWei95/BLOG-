@@ -16,61 +16,80 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
+import com.blog.entity.Admin;
+import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
+import com.blog.entity.Role;
 import com.blog.entity.WebsiteBase;
+import com.blog.service.AdminInforService;
+import com.blog.service.AdminService;
 import com.blog.service.MenuService;
+import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.util.Message;
+import com.blog.util.TimeUtil;
 
 @Controller
 // 数据字典
 @RequestMapping("/admin/administrators")
 public class AdministratorsControl extends BaseControl{
 	
-	@SuppressWarnings("rawtypes")
 	@Autowired
 	private MenuService menuServiceImpl;
 	
 	@Autowired
-	private WebsiteBaseService<WebsiteBase, Object> websiteBaseServiceImpl;
+	private RoleService roleServiceImpl;
+	
+	@Autowired
+	private AdminService adminServiceImpl;
+	
+	@Autowired
+	private AdminInforService adminInforServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		String base = basePath(request);
+		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "../../views/admin/administrators/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
-		String base = basePath(request);
+		// 角色集供选择
+		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "../../views/admin/administrators/save_or_update";
 	} 
 	
 	// 添加
-	@SuppressWarnings("unchecked")
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(Menu menu) throws IOException{ 
-		System.out.println("添加接收参数："+menu.toString()); 
-		 
-		menu.setCreate_time(com.blog.util.TimeUtil.getDatetime());  
-		menu.setRelate_id(menu.getRelate_id() == null ? "" : menu.getRelate_id());
-		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		menuServiceImpl.insert(menu);
+	public Object add(Admin admin, AdminInfor adminI) throws IOException{ 
+		System.out.println("添加接收参数："+admin + adminI); 
 		
-		JSONObject object = jsonToJSONObject(menu);
-		object.remove("name");
-		object.put("label", menu.getName());
-		object.put("isTab", menu.getUrl().indexOf("####") == -1 ? false : true); 
-		
-		return object;
+		// 保存admin账号 密码默认    保存admin信息
+		try{
+			admin.setId(TimeUtil.randomId());
+			admin.setLogin_count(0);
+			admin.setPassword("12345678");
+			adminServiceImpl.insert(admin);
+			
+			adminI.setCreate_time(getNowTime());
+			adminI.setId(TimeUtil.randomId());
+			adminI.setName_(adminI.getName());
+			adminI.setAdmin_id(admin.getId());
+			adminI.setRole_id("-1".equals(adminI.getRole_id()) ? null : adminI.getRole_id());
+			adminInforServiceImpl.insert(adminI);
+			 
+			return com.blog.util.Message.success("请求成功", null);
+		}catch(Exception e){
+			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
+		}
 	}
 	
 	/**
 	 * 递归 删除关联菜单
 	 * @param id
 	 */
-	@SuppressWarnings("unchecked")
 	protected void remove_(String id){
 		// 递归删除关联
 		Menu m = new Menu();
@@ -94,7 +113,6 @@ public class AdministratorsControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(Menu menu) throws IOException{
@@ -116,7 +134,6 @@ public class AdministratorsControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("update.do")
 	@ResponseBody
 	public Object update(Menu menu, String spread) throws IOException{ 
@@ -124,7 +141,7 @@ public class AdministratorsControl extends BaseControl{
 		  
 		menu.setUpdate_time(getNowTime()); 
 		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		Map<String, String> eq = new HashMap<>();
+		Map<String, Object> eq = new HashMap<>();
 		eq.put("id", menu.getId());
 		menuServiceImpl.update(menu, eq);
 		
@@ -132,7 +149,7 @@ public class AdministratorsControl extends BaseControl{
 		base.setSpread(spread);
 		Map<String, Object> eq_ = new HashMap<>(1);
 		eq_.put("id", "1");
-		websiteBaseServiceImpl.update(base, eq_);
+//		websiteBaseServiceImpl.update(base, eq_);
 		
 		JSONObject json = jsonToJSONObject(menu);
 		json.remove("name");
@@ -142,43 +159,27 @@ public class AdministratorsControl extends BaseControl{
 	} 
 	
 	/**
-	 * 递归初始化
-	 * @param id
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	protected JSONArray init_(String id){
-		JSONArray jsonArray = null;
-		Menu menu = new Menu();
-		menu.setRelate_id(id); 
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(menu, "ASC", "priority");
-		if(ms != null && ms.size() > 0){
-			jsonArray = new JSONArray();
-			for(Menu item : ms) { 
-				JSONObject object = jsonToJSONObject(item); 
-				object.remove("name"); 
-				object.put("label", item.getName()); 
-				object.put("isTab", item.getUrl().indexOf("####") == -1 ? false : true); 
-				JSONArray jsonArray_;
-				if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId())) != null) 
-					object.put("children", jsonArray_);
-				jsonArray.add(object); 
-			}
-		}
-		return jsonArray;
-	}
-	
-	/**
 	 * 初始化
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("list.do")
 	@ResponseBody
-	public JSONObject init() throws IOException{
-		
-		 return null;
+	public Object init() throws IOException{
+		JSONArray jsonArray = new JSONArray();
+		List<Admin> list = adminServiceImpl.gets(null, "id", "username", "state");
+		for(Admin item : list){
+			AdminInfor aInfor = adminInforServiceImpl.get("admin_id = "+item.getId());
+			Role role = roleServiceImpl.getForColum("id = "+aInfor.getRole_id(), "name");
+			JSONObject jsonObject = jsonToJSONObject(aInfor); 
+			jsonObject.put("id", item.getId());
+			jsonObject.put("username", item.getUsername());
+			jsonObject.put("state", item.getState());
+			jsonObject.put("role_id", aInfor.getRole_id()+"|"+role.getName());
+			jsonArray.add(jsonObject);
+		}
+		System.out.println("初始化数据："+jsonArray);
+		return Message.success("请求成功", jsonArray);
 	}
 	
 	

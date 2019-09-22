@@ -38,6 +38,7 @@ public abstract class EqAdapter{
 	protected String id						; // 主键 
 	private String table					; // 表名 
 	private String values;
+	private String eqSql;
 	
 	private String columns					; // 结果		集字符 
 	private Object target;
@@ -57,6 +58,8 @@ public abstract class EqAdapter{
 	
 	// 条件语句
 	public String getWhereSql() throws Exception { 
+		if(getEqSql() != null || "".equals(getEqSql()))
+			return AND_FIX + " " + getEqSql();
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);
 		if(eqAndPutMap == null || eqAndPutMap.size() < 0)
@@ -155,6 +158,15 @@ public abstract class EqAdapter{
 		this.columns = columns;
 	}
 
+	public String getEqSql() {
+		return eqSql;
+	}
+
+	public EqAdapter setEqSql(String eqSql) {
+		this.eqSql = eqSql;
+		return this;
+	}
+
 	public String getId() {
 		return cloumnUtil(id);
 	}
@@ -202,7 +214,7 @@ public abstract class EqAdapter{
 	 * @see
 	 * @since 1.0
 	 */
-	public void setColumns(Object... columns) {
+	public EqAdapter setColumns(Object... columns) {
 		StringBuilder temp = new StringBuilder("");
 		for(Object item : columns){
 			if(item == null || "".equals(item))
@@ -210,6 +222,7 @@ public abstract class EqAdapter{
 			temp.append("`"+item+"`, ");
 		}
 		this.columns = temp.length() > 0 ? temp.deleteCharAt(temp.length()-1).deleteCharAt(temp.length()-1).toString() : temp.toString(); 
+		return this;
 	}
 	
 	
