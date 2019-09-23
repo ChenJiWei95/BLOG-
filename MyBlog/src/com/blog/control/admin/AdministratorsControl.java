@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -26,8 +28,10 @@ import com.blog.service.AdminService;
 import com.blog.service.MenuService;
 import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 @Controller
 // 数据字典
@@ -115,16 +119,27 @@ public class AdministratorsControl extends BaseControl{
 	 */
 	@RequestMapping("remove.do")
 	@ResponseBody
-	public Object remove(Menu menu) throws IOException{
-		System.out.println("删除："+menu.toString());
+	public Object remove(HttpServletRequest request) throws IOException{
 		
-//		remove_(menu.getId());
-		// 删除主要对象  
-		menuServiceImpl.delete(menu);
+		// 判断token是否正确  删除admin 和 adminInfor
+		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+		StringBuffer sb = new StringBuffer();
+		StringBuffer sb1 = new StringBuffer();
 		
-		JSONObject object = new JSONObject();
-		object.put("result", "success");
-		return object;
+		for(int i = 0; i < json.size(); i++) {
+			JSONObject object = json.getJSONObject(i);
+			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+			sb1.append("admin_id = ").append("'"+object.getString("id")+"'").append(" OR ");
+		}
+		if(json.size() > 0) {
+			sb.delete(sb.length()-4, sb.length());
+			sb1.delete(sb1.length()-4, sb1.length());
+			adminServiceImpl.delete(sb.toString());
+			adminInforServiceImpl.delete(sb1.toString());
+			System.out.println("删除："+json.toString());
+		}
+		
+		return Message.success("请求成功", null);
 	}
 	
 	/**
@@ -136,26 +151,15 @@ public class AdministratorsControl extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Menu menu, String spread) throws IOException{ 
-		System.out.println("修改接收参数："+menu.toString()+" spread="+spread); 
-		  
-		menu.setUpdate_time(getNowTime()); 
-		menu.setPriority(menu.getPriority() == null || "".equals(menu.getPriority()) ? "5" : menu.getPriority());
-		Map<String, Object> eq = new HashMap<>();
-		eq.put("id", menu.getId());
-		menuServiceImpl.update(menu, eq);
-		
-		WebsiteBase base = new WebsiteBase();
-		base.setSpread(spread);
-		Map<String, Object> eq_ = new HashMap<>(1);
-		eq_.put("id", "1");
-//		websiteBaseServiceImpl.update(base, eq_);
-		
-		JSONObject json = jsonToJSONObject(menu);
-		json.remove("name");
-		json.put("label", menu.getName());
-		json.put("isTab", menu.getUrl().indexOf("####") == -1 ? false : true); 
-		return json;
+	public Object update(Admin admin, AdminInfor aInfor) throws IOException{ 
+		System.out.println("修改接收参数："+admin + aInfor); 
+		// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
+		adminServiceImpl.update(admin, "id = "+admin.getId());
+		aInfor.setId(null);
+		aInfor.setUpdate_time(getNowTime());
+		adminInforServiceImpl.update(aInfor, "admin_id = "+admin.getId());
+
+		return Message.success("请求成功！", null);
 	} 
 	
 	/**
@@ -175,7 +179,8 @@ public class AdministratorsControl extends BaseControl{
 			jsonObject.put("id", item.getId());
 			jsonObject.put("username", item.getUsername());
 			jsonObject.put("state", item.getState());
-			jsonObject.put("role_id", aInfor.getRole_id()+"|"+role.getName());
+			jsonObject.put("role_id", aInfor.getRole_id());
+			jsonObject.put("role_name", role.getName());
 			jsonArray.add(jsonObject);
 		}
 		System.out.println("初始化数据："+jsonArray);

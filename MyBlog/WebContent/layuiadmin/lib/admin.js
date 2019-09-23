@@ -25,11 +25,11 @@ function(e) {console.log("admin");
     C = "layadmin-side-shrink",
     k = "LAY-system-side-menu",
     P = { 
-        v: "1.2.1 std",
-        req: l.req,
-        randomId: function(){
+        v: "1.2.1 std"
+        ,req: l.req
+        ,randomId: function () {
 			var date = new Date();
-			function full(num){// 填充
+			function full (num) {// 填充
 				if(num>9)
 					return num;
 				return "0"+num;
@@ -40,8 +40,32 @@ function(e) {console.log("admin");
 				date : full(date.getDate())
 			};
 			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
-		},
-        exit: l.exit,
+		}
+		// 适用于表格
+		,cajax: function (object) {
+			var index = parent.layer.getFrameIndex(window.name); 
+			object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+			var c = parent.layer.load(2);
+			//执行 Ajax 后重载
+			a.ajax({
+				url: object.method + '.do'
+				,type: 'post'	
+				,contentType: 'application/json'
+				,data: object.data
+				,dataType: "json"
+				,success: function(data){
+					data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index), parent.table.reload("LAY-user-back-admin")),
+					data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
+				} 
+				,error: function(data){
+					parent.layer.close(c),
+					parent.layer.msg("服务器异常，操作失败！"+data.msg),
+					'function' == typeof object.serverError && object.serverError(data, data.msg);
+					parent.layer.close(index)
+				}
+			});	
+		}
+		,exit: l.exit,
         escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);
             return String(e || "").replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;")
         },

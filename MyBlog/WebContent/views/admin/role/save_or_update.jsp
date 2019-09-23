@@ -13,7 +13,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>layuiAdmin 角色管理 iframe 框</title>
+  <title>角色管理 操作</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -108,52 +108,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,b = "LAY-user-role-update"
 	,l = "LAY-user-back-role";
 	form.on("submit("+a+")", function(data){
-		var index = parent.layer.getFrameIndex(window.name);
-		var c = parent.layer.load(2);
-		//执行 Ajax 后重载
-		$.ajax({
-			url: 'add.do'
-			,type: 'post'
-			,data: data.field
-			,dataType: "json"
-			,success: function(data){
-				console.log(data);
-				Message(data, {
-					success: function(data, msg){
-						parent.layer.close(c),
-						parent.layer.msg("添加成功！"),
-						parent.layer.close(index);
-						parent.table.reload("#"+l);
-					}
-					,error: function(data, msg){
-						parent.layer.close(c),
-						parent.layer.msg("添加失败！" + data.content),
-						parent.layer.close(index)
-					}	
-				}) 
-			},error: function(data){
-				parent.layer.close(c),
-				parent.layer.msg("服务器异常，添加失败！"),
-				parent.layer.close(index);
-			}
-		});			  
+		cajax({
+			method: 'add'
+			,data: data.field   
+		});	  		  
 		
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
 		cajax({
 			method: 'update'
-			,data: data.field
-			,success: function(data, msg){
-				parent.layer.close(c),
-				parent.layer.msg("修改成功！"),
-				parent.layer.close(index)
-			}
-			,error: function(data, msg){
-				parent.layer.close(c),
-				parent.layer.msg("修改失败！" + msg),
-				parent.layer.close(index)
-			} 
+			,data: data.field   
 		});	  
 		return false;
 	});
@@ -161,19 +126,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		data.code == '0' && 'function' == typeof fn.success && fn.success(data.data, data.msg);
 		data.code == '2' && 'function' == typeof fn.error && fn.error(data.data, data.msg);
 	} 
+	// 适用于表格
 	function cajax(object){
 		var index = parent.layer.getFrameIndex(window.name); 
-		object.method != 'update' && object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
-		var c = parent.layer.load(2)
-		,fn = {success: object.success, error: object.error};
+		object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+		var c = parent.layer.load(2);
 		//执行 Ajax 后重载
 		$.ajax({
 			url: object.method + '.do'
 			,type: 'post'	
-			,data: data
+			,data: object.data
 			,dataType: "json"
 			,success: function(data){
-				Message(data, fn) 
+				data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index), parent.table.reload(l)),
+				data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
 			} 
 			,error: function(data){
 				parent.layer.close(c),

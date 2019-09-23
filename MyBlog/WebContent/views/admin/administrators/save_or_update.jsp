@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>管理员管理操作</title>
+  <title>管理员管理 操作</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -103,18 +103,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,admin = layui.admin
 	,f = 'layuiadmin-form-admin'
 	,a = 'LAY-user-admin-add'
-	,b = 'LAY-user-admin-update'; 
+	,b = 'LAY-user-admin-update'
+	,l = 'LAY-user-back-admin'; 
 	form.on("submit("+a+")", function(data){
 		cajax({
 			method: 'add'
-			,data: data.field 
+			,data: data.field  
 		});
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
 		cajax({
 			method: 'update'
-			,data: data.field 
+			,data: data.field  
 		});
 		return false;
 	})
@@ -130,7 +131,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,data: object.data
 			,dataType: "json"
 			,success: function(data){
-				data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index)),
+				data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index), parent.table.reload(l)),
 				data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
 			} 
 			,error: function(data){

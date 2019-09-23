@@ -78,6 +78,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
   </div>
  <!-- 直接输出角色名，可是却无法截取 -->
+ 
+ <!-- 
  <script id="roleTPL">
  {{#  if(d.state === '01'){ }}
  <span style="color: #555;">{{ d.role_id.substring(d.role_id.indexOf("|")+1) }}</span>
@@ -85,7 +87,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  <span style="color: #555;">{{ d.role_id.substring(d.role_id.indexOf("|")+1) }}</span>
  {{#  } }}
  </script>
- <script type="text/html" id="stateTPL">
+  -->
+  <script type="text/html" id="stateTPL">
   {{#  if(d.state === '01'){ }}
     <span style="color: red;">{{ '禁用' }}</span>
   {{#  } else { }}
@@ -99,16 +102,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table'], function(){
-    var $ = layui.$
+  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+	
+	var $ = layui.$
     ,form = layui.form
     ,s = 'LAY-user-back-search'
 	,l = 'LAY-user-back-admin'
-    ,table = layui.table
 	,a = 'LAY-user-admin-add'
 	,b = 'LAY-user-admin-update'
 	,f = 'layuiadmin-form-admin'
-	,i = 'iframe';
+	,i = 'iframe'
+	,admin = layui.admin;
+    table = layui.table;
     //监听搜索
     form.on('submit('+s+')', function(data){
       var field = data.field;
@@ -125,26 +130,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
 			layer.prompt({
-			  formType: 1
-			  ,title: '敏感操作，请验证口令'
+			  	formType: 1
+			  	,title: '敏感操作，请验证口令'
 			}, function(value, index){
-			  var data = {};
-			  data["token"] = value
-			  ,data["data"] = checkData;
-			  layer.confirm('确定删除吗？', function(index) {
-				admin.req({
-					url: 'remove.do'
-					,type: 'post'
-					,data: {data: JSON.stringify(data)}
-					,dataType: "json"
-					,done: function(data){
-						layer.msg("删除成功！", {time: 2000}),
-						table.reload(l);
-					} 
-				});		 
-			  });
-			  layer.close(index);
-			})
+				layer.close(index); // 必须放在靠前的位置，否则无法关闭
+			  	var arr = []; 
+			  	for(var index in checkData){
+				  	var data = {};
+				  	data["token"] = value
+				  	,data["id"] = checkData[index].id;
+				  	arr[index] = data;
+			  	}
+			  	layer.confirm('确定删除吗？', function(data) {
+				  	admin.cajax({
+					  	method: 'remove'
+					  	,data: JSON.stringify(arr) 
+				  	}); 	  
+			  	});
+			});
 		}
 		,add: function(){
 			layer.open({
@@ -178,12 +181,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					,iframe.find('input[name="username"]').val(data[0].username)
 					,iframe.find('input[name="phone"]').val(data[0].phone)
 					,iframe.find('input[name="email"]').val(data[0].email)
-					,iframe.find('select[name="role_id"]').val(data[0].role_id.substring(0, data[0].role_id.indexOf("|")))
+					,iframe.find('select[name="role_id"]').val(data[0].role_id)
 					,iframe.find('input[name="create_time"]').val(data[0].create_time)
 					,iframe.find('input[name="update_time"]').val(data[0].update_time)
 					,iframe.find('select[name="state"]').val(data[0].state)
 					,iframe.find('textarea[name="desc"]').val(data[0].desc) 
-					//补充选择角色
 				} 
             })
 		}
@@ -201,7 +203,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	,{field:"name",title:"用户名"}
         	,{field:"phone",title:"手机"}
         	,{field:"email",title:"邮箱"}
-        	,{field:"role_id", title:"角色"}
+        	,{field:"role_name", title:"角色"}
         	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
         	,{field:"create_time",title:"创建时间",sort:!0}
 			,{field:"update_time",title:"修改时间",sort:!0}

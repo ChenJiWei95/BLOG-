@@ -55,6 +55,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   {{#  } }}
   </script> 
   <script>
+  var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -68,9 +69,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,b = 'LAY-user-role-update'
 	,l = 'LAY-user-back-role'
 	,m = 'LAY-user-adminrole-type'
-    ,table = layui.table
     ,admin = layui.admin;
-   
+    table = layui.table;
     
     //搜索角色
     form.on('select('+m+')', function(data){
