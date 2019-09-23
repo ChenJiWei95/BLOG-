@@ -108,16 +108,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,b = "LAY-user-role-update"
 	,l = "LAY-user-back-role";
 	form.on("submit("+a+")", function(data){
-		cajax({
+		admin.cajax({
 			method: 'add'
+			,id: l
 			,data: data.field   
 		});	  		  
 		
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
-		cajax({
+		admin.cajax({
 			method: 'update'
+			,id: l
 			,data: data.field   
 		});	  
 		return false;
@@ -125,30 +127,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function Message(data, fn){
 		data.code == '0' && 'function' == typeof fn.success && fn.success(data.data, data.msg);
 		data.code == '2' && 'function' == typeof fn.error && fn.error(data.data, data.msg);
-	} 
-	// 适用于表格
-	function cajax(object){
-		var index = parent.layer.getFrameIndex(window.name); 
-		object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
-		var c = parent.layer.load(2);
-		//执行 Ajax 后重载
-		$.ajax({
-			url: object.method + '.do'
-			,type: 'post'	
-			,data: object.data
-			,dataType: "json"
-			,success: function(data){
-				data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index), parent.table.reload(l)),
-				data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
-			} 
-			,error: function(data){
-				parent.layer.close(c),
-				parent.layer.msg("服务器异常，操作失败！"+data.msg),
-				'function' == typeof object.serverError && object.serverError(data, data.msg);
-				parent.layer.close(index)
-			}
-		});	
-	}
+	}  
   })
   </script>
 </body>

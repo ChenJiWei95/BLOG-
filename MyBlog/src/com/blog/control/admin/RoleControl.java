@@ -25,6 +25,7 @@ import com.blog.service.MenuService;
 import com.blog.service.RoleItemService;
 import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
 
@@ -122,16 +123,23 @@ public class RoleControl extends BaseControl{
 	@RequestMapping("remove.do")
 	@ResponseBody
 	@Transactional
-	public Object remove(Role role) throws IOException{
-		System.out.println(role);
+	public Object remove(HttpServletRequest request) throws IOException{
 		
-		// 删除主要对象  
+		// 判断token是否正确  删除角色 
+		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+		StringBuffer sb = new StringBuffer();
 		
-		roleServiceImpl.delete("id = "+role.getId()+remove_(role.getId()));
+		for(int i = 0; i < json.size(); i++) {
+			JSONObject object = json.getJSONObject(i);
+			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+		}
+		if(json.size() > 0) {
+			sb.delete(sb.length()-4, sb.length());
+			roleServiceImpl.delete(sb.toString());
+		}
 		
-		JSONObject object = new JSONObject();
-		object.put("result", "success");
-		return object;
+		return Message.success("请求成功", null);	
+		
 	}
 	
 	/**

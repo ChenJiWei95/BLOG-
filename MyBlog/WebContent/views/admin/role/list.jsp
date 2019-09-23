@@ -87,24 +87,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		del: function(){
 			var checkStatus = table.checkStatus(l)
 			,checkData = checkStatus.data; //得到选中的数据
-			checkData.length == 0 ? layer.msg("请选中一项") : checkData.length > 1 ? layer.msg("只能选中一项") :
-			layer.confirm('确定删除吗？', function(index) {
-				$.ajax({
-					url: 'remove.do'
-					,type: 'post'
-					,data: checkData[0].id
-					,dataType: "json"
-					,success: function(data){
-						layer.msg("添加成功！"),
-						parent.table.reload(l);
-					}
-					,error: function(data){
-						layer.msg("服务器异常！添加失败！"+data)
-					}
-				});
-				table.reload(l);
-				layer.msg('已删除');
-			});
+			checkData.length == 0 ? layer.msg("请选中") :
+			layer.prompt({
+			  	formType: 1
+			  	,title: '敏感操作，请验证口令'
+			}, function(value, index){
+				layer.close(index); // 必须放在靠前的位置，否则无法关闭
+			  	var arr = []; 
+			  	for(var index in checkData){
+				  	var data = {};
+				  	data["token"] = value
+				  	,data["id"] = checkData[index].id;
+				  	arr[index] = data;
+			  	}
+			  	layer.confirm('确定删除吗？', function(data) {
+				  	admin.cajax({
+					  	method: 'remove'
+					  	,id: l
+					  	,data: JSON.stringify(arr) 
+				  	}); 	  
+			  	});
+			}); 
 		},
 		add: function(){
 			layer.open({

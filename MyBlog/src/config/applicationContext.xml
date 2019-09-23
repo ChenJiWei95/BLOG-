@@ -16,11 +16,35 @@
 		ignore-resource-not-found="true" ignore-unresolvable="true" /> -->
 	
 	<!-- 数据源：DriverManagerDataSource -->
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://120.79.149.233:3306/C_BLOG"/>
 		<property name="username" value="chenjiwei"/>
 		<property name="password" value="cjw168999"/>
+		<property name="initialSize" value="3" /> 
+		<property name="maxActive" value="30" />
+		<property name="proxyFilters">
+			<list>
+				<ref bean="stat-filter" />
+				<ref bean="wall-filter" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="slowSqlMillis" value="1000" />
+		<property name="logSlowSql" value="true" />
+		<property name="mergeSql" value="true" />
+	</bean>
+
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="config" ref="wall-filter-config" />
+	</bean>
+	
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig">
+		<property name="multiStatementAllow" value="true" />
 	</bean>
 	
 	<!-- 
