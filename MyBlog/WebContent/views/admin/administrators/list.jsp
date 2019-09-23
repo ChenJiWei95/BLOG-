@@ -145,6 +145,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	admin.cajax({
 					  	method: 'remove'
 					  	,data: JSON.stringify(arr) 
+					  	,success: function(){
+					  		table.reload(l);
+					  		layer.close(layer.index);
+					  	}
 				  	}); 	  
 			  	});
 			});
@@ -210,47 +214,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:"desc",title:"描述",}
 		]],
         text: "对不起，加载出现异常！"
-    });
-	table.on("tool("+l+")",
-    function(e) {
-        e.data;
-        if ("del" === e.event) layer.prompt({
-            formType: 1,
-            title: "敏感操作，请验证口令"
-        },
-        function(t, index) {
-            layer.close(index),
-            layer.confirm("确定删除此管理员？",
-            function(t) {
-                console.log(e),
-                e.del(),
-                layer.close(t)
-            })
-        });
-        else if ("edit" === e.event) {
-            t(e.tr);
-            layer.open({
-                type: 2,
-                title: "编辑管理员",
-                content: "save_or_update.chtml",
-                area: ["420px", "420px"],
-                btn: ["确定", "取消"],
-                yes: function(e, t) {
-                    var l = window["layui-layer-iframe" + e],
-                    r = "LAY-user-back-submit",
-                    n = t.find("iframe").contents().find("#" + r);
-                    l.layui.form.on("submit(" + r + ")",
-                    function(t) {
-                        t.field;
-                        table.reload("LAY-user-front-submit"),
-                        layer.close(e)
-                    }),
-                    n.trigger("click")
-                },
-                success: function(e, t) {}
-            })
-        }
-    })
+    }); 
   });
   </script>
 </body>

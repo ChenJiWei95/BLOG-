@@ -64,9 +64,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var $ = layui.$
     ,form = layui.form
     ,a = "LAY-user-role-add"
+	,b = 'LAY-user-role-update'
     ,f = "iframe"
 	,t = 'layuiadmin-form-role'
-	,b = 'LAY-user-role-update'
 	,l = 'LAY-user-back-role'
 	,m = 'LAY-user-adminrole-type'
     ,admin = layui.admin;
@@ -85,6 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     //事件
     var active = {
 		del: function(){
+			var arr = []; 
 			var checkStatus = table.checkStatus(l)
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
@@ -93,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	,title: '敏感操作，请验证口令'
 			}, function(value, index){
 				layer.close(index); // 必须放在靠前的位置，否则无法关闭
-			  	var arr = []; 
+			  	
 			  	for(var index in checkData){
 				  	var data = {};
 				  	data["token"] = value
@@ -101,13 +102,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	arr[index] = data;
 			  	}
 			  	layer.confirm('确定删除吗？', function(data) {
+			  		layer.close(layer.index);
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,id: l
 					  	,data: JSON.stringify(arr) 
+					  	,success: function(){
+					  		table.reload(l);
+					  	}
 				  	}); 	  
 			  	});
 			}); 
+			
 		},
 		add: function(){
 			layer.open({
@@ -121,7 +126,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 				,success: function(e, index) {
 					var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]').val(admin.randomId())
+					iframe.find('input[name="id"]').val(admin.randomId());
 				}
 			});
 		}
@@ -148,10 +153,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					,form.find('input[name="update_time"]').val(data[0].update_time)
 					,form.find('select[name="state"]').val(data[0].state)
 					,form.find('textarea[name="desc"]').val(data[0].desc) 
-					//补充选项框
 				}
             })
-            console.log(data);
 		}
     };  
     table.render({//角色的加载

@@ -219,7 +219,7 @@ public class MenuControl extends BaseControl{
 		StringBuilder sb = new StringBuilder();
 		if(list != null && list.size() > 0){
 			for(Menu item : list)
-				sb.append(" AND id = " + item.getId() + remove_(item.getId()));
+				sb.append(" OR id = " + item.getId() + remove_(item.getId()));
 		}
 		return sb;		
 	}

@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
 						// 初始化
 						var iframe = t.find("iframe").contents().find("#"+c);
-						iframe.find('input[name="id"]').val(index.util.randomId())
+						iframe.find('input[name="id"]').val(admin.randomId())
 						,iframe.find('input[name="url"]').val("####")
 						,iframe.find('input[name="tag_check"]').attr("disabled", "").addClass("layui-disabled")
 						,iframe.find('input[name="url"]').attr("disabled", "").addClass("layui-disabled")
@@ -106,7 +106,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						//var iframe = t.find("iframe").contents().find("#"+c).click();
 						// 初始化
 						var iframe = t.find("iframe").contents().find("#"+c);
-						iframe.find('input[name="id"]').val(randomId())
+						iframe.find('input[name="id"]').val(admin.randomId())
 						,iframe.find('input[name="tag_check"]').removeAttr("disabled").removeClass("layui-disabled")
 				  	}
 				}); 

@@ -17,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
 </head>
 <body style="padding-right: 20px;">  
-  <div class="layui-form" lay-filter="source-data-form" id="source-data-form" style="padding: 20px 30px 0 0;">
+  <div class="layui-form" lay-filter="layuiadmin-form-data" id="layuiadmin-form-data" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
       <label class="layui-form-label">ID</label>
       <div class="layui-input-inline"> 
@@ -61,8 +61,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
     </div>
     <div class="layui-form-item layui-hide">
-      <button lay-submit lay-filter="set-data-form-add" id="set-data-form-add">确认添加</button>
-	  <button lay-submit lay-filter="set-data-form-edit" id="set-data-form-edit">确认编辑</button>
+      <button lay-submit lay-filter="set-data-form-add" id="set-data-form-add">添加</button>
+	  <button lay-submit lay-filter="set-data-form-edit" id="set-data-form-edit">修改</button>
 	</div>
   </div>  
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  

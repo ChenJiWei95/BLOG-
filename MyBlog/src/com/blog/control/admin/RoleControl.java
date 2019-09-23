@@ -75,8 +75,9 @@ public class RoleControl extends BaseControl{
 	@Transactional
 	public Object add(Role role, HttpServletRequest request) throws IOException{ 
 		try{
+			System.out.println(role);
 			role.setCreate_time(getNowTime());
-			Map<String, String> params = getRequestParameterMap(request);
+			Map<String, String> params = getRequestParameterMap(request); System.out.println(params);
 			roleServiceImpl.insert(role);
 			params.remove("id");  params.remove("desc"); params.remove("state");  params.remove("create_time");  params.remove("update_time");  params.remove("name"); 
 			Role roleItem;
@@ -132,6 +133,7 @@ public class RoleControl extends BaseControl{
 		for(int i = 0; i < json.size(); i++) {
 			JSONObject object = json.getJSONObject(i);
 			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+			sb.append("role_id = ").append("'"+object.getString("id")+"'").append(" OR ");
 		}
 		if(json.size() > 0) {
 			sb.delete(sb.length()-4, sb.length());
@@ -154,7 +156,7 @@ public class RoleControl extends BaseControl{
 	@Transactional
 	public Object update(Role role, HttpServletRequest request) throws IOException{ 
 		try{
-			/*Map<String, String> params = getRequestParameterMap(request);
+			Map<String, String> params = getRequestParameterMap(request);
 			Map<String, Object> eq = new HashMap<>(1);
 			eq.put("id", role.getId());
 			role.setUpdate_time(getNowTime());
@@ -196,7 +198,7 @@ public class RoleControl extends BaseControl{
 					}
 				} 
 				
-			}*/
+			}
 			return Message.success("请求成功", role);
 		}catch(Exception e){
 			return Message.error("请求失败："+e.getMessage(), role);

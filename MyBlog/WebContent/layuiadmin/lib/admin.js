@@ -50,7 +50,7 @@ function(e) {console.log("admin");
 			a.ajax({
 				url: object.method + '.do'
 				,type: 'post'	
-				,contentType: 'application/json'
+				//,contentType: 'application/json'
 				,data: object.data
 				,dataType: "json"
 				,success: function(data){
