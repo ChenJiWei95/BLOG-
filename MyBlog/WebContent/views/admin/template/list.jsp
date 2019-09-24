@@ -46,12 +46,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
       <div class="layui-card-body"> 
         <div style="padding-bottom: 10px;">
-        	#button#	<!-- 按钮项 -->
-          <!-- 
           <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button> 
-		  -->
         </div>
         <table id="C-admin-#sign#-table" lay-filter="C-admin-#sign#-table" ></table>  
       </div>
