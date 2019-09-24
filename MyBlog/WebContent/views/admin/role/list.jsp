@@ -27,7 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </div>
           <div class="layui-inline">
             <select name="rolename" lay-filter="LAY-user-adminrole-type">
-              <option value="####">全部角色</option> 
+              <option value="####">全部角色</option>
               <c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
 				<option value="${Role.id}">${Role.name}</option>
 			  </c:forEach>

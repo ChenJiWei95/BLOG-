@@ -57,6 +57,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<option value="layui-icon-auz">授权</option>
 				<option value="layui-icon-set">设置</option>
 				<option value="layui-icon-util">工具</option>
+				<option value="layui-icon-layouts">模板扩展</option>
 			  </select>
 			</div>
 		</div>
