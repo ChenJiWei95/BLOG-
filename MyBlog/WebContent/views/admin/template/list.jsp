@@ -10,13 +10,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>layuiAdmin 角色管理</title>
+  			<!-- 标题 -->
+  <title>#title#</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
-  
+  #link#	<!-- 导入link -->
+  #style# 	<!-- 样式模板套用 -->
 </head>
 <body>
   <div class="layui-fluid">   
@@ -27,23 +29,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             角色筛选
           </div>
           <div class="layui-inline">
-            <select name="rolename" lay-filter="LAY-user-adminrole-type">
+          	#serch# <!-- 查询表单项 -->
+            <%-- <select name="rolename" lay-filter="LAY-user-adminrole-type">
               <option value="####">全部角色</option>
               <c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
 				<option value="${Role.id}">${Role.name}</option>
-			  </c:forEach>
-			  <!--后面的自动添加进来-->
-            </select>
+			  </c:forEach> 
+            </select> --%>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn c-button" lay-submit lay-filter="C-btn-search">
+              <i class="layui-icon layui-icon-search C-btn-search"></i>
+            </button>
           </div>
         </div>
       </div>
       <div class="layui-card-body"> 
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn layuiadmin-btn-role c-button" data-type="add">添加</button>
-		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="edit">编辑</button>
-		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="del">删除</button>
+        	#button#	<!-- 按钮项 -->
+          <!-- 
+          <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
+		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
+		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button> 
+		  -->
         </div>
-        <table id="LAY-user-back-role" lay-filter="LAY-user-back-role" ></table>  
+        <table id="C-admin-#sign#-table" lay-filter="C-admin-#sign#-table" ></table>  
       </div>
     </div>
   </div>
@@ -64,23 +74,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).use(['index', 'useradmin', 'table', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "LAY-user-role-add"
-	,b = 'LAY-user-role-update'
-    ,f = "iframe"
-	,t = 'layuiadmin-form-role'
-	,l = 'LAY-user-back-role'
+    ,a = "C-admin-#sign#-add"
+	,b = 'C-admin-#sign#-update'
+	,e = 'C-btn-saveorupdate'
+    ,f = 'iframe'
+	,l = 'C-admin-#sign#-table'
 	,m = 'LAY-user-adminrole-type'
+	,t = 'layuiadmin-form-role'
+	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
     
-    //搜索角色
-    form.on('select('+m+')', function(data){
-		//执行重载
-		table.reload(l, {
-			where: {
-				role: data.value
-			}
-		});
+  	//监听搜索
+    form.on('submit('+s+')', function(data){
+      	var field = data.field;
+      	//执行重载
+      	table.reload(l, {
+        	where: field
+      	});
     });
   
     //事件
@@ -114,8 +125,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	});
 			}); 
 			
-		},
-		add: function(){
+		}
+		,add: function(){
 			layer.open({
 				type: 2
 				,title: '添加角色'
@@ -163,16 +174,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
-        	,{field:"id", title:"ID", sort:!0, width:180}
+        	,{field:"id", title:"ID", width:180}
         	,{field:"name", title:"角色名", width:150}
-        	,{field:'create_time', title:'创建时间', width:170, sort: true}
-			,{field:'update_time', title:'修改时间', width:170, sort: true}
+        	,{field:'create_time', title:'创建时间', width:170, sort: !0}
+			,{field:'update_time', title:'修改时间', width:170, sort: !0}
         	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
         	,{field:"desc", title:"具体描述"}
         ]],
         text: "对不起，加载出现异常！"
     }); 
-    $('.layui-btn.layuiadmin-btn-role').on('click', function(){
+    $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';
     });

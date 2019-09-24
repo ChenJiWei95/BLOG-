@@ -1,3 +1,67 @@
+<title>${title}</title>
+
+context{
+	private String sign;
+	private String title;
+	privaet String key;
+	private String desc;
+	private List<item> items; 
+	private componentSet searchSet;
+	private componentSet ifreamBtnSet;
+}
+
+生成table表头的cols
+item{
+	private String field;
+	private String title;
+	private Integer width;
+	private boolean sort;
+	private String align;
+	private String templet; 
+}
+
+componentSet {
+	
+}
+
+searchSet extends componentSet{
+	entry;
+	toString 生成submit键
+}
+
+table: value label name disable placeholder html type(serch iframe)
+
+entry{
+	String value;
+	String name;
+	boolean disable;
+	String label;
+	String html;  如果有值 将会优先使用
+}
+btnEntry extends entry{
+	String label_name = "button"; 
+	toString 生成btn表单组件
+}
+itextEntry extends entry{
+	String label_name = "input";
+	String placeholder;
+	
+	toString 生成iframe text项表单组件
+}
+selectEntryOf extends entry{ 
+	String label_name = "select";
+	// forEach 中的 items ==> name+s组成    var ==》 name首字母大写
+	toString 生成select表单组件
+}
+textareaEntry extends entry{
+	String label_name = "textarea";
+	toString 生成textarea表单组件
+}
+
+
+
+
+
 资源管理：基本功能		-- 对夹和页面的添加和删除，字典管理
 资源管理：栏说明		-- 栏管理、数据字典
 资源管理：字典--

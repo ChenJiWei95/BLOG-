@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<button class="layui-btn layuiadmin-btn-data c-button" data-type="add">添加</button>
 						<button class="layui-btn layuiadmin-btn-data c-button" data-type="edit">编辑</button>
 						<button class="layui-btn layuiadmin-btn-data c-button" data-type="del">删除</button>
-					 </div>
+					</div>
 					<div class="layui-card-body">
 						<table class="layui-hide" id="LAY-app-set-data" lay-filter="LAY-app-set-data">
 							
