@@ -10,47 +10,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  			<!-- 标题 -->
-  <title>#title#</title>
+  <title>模板扩展</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
-  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
-  #link#	<!-- 导入link -->
-  #style# 	<!-- 样式模板套用 -->
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 
 </head>
 <body>
   <div class="layui-fluid">   
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            角色筛选
-          </div>
-          <div class="layui-inline">
-          	#serch# <!-- 查询表单项 -->
-            <%-- <select name="rolename" lay-filter="LAY-user-adminrole-type">
-              <option value="####">全部角色</option>
-              <c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
-				<option value="${Role.id}">${Role.name}</option>
-			  </c:forEach> 
-            </select> --%>
-          </div>
-          <div class="layui-inline">
-            <button class="layui-btn c-button" lay-submit lay-filter="C-btn-search">
-              <i class="layui-icon layui-icon-search C-btn-search"></i>
-            </button>
-          </div>
-        </div>
+         
       </div>
-      <div class="layui-card-body"> 
+      <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
           <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
-		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button> 
+		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button>
         </div>
-        <table id="C-admin-#sign#-table" lay-filter="C-admin-#sign#-table" ></table>  
+        <table id="C-admin-temp-table" lay-filter="C-admin-temp-table" ></table>
       </div>
     </div>
   </div>
@@ -62,6 +41,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <span style="color: #5FB878;">{{ '启用' }}</span>
   {{#  } }}
   </script> 
+  <script type="text/html" id="toTPL">
+	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{d}}">点击前往</a></div>
+  </script> 
   <script>
   var table;
   layui.config({
@@ -71,13 +53,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).use(['index', 'useradmin', 'table', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "C-admin-#sign#-add"
-	,b = 'C-admin-#sign#-update'
+    ,a = "C-admin-temp-add"
+	,b = 'C-admin-temp-update'
 	,e = 'C-btn-saveorupdate'
     ,f = 'iframe'
-	,l = 'C-admin-#sign#-table'
-	,m = 'LAY-user-adminrole-type'
-	,t = 'layuiadmin-form-role'
+	,l = 'C-admin-temp-table'
+	,t = 'C-admin-temp-form'
 	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
@@ -98,20 +79,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var checkStatus = table.checkStatus(l)
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
-			layer.prompt({
-			  	formType: 1
-			  	,title: '敏感操作，请验证口令'
-			}, function(value, index){
-				layer.close(index); // 必须放在靠前的位置，否则无法关闭
-			  	
-			  	for(var index in checkData){
-				  	var data = {};
-				  	data["token"] = value
-				  	,data["id"] = checkData[index].id;
-				  	arr[index] = data;
-			  	}
-			  	layer.confirm('确定删除吗？', function(data) {
+				layer.confirm('确定删除吗？', function(data) {
 			  		layer.close(layer.index);
+			  		for(var index in checkData){
+					  	var data = {};
+					  	data["token"] = value
+					  	,data["id"] = checkData[index].id;
+					  	arr[index] = data;
+				  	}
 				  	admin.cajax({
 					  	method: 'remove'
 					  	,data: JSON.stringify(arr) 
@@ -119,15 +94,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					  		table.reload(l);
 					  	}
 				  	}); 	  
-			  	});
-			}); 
-			
+			  	});	
 		}
 		,add: function(){
 			layer.open({
 				type: 2
-				,title: '添加角色'
-				,content: 'save_or_update.chtml?type=0'
+				,title: '添加'
+				,content: 'save_or_update.chtml?'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -145,22 +118,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
 			layer.open({
                 type: 2,
-                title: "编辑角色",
-                content: "save_or_update.chtml?type=1&id="+data[0].id,
-                area: ["420px", "480px"],
-                btn: ["确定", "取消"],
-                yes: function(index, layero) {
+                title: "编辑",
+                content: "save_or_update.chtml?"
+               	,area: ["420px", "480px"]
+                ,btn: ["确定", "取消"]
+                ,yes: function(index, layero) {
                     layero.find(f).contents().find("#"+b).click();
-                },
-                success: function(e, index) {
-                	console.log(data);
+                }
+                ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
-					,form.find('input[name="name"]').val(data[0].name)
+					,form.find('input[name="sign"]').val(data[0].sign)
+					,form.find('input[name="title"]').val(data[0].title)
+					,form.find('input[name="key"]').val(data[0].key)
 					,form.find('input[name="create_time"]').val(data[0].create_time)
-					,form.find('input[name="update_time"]').val(data[0].update_time)
-					,form.find('select[name="state"]').val(data[0].state)
+					,form.find('input[name="update_time"]').val(data[0].update_time) 
 					,form.find('textarea[name="desc"]').val(data[0].desc) 
 				}
             })
@@ -172,11 +145,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:"id", title:"ID", width:180}
-        	,{field:"name", title:"角色名", width:150}
+        	,{field:"sign", title:"分类名称"}
+        	,{field:"title", title:"标题"}
+        	,{field:"key", title:"key"}
         	,{field:'create_time', title:'创建时间', width:170, sort: !0}
 			,{field:'update_time', title:'修改时间', width:170, sort: !0}
-        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
         	,{field:"desc", title:"具体描述"}
+        	,{field:"id", title:"操作", template:"toTPL"}
         ]],
         text: "对不起，加载出现异常！"
     }); 

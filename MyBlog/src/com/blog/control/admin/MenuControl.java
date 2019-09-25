@@ -1,7 +1,10 @@
 package com.blog.control.admin;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,8 @@ import com.blog.entity.WebsiteBase;
 import com.blog.service.MenuService;
 import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
+
+import sun.misc.BASE64Decoder;
 
 @SuppressWarnings("deprecation")
 @Controller
@@ -147,6 +152,41 @@ public class MenuControl extends BaseControl{
 		*/	
 		System.out.println(ActionUtil.read(request));
 		ActionUtil.returnRes(response, "success");
+	} 
+	public String identification(String type, String baseImg, String savePath) {
+		try {
+			GenerateImage(baseImg, savePath);
+			return post(type, new File(savePath));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	@SuppressWarnings("finally")
+	public static boolean GenerateImage(String imgData, String imgFilePath) throws IOException { // 对字节数组字符串进行Base64解码并生成图片
+		if (imgData == null) // 图像数据为空
+            return false;    
+		BASE64Decoder decoder = new BASE64Decoder();
+        OutputStream out = null;     
+	    try {
+	    	out = new FileOutputStream(imgFilePath);
+            // Base64解码
+            byte[] b = decoder.decodeBuffer(imgData);
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] < 0) {// 调整异常数据
+                    b[i] += 256;
+                }
+            }
+            out.write(b);     
+	    } catch (FileNotFoundException e) {
+	       	e.printStackTrace();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+		} finally {
+	     	out.flush();
+	     	out.close();
+	       	return true;
+	   	}
 	}
 	/**
 	 * File类型 证件识别

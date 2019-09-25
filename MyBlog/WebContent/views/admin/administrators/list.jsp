@@ -162,7 +162,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
 					layero.find(i).contents().find("#"+a).click(); 
-				}
+				} 
 			});
 		}
 		,edit: function(){

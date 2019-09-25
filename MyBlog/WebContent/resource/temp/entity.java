@@ -1,0 +1,17 @@
+package com.blog.entity;
+/**
+ * 管理员登录表
+ * @author cjw
+ */
+public class #name# extends Base{
+	private String id; 
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	 
+	
+}

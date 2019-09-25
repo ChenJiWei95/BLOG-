@@ -1,0 +1,53 @@
+package com.blog.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.blog.dao.AdminDao;
+import com.blog.dao.BaseDao;
+import com.blog.entity.Admin;
+import com.blog.service.AdminService;
+import com.blog.util.sql.AssociaInterface;
+
+@Service
+@Transactional
+public class #name#ServiceImpl extends BasiServiceImpl<#name#, Object> implements #name#Service, AssociaInterface  {
+	@Resource
+	#name#Dao #name_#Dao; 
+	
+	public BaseDao<#name#> getDao(){
+		return #name_#Dao;
+	}
+	
+	@Override
+	public String getBrige_table() {
+		return "role_item_brige";
+	}
+	@Override
+	public String getBrige_key() {
+		return "role_id";
+	}
+	@Override
+	public String getBrige_association_key() {
+		return "item_id";
+	}
+	@Override
+	public String getAssociation_table() {
+		return "role_item";
+	}
+	@Override
+	public String getAssociation_table_id() {
+		return "id";
+	}
+	@Override
+	public String getId() {
+		return "id";
+	}
+	@Override
+	public String getTable() {
+		return "#table#";
+	}
+}
+

@@ -43,11 +43,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="edit">编辑</button>
 		  <button class="layui-btn layuiadmin-btn-role c-button" data-type="del">删除</button>
         </div>
-        <table id="LAY-user-back-role" lay-filter="LAY-user-back-role" ></table>  
+        <table id="LAY-user-back-role" lay-filter="LAY-user-back-role" ></table>
       </div>
     </div>
   </div>
- <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
+ <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script type="text/html" id="stateTPL">
   {{#  if(d.state === '01'){ }}
     <span style="color: red;">{{ '禁用' }}</span>
