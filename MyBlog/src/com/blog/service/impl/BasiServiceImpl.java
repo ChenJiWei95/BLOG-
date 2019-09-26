@@ -390,4 +390,15 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	@Override
+	public List<T> getAll() {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this);
+		try {
+			return getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

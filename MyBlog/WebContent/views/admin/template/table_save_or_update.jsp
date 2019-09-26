@@ -24,42 +24,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<input type="text" name="id" lay-verify="id" autocomplete="off" class="layui-input">
 		</div>
 	</div> 
+	<div class="layui-hide">
+		<label class="layui-form-label">ID</label>
+		<div class="layui-input-block">
+			<input type="text" name="c_id" lay-verify="id" autocomplete="off" class="layui-input">
+		</div>
+	</div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">模块名称</label>
+      <label class="layui-form-label">属性标识</label>
       <div class="layui-input-inline">
-        <input type="text" name="sign" lay-verify="required" lay-verify="required" autocomplete="off" class="layui-input">
+        <input type="text" name="field" autocomplete="off" class="layui-input">
       </div>
     </div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">标题</label>
+      <label class="layui-form-label">显示值</label>
       <div class="layui-input-inline">
         <input type="text" name="title" autocomplete="off" class="layui-input">
       </div>
     </div> 
-    <div class="layui-form-item">
-      <label class="layui-form-label">key</label>
-      <div class="layui-input-inline">
-        <input type="text" name="key" placeholder="请输入" autocomplete="off" class="layui-input">
-      </div>
-    </div> 
-    <div class="layui-form-item">
-      <label class="layui-form-label">创建时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="create_time" disabled autocomplete="off" class="layui-input layui-disabled">
-      </div>
-    </div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">修改时间</label>
+      <label class="layui-form-label">引用模板</label>
       <div class="layui-input-inline">
-        <input type="text" name="update_time" disabled autocomplete="off" class="layui-input layui-disabled">
+        <input type="text" name="templet" autocomplete="off" class="layui-input">
       </div>
     </div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">描述信息</label>
+      <label class="layui-form-label">宽度</label>
       <div class="layui-input-inline">
-        <textarea class="layui-textarea" name="desc" placeholder="请输入描述信息"></textarea>
+        <input type="text" name="width" autocomplete="off" class="layui-input">
       </div>
-    </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">对齐</label>
+      <div class="layui-input-inline">
+        <select name="align">
+		  <option value="-1">请选择对齐方式</option> 
+           
+        </select>
+	  </div>
+    </div> 
+	<div class="layui-form-item">
+      <label class="layui-form-label">是否可排序</label>
+      <div class="layui-input-inline">
+        <select name="sort">
+		  <option value="-1">选择排序方式</option> 
+           
+        </select>
+	  </div>
+    </div> 
     <div class="layui-form-item layui-hide">
       <input type="button" lay-submit lay-filter="C-admin-temp-add" id="C-admin-temp-add" value="确认">
       <input type="button" lay-submit lay-filter="C-admin-temp-update" id="C-admin-temp-update" value="确认">
@@ -80,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     ,l = "C-admin-temp-table";
 	form.on("submit("+a+")", function(data){
 		admin.cajax({
-			method: 'add'
+			method: 'table_add'
 			,id: l
 			,data: data.field  
 		});
@@ -88,7 +100,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	})
 	,form.on("submit("+b+")", function(data){
 		admin.cajax({
-			method: 'update'
+			method: 'table_update'
 			,id: l
 			,data: data.field  
 		});

@@ -20,7 +20,9 @@ import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
+import com.blog.entity.TempComponent;
 import com.blog.entity.TempContext;
+import com.blog.entity.TempRow;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
 import com.blog.service.MenuService;
@@ -38,16 +40,7 @@ import com.blog.util.TimeUtil;
 public class TemplateControl extends BaseControl{
 	
 	@Autowired
-	private MenuService menuServiceImpl;
-	
-	@Autowired
 	private RoleService roleServiceImpl;
-	
-	@Autowired
-	private AdminService adminServiceImpl;
-	
-	@Autowired
-	private AdminInforService adminInforServiceImpl;
 	@Autowired
 	private TempContextService tempContextServiceImpl;
 	@Autowired
@@ -56,17 +49,15 @@ public class TemplateControl extends BaseControl{
 	@Autowired
 	private TempComponentService tempComponentServiceImpl;
 	
-	
-	
-	// 返回 页面 
+	// 打开主要页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "../../views/admin/template/list";
 	}
+	// 打开详细页
 	@RequestMapping("/detail.chtml") 
-	public String detail(HttpServletRequest request, String agentno, ModelMap model){
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+	public String detail(HttpServletRequest request, String id, ModelMap model){
+		model.addAttribute("id", id);
 		return "../../views/admin/template/listview";
 	}
 	// 返回 页面 
@@ -103,7 +94,7 @@ public class TemplateControl extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			List<TempContext> list = tempContextServiceImpl.gets(null, "id", "username", "state");
+			List<TempContext> list = tempContextServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		} catch(Exception e) {
 			return Message.error("请求失败，"+e.getMessage(), null);
@@ -114,6 +105,7 @@ public class TemplateControl extends BaseControl{
 	public Object add(TempContext c) { 
 		
 		try {
+			c.setCreate_time(getNowTime());
 			tempContextServiceImpl.insert(c);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
@@ -124,6 +116,7 @@ public class TemplateControl extends BaseControl{
 	@ResponseBody
 	public Object update(TempContext c) { 
 		try {
+			c.setUpdate_time(getNowTime());
 			String id = c.getId();
 			c.setId(null);
 			tempContextServiceImpl.update(c, "id = '"+ id +"'");
@@ -134,12 +127,25 @@ public class TemplateControl extends BaseControl{
 	}
 	@RequestMapping("remove.do")
 	@ResponseBody
-	public Object remove(TempContext c) {
+	public Object remove(HttpServletRequest request) {
 		try {
-			tempContextServiceImpl.delete("id = '"+c.getId()+"'");
-			// 删除相关表
-			tempRowServiceImpl.delete("c_id = '" + c.getId() + "'");	
-			tempComponentServiceImpl.delete("c_id = '" + c.getId() + "'");
+			// 判断token是否正确  删除admin 和 adminInfor
+			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			StringBuffer sb = new StringBuffer();
+			StringBuffer sb1 = new StringBuffer();
+			
+			for(int i = 0; i < json.size(); i++) {
+				JSONObject object = json.getJSONObject(i);
+				sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+				sb1.append("c_id = ").append("'"+object.getString("id")+"'").append(" OR ");
+			}
+			if(json.size() > 0) {
+				sb.delete(sb.length()-4, sb.length());
+				sb1.delete(sb1.length()-4, sb1.length());
+				tempContextServiceImpl.delete(sb.toString());
+				tempRowServiceImpl.delete(sb1.toString());	
+				tempComponentServiceImpl.delete(sb1.toString());
+			}
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
@@ -148,22 +154,12 @@ public class TemplateControl extends BaseControl{
 	// 添加
 	@RequestMapping("search_add.do")
 	@ResponseBody
-	public Object search_add(Admin admin, AdminInfor adminI) throws IOException{ 
-		System.out.println("添加接收参数："+admin + adminI); 
+	public Object search_add(TempComponent c) throws IOException{ 
+		System.out.println("添加接收参数："+c); 
 		// 保存admin账号 密码默认    保存admin信息
 		try{
-			admin.setId(TimeUtil.randomId());
-			admin.setLogin_count(0);
-			admin.setPassword("12345678");
-			adminServiceImpl.insert(admin);
-			
-			adminI.setCreate_time(getNowTime());
-			adminI.setId(TimeUtil.randomId());
-			adminI.setName_(adminI.getName());
-			adminI.setAdmin_id(admin.getId());
-			adminI.setRole_id("-1".equals(adminI.getRole_id()) ? null : adminI.getRole_id());
-			adminInforServiceImpl.insert(adminI);
-			 
+			c.setType("01");
+			tempComponentServiceImpl.insert(c);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
@@ -172,23 +168,13 @@ public class TemplateControl extends BaseControl{
 	// 添加
 	@RequestMapping("form_add.do")
 	@ResponseBody
-	public Object form_add(Admin admin, AdminInfor adminI) throws IOException{ 
-		System.out.println("添加接收参数："+admin + adminI); 
+	public Object form_add(TempComponent c) throws IOException{ 
+		System.out.println("添加接收参数："+c); 
 		
 		// 保存admin账号 密码默认    保存admin信息
 		try{
-			admin.setId(TimeUtil.randomId());
-			admin.setLogin_count(0);
-			admin.setPassword("12345678");
-			adminServiceImpl.insert(admin);
-			
-			adminI.setCreate_time(getNowTime());
-			adminI.setId(TimeUtil.randomId());
-			adminI.setName_(adminI.getName());
-			adminI.setAdmin_id(admin.getId());
-			adminI.setRole_id("-1".equals(adminI.getRole_id()) ? null : adminI.getRole_id());
-			adminInforServiceImpl.insert(adminI);
-			 
+			c.setType("02");
+			tempComponentServiceImpl.insert(c);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
@@ -197,49 +183,17 @@ public class TemplateControl extends BaseControl{
 	// 添加
 	@RequestMapping("table_add.do")
 	@ResponseBody
-	public Object table_add(Admin admin, AdminInfor adminI) throws IOException{ 
-		System.out.println("添加接收参数："+admin + adminI); 
+	public Object table_add(TempRow t) throws IOException{ 
+		System.out.println("添加接收参数："+t); 
 		
 		// 保存admin账号 密码默认    保存admin信息
-		try{
-			admin.setId(TimeUtil.randomId());
-			admin.setLogin_count(0);
-			admin.setPassword("12345678");
-			adminServiceImpl.insert(admin);
-			
-			adminI.setCreate_time(getNowTime());
-			adminI.setId(TimeUtil.randomId());
-			adminI.setName_(adminI.getName());
-			adminI.setAdmin_id(admin.getId());
-			adminI.setRole_id("-1".equals(adminI.getRole_id()) ? null : adminI.getRole_id());
-			adminInforServiceImpl.insert(adminI);
-			 
+		try{ 
+			tempRowServiceImpl.insert(t);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
 		}
-	}	
-	
-	/**
-	 * 递归 删除关联菜单
-	 * @param id
-	 */
-	protected void remove_(String id){
-		// 递归删除关联
-		Menu m = new Menu();
-		m.setRelate_id(id);
-		List<Menu> list = menuServiceImpl.gets(m);
-		Map<String, Object> eq = null;
-		if(list != null && list.size() > 0){
-			eq = new HashMap<>(1);
-			for(Menu item : list){
-				remove_(item.getId());
-				eq.put("id", item.getId());
-				menuServiceImpl.delete(eq);
-			}
-		}
-		list = null;		
-	}
+	}	 
 	
 	/**
 	 * 删除 
@@ -247,75 +201,18 @@ public class TemplateControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("search_remove.do")
+	@RequestMapping({"search_remove.do", "form_remove.do"})
 	@ResponseBody
-	public Object remove1(HttpServletRequest request) throws IOException{
-		
+	public Object remove1(TempComponent t) throws IOException{
 		// 判断token是否正确  删除admin 和 adminInfor
-		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
-		StringBuffer sb = new StringBuffer();
-		StringBuffer sb1 = new StringBuffer();
-		
-		for(int i = 0; i < json.size(); i++) {
-			JSONObject object = json.getJSONObject(i);
-			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-			sb1.append("admin_id = ").append("'"+object.getString("id")+"'").append(" OR ");
-		}
-		if(json.size() > 0) {
-			sb.delete(sb.length()-4, sb.length());
-			sb1.delete(sb1.length()-4, sb1.length());
-			adminServiceImpl.delete(sb.toString());
-			adminInforServiceImpl.delete(sb1.toString());
-			System.out.println("删除："+json.toString());
-		}
-		
+		tempComponentServiceImpl.delete("id = '"+ t.getId()+"'");
 		return Message.success("请求成功", null);
-	}
-	@RequestMapping("form_remove.do")
-	@ResponseBody
-	public Object remove2(HttpServletRequest request) throws IOException{
-		
-		// 判断token是否正确  删除admin 和 adminInfor
-		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
-		StringBuffer sb = new StringBuffer();
-		StringBuffer sb1 = new StringBuffer();
-		
-		for(int i = 0; i < json.size(); i++) {
-			JSONObject object = json.getJSONObject(i);
-			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-			sb1.append("admin_id = ").append("'"+object.getString("id")+"'").append(" OR ");
-		}
-		if(json.size() > 0) {
-			sb.delete(sb.length()-4, sb.length());
-			sb1.delete(sb1.length()-4, sb1.length());
-			adminServiceImpl.delete(sb.toString());
-			adminInforServiceImpl.delete(sb1.toString());
-			System.out.println("删除："+json.toString());
-		}
-		
-		return Message.success("请求成功", null);
-	}
+	} 
 	@RequestMapping("table_remove.do")
 	@ResponseBody
-	public Object remove3(HttpServletRequest request) throws IOException{
+	public Object remove3(TempRow t) throws IOException{
 		
-		// 判断token是否正确  删除admin 和 adminInfor
-		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
-		StringBuffer sb = new StringBuffer();
-		StringBuffer sb1 = new StringBuffer();
-		
-		for(int i = 0; i < json.size(); i++) {
-			JSONObject object = json.getJSONObject(i);
-			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-			sb1.append("admin_id = ").append("'"+object.getString("id")+"'").append(" OR ");
-		}
-		if(json.size() > 0) {
-			sb.delete(sb.length()-4, sb.length());
-			sb1.delete(sb1.length()-4, sb1.length());
-			adminServiceImpl.delete(sb.toString());
-			adminInforServiceImpl.delete(sb1.toString());
-			System.out.println("删除："+json.toString());
-		}
+		tempRowServiceImpl.delete("id = '"+t.getId()+"'");
 		
 		return Message.success("请求成功", null);
 	}
@@ -327,40 +224,18 @@ public class TemplateControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("search_update.do")
+	@RequestMapping({"search_update.do", "form_update.do"})
 	@ResponseBody
-	public Object update1(Admin admin, AdminInfor aInfor) throws IOException{ 
-		System.out.println("修改接收参数："+admin + aInfor); 
-		// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-		adminServiceImpl.update(admin, "id = "+admin.getId());
-		aInfor.setId(null);
-		aInfor.setUpdate_time(getNowTime());
-		adminInforServiceImpl.update(aInfor, "admin_id = "+admin.getId());
-
+	public Object update1(TempComponent t) throws IOException{ 
+		System.out.println("修改接收参数："+t);  
+		tempComponentServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
 		return Message.success("请求成功！", null);
-	} 
-	@RequestMapping("form_update.do")
-	@ResponseBody
-	public Object update2(Admin admin, AdminInfor aInfor) throws IOException{ 
-		System.out.println("修改接收参数："+admin + aInfor); 
-		// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-		adminServiceImpl.update(admin, "id = "+admin.getId());
-		aInfor.setId(null);
-		aInfor.setUpdate_time(getNowTime());
-		adminInforServiceImpl.update(aInfor, "admin_id = "+admin.getId());
-
-		return Message.success("请求成功！", null);
-	} 
+	}  
 	@RequestMapping("table_update.do")
 	@ResponseBody
-	public Object update3(Admin admin, AdminInfor aInfor) throws IOException{ 
-		System.out.println("修改接收参数："+admin + aInfor); 
-		// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-		adminServiceImpl.update(admin, "id = "+admin.getId());
-		aInfor.setId(null);
-		aInfor.setUpdate_time(getNowTime());
-		adminInforServiceImpl.update(aInfor, "admin_id = "+admin.getId());
-
+	public Object update3(TempRow t) throws IOException{ 
+		System.out.println("修改接收参数："+t); 
+		tempRowServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
 		return Message.success("请求成功！", null);
 	} 
 	
@@ -371,60 +246,19 @@ public class TemplateControl extends BaseControl{
 	 */
 	@RequestMapping("table_list.do")
 	@ResponseBody
-	public Object init1() throws IOException{
-		JSONArray jsonArray = new JSONArray();
-		List<Admin> list = adminServiceImpl.gets(null, "id", "username", "state");
-		for(Admin item : list){
-			AdminInfor aInfor = adminInforServiceImpl.get("admin_id = "+item.getId());
-			Role role = roleServiceImpl.getForColum("id = "+aInfor.getRole_id(), "name");
-			JSONObject jsonObject = jsonToJSONObject(aInfor); 
-			jsonObject.put("id", item.getId());
-			jsonObject.put("username", item.getUsername());
-			jsonObject.put("state", item.getState());
-			jsonObject.put("role_id", aInfor.getRole_id());
-			jsonObject.put("role_name", role.getName());
-			jsonArray.add(jsonObject);
-		}
-		System.out.println("初始化数据："+jsonArray);
-		return Message.success("请求成功", jsonArray);
+	public Object init1(String id) throws IOException{
+		 
+		return Message.success("请求成功", listToJSONArray(tempRowServiceImpl.gets(singleMarkOfEq("c_id", id))));
 	}
 	@RequestMapping("form_list.do")
 	@ResponseBody
-	public Object init2() throws IOException{
-		JSONArray jsonArray = new JSONArray();
-		List<Admin> list = adminServiceImpl.gets(null, "id", "username", "state");
-		for(Admin item : list){
-			AdminInfor aInfor = adminInforServiceImpl.get("admin_id = "+item.getId());
-			Role role = roleServiceImpl.getForColum("id = "+aInfor.getRole_id(), "name");
-			JSONObject jsonObject = jsonToJSONObject(aInfor); 
-			jsonObject.put("id", item.getId());
-			jsonObject.put("username", item.getUsername());
-			jsonObject.put("state", item.getState());
-			jsonObject.put("role_id", aInfor.getRole_id());
-			jsonObject.put("role_name", role.getName());
-			jsonArray.add(jsonObject);
-		}
-		System.out.println("初始化数据："+jsonArray);
-		return Message.success("请求成功", jsonArray);
+	public Object init2(String id) throws IOException{ 
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "02"))));
 	}
 	@RequestMapping("search_list.do")
 	@ResponseBody
-	public Object init3() throws IOException{
-		JSONArray jsonArray = new JSONArray();
-		List<Admin> list = adminServiceImpl.gets(null, "id", "username", "state");
-		for(Admin item : list){
-			AdminInfor aInfor = adminInforServiceImpl.get("admin_id = "+item.getId());
-			Role role = roleServiceImpl.getForColum("id = "+aInfor.getRole_id(), "name");
-			JSONObject jsonObject = jsonToJSONObject(aInfor); 
-			jsonObject.put("id", item.getId());
-			jsonObject.put("username", item.getUsername());
-			jsonObject.put("state", item.getState());
-			jsonObject.put("role_id", aInfor.getRole_id());
-			jsonObject.put("role_name", role.getName());
-			jsonArray.add(jsonObject);
-		}
-		System.out.println("初始化数据："+jsonArray);
-		return Message.success("请求成功", jsonArray);
+	public Object init3(String id) throws IOException{
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "01"))));
 	}
 	
 	

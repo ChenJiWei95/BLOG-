@@ -7,6 +7,8 @@ public class TempContext {
 	private String title;
 	private String key;
 	private String desc;
+	private String create_time;
+	private String update_time;
 		
 	public String getId() {
 		return id;
@@ -39,6 +41,18 @@ public class TempContext {
 		this.desc = desc;
 	}
 
+	public String getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(String create_time) {
+		this.create_time = create_time;
+	}
+	public String getUpdate_time() {
+		return update_time;
+	}
+	public void setUpdate_time(String update_time) {
+		this.update_time = update_time;
+	}
 	public static void main(String[] args) {
 		// C:/Users/Administrator/git/MyBlog/MyBlog/src/com/blog/entity/temp/
 		System.out.println(TempContext.class.getResource("/").getPath().replace("build/classes", "src"));

@@ -1,6 +1,7 @@
 package com.blog.entity;
 
 public class TempComponent extends Base {
+	private String id;
 	private String value;
 	private String name;
 	private boolean disable;
@@ -60,6 +61,30 @@ public class TempComponent extends Base {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getType_date() {
+		return type_date;
+	}
+	public void setType_date(String type_date) {
+		this.type_date = type_date;
+	}
+	public String getPlaceholder() {
+		return placeholder;
+	}
+	public void setPlaceholder(String placeholder) {
+		this.placeholder = placeholder;
+	}
+	public String getEvent() {
+		return event;
+	}
+	public void setEvent(String event) {
+		this.event = event;
 	}
 	
 }

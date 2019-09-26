@@ -44,7 +44,7 @@ function(e) {console.log("admin");
 		// 适用于表格
 		,cajax: function (object) {
 			var index = parent.layer.getFrameIndex(window.name); 
-			object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+			//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
 			var c = parent.layer.load(2);
 			//执行 Ajax 后重载
 			a.ajax({
@@ -64,6 +64,15 @@ function(e) {console.log("admin");
 					parent.layer.close(index)
 				}
 			});	
+		}
+		,getParameter: function(key){
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+				var pair = vars[i].split("=");
+				if(pair[0] == key){return pair[1];}
+			}
+			return '';
 		}
 		,exit: l.exit,
         escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);

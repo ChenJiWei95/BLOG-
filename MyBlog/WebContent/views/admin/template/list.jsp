@@ -33,17 +33,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
     </div>
   </div>
- <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
-  <script type="text/html" id="stateTPL">
-  {{#  if(d.state === '01'){ }}
-    <span style="color: red;">{{ '禁用' }}</span>
-  {{#  } else { }}
-    <span style="color: #5FB878;">{{ '启用' }}</span>
-  {{#  } }}
-  </script> 
+  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
   <script type="text/html" id="toTPL">
-	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{d}}">点击前往</a></div>
-  </script> 
+	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
+  </script>
   <script>
   var table;
   layui.config({
@@ -83,8 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		layer.close(layer.index);
 			  		for(var index in checkData){
 					  	var data = {};
-					  	data["token"] = value
-					  	,data["id"] = checkData[index].id;
+					  	data["id"] = checkData[index].id;
 					  	arr[index] = data;
 				  	}
 				  	admin.cajax({
@@ -139,19 +131,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };  
-    table.render({//角色的加载
+    table.render({//加载
         elem: "#"+l,
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:"id", title:"ID", width:180}
-        	,{field:"sign", title:"分类名称"}
+        	,{field:"sign", title:"模块名称"}
         	,{field:"title", title:"标题"}
         	,{field:"key", title:"key"}
         	,{field:'create_time', title:'创建时间', width:170, sort: !0}
 			,{field:'update_time', title:'修改时间', width:170, sort: !0}
         	,{field:"desc", title:"具体描述"}
-        	,{field:"id", title:"操作", template:"toTPL"}
+        	,{field:"id", title:"操作", templet:"#toTPL", align: 'center'}
         ]],
         text: "对不起，加载出现异常！"
     }); 

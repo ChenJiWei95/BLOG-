@@ -1,3 +1,6 @@
+数据字典
+	id name value code type desc create_time update_time
+	
 searchs ==> temp_component 
 cols ok
 editjs ==> forms

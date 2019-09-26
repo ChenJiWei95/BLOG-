@@ -19,6 +19,7 @@ public interface BasiService<T, V> {
 	T get(T t, Object column);
 	T get(String eq); 
 	T getForColum(String eq, Object column); 
+	List<T> getAll(); 
 	T getForColumn(Object column); 
 	/**
 	 * 查询集合

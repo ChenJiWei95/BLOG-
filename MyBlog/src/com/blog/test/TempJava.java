@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.blog.util.CharStreamImpl;
+
 public class TempJava {
 	public static void main(String[] args) {
 		do1("tempComponent", "temp_component");
@@ -22,6 +24,18 @@ public class TempJava {
 			String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[i]+"/"+name+suffix[i];
 			do2(TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"config/temp/"+temp[i], copyPath, name, name_, table);
 		}
+		CharStreamImpl c = new CharStreamImpl(srcPath("config/mybatis-config.xml"));
+		StringBuilder sb = new StringBuilder();
+		c.read(line -> {
+			sb.append(line);
+		});
+		sb.replace(sb.indexOf("<!--#MAPPER#-->"), "<!--#MAPPER#-->".length(), "\t\t<mapper resource=\"com/blog/mapper/"+name+"Mapper.xml\" />"+System.lineSeparator() + "\t\t<!--#MAPPER#-->");
+		c.write(sb.toString());
+		System.out.println("添加mapper配置信息：<mapper resource=\"com/blog/mapper/"+name+"Mapper.xml\" />");
+		
+	}
+	public static String srcPath(String path){
+		return TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+path;
 	}
 	public static void do2(String path, String copyPath, String name, String name_, String table) {
 		BufferedReader in = null;

@@ -34,5 +34,9 @@
     	<mapper resource="com/blog/mapper/Target__Mapper.xml" />
     	<mapper resource="com/blog/mapper/MenuMapper.xml" />
     	<mapper resource="com/blog/mapper/WebSiteBaseMapper.xml" />
+    	<mapper resource="com/blog/mapper/TempContextMapper.xml" />
+    	<mapper resource="com/blog/mapper/TempComponentMapper.xml" />
+    	<mapper resource="com/blog/mapper/TempRowMapper.xml" />
+    	<!--#MAPPER#-->
     </mappers>
 </configuration>

@@ -6,6 +6,7 @@ package com.blog.entity;
  *
  */
 public class TempRow extends Base {
+	private String id;
 	private String field;
 	private String title;
 	private Integer width;
@@ -15,6 +16,12 @@ public class TempRow extends Base {
 	private String desc;
 	private String c_id;
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getField() {
 		return field;
 	}

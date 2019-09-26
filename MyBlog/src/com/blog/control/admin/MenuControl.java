@@ -87,7 +87,6 @@ public class MenuControl extends BaseControl{
         return result1.toString(); 
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static String editMovieInfo(MultipartFile file) throws ClientProtocolException, IOException { 
 		CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;

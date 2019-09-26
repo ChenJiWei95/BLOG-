@@ -79,14 +79,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).use(['index', 'useradmin', 'table', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "C-admin-form_add"
-	,b = 'C-admin-form-update'
+    ,a = "C-admin-temp-add"
+    ,b = 'C-admin-temp-update'
 	,e = 'C-btn-saveorupdate'
     ,f = 'iframe'
 	,l_a = 'C-admin-search-table'
 	,l_b = 'C-admin-table-table'
 	,l_c = 'C-admin-form-table'
-	,t = 'C-admin-form-form'
+	,t = 'C-admin-temp-form'
 	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
@@ -172,7 +172,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
 				type: 2
 				,title: '添加'
-				,content: 'table_save_or_update.chtml?'
+				,content: 'table_save_or_update.chtml'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -180,7 +180,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 				,success: function(e, index) {
 					var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]').val(admin.randomId());
+					iframe.find('input[name="id"]').val(admin.randomId())
+					,iframe.find('input[name="c_id"]').val(${id})
 				}
 			});
 		}
@@ -188,7 +189,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
 				type: 2
 				,title: '添加'
-				,content: 'form_save_or_update.chtml?'
+				,content: 'form_save_or_update.chtml'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -204,7 +205,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
 				type: 2
 				,title: '添加'
-				,content: 'search_save_or_update.chtml?'
+				,content: 'search_save_or_update.chtml'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -259,6 +260,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					var form = e.find(f).contents().find("#"+t);
 					form.find('input[name="id"]').val(data[0].id)
 					,form.find('input[name="name"]').val(data[0].name)
+					,form.find('input[name="c_id"]').val(data[0].c_id)
 					,form.find('input[name="create_time"]').val(data[0].create_time)
 					,form.find('input[name="update_time"]').val(data[0].update_time)
 					,form.find('select[name="state"]').val(data[0].state)
@@ -291,49 +293,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
             })
 		}
-    };  
+    };   
+	var componentArrHead = [[
+    	{type:"checkbox", fixed:"left"}
+    	,{field:"id", title:"ID"}
+    	,{field:"name", title:"组件名称"}
+    	,{field:'label', title:'组件前提示语'}
+    	,{field:"value", title:"表单值"}
+    	,{field:"placeholder", title:"提示内容"}
+    	,{field:"html", title:"内容"}
+    	,{field:"type_date", title:"date数据"}
+		,{field:'disable', title:'是否禁用'}
+    	,{field:"inline", title:"是否内联"}
+    	,{field:"hide", title:"是否隐藏"}
+    	,{field:"type", title:"组件类型"}
+    	,{field:"event", title:"事件关联"}
+    	,{field:"desc", title:"描述"}
+    ]];
     table.render({//角色的加载
         elem: "#"+l_b,
-        url: 'table_list.do',
+        url: 'table_list.do?id='+${id},
         cols: [[
         	{type:"checkbox", fixed:"left"}
-        	,{field:"id", title:"ID", width:180}
-        	,{field:"name", title:"角色名", width:150}
-        	,{field:'create_time', title:'创建时间', width:170, sort: !0}
-			,{field:'update_time', title:'修改时间', width:170, sort: !0}
-        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
-        	,{field:"desc", title:"具体描述"}
-        ]],
+        	,{field:"id", title:"ID"}
+        	,{field:"field", title:"属性标识"}
+        	,{field:'title', title:'显示值'}
+			,{field:'align', title:'对齐'}
+        	,{field:"templet", title:"引用模板"}
+        	,{field:"width", title:"宽度"}
+        	,{field:"sort", title:"是否可排序"}
+        ]], 
         text: "对不起，加载出现异常！"
     }) 
     ,table.render({//角色的加载
         elem: "#"+l_a,
-        url: 'search_list.do',
-        cols: [[
-        	{type:"checkbox", fixed:"left"}
-        	,{field:"id", title:"ID", width:180}
-        	,{field:"name", title:"角色名", width:150}
-        	,{field:'create_time', title:'创建时间', width:170, sort: !0}
-			,{field:'update_time', title:'修改时间', width:170, sort: !0}
-        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
-        	,{field:"desc", title:"具体描述"}
-        ]],
+        url: 'search_list.do?id='+${id},
+        cols: componentArrHead,
         text: "对不起，加载出现异常！"
     })
     ,table.render({//角色的加载
         elem: "#"+l_c,
-        url: 'form_list.do',
-        cols: [[
-        	{type:"checkbox", fixed:"left"}
-        	,{field:"id", title:"ID", width:180}
-        	,{field:"name", title:"角色名", width:150}
-        	,{field:'create_time', title:'创建时间', width:170, sort: !0}
-			,{field:'update_time', title:'修改时间', width:170, sort: !0}
-        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
-        	,{field:"desc", title:"具体描述"}
-        ]],
+        url: 'form_list.do?id='+${id},
+        cols: componentArrHead,
         text: "对不起，加载出现异常！"
     }); 
+     
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';

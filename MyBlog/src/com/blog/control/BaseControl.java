@@ -18,6 +18,20 @@ import com.blog.util.GsonUtil;
 public class BaseControl {
 	public static Logger logger = LogManager.getLogger(BaseControl.class);
 	private Object ovje;
+	
+	/**
+	 * 例如：`id` = '1234'
+	 * <p>	 
+	 * @param col
+	 * @param fields
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	protected String singleMarkOfEq(String col, String fields) {
+		return "`"+col+"` = '"+fields+"' ";
+	}
 	protected String getNowTime() {
 		return com.blog.util.TimeUtil.getDatetime();
 	}
