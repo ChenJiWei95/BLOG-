@@ -1,5 +1,5 @@
-searchs
-cols
+searchs ==> temp_component 
+cols ok
 editjs ==> forms
 forms 
 
