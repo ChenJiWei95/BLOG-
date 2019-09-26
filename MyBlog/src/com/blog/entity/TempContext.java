@@ -1,4 +1,4 @@
-package com.blog.entity.temp;
+package com.blog.entity;
 
 
 public class TempContext {
@@ -6,7 +6,7 @@ public class TempContext {
 	private String sign;
 	private String title;
 	private String key;
-	private String desc; 
+	private String desc;
 		
 	public String getId() {
 		return id;
@@ -41,6 +41,7 @@ public class TempContext {
 
 	public static void main(String[] args) {
 		// C:/Users/Administrator/git/MyBlog/MyBlog/src/com/blog/entity/temp/
-		System.out.println(TempContext.class.getResource("").getPath().replace("build/classes", "src"));
+		System.out.println(TempContext.class.getResource("/").getPath().replace("build/classes", "src"));
+		
 	}
 }

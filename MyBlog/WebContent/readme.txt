@@ -26,7 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   #style# 	<!-- 样式模板套用 -->
 </head>
 <body>
-  <div class="layui-fluid">   
+  <div class="layui-fluid">
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
         <div class="layui-form-item">

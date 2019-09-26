@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -22,16 +20,17 @@ import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
-import com.blog.entity.WebsiteBase;
+import com.blog.entity.TempContext;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
 import com.blog.service.MenuService;
 import com.blog.service.RoleService;
-import com.blog.service.WebsiteBaseService;
+import com.blog.service.TempComponentService;
+import com.blog.service.TempContextService;
+import com.blog.service.TempRowService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 @Controller
 // 数据字典
@@ -49,6 +48,15 @@ public class TemplateControl extends BaseControl{
 	
 	@Autowired
 	private AdminInforService adminInforServiceImpl;
+	@Autowired
+	private TempContextService tempContextServiceImpl;
+	@Autowired
+	private TempRowService tempRowServiceImpl;
+	
+	@Autowired
+	private TempComponentService tempComponentServiceImpl;
+	
+	
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
@@ -86,43 +94,62 @@ public class TemplateControl extends BaseControl{
 		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "../../views/admin/template/form_save_or_update";
 	} 
-	
+	/**
+	 * 初始化
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping("list.do")
+	@ResponseBody
+	public Object init() throws IOException{
+		try {
+			List<TempContext> list = tempContextServiceImpl.gets(null, "id", "username", "state");
+			return Message.success("请求成功", listToJSONArray(list));
+		} catch(Exception e) {
+			return Message.error("请求失败，"+e.getMessage(), null);
+		}
+	}
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(Admin admin, AdminInfor adminI) { 
+	public Object add(TempContext c) { 
 		
 		try {
+			tempContextServiceImpl.insert(c);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
-			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
+			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Admin admin, AdminInfor adminI) { 
-		
+	public Object update(TempContext c) { 
 		try {
+			String id = c.getId();
+			c.setId(null);
+			tempContextServiceImpl.update(c, "id = '"+ id +"'");
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
-			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
+			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}
 	@RequestMapping("remove.do")
 	@ResponseBody
-	public Object remove(Admin admin, AdminInfor adminI) { 
+	public Object remove(TempContext c) {
 		try {
+			tempContextServiceImpl.delete("id = '"+c.getId()+"'");
+			// 删除相关表
+			tempRowServiceImpl.delete("c_id = '" + c.getId() + "'");	
+			tempComponentServiceImpl.delete("c_id = '" + c.getId() + "'");
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
 		}
-		
 	}
 	// 添加
 	@RequestMapping("search_add.do")
 	@ResponseBody
 	public Object search_add(Admin admin, AdminInfor adminI) throws IOException{ 
 		System.out.println("添加接收参数："+admin + adminI); 
-		
 		// 保存admin账号 密码默认    保存admin信息
 		try{
 			admin.setId(TimeUtil.randomId());

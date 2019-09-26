@@ -5,10 +5,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.blog.dao.AdminDao;
+import com.blog.dao.#name#Dao;
 import com.blog.dao.BaseDao;
-import com.blog.entity.Admin;
-import com.blog.service.AdminService;
+import com.blog.entity.#name#;
+import com.blog.service.#name#Service;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
@@ -23,23 +23,23 @@ public class #name#ServiceImpl extends BasiServiceImpl<#name#, Object> implement
 	
 	@Override
 	public String getBrige_table() {
-		return "role_item_brige";
+		return "";
 	}
 	@Override
 	public String getBrige_key() {
-		return "role_id";
+		return "";
 	}
 	@Override
 	public String getBrige_association_key() {
-		return "item_id";
+		return "";
 	}
 	@Override
 	public String getAssociation_table() {
-		return "role_item";
+		return "";
 	}
 	@Override
 	public String getAssociation_table_id() {
-		return "id";
+		return "";
 	}
 	@Override
 	public String getId() {

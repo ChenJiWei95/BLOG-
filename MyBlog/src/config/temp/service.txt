@@ -1,6 +1,6 @@
 package com.blog.service;
 
-import com.blog.entity.Admin;
+import com.blog.entity.#name#;
 
 public interface #name#Service extends BasiService<#name#, Object>{
 	

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * <b>获取流之后的操作</b>
@@ -44,18 +45,19 @@ public class CharStreamImpl {
 		cs = new CharStreamEtc(file);
 	}
 	//循环读取每一行，最后关闭流
-	public void read(ParamOfCharStreamImpl impl){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void read(Consumer impl){
 		BufferedReader in = cs.getRead();
 		String line = null;
 		try {
 			while((line = in.readLine()) != null){
-				impl.impl(line);
+				impl.accept(line);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				CharStream.free(in);
+				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -68,21 +70,26 @@ public class CharStreamImpl {
 		write(str, false);
 	}
 	//附加
+	private BufferedWriter bw = null;
 	//append:true 写入在尾部/false 重开始位置写起，覆盖 
 	public void write(String str, boolean append){
-		BufferedWriter bw = null;
+		if(bw == null) bw = cs.getWrite(append);
 		try {
-			bw = cs.getWrite(append);
 			bw.write(str);
+			bw.newLine();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				CharStream.free(bw);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} 
+	}
+	public void colse() {
+		try {
+			CharStream.free(bw);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
+	public static void free(Object stream) throws IOException{
+		CharStream.free(stream);
 	}
 }
 
@@ -151,7 +158,7 @@ class CharStreamEtc {
 				: new FileWriter(file, append);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}	
+		}
 		return new BufferedWriter(fw);
 	}
 	public BufferedWriter getWrite(){
@@ -159,7 +166,5 @@ class CharStreamEtc {
 	}
 }
 
-interface ParamOfCharStreamImpl{
-	void impl(String readLine);
-}
+
 
