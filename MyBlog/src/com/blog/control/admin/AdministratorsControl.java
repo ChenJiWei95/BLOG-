@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -22,16 +20,13 @@ import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
-import com.blog.entity.WebsiteBase;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
 import com.blog.service.MenuService;
 import com.blog.service.RoleService;
-import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 @Controller
 // 数据字典
@@ -88,27 +83,6 @@ public class AdministratorsControl extends BaseControl{
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
 		}
-	}
-	
-	/**
-	 * 递归 删除关联菜单
-	 * @param id
-	 */
-	protected void remove_(String id){
-		// 递归删除关联
-		Menu m = new Menu();
-		m.setRelate_id(id);
-		List<Menu> list = menuServiceImpl.gets(m);
-		Map<String, Object> eq = null;
-		if(list != null && list.size() > 0){
-			eq = new HashMap<>(1);
-			for(Menu item : list){
-				remove_(item.getId());
-				eq.put("id", item.getId());
-				menuServiceImpl.delete(eq);
-			}
-		}
-		list = null;		
 	}
 	
 	/**

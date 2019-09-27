@@ -9,8 +9,8 @@ public class TempRow extends Base {
 	private String id;
 	private String field;
 	private String title;
-	private Integer width;
-	private boolean sort;
+	private String width;
+	private String sort;
 	private String align;
 	private String templet;
 	private String desc;
@@ -34,16 +34,17 @@ public class TempRow extends Base {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Integer getWidth() {
+	
+	public String getWidth() {
 		return width;
 	}
-	public void setWidth(Integer width) {
+	public void setWidth(String width) {
 		this.width = width;
 	}
-	public boolean isSort() {
+	public String getSort() {
 		return sort;
 	}
-	public void setSort(boolean sort) {
+	public void setSort(String sort) {
 		this.sort = sort;
 	}
 	public String getAlign() {

@@ -4,15 +4,17 @@ public class TempComponent extends Base {
 	private String id;
 	private String value;
 	private String name;
-	private boolean disable;
+	private String disable;
 	private String label;
-	private boolean hide;
-	private boolean inline;
+	private String hide;
+	private String inline;
 	private String html;  //如果有值 将会优先使用 只是相关部分具体看源码
 	private String type;
 	private String type_date;
 	private String placeholder;
 	private String event;
+	private String c_id;
+	private String desc;
 	
 	public String getValue() {
 		return value;
@@ -26,28 +28,30 @@ public class TempComponent extends Base {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public boolean isDisable() {
-		return disable;
-	}
-	public void setDisable(boolean disable) {
-		this.disable = disable;
-	}
+	 
 	public String getLabel() {
 		return label;
 	}
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	public boolean isHide() {
+	 
+	public String getDisable() {
+		return disable;
+	}
+	public void setDisable(String disable) {
+		this.disable = disable;
+	}
+	public String getHide() {
 		return hide;
 	}
-	public void setHide(boolean hide) {
+	public void setHide(String hide) {
 		this.hide = hide;
 	}
-	public boolean isInline() {
+	public String getInline() {
 		return inline;
 	}
-	public void setInline(boolean inline) {
+	public void setInline(String inline) {
 		this.inline = inline;
 	}
 	public String getHtml() {
@@ -85,6 +89,18 @@ public class TempComponent extends Base {
 	}
 	public void setEvent(String event) {
 		this.event = event;
+	}
+	public String getC_id() {
+		return c_id;
+	}
+	public void setC_id(String c_id) {
+		this.c_id = c_id;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 	
 }

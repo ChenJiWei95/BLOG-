@@ -31,49 +31,89 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">属性标识</label>
+      <label class="layui-form-label">组件名称</label>
       <div class="layui-input-inline">
-        <input type="text" name="field" autocomplete="off" class="layui-input">
+        <input type="text" name="name" autocomplete="off" class="layui-input">
       </div>
     </div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">显示值</label>
+      <label class="layui-form-label">前置语</label>
       <div class="layui-input-inline">
-        <input type="text" name="title" autocomplete="off" class="layui-input">
+        <input type="text" name="label" autocomplete="off" class="layui-input">
       </div>
     </div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">引用模板</label>
+      <label class="layui-form-label">表单值</label>
       <div class="layui-input-inline">
-        <input type="text" name="templet" autocomplete="off" class="layui-input">
+        <input type="text" name="value" autocomplete="off" class="layui-input">
       </div>
     </div> 
 	<div class="layui-form-item">
-      <label class="layui-form-label">宽度</label>
+      <label class="layui-form-label">前置语</label>
       <div class="layui-input-inline">
-        <input type="text" name="width" autocomplete="off" class="layui-input">
+        <input type="text" name="placeholder" autocomplete="off" class="layui-input">
       </div>
     </div> 
     <div class="layui-form-item">
-      <label class="layui-form-label">对齐方式</label>
+      <label class="layui-form-label">html</label>
       <div class="layui-input-inline">
-        <select name="align">
-		  <option value="center">居中</option> 
-		  <option value="left">左</option> 
-		  <option value="right">又</option> 
-           
-        </select>
-	  </div>
+        <input type="text" name="html" autocomplete="off" class="layui-input">
+      </div>
     </div> 
-	<div class="layui-form-item">
-      <label class="layui-form-label">是否可排序</label>
+    <div class="layui-form-item">
+      <label class="layui-form-label">date数据</label>
       <div class="layui-input-inline">
-        <select name="sort">
+        <input type="text" name="type_date" autocomplete="off" class="layui-input">
+      </div>
+    </div>  
+    <div class="layui-form-item">
+      <label class="layui-form-label">是否禁用</label>
+      <div class="layui-input-inline">
+        <select name="disable">
 		  <option value="01">否</option> 
 		  <option value="00">是</option> 
         </select> 
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">是否内联</label>
+      <div class="layui-input-inline">
+        <select name="inline">
+		  <option value="01">否</option> 
+		  <option value="00">是</option> 
         </select>
-	  </div>
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">是否隐藏</label>
+      <div class="layui-input-inline">
+        <select name="hide">
+		  <option value="01">否</option> 
+		  <option value="00">是</option> 
+        </select>
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">组件类型</label>
+      <div class="layui-input-inline">
+        <select name="type">
+		  <option value="-1">选择排序方式</option> 
+		  <option value="02">表单组件</option> 
+		  <option value="04">表单提交按钮</option> 
+        </select>
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">事件关联</label>
+      <div class="layui-input-inline">
+        <input type="text" name="event" autocomplete="off" class="layui-input">
+      </div>
+    </div> 
+    <div class="layui-form-item">
+      <label class="layui-form-label">描述信息</label>
+      <div class="layui-input-block">
+        <textarea class="layui-textarea" name="desc" placeholder="请输入描述信息"></textarea>
+      </div>
     </div> 
     <div class="layui-form-item layui-hide">
       <input type="button" lay-submit lay-filter="C-admin-temp-add" id="C-admin-temp-add" value="确认">
@@ -92,13 +132,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,admin = layui.admin
 	,a = "C-admin-temp-add"
 	,b = 'C-admin-temp-update'
-    ,l = "C-admin-table-table";
+    ,l = "C-admin-form-table";
   	
 	form.on("submit("+a+")", function(data){
 		console.log("submit... ========================");
 		console.log(data.field);
 		admin.cajax({
-			method: 'table_add'
+			method: 'form_add'
 			,id: l
 			,data: data.field  
 		});
@@ -106,7 +146,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	})
 	,form.on("submit("+b+")", function(data){
 		admin.cajax({
-			method: 'table_update'
+			method: 'form_update'
 			,id: l
 			,data: data.field  
 		});

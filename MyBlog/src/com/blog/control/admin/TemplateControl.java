@@ -1,9 +1,8 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,16 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
-import com.blog.entity.Admin;
-import com.blog.entity.AdminInfor;
-import com.blog.entity.Menu;
-import com.blog.entity.Role;
 import com.blog.entity.TempComponent;
 import com.blog.entity.TempContext;
 import com.blog.entity.TempRow;
-import com.blog.service.AdminInforService;
-import com.blog.service.AdminService;
-import com.blog.service.MenuService;
 import com.blog.service.RoleService;
 import com.blog.service.TempComponentService;
 import com.blog.service.TempContextService;
@@ -38,9 +30,6 @@ import com.blog.util.TimeUtil;
 // 数据字典
 @RequestMapping("/admin/tmeplate")
 public class TemplateControl extends BaseControl{
-	
-	@Autowired
-	private RoleService roleServiceImpl;
 	@Autowired
 	private TempContextService tempContextServiceImpl;
 	@Autowired
@@ -63,26 +52,22 @@ public class TemplateControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
-		// 角色集供选择
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+		 
 		return "../../views/admin/template/save_or_update";
 	} 
 	@RequestMapping("/search_save_or_update.chtml") 
 	public String save_or_update1(HttpServletRequest request, String agentno,ModelMap model){
-		// 角色集供选择
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+		 
 		return "../../views/admin/template/search_save_or_update";
 	} 
 	@RequestMapping("/table_save_or_update.chtml") 
-	public String save_or_update2(HttpServletRequest request, String agentno,ModelMap model){
-		// 角色集供选择
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+	public String save_or_update2(HttpServletRequest request,ModelMap model){
+		 
 		return "../../views/admin/template/table_save_or_update";
 	} 
 	@RequestMapping("/form_save_or_update.chtml") 
 	public String save_or_update3(HttpServletRequest request, String agentno,ModelMap model){
-		// 角色集供选择
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+		 
 		return "../../views/admin/template/form_save_or_update";
 	} 
 	/**
@@ -107,6 +92,93 @@ public class TemplateControl extends BaseControl{
 		try {
 			c.setCreate_time(getNowTime());
 			tempContextServiceImpl.insert(c);
+			
+			// list页组件初始化
+			// 按钮
+			TempComponent t = new TempComponent();
+			t.setId(TimeUtil.randomId());
+			t.setC_id(c.getId());
+			t.setLabel("input");
+			t.setType("03");
+			t.setValue("添加");
+			t.setType_date("add");
+			tempComponentServiceImpl.insert(t);
+			TempComponent t2 = new TempComponent();
+			t2.setId(TimeUtil.randomId());
+			t2.setC_id(c.getId());
+			t2.setLabel("input");
+			t2.setType("03");
+			t2.setValue("编辑");
+			t2.setType_date("edit");
+			tempComponentServiceImpl.insert(t2);
+			TempComponent t3 = new TempComponent();
+			t3.setId(TimeUtil.randomId());
+			t3.setC_id(c.getId());
+			t3.setLabel("input");
+			t3.setType("03");
+			t3.setValue("删除");
+			t3.setType_date("del");
+			tempComponentServiceImpl.insert(t3);
+			// 搜索
+			TempComponent t4 = new TempComponent();
+			t4.setId(TimeUtil.randomId());
+			t4.setC_id(c.getId());
+			t4.setLabel("ID");
+			t4.setName("id");
+			t4.setInline("01");
+			t4.setType("01");
+			tempComponentServiceImpl.insert(t4);
+			
+			// 表头项初始化
+			TempRow r = new TempRow();
+			r.setId(TimeUtil.randomId());
+			r.setC_id(c.getId());
+			r.setField("id");
+			r.setTitle("ID");
+			tempRowServiceImpl.insert(r);
+			TempRow r_1 = new TempRow();
+			r_1.setId(TimeUtil.randomId());
+			r_1.setC_id(c.getId());
+			r_1.setField("name");
+			r_1.setTitle("名称");
+			tempRowServiceImpl.insert(r_1);
+			
+			// 表单页初始化
+			// 表单组件
+			TempComponent t1_1 = new TempComponent();
+			t1_1.setId(TimeUtil.randomId());
+			t1_1.setC_id(c.getId());
+			t1_1.setLabel("ID");
+			t1_1.setName("id");
+			t1_1.setHide("00");
+			t1_1.setType("02");
+			tempComponentServiceImpl.insert(t1_1);
+			TempComponent t1_2 = new TempComponent();
+			t1_2.setId(TimeUtil.randomId());
+			t1_2.setC_id(c.getId());
+			t1_2.setLabel("名称");
+			t1_2.setName("name");
+			t1_2.setHide("01");
+			t1_2.setInline("01");
+			t1_2.setType("02");
+			tempComponentServiceImpl.insert(t1_2);
+			
+			// 提交按钮
+			TempComponent t1_3 = new TempComponent();
+			t1_3.setId(TimeUtil.randomId());
+			t1_3.setC_id(c.getId());
+			t1_3.setValue("添加");
+			t1_3.setName("C-admin-temp-add");
+			t1_3.setType("04");
+			tempComponentServiceImpl.insert(t1_3);
+			TempComponent t1_4 = new TempComponent();
+			t1_4.setId(TimeUtil.randomId());
+			t1_4.setC_id(c.getId());
+			t1_4.setValue("编辑");
+			t1_4.setName("C-admin-temp-update");
+			t1_4.setType("04");
+			tempComponentServiceImpl.insert(t1_4);
+			
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e) {
 			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
@@ -152,34 +224,18 @@ public class TemplateControl extends BaseControl{
 		}
 	}
 	// 添加
-	@RequestMapping("search_add.do")
+	@RequestMapping({"search_add.do", "form_add.do"})
 	@ResponseBody
 	public Object search_add(TempComponent c) throws IOException{ 
 		System.out.println("添加接收参数："+c); 
 		// 保存admin账号 密码默认    保存admin信息
 		try{
-			c.setType("01");
 			tempComponentServiceImpl.insert(c);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
 		}
-	}
-	// 添加
-	@RequestMapping("form_add.do")
-	@ResponseBody
-	public Object form_add(TempComponent c) throws IOException{ 
-		System.out.println("添加接收参数："+c); 
-		
-		// 保存admin账号 密码默认    保存admin信息
-		try{
-			c.setType("02");
-			tempComponentServiceImpl.insert(c);
-			return com.blog.util.Message.success("请求成功", null);
-		}catch(Exception e){
-			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
-		}
-	}	
+	} 
 	// 添加
 	@RequestMapping("table_add.do")
 	@ResponseBody
@@ -191,7 +247,7 @@ public class TemplateControl extends BaseControl{
 			tempRowServiceImpl.insert(t);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
-			return com.blog.util.Message.error("请求失败"+e.getMessage(), null);
+			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}	 
 	
@@ -203,18 +259,46 @@ public class TemplateControl extends BaseControl{
 	 */
 	@RequestMapping({"search_remove.do", "form_remove.do"})
 	@ResponseBody
-	public Object remove1(TempComponent t) throws IOException{
-		// 判断token是否正确  删除admin 和 adminInfor
-		tempComponentServiceImpl.delete("id = '"+ t.getId()+"'");
-		return Message.success("请求成功", null);
+	public Object remove1(HttpServletRequest request) {
+		try {
+			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			StringBuffer sb = new StringBuffer();
+			
+			for(int i = 0; i < json.size(); i++) {
+				JSONObject object = json.getJSONObject(i);
+				sb.append(singleMarkOfEq("id", object.getString("id")) + "OR ");
+			}
+			if(json.size() > 0) {
+				sb.delete(sb.length()-3, sb.length());
+				tempComponentServiceImpl.delete(sb.toString());
+			}
+			return Message.success("请求成功", null);
+		} catch(Exception e) {
+			return Message.error("请求失败，"+e.getMessage(), null);
+		}
+		
 	} 
 	@RequestMapping("table_remove.do")
 	@ResponseBody
-	public Object remove3(TempRow t) throws IOException{
+	public Object remove3(HttpServletRequest request) {
+		try {
+			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			StringBuffer sb = new StringBuffer();
+			
+			for(int i = 0; i < json.size(); i++) {
+				JSONObject object = json.getJSONObject(i);
+				sb.append(singleMarkOfEq("id", object.getString("id")) + "OR ");
+			}
+			if(json.size() > 0) {
+				sb.delete(sb.length()-3, sb.length());
+				tempRowServiceImpl.delete(sb.toString());
+			}
+			return Message.success("请求成功", null);
+		} catch (Exception e) {
+			return Message.error("请求失败，"+e.getMessage(), null);
+		}
 		
-		tempRowServiceImpl.delete("id = '"+t.getId()+"'");
 		
-		return Message.success("请求成功", null);
 	}
 	
 	/**
@@ -253,14 +337,12 @@ public class TemplateControl extends BaseControl{
 	@RequestMapping("form_list.do")
 	@ResponseBody
 	public Object init2(String id) throws IOException{ 
-		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "02"))));
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "02")+"OR "+singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "04"))));
 	}
 	@RequestMapping("search_list.do")
 	@ResponseBody
 	public Object init3(String id) throws IOException{
-		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "01"))));
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "01")+"OR "+singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "03"))));
 	}
-	
-	
 	
 }
