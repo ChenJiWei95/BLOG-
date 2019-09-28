@@ -81,7 +81,7 @@ public class CharStreamImpl {
 			e.printStackTrace();
 		} 
 	}
-	public void colse() {
+	public void close() {
 		try {
 			CharStream.free(bw);
 		} catch (IOException e) {

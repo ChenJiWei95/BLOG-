@@ -60,7 +60,7 @@ public class TempJava {
 		});
 		
 		c.write(sb.toString());
-		c.colse();
+		c.close();
 		System.out.println("删除mapper配置信息：已删除！");		
 	}
 	
@@ -104,7 +104,7 @@ public class TempJava {
 					.replaceAll("#classify#", classify), true);
 		});
 		
-		copy.colse();
+		copy.close();
 		
 		System.out.println("生成控制类："+srcPath("com/blog/control/admin/"+name+"Control.java"));
 		
@@ -126,7 +126,7 @@ public class TempJava {
 					configClassPath+System.lineSeparator()+sign));
 			System.out.println("添加mapper配置信息：<mapper resource=\"com/blog/mapper/"+name+"Mapper.xml\" />");
 		}else System.out.println("添加mapper配置信息：配置已存在！");
-		c.colse();
+		c.close();
 		
 	}		
 	public static void do3(String name, String[] args) {
@@ -154,7 +154,7 @@ public class TempJava {
 		}
 		
 		c.write("}");
-		c.colse();
+		c.close();
 		
 		System.out.println("生成实体类："+srcPath("com/blog/entity/"+name+".java"));
 		
