@@ -14,9 +14,18 @@ public class AutoJava {
 	private StringBuilder sb = new StringBuilder();
 	private Context context = new Context();
 	static Map<String, String> key = new HashMap<>();
+	static Map<String, String> commond = new HashMap<>();
 	private Stack<String> spaceStack = new Stack<>();
 	private boolean isSpace = true;
 	public static void main(String[] args) {
+		commond.put("public", "001");
+		commond.put("protected", "001");
+		commond.put("private", "001");
+		commond.put(" ", "000");
+		commond.put("static", "005");
+		commond.put("void", "006");
+		commond.put("String", "006");commond.put("sort", "006");commond.put("byte", "006");commond.put("char", "006");
+		commond.put("int", "006");commond.put("long", "006");commond.put("boolean", "006");
 		//00 public  01 protected  02 private
 		//03 void 04 String 05   其他各种类型 
 		key.put("00", "public");
@@ -43,7 +52,7 @@ public class AutoJava {
 	}
 	public void dod() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		context.setStrategy(new ClazzStrategy());
-		context.setNowDo("编写成员变量");
+		context.setNowDo("编写类");
 		ClaTask task = new ClaTask();
 		task.setConfig(new ClaConfig());
 		
