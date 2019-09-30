@@ -26,6 +26,7 @@
 	</settings>
    	<!--  配置mapper -->
     <mappers>
+    	<!-- https://blog.csdn.net/zhoujiyu123/article/details/79076579 -->
     	<mapper resource="com/blog/mapper/UserMapper.xml" />
     	<mapper resource="com/blog/mapper/AdminInforMapper.xml" />
     	<mapper resource="com/blog/mapper/RelateMapper.xml" />
