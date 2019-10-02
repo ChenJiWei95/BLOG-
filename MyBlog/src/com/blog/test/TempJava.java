@@ -19,13 +19,17 @@ import com.blog.util.CharStreamImpl;
  * @author cjw
  */
 public class TempJava {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		do7("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "), "cjw2", "测试2");
+//		doHTML("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "));
+//		doJSTableHead("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "));
+//		doJSEdit("id name value code type desc create_time update_time".split(" "));
 		// 只操作字符串类型的数据
-		// 类名称-小写	 	表名称 	实体类字段
-//		do1("tempText", "temp_text", new String[]{"name", "id"});
+		// 类名称-小写	 	表名称 	实体类字段 
+//		do1("data", "data", "data", new String[]{"id", "name", "value", "code", "type", "desc", "create_time", "update_time"});
 //		delete("tempText");
 		
-//		do6("TempText", "tempText", "temp");
+//		do6("TempText", "tempText", "temp"); // 生成控制类
 	}
 	
 	public static void delete(String name_) {
@@ -40,13 +44,12 @@ public class TempJava {
 				file.delete();
 				System.out.println("删除文件," + copyPath);
 			}
-			
 		}
 		delete2(name);
 		
 	}
 	
-	public static void delete2(String name) {
+	private static void delete2(String name) {
 		// mybatis-config.xml 配置mapper项
 		CharStreamImpl c = new CharStreamImpl(srcPath("config/mybatis-config.xml"));
 		StringBuilder sb = new StringBuilder();
@@ -65,9 +68,17 @@ public class TempJava {
 	}
 	
 	private static int num = 0;
-	public static String upFirst(String str) {
+	private static String upFirst(String str) {
 		return str.substring(0,1).toUpperCase() + str.substring(1);
 	}
+	
+	// 生成js代码
+	public static void do1_1(String name_, String table, String classify,  String fileds, String Texts){
+		//args 根据字段生成表头js文
+		doJSTableHead(fileds.split(" "), Texts.split(" "));
+		do1(name_, table, classify, fileds.split(" "));
+	}
+
 	public static void do1(String name_, String table, String classify,  String[] args) {
 		String name = name_.substring(0,1).toUpperCase() + name_.substring(1);
 		
@@ -92,6 +103,94 @@ public class TempJava {
 		// 生成控制类
 		do6(name, name_, classify);
 	}
+	
+	// 生成前端模板文件
+	public static void do7 (String[] args, String[] texts, String classify, String title) throws IOException{
+		
+		String dir = webContentPath("views/admin/"+classify+"/save_or_update.jsp");
+		dir = dir.substring(0, dir.lastIndexOf("/"));
+		File file = null;
+		if(!(file = new File(dir)).isDirectory()){
+			System.out.println("创建文件夹【"+file.getPath()+"】");
+			file.mkdir();
+		}
+		
+		CharStreamImpl c = new CharStreamImpl(srcPath("config/temp/save_or_update.txt"));
+		
+		CharStreamImpl copy = new CharStreamImpl(webContentPath("views/admin/"+classify+"/save_or_update.jsp"));
+		c.read(line->{
+			String str = (String) line;
+			copy.write(str
+					.replaceAll("#form-item#", doHTML(args, texts))
+					.replaceAll("#title#", title)
+					.replaceAll("#classify#", classify)
+					.replaceAll("#js-edit#", doJSEdit(args))
+					.replaceAll("#table-head#", doJSTableHead(args, texts))
+					.replaceAll("#classify#", classify), true);
+		});
+		copy.close();
+		System.out.println("完成文件【"+webContentPath("views/admin/"+classify+"/save_or_update.jsp")+"】的生成");
+		
+		c = new CharStreamImpl(srcPath("config/temp/list.txt"));
+		CharStreamImpl copy_ = new CharStreamImpl(webContentPath("views/admin/"+classify+"/list.jsp"));
+		c.read(line->{
+			String str = (String) line;
+			copy_.write(str
+					.replaceAll("#form-item#", doHTML(args, texts))
+					.replaceAll("#title#", title)
+					.replaceAll("#classify#", classify)
+					.replaceAll("#js-edit#", doJSEdit(args))
+					.replaceAll("#table-head#", doJSTableHead(args, texts))
+					.replaceAll("#classify#", classify), true);
+		});
+		copy_.close();
+		System.out.println("完成文件【"+webContentPath("views/admin/"+classify+"/list.jsp")+"】的生成");
+	}
+	private static String doHTML(String[] args, String[] texts){
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < args.length; i++){
+			if("id".equals(args[i])){
+				sb.append("<div class=\"layui-hide\">"+"\n"+
+						"\t<label class=\"layui-form-label\">ID</label>"+"\n"+
+						"\t<div class=\"layui-input-inline\">"+"\n"+
+						"\t\t<input type=\"text\" name=\"id\" disabled autocomplete=\"off\" class=\"layui-input layui-disabled\">"+"\n"+
+						"\t</div>"+"\n"+
+						"</div>"+"\n");
+			}else if("desc".equals(args[i])){
+				sb.append("<div class=\"layui-form-item\">"+"\n"+
+						"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
+		      			"\t<div class=\"layui-input-inline\">"+"\n"+
+		        		"\t\t<textarea class=\"layui-textarea\" name=\""+args[i]+"\" placeholder=\"请输入描述信息\"></textarea>"+"\n"+
+		        		"\t</div>"+"\n"+
+						"</div>"+"\n");
+			}else {
+				sb.append("<div class=\"layui-form-item\">"+"\n"+
+						"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
+		      			"\t<div class=\"layui-input-inline\">"+"\n"+
+		        		"\t\t<input type=\"text\" name=\""+args[i]+"\" placeholder=\"请输入"+texts[i]+"\" autocomplete=\"off\" class=\"layui-input\">"+"\n"+
+		        		"\t</div>"+"\n"+
+						"</div>"+"\n");
+			}
+		}
+//		System.out.println(sb.toString());
+		return sb.toString();
+	}
+	private static String doJSEdit(String[] args){
+		StringBuilder sb = new StringBuilder();
+		for(String arg : args){
+			sb.append(",iframe.find('"+("desc".equals(arg)?"textarea" : "input")+"[name=\""+arg+"\"]')[0].value = data[0]."+arg);
+			sb.append("\n");
+		}
+		return sb.deleteCharAt(0).toString();
+	}
+	private static String doJSTableHead(String[] args, String[] texts){
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < args.length; i++){
+			sb.append(",{field:'"+args[i]+"', title:'"+texts[i]+"'}");
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
 	public static void do6(String name, String name_, String classify) {
 		
 		CharStreamImpl c = new CharStreamImpl(srcPath("config/temp/TempControl.txt"));
@@ -111,6 +210,10 @@ public class TempJava {
 	}
 	public static String srcPath(String path){
 		return TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+path;
+	}
+	public static String webContentPath(String path){
+		//C:/Users/Administrator.USER-20160224QQ/git/repository6/MyBlog/WebContent/
+		return TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "WebContent")+path;
 	}
 	public static void do5(String name) {
 		// mybatis-config.xml 配置mapper项

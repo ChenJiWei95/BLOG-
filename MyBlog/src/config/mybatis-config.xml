@@ -38,6 +38,8 @@
     	<mapper resource="com/blog/mapper/TempContextMapper.xml" />
     	<mapper resource="com/blog/mapper/TempComponentMapper.xml" />
     	<mapper resource="com/blog/mapper/TempRowMapper.xml" />
+		<mapper resource="com/blog/mapper/DataMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>
+

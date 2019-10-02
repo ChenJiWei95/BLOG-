@@ -18,48 +18,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body style="padding-right: 20px;">  
   <div class="layui-form" lay-filter="layuiadmin-form-data" id="layuiadmin-form-data" style="padding: 20px 30px 0 0;">
-    <div class="layui-form-item">
-      <label class="layui-form-label">ID</label>
-      <div class="layui-input-inline"> 
-        <input type="text" name="id" disabled placeholder="不允许操作" autocomplete="off" class="layui-input layui-disabled">
-      </div>
-    </div>
+	<div class="layui-hide">
+		<label class="layui-form-label">ID</label>
+		<div class="layui-input-inline">
+			<input type="text" name="id" disabled autocomplete="off" class="layui-input layui-disabled">
+		</div>
+	</div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">名称</label>
-      <div class="layui-input-inline">
-        <input type="text" name="type_name" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">代码</label>
-      <div class="layui-input-inline">
-        <input type="text" name="type_code" lay-verify="type_code" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">创建时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="create_time" disabled placeholder="创建时间" autocomplete="off" class="layui-input layui-disabled">
-      </div>
-    </div>
+		<label class="layui-form-label">名称</label>
+		<div class="layui-input-inline">
+			<input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input">
+		</div>
+	</div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">修改时间</label>
-      <div class="layui-input-inline">
-        <input type="text" name="update_time" disabled placeholder="修改时间" autocomplete="off" class="layui-input layui-disabled">
-      </div>
-    </div> 
+		<label class="layui-form-label">值</label>
+		<div class="layui-input-inline">
+			<input type="text" name="value" placeholder="请输入值" autocomplete="off" class="layui-input">
+		</div>
+	</div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">值</label>
-      <div class="layui-input-inline">
-        <input type="text" name="type_value" lay-verify="type_value" autocomplete="off" class="layui-input">
-      </div>
-    </div>	 
+		<label class="layui-form-label">代码</label>
+		<div class="layui-input-inline">
+			<input type="text" name="code" placeholder="请输入代码" autocomplete="off" class="layui-input">
+		</div>
+	</div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">描述信息</label>
-      <div class="layui-input-inline">
-        <textarea class="layui-textarea" name="msg" placeholder="请输入描述信息"></textarea>
-      </div>
-    </div>
+		<label class="layui-form-label">类型</label>
+		<div class="layui-input-inline">
+			<input type="text" name="type" placeholder="请输入类型" autocomplete="off" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">创建时间</label>
+		<div class="layui-input-inline">
+			<input type="text" name="create_time" placeholder="请输入创建时间" autocomplete="off" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">修改时间</label>
+		<div class="layui-input-inline">
+			<input type="text" name="update_time" placeholder="请输入修改时间" autocomplete="off" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">描述</label>
+		<div class="layui-input-inline">
+			<textarea class="layui-textarea" name="desc" placeholder="请输入描述信息"></textarea>
+		</div>
+	</div>
     <div class="layui-form-item layui-hide">
       <button lay-submit lay-filter="set-data-form-add" id="set-data-form-add">添加</button>
 	  <button lay-submit lay-filter="set-data-form-edit" id="set-data-form-edit">修改</button>
@@ -71,48 +77,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index'], function(){
+  }).use(['index', 'form', 'admin'], function(){
 		var table = layui.table
 		,$ = layui.$
 		,a = 'set-data-form-add'
-		,b = 'set-data-form-edit';
+		,b = 'set-data-form-edit'
+		,l = 'LAY-app-set-data'
+		,form = layui.form
+		,admin = layui.admin;
 		//添加
 		form.on("submit("+a+")", function(data){
-			var index = parent.layer.getFrameIndex(window.name); 
 			//执行 Ajax 后重载 
-			admin.req({
-				url: 'add.do'
-				,type: 'post'	
-				,data: {data: JSON.stringify(data.field)}
-				,dataType: "json"
-				,done: function(data){
-					layer.msg("添加成功！", {time: 2000})
-				} 
-				,fail: function(data){
-					layer.msg("添加失败！", {time: 2000})
-				}
-			});			  
-			parent.layer.close(index);
+			admin.cajax({
+				method: 'add'
+				,id: l
+				,data: data.field  
+			});		  
 			return !1;
 		})
 		//编辑
 		,form.on("submit("+b+")", function(data){
-			var index = parent.layer.getFrameIndex(window.name);
-			data.field['id'] = param;
 			//console.log(JSON.stringify(data.field));
 			//执行 Ajax 后重载
-			$.req({
-				url: 'update.do'
-				,type: 'post'	
-				,data: {data: JSON.stringify(data.field)}
-				,done: function(data){
-					layer.msg("修改成功！", {time: 2000});
-				}
-				,fail: function(data){
-					layer.msg("修改失败！", {time: 2000})
-				}
-			});	
-			parent.layer.close(index);
+			admin.cajax({
+				method: 'update'
+				,id: l
+				,data: data.field  
+			});
 			return !1;
 		})
   })

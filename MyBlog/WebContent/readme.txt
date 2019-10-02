@@ -1,5 +1,8 @@
+
+#form-item# #title# #classify# #js-edit# #table-head#
 数据字典
 	id name value code type desc create_time update_time
+	ID 名称 值 代码 类型 描述 创建时间 修改时间
 	
 searchs ==> temp_component 
 cols ok

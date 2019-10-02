@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	type: 2
 				  	,title: '数据字典操作 添加'
 				  	,content: 'save_or_update.chtml'
-				  	,area: ['420px', '480px']
+				  	,area: ['420px', '400px']
 				  	,btn: ['确定', '取消']
 				  	,yes: function(index, layero){
 						layero.find(f).contents().find("#"+a).click();
@@ -70,27 +70,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}); 
 			}
 			,edit: function(){
-				var checkStatus = table.checkStatus(d)
+				var checkStatus = table.checkStatus(l)
 				,data = checkStatus.data; //得到选中的数据
+				console.log(data);
 				data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") : 
 				layer.open({
 						type: 2,
 						title: "数据字典操作 修改",
-						content: "save_or_update.chtml?id=" + data[0].id,
-						area: ["450px", "200px"],
+						content: "save_or_update.chtml",
+						area: ["420px", "400px"],
 						btn: ["确定", "取消"],
 						yes: function(index, layero) {
 							layero.find(f).contents().find("#"+b).click(); 
 						},
-						success: function(t, e) {
-							var iframe = t.find(f).contents().find("#"+t);
+						success: function(layo, e) {
+							var iframe = layo.find(f).contents().find("#"+t);
 							iframe.find('input[name="name"]')[0].value = data[0].name
-							,iframe.find('input[name="id"]')[0].value = data[0].id 
-							,iframe.find('input[name="code"]')[0].value = data[0].code
+							,iframe.find('input[name="id"]')[0].value = data[0].id
+							,iframe.find('input[name="name"]')[0].value = data[0].name
 							,iframe.find('input[name="value"]')[0].value = data[0].value
-							,iframe.find('input["create_time"]')[0].value = (data[0].create_time)
-							,iframe.find('input["update_time"]')[0].value = (data[0].update_time)
-							,iframe.find('textarea[name="desc"]')[0].value = data[0].desc;
+							,iframe.find('input[name="code"]')[0].value = data[0].code
+							,iframe.find('input[name="type"]')[0].value = data[0].type
+							,iframe.find('textarea[name="desc"]')[0].value = data[0].desc
+							,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
+							,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
 						}
 				})
 			}
@@ -98,29 +101,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var checkStatus = table.checkStatus(l)
 				,checkData = checkStatus.data; //得到选中的数据
 				checkData.length == 0 ? layer.msg("请选中") :
-				layer.prompt({
-				  	formType: 1
-				  	,title: '敏感操作，请验证口令'
-				}, function(value, index){
-					layer.close(index); // 必须放在靠前的位置，否则无法关闭
-				  	var arr = []; 
+				
+			  	layer.confirm('确定删除吗？', function(data) {
+			  		var arr = [];
 				  	for(var index in checkData){
 					  	var data = {};
-					  	data["token"] = value
-					  	,data["id"] = checkData[index].id;
+					  	data["id"] = checkData[index].id;
 					  	arr[index] = data;
 				  	}
-				  	layer.confirm('确定删除吗？', function(data) {
-					  	admin.cajax({
-						  	method: 'remove'
-						  	,data: JSON.stringify(arr) 
-						  	,success: function(){
-						  		table.reload(l);
-						  		layer.close(layer.index);
-						  	}
-					  	}); 	  
-				  	});
-				}); 
+				  	admin.cajax({
+					  	method: 'remove'
+					  	,data: JSON.stringify(arr) 
+					  	,success: function(){
+					  		table.reload(l);
+					  		layer.close(layer.index);
+					  	}
+				  	}); 	  
+			  	});
 			}
 		};
 		table.render({
@@ -128,15 +125,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,url: 'list.do'  
 			,cols: [[
 				{type: 'checkbox', fixed: 'left'}
-				,{field:'id', title:'ID', fixed: 'left', sort: true}
-				,{field:'code', title:'类型代码', width:120, sort: true}
-				,{field:'name', title:'名称', width:150, sort: true}
-				,{field:'create_time', title:'创建时间', width:150, sort: true}
-				,{field:'update_time', title:'修改时间', width:150, sort: true}
-				,{field:'value', title:'值', width:80}
-				,{field:'desc', title:'备注', width:100}  
+				,{field:'id', title:'ID'}
+				,{field:'name', title:'名称'}
+				,{field:'value', title:'值'}
+				,{field:'code', title:'代码'}
+				,{field:'type', title:'类型'}
+				,{field:'desc', title:'描述'}
+				,{field:'create_time', title:'创建时间'}
+				,{field:'update_time', title:'修改时间'} 
 			]]
-			,page: !0 
 			,text: "对不起，加载出现异常！"
 		});
 		$('.layui-btn.layuiadmin-btn-data').on('click', function(){

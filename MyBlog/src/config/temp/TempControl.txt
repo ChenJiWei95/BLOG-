@@ -74,7 +74,7 @@ public class #name#Control extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
@@ -100,7 +100,7 @@ public class #name#Control extends BaseControl{
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-			#name_#ServiceImpl.update(t, "id = "+t.getId()); 
+			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
@@ -116,10 +116,8 @@ public class #name#Control extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			JSONArray jsonArray = new JSONArray();
 			List<#name#> list = #name_#ServiceImpl.getAll();
-			
-			return Message.success("请求成功", jsonArray);
+			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
