@@ -39,7 +39,11 @@
     	<mapper resource="com/blog/mapper/TempComponentMapper.xml" />
     	<mapper resource="com/blog/mapper/TempRowMapper.xml" />
 		<mapper resource="com/blog/mapper/DataMapper.xml" />
+		<mapper resource="com/blog/mapper/ATagMapper.xml" />
+		<mapper resource="com/blog/mapper/ArticleMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>
+
+
 

@@ -20,16 +20,26 @@ import com.blog.util.CharStreamImpl;
  */
 public class TempJava {
 	public static void main(String[] args) throws IOException {
-		do7("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "), "cjw2", "测试2");
-//		doHTML("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "));
-//		doJSTableHead("id name value code type desc create_time update_time".split(" "), "ID 名称 值 代码 类型 描述 创建时间 修改时间".split(" "));
-//		doJSEdit("id name value code type desc create_time update_time".split(" "));
+		String fileds = "id name create_time update_time pit_url mark_url simp_desc";
+		String texts = "ID 文章名称 创建时间 修改时间 图片 资源地址 描述";
+		
+		// 生成js和java代码 调用这个  
+		do1_1("article", "article", "article", fileds, texts, "文章管理");
+
+		// 下面为测试
+		
+		// 生成前端模板文件     字段name值， 字段显示值，分类，title
+//		do7(fileds.split(" "), texts.split(" "), "cjw2", "测试2");
+//		doHTML(fileds.split(" "), texts.split(" "));
+//		doJSTableHead(fileds.split(" "), texts.split(" "));
+//		doJSEdit(fileds.split(" "));
+		
 		// 只操作字符串类型的数据
 		// 类名称-小写	 	表名称 	实体类字段 
-//		do1("data", "data", "data", new String[]{"id", "name", "value", "code", "type", "desc", "create_time", "update_time"});
 //		delete("tempText");
 		
-//		do6("TempText", "tempText", "temp"); // 生成控制类
+		// 生成控制类
+//		do6("TempText", "tempText", "temp"); 
 	}
 	
 	public static void delete(String name_) {
@@ -73,9 +83,13 @@ public class TempJava {
 	}
 	
 	// 生成js代码
-	public static void do1_1(String name_, String table, String classify,  String fileds, String Texts){
+	public static void do1_1(String name_, String table, String classify,  String fileds, String Texts, String title){
 		//args 根据字段生成表头js文
-		doJSTableHead(fileds.split(" "), Texts.split(" "));
+		try {
+			do7(fileds.split(" "), Texts.split(" "), classify, title);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		do1(name_, table, classify, fileds.split(" "));
 	}
 
@@ -102,6 +116,9 @@ public class TempJava {
 		
 		// 生成控制类
 		do6(name, name_, classify);
+		
+		// 生成前端模板文件     字段name值， 字段显示值，分类，title
+//		do7(fileds.split(" "), texts.split(" "), "cjw2", "测试2");
 	}
 	
 	// 生成前端模板文件
@@ -148,28 +165,36 @@ public class TempJava {
 	}
 	private static String doHTML(String[] args, String[] texts){
 		StringBuilder sb = new StringBuilder();
+		String t = "\t";
 		for(int i = 0; i < args.length; i++){
 			if("id".equals(args[i])){
 				sb.append("<div class=\"layui-hide\">"+"\n"+
-						"\t<label class=\"layui-form-label\">ID</label>"+"\n"+
-						"\t<div class=\"layui-input-inline\">"+"\n"+
-						"\t\t<input type=\"text\" name=\"id\" disabled autocomplete=\"off\" class=\"layui-input layui-disabled\">"+"\n"+
-						"\t</div>"+"\n"+
-						"</div>"+"\n");
-			}else if("desc".equals(args[i])){
-				sb.append("<div class=\"layui-form-item\">"+"\n"+
-						"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
-		      			"\t<div class=\"layui-input-inline\">"+"\n"+
-		        		"\t\t<textarea class=\"layui-textarea\" name=\""+args[i]+"\" placeholder=\"请输入描述信息\"></textarea>"+"\n"+
-		        		"\t</div>"+"\n"+
-						"</div>"+"\n");
+						t+"\t<label class=\"layui-form-label\">ID</label>"+"\n"+
+						t+"\t<div class=\"layui-input-inline\">"+"\n"+
+						t+"\t\t<input type=\"text\" name=\"id\" disabled autocomplete=\"off\" class=\"layui-input layui-disabled\">"+"\n"+
+						t+"\t</div>"+"\n"+
+						t+"</div>"+"\n");
+			}else if(args[i].indexOf("desc") != -1){
+				sb.append(t+"<div class=\"layui-form-item\">"+"\n"+
+						t+"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
+						t+"\t<div class=\"layui-input-inline\">"+"\n"+
+						t+"\t\t<textarea class=\"layui-textarea\" name=\""+args[i]+"\" placeholder=\"请输入描述信息\"></textarea>"+"\n"+
+						t+"\t</div>"+"\n"+
+						t+"</div>"+"\n");
+			}else if("create_time".equals(args[i]) || "update_time".equals(args[i])){
+				sb.append(t+"<div class=\"layui-form-item\">"+"\n"+
+						t+"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
+						t+"\t<div class=\"layui-input-inline\">"+"\n"+
+						t+"\t\t<input type=\"text\" name=\""+args[i]+"\" disabled placeholder=\"请输入"+texts[i]+"\" autocomplete=\"off\" class=\"layui-input layui-disabled\">"+"\n"+
+						t+"\t</div>"+"\n"+
+		        		t+"</div>"+"\n");
 			}else {
-				sb.append("<div class=\"layui-form-item\">"+"\n"+
-						"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
-		      			"\t<div class=\"layui-input-inline\">"+"\n"+
-		        		"\t\t<input type=\"text\" name=\""+args[i]+"\" placeholder=\"请输入"+texts[i]+"\" autocomplete=\"off\" class=\"layui-input\">"+"\n"+
-		        		"\t</div>"+"\n"+
-						"</div>"+"\n");
+				sb.append(t+"<div class=\"layui-form-item\">"+"\n"+
+						t+"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
+						t+"\t<div class=\"layui-input-inline\">"+"\n"+
+						t+"\t\t<input type=\"text\" name=\""+args[i]+"\" placeholder=\"请输入"+texts[i]+"\" autocomplete=\"off\" class=\"layui-input\">"+"\n"+
+						t+"\t</div>"+"\n"+
+						t+"</div>"+"\n");
 			}
 		}
 //		System.out.println(sb.toString());
@@ -178,7 +203,7 @@ public class TempJava {
 	private static String doJSEdit(String[] args){
 		StringBuilder sb = new StringBuilder();
 		for(String arg : args){
-			sb.append(",iframe.find('"+("desc".equals(arg)?"textarea" : "input")+"[name=\""+arg+"\"]')[0].value = data[0]."+arg);
+			sb.append(("id".equals(arg) ? "" : "\t\t\t\t\t,")+"iframe.find('"+("desc".equals(arg)?"textarea" : "input")+"[name=\""+arg+"\"]')[0].value = data[0]."+arg);
 			sb.append("\n");
 		}
 		return sb.deleteCharAt(0).toString();
@@ -186,8 +211,8 @@ public class TempJava {
 	private static String doJSTableHead(String[] args, String[] texts){
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < args.length; i++){
-			sb.append(",{field:'"+args[i]+"', title:'"+texts[i]+"'}");
-			sb.append("\n");
+			sb.append(("id".equals(args[i]) ? "" : "\t\t\t")+",{field:'"+args[i]+"', title:'"+texts[i]+"'}");
+			sb.append("\n");	
 		}
 		return sb.toString();
 	}

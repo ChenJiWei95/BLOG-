@@ -1,12 +1,10 @@
 package com.blog.entity;
-public class Article extends Base{
+public class ATag extends Base{
 	private String id;
 	private String name;
 	private String create_time;
 	private String update_time;
-	private String pit_url;
-	private String mark_url;
-	private String simp_desc;
+	private String desc;
 
 
 	public String getId() {
@@ -33,22 +31,10 @@ public class Article extends Base{
 	public void setUpdate_time(String update_time) {
 		this.update_time = update_time;
 	}
-	public String getPit_url() {
-		return pit_url;
+	public String getDesc() {
+		return desc;
 	}
-	public void setPit_url(String pit_url) {
-		this.pit_url = pit_url;
-	}
-	public String getMark_url() {
-		return mark_url;
-	}
-	public void setMark_url(String mark_url) {
-		this.mark_url = mark_url;
-	}
-	public String getSimp_desc() {
-		return simp_desc;
-	}
-	public void setSimp_desc(String simp_desc) {
-		this.simp_desc = simp_desc;
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 }

@@ -16,40 +16,40 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
-import com.blog.entity.#name#;
-import com.blog.service.#name#Service;
+import com.blog.entity.ATag;
+import com.blog.service.ATagService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 
 @Controller
 // 数据字典
-@RequestMapping("/admin/#classify#")
-public class #name#Control extends BaseControl{
+@RequestMapping("/admin/atag")
+public class ATagControl extends BaseControl{
 	
 	@Autowired
-	private #name#Service #name_#ServiceImpl;
+	private ATagService aTagServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		return "../../views/admin/#classify#/list";
+		return "../../views/admin/atag/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		// 角色集供选择
-		return "../../views/admin/#classify#/save_or_update";
+		return "../../views/admin/atag/save_or_update";
 	} 
 	
 	// 添加
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(#name# t) throws IOException{ 
+	public Object add(ATag t) throws IOException{ 
 		System.out.println("添加接收参数："+t); 
 		
 		try{
 			t.setCreate_time(getNowTime());
-			#name_#ServiceImpl.insert(t);
+			aTagServiceImpl.insert(t);
 			
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
@@ -78,7 +78,7 @@ public class #name#Control extends BaseControl{
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
-				#name_#ServiceImpl.delete(sb.toString());
+				aTagServiceImpl.delete(sb.toString());
 			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
@@ -96,11 +96,11 @@ public class #name#Control extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(#name# t) throws IOException{ 
+	public Object update(ATag t) throws IOException{ 
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			aTagServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
@@ -116,7 +116,7 @@ public class #name#Control extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			List<#name#> list = #name_#ServiceImpl.getAll();
+			List<ATag> list = aTagServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
