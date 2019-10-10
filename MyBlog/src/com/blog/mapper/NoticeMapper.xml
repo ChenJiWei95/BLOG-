@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.dao.NoticeDao">
+	
+	<select id="find" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		${sql}
+	</select>
+	
+	<!-- 测试 ${} $和#的区别 需要另外编写防sql注入处理 -->
+	<select id="get" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where> 
+		<if test="orderBySql!=null"> ${orderBySql}</if>
+		<if test="limitSql!=null"> ${limitSql}</if>
+	</select>
+	
+	<!-- 测试模板 -->
+	<update id="update" parameterType="com.blog.util.sql.EqAdapter">
+		update ${table} set ${updateSql}
+		<where>
+		  	1=1 
+			<if test="whereSql!=null"> ${whereSql}</if>
+			<if test="likeSql!=null"> AND ${likeSql}</if>
+		</where> 
+		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
+	</update>
+	
+	<delete id="delete" parameterType="com.blog.util.sql.EqAdapter">
+		delete from ${table} 
+		<where>
+			1=1 
+			<if test="whereSql!=null"> ${whereSql}</if>
+			<if test="likeSql!=null"> AND ${likeSql}</if>
+		</where> 
+		<!-- operate = #{operate, jdbcType=TINYINT}, `end_time` = #{end_time, jdbcType=TIMESTAMP}, `advise` = #{advise,jdbcType=VARCHAR} --> 
+	</delete>
+	
+	<insert id="insert" parameterType="com.blog.util.sql.EqAdapter">
+		insert into ${table}(${columnSql}) values(${values});
+	</insert>
+	
+	<!-- 多表关联测试 -->
+	<resultMap id="selfList" type="java.lang.Object">
+		 
+	</resultMap>
+	
+	<select id="associate" resultMap="selfList" useCache="false">
+		SELECT
+			${columnSql} 
+		FROM
+			${association_table} 
+		WHERE
+			${association_table_id} IN (
+			SELECT 
+				DISTINCT ${brige_table}.${brige_association_key} 
+			FROM 
+				${brige_table}, ${table} 
+				${whereSqlOfAssociation}
+			)
+		<if test="orderBySql!=null"> ${orderBySql}</if>
+		<if test="limitSql!=null"> ${limitSql}</if>
+		<!-- SELECT
+			{cloumn} 
+		FROM
+			{table} 
+		WHERE
+			{id} IN (
+			SELECT 
+				DISTINCT {brige_table}.{brige_key} 
+			FROM 
+				{brige_table}, {association_table} 
+			WHERE 
+				{brige_table}.{brige_association_key} = {associate_table}.{association_table_id} 
+				AND {association_table}.{association_table_id} = '1' 
+			); -->
+	</select>
+	
+	<!-- 根据不同条件去查找；返回集合 --> 
+	<select id="gets" resultMap="userList" useCache="false">
+		SELECT * FROM ${table}
+	</select>
+	
+	<!-- 通过id查找user -->
+	<!-- <select id="getById" parameterType="INTEGER" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE id=#{id}
+	</select> -->
+	
+	<!-- 通过实体类所传的条件进行查找 -->
+	<!-- <select id="get1" parameterType="com.blog.entity.User" resultType="com.blog.entity.User" useCache="false">
+		SELECT * FROM user WHERE id=#{id} 	
+		<if test="id!=null"> AND username = #{username} </if>
+		<if test="current_employee_id!=null"> AND password = #{password} </if>
+	</select> -->
+	<!-- 多表关联测试 -->
+	<!-- <resultMap id="group" type="com.blog.entity.Relate">
+		<id column="id" property="id"></id>
+		<result property="name" column="name"/>
+		<collection property="target_"
+					javaType="LIST"
+					select="com.blog.entity.Target_"
+					column="id">
+			<id column="id" property="id"></id>
+			<result property="name_" column="name_"/>
+		</collection>
+		<collection property="target__"
+					javaType="LIST"
+					select="com.blog.entity.Target__"
+					column="id">
+			<id column="id" property="id"></id>
+			<result property="name__" column="name__"/>
+		</collection>
+	</resultMap> -->
+	
+	<!-- user集合 -->
+	<resultMap id="userList" type="com.blog.entity.Notice"> 
+	</resultMap>
+	 
+	
+</mapper>

@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>#title#</title>
+  <title>公告通知管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -29,7 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button>
         </div>
-        <table id="C-admin-#classify#-table" lay-filter="C-admin-#classify#-table" ></table>
+        <table id="C-admin-notice-table" lay-filter="C-admin-notice-table" ></table>
       </div>
     </div>
   </div>
@@ -46,12 +46,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).use(['index', 'useradmin', 'table', 'admin'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "C-admin-#classify#-add"
-	,b = 'C-admin-#classify#-update'
+    ,a = "C-admin-notice-add"
+	,b = 'C-admin-notice-update'
 	,e = 'C-btn-saveorupdate'
     ,f = 'iframe'
-	,l = 'C-admin-#classify#-table'
-	,t = 'C-admin-#classify#-form'
+	,l = 'C-admin-notice-table'
+	,t = 'C-admin-notice-form'
 	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
@@ -119,8 +119,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
-					var iframe = e.find(f).contents().find("#"+t);
-					#js-edit#
+					var form = e.find(f).contents().find("#"+t);
+									,iframe.find('input[name="noticeId"]')[0].value = data[0].noticeId
+					,iframe.find('input[name="noticeTitle"]')[0].value = data[0].noticeTitle
+					,iframe.find('input[name="noticeContent"]')[0].value = data[0].noticeContent
+					,iframe.find('input[name="status"]')[0].value = data[0].status
+					,iframe.find('input[name="createDate"]')[0].value = data[0].createDate
+					,iframe.find('input[name="modifyDate"]')[0].value = data[0].modifyDate
+					,iframe.find('input[name="expireDate"]')[0].value = data[0].expireDate
+					,iframe.find('input[name="priority"]')[0].value = data[0].priority
+					,iframe.find('input[name="remark"]')[0].value = data[0].remark
+
 				}
             })
 		}
@@ -130,7 +139,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
-        	#table-head#
+        				,{field:'noticeId', title:'ID'}
+			,{field:'noticeTitle', title:'公告标题'}
+			,{field:'noticeContent', title:'公告内容'}
+			,{field:'status', title:'状态'}
+			,{field:'createDate', title:'创建时间'}
+			,{field:'modifyDate', title:'修改时间'}
+			,{field:'expireDate', title:'有效期'}
+			,{field:'priority', title:'优先值'}
+			,{field:'remark', title:'描述'}
+
         ]],
         text: "对不起，加载出现异常！"
     });

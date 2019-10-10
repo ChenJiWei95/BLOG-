@@ -19,12 +19,16 @@ import com.blog.util.CharStreamImpl;
  * @author cjw
  */
 public class TempJava {
+//	判断是否用textarea标签
+	private static String[] descField = new String[] {"desc", "noticeContent", "remark"}; 
+	private static String[] disableField = new String[] {"create_time", "update_time", "createDate", "modifyDate"};
+	private static String[] layuihideField = new String[] {"id"};
 	public static void main(String[] args) throws IOException {
-		String fileds = "id name create_time update_time pit_url mark_url simp_desc";
-		String texts = "ID 文章名称 创建时间 修改时间 图片 资源地址 描述";
+		String fileds = "noticeId noticeTitle noticeContent status createDate modifyDate expireDate priority remark";
+		String texts = "ID 公告标题 公告内容 状态 创建时间 修改时间 有效期 优先值 描述";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("article", "article", "article", fileds, texts, "文章管理");
+		do1_1("notice", "article", "notice", fileds, texts, "公告通知管理");
 
 		// 下面为测试
 		
@@ -167,21 +171,21 @@ public class TempJava {
 		StringBuilder sb = new StringBuilder();
 		String t = "\t";
 		for(int i = 0; i < args.length; i++){
-			if("id".equals(args[i])){
+			if(isLayuiHide(args[i])){
 				sb.append("<div class=\"layui-hide\">"+"\n"+
 						t+"\t<label class=\"layui-form-label\">ID</label>"+"\n"+
 						t+"\t<div class=\"layui-input-inline\">"+"\n"+
 						t+"\t\t<input type=\"text\" name=\"id\" disabled autocomplete=\"off\" class=\"layui-input layui-disabled\">"+"\n"+
 						t+"\t</div>"+"\n"+
 						t+"</div>"+"\n");
-			}else if(args[i].indexOf("desc") != -1){
+			}else if(isTextarea(args[i])){
 				sb.append(t+"<div class=\"layui-form-item\">"+"\n"+
 						t+"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
 						t+"\t<div class=\"layui-input-inline\">"+"\n"+
 						t+"\t\t<textarea class=\"layui-textarea\" name=\""+args[i]+"\" placeholder=\"请输入描述信息\"></textarea>"+"\n"+
 						t+"\t</div>"+"\n"+
 						t+"</div>"+"\n");
-			}else if("create_time".equals(args[i]) || "update_time".equals(args[i])){
+			}else if(isDisable(args[i])){
 				sb.append(t+"<div class=\"layui-form-item\">"+"\n"+
 						t+"\t<label class=\"layui-form-label\">"+texts[i]+"</label>"+"\n"+
 						t+"\t<div class=\"layui-input-inline\">"+"\n"+
@@ -200,6 +204,23 @@ public class TempJava {
 //		System.out.println(sb.toString());
 		return sb.toString();
 	}
+	
+	
+	private static boolean isTextarea(String str) {
+		for(String s : descField) 
+			if(s.indexOf(str) != -1) return true;
+		return false;
+	} 
+	private static boolean isDisable(String str) {
+		for(String s : disableField) 
+			if(s.equals(str)) return true;
+		return false;
+	} 
+	private static boolean isLayuiHide(String str) {
+		for(String s : layuihideField) 
+			if(s.equals(str)) return true;
+		return false;
+	} 
 	private static String doJSEdit(String[] args){
 		StringBuilder sb = new StringBuilder();
 		for(String arg : args){
