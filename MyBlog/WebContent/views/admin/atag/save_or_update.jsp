@@ -33,13 +33,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-form-item">
 		<label class="layui-form-label">创建时间</label>
 		<div class="layui-input-inline">
-			<input type="text" name="create_time" placeholder="请输入" autocomplete="off" class="layui-input">
+			<input type="text" name="create_time" disabled placeholder="请输入" autocomplete="off" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
 		<label class="layui-form-label">修改时间</label>
 		<div class="layui-input-inline">
-			<input type="text" name="update_time" placeholder="请输入创建时间" autocomplete="off" class="layui-input">
+			<input type="text" name="update_time" disabled placeholder="请输入创建时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
