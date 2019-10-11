@@ -139,7 +139,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
-        				,{field:'noticeId', title:'ID'}
 			,{field:'noticeTitle', title:'公告标题'}
 			,{field:'noticeContent', title:'公告内容'}
 			,{field:'status', title:'状态'}

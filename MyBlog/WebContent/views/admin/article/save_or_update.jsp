@@ -55,6 +55,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</div>
 	<div class="layui-form-item">
+      <label class="layui-form-label">标签</label>
+      <div class="layui-input-block"> 
+        <c:choose>
+        	<c:when test="${type}">
+        		<!-- 循环输出所有未选的标签 -->
+	        	<c:forEach begin="0" items="${tags}" step="1" var="tag" varStatus="varsta">
+				   	 <input type="checkbox" name="${tag.id}|${tag.name}" lay-skin="primary" title="${Menu.name}">
+				</c:forEach>
+        	</c:when>
+        	<c:otherwise>
+        		<!-- 循环判断已选和未选的标签 -->
+        		<c:forEach begin="0" items="${tags}" step="1" var="tag" varStatus="varsta"> 
+        			<c:set var="iscontain" value="false" />
+        			<c:forEach begin="0" items="${tagsed}" step="1" var="taged" varStatus="varsta">
+        				<c:if test="${tag.id eq taged.id}">
+        					<c:set var="iscontain" value="true"/>
+        				</c:if> 
+        			</c:forEach>  
+        			<c:if test="${iscontain}"><input type="checkbox" checked  name="${tag.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
+        			<c:if test="${!iscontain}"><input type="checkbox" name="${tag.id}|${tag.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
+				</c:forEach>
+				
+        	</c:otherwise>
+        </c:choose>  
+      </div>
+    </div>
+	<div class="layui-form-item">
 		<label class="layui-form-label">描述</label>
 		<div class="layui-input-inline">
 			<textarea class="layui-textarea" name="simp_desc" placeholder="请输入描述信息"></textarea>
