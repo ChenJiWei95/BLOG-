@@ -92,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
 				type: 2
 				,title: '添加'
-				,content: 'save_or_update.chtml'
+				,content: 'save_or_update.chtml?type=0'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -111,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
                 type: 2
                 ,title: "编辑"
-                ,content: "save_or_update.chtml"
+                ,content: "save_or_update.chtml?type=1&id="+data[0].id
                	,area: ["420px", "480px"]
                 ,btn: ["确定", "取消"]
                 ,yes: function(index, layero) {
@@ -119,7 +119,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
-					var form = e.find(f).contents().find("#"+t);
+					var iframe = e.find(f).contents().find("#"+t);
 					iframe.find('input[name="id"]')[0].value = data[0].id
 					,iframe.find('input[name="name"]')[0].value = data[0].name
 					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time

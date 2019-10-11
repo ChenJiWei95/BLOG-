@@ -5,42 +5,41 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.blog.dao.ArticleDao;
+import com.blog.dao.TagBrigeDao;
 import com.blog.dao.BaseDao;
-import com.blog.entity.ATag;
-import com.blog.entity.Article;
-import com.blog.service.ArticleService;
+import com.blog.entity.TagBrige;
+import com.blog.service.TagBrigeService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class ArticleServiceImpl extends BasiServiceImpl<Article, ATag> implements ArticleService, AssociaInterface  {
+public class TagBrigeServiceImpl extends BasiServiceImpl<TagBrige, Object> implements TagBrigeService, AssociaInterface  {
 	@Resource
-	ArticleDao articleDao; 
+	TagBrigeDao tagBrigeDao; 
 	
-	public BaseDao<Article> getDao(){
-		return articleDao;
+	public BaseDao<TagBrige> getDao(){
+		return tagBrigeDao;
 	}
 	
 	@Override
 	public String getBrige_table() {
-		return "article_tag_brige";
+		return "";
 	}
 	@Override
 	public String getBrige_key() {
-		return "a_id";
+		return "";
 	}
 	@Override
 	public String getBrige_association_key() {
-		return "t_id";
+		return "";
 	}
 	@Override
 	public String getAssociation_table() {
-		return "article_tag";
+		return "";
 	}
 	@Override
 	public String getAssociation_table_id() {
-		return "id";
+		return "";
 	}
 	@Override
 	public String getId() {
@@ -48,7 +47,7 @@ public class ArticleServiceImpl extends BasiServiceImpl<Article, ATag> implement
 	}
 	@Override
 	public String getTable() {
-		return "article";
+		return "article_tag_brige";
 	}
 }
 

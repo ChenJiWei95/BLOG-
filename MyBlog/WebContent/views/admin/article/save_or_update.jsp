@@ -60,21 +60,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <c:choose>
         	<c:when test="${type}">
         		<!-- 循环输出所有未选的标签 -->
-	        	<c:forEach begin="0" items="${tags}" step="1" var="tag" varStatus="varsta">
-				   	 <input type="checkbox" name="${tag.id}|${tag.name}" lay-skin="primary" title="${Menu.name}">
+	        	<c:forEach begin="0" items="${tags}" step="1" var="ATag" varStatus="varsta">
+				   	 <input type="checkbox" name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}">
 				</c:forEach>
         	</c:when>
         	<c:otherwise>
         		<!-- 循环判断已选和未选的标签 -->
-        		<c:forEach begin="0" items="${tags}" step="1" var="tag" varStatus="varsta"> 
+        		<c:forEach begin="0" items="${tags}" step="1" var="ATag" varStatus="varsta"> 
         			<c:set var="iscontain" value="false" />
-        			<c:forEach begin="0" items="${tagsed}" step="1" var="taged" varStatus="varsta">
-        				<c:if test="${tag.id eq taged.id}">
+        			<c:forEach begin="0" items="${tagsed}" step="1" var="TagBrige" varStatus="varsta">
+        				<c:if test="${ATag.id eq TagBrige.t_id}">
         					<c:set var="iscontain" value="true"/>
         				</c:if> 
         			</c:forEach>  
-        			<c:if test="${iscontain}"><input type="checkbox" checked  name="${tag.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
-        			<c:if test="${!iscontain}"><input type="checkbox" name="${tag.id}|${tag.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
+        			<c:if test="${iscontain}"><input type="checkbox" checked  name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}"/></c:if> 
+        			<c:if test="${!iscontain}"><input type="checkbox" name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}"/></c:if> 
 				</c:forEach>
 				
         	</c:otherwise>

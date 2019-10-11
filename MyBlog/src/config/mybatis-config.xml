@@ -41,9 +41,13 @@
 		<mapper resource="com/blog/mapper/DataMapper.xml" />
 		<mapper resource="com/blog/mapper/ATagMapper.xml" />
 		<mapper resource="com/blog/mapper/ArticleMapper.xml" />
+		<mapper resource="com/blog/mapper/TagBrigeMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>
+
+
+
 
 
 

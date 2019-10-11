@@ -24,14 +24,14 @@ public class TempJava {
 	private static String[] disableField = new String[] {"create_time", "update_time", "createDate", "modifyDate"};
 	private static String[] layuihideField = new String[] {"id"};
 	public static void main(String[] args) throws IOException {
-		String fileds = "noticeId noticeTitle noticeContent status createDate modifyDate expireDate priority remark";
+		String fileds = "t_id a_id";
 		String texts = "ID 公告标题 公告内容 状态 创建时间 修改时间 有效期 优先值 描述";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("notice", "article", "notice", fileds, texts, "公告通知管理");
+//		do1_1("notice", "article", "notice", fileds, texts, "公告通知管理");
 
 		// 下面为测试
-		
+		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));
 		// 生成前端模板文件     字段name值， 字段显示值，分类，title
 //		do7(fileds.split(" "), texts.split(" "), "cjw2", "测试2");
 //		doHTML(fileds.split(" "), texts.split(" "));
@@ -40,7 +40,7 @@ public class TempJava {
 		
 		// 只操作字符串类型的数据
 		// 类名称-小写	 	表名称 	实体类字段 
-//		delete("tempText");
+//		delete("tagBrige");
 		
 		// 生成控制类
 //		do6("TempText", "tempText", "temp"); 

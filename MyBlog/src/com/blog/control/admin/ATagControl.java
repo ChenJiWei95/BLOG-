@@ -46,11 +46,9 @@ public class ATagControl extends BaseControl{
 	@ResponseBody
 	public Object add(ATag t) throws IOException{ 
 		System.out.println("添加接收参数："+t); 
-		
 		try{
 			t.setCreate_time(getNowTime());
 			aTagServiceImpl.insert(t);
-			
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
@@ -96,16 +94,17 @@ public class ATagControl extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(ATag t) throws IOException{ 
+	public Object update(ATag t) throws IOException{
 		try {
-			System.out.println("修改接收参数："+t); 
+			System.out.println("修改接收参数："+t);
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-			aTagServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			t.setUpdate_time(getNowTime());
+			aTagServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
-	} 
+	}
 	
 	/**
 	 * 初始化
@@ -122,7 +121,5 @@ public class ATagControl extends BaseControl{
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}
-	
-	
 	
 }

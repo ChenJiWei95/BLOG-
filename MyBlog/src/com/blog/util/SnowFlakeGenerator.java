@@ -1,4 +1,4 @@
-package com.rjht;
+package com.blog.util;
 
 public class SnowFlakeGenerator {
 	//起始的时间戳
