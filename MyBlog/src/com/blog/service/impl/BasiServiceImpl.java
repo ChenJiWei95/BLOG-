@@ -21,12 +21,13 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 
 	@Override
 	public T get(T t) {
-		EqAdapter sql = new SelectAdapter()
+		EqAdapter adapter = new SelectAdapter()
 				.setParame(this)
 				.setLimit(0, 1)
 				.setTarget(t);
 		try {
-			return (T) getDao().get(sql).get(0);
+			List<T> list = getDao().get(adapter);
+			return list.size()>0 ? (T) list.get(0) : null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,7 +40,8 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 				.setLimit(0, 1)
 				.setEqSql(eq);
 		try {
-			return (T) getDao().get(adapter).get(0);
+			List<T> list = getDao().get(adapter);
+			return list.size()>0 ? (T) list.get(0) : null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
