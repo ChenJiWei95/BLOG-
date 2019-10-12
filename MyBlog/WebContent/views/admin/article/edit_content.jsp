@@ -64,26 +64,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,admin = layui.admin
 	,b = "edit_submit";
 	form.on("submit("+b+")", function(data){
-		console.log("ggg");
 		admin.cajax({
 			method: 'editcontent'
 			,data: data.field
 		});
-		/*
-		$.req({
-			url: 'http://localhost:8080/MyBlog/api/test/contenList/update_conten.do'
-			,type: 'post'
-			,data: {data: JSON.stringify(data.field)}
-			,done: function(data){
-				parent.oparate_active.edit;
-				layer.msg("修改成功！", {time: 2000}); 
-			}
-			,fail: function(data){
-				console.log("请求失败");
-				layer.msg("修改失败！", {time: 2000}) 
-			}
-		});	
-		*/
 		return !1;
 	}); 	
   });

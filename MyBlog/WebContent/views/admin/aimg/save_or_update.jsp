@@ -10,14 +10,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>iframe-文章管理</title>
+  <title>iframe-图片管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body style="padding-right:20px">
-  <div class="layui-form" lay-filter="C-admin-article-form" id="C-admin-article-form" style="padding: 20px 30px 0 0;">
+  <div class="layui-form" lay-filter="C-admin-aimg-form" id="C-admin-aimg-form" style="padding: 20px 30px 0 0;">
     <div class="layui-hide">
 		<label class="layui-form-label">ID</label>
 		<div class="layui-input-inline">
@@ -25,9 +25,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</div>
 	<div class="layui-form-item">
-		<label class="layui-form-label">文章名称</label>
+		<label class="layui-form-label">名称</label>
 		<div class="layui-input-inline">
-			<input type="text" name="name" placeholder="请输入文章名称" autocomplete="off" class="layui-input">
+			<input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input">
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -43,48 +43,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</div>
 	<div class="layui-form-item">
-		<label class="layui-form-label">图片</label>
+		<label class="layui-form-label">路径</label>
 		<div class="layui-input-inline">
-			<input type="text" name="pit_url" placeholder="请输入图片" autocomplete="off" class="layui-input">
+			<input type="text" name="path" placeholder="请输入路径" autocomplete="off" class="layui-input">
 		</div>
-	</div> 
+	</div>
 	<div class="layui-form-item">
-      <label class="layui-form-label">标签</label>
-      <div class="layui-input-block"> 
-        <c:choose>
-        	<c:when test="${type}">
-        		<!-- 循环输出所有未选的标签 -->
-	        	<c:forEach begin="0" items="${tags}" step="1" var="ATag" varStatus="varsta">
-				   	 <input type="checkbox" name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}">
-				</c:forEach>
-        	</c:when>
-        	<c:otherwise>
-        		<!-- 循环判断已选和未选的标签 -->
-        		<c:forEach begin="0" items="${tags}" step="1" var="ATag" varStatus="varsta"> 
-        			<c:set var="iscontain" value="false" />
-        			<c:forEach begin="0" items="${tagsed}" step="1" var="TagBrige" varStatus="varsta">
-        				<c:if test="${ATag.id eq TagBrige.t_id}">
-        					<c:set var="iscontain" value="true"/>
-        				</c:if> 
-        			</c:forEach>  
-        			<c:if test="${iscontain}"><input type="checkbox" checked  name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}"/></c:if> 
-        			<c:if test="${!iscontain}"><input type="checkbox" name="${ATag.id}|${ATag.name}" lay-skin="primary" title="${ATag.name}"/></c:if> 
-				</c:forEach>
-				
-        	</c:otherwise>
-        </c:choose>  
-      </div>
-    </div>
-	<div class="layui-form-item">
-		<label class="layui-form-label">描述</label>
+		<label class="layui-form-label">备注</label>
 		<div class="layui-input-inline">
-			<textarea class="layui-textarea" name="simp_desc" placeholder="请输入描述信息"></textarea>
+			<textarea class="layui-textarea" name="desc" placeholder="请输入描述信息"></textarea>
 		</div>
 	</div>
 
     <div class="layui-form-item layui-hide">
-      <button lay-submit lay-filter="C-admin-article-add" id="C-admin-article-add">添加</button>
-	  <button lay-submit lay-filter="C-admin-article-update" id="C-admin-article-update">修改</button>
+      <button lay-submit lay-filter="C-admin-aimg-add" id="C-admin-aimg-add">添加</button>
+	  <button lay-submit lay-filter="C-admin-aimg-update" id="C-admin-aimg-update">修改</button>
 	</div>
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
@@ -97,9 +70,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var $ = layui.$
     ,form = layui.form 
 	,admin = layui.admin
-	,a = "C-admin-article-add"
-	,b = 'C-admin-article-update'
-    ,l = "C-admin-article-table";
+	,a = "C-admin-aimg-add"
+	,b = 'C-admin-aimg-update'
+    ,l = "C-admin-aimg-table";
 	form.on("submit("+a+")", function(data){
 		admin.cajax({
 			method: 'add'

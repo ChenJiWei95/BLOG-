@@ -131,7 +131,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <h1 id="h11"><%=basePath%></h1>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
-  
+  var index;
   layui.config({
 	base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -165,6 +165,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							,data: data.data 
 						}
 					});
+					index = layui.index
 					layui.use('index') //必须在后面加载
 				} 
 				,error: function(data){

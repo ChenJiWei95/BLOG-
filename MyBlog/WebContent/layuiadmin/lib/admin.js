@@ -39,7 +39,7 @@ function(e) {console.log("admin");
 				month : full(date.getMonth() + 1),
 				date : full(date.getDate())
 			};
-			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
+			return _date.year+""+_date.month+""+_date.date+""+(date.getTime().toString().substring(5));
 		}
 		// 适用于表格
 		,cajax: function (object) {

@@ -40,20 +40,24 @@ public class ArticleControl extends BaseControl{
 	@Autowired
 	private TagBrigeService tagBrigeServiceImpl;
 	
+	private static boolean fristLine = true;
+	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
 		return "../../views/admin/article/list";
 	}
+	
 	// 返回 页面 
 	@RequestMapping("/edit_content.chtml") 
 	public String edit_content(HttpServletRequest request, String id, ModelMap model){
+		fristLine = false;
 		Article a = articleServiceImpl.get(singleMarkOfEq("id", id));
 		File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
 		CharStreamImpl c = new CharStreamImpl(file);
 		StringBuilder sb = new StringBuilder();
 		c.read(line->{
-			sb.append(line);
+			sb.append(fristLine ? "" : System.lineSeparator()).append(line);
 		});
 		model.addAttribute("mark_code", sb);
 		model.addAttribute("name", a.getName());
@@ -161,6 +165,7 @@ public class ArticleControl extends BaseControl{
 			CharStreamImpl c = new CharStreamImpl(file);
 			c.write(mark_code);
 			c.close();
+			System.out.println("结束");
 			return Message.success("请求成功");
 		} catch (RuntimeException e) {
 			e.printStackTrace();

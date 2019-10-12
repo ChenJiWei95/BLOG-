@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>文章管理</title>
+  <title>图片管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -25,12 +25,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit_content">编辑随笔</button>
-          <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
+          <button class="layui-btn C-btn-saveorupdate c-button" id="upload" data-type="upload" style="margin-right:10px;">上传</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button>
         </div>
-        <table id="C-admin-article-table" lay-filter="C-admin-article-table" ></table>
+        <table id="C-admin-aimg-table" lay-filter="C-admin-aimg-table" ></table>
       </div>
     </div>
   </div>
@@ -44,15 +43,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'upload'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "C-admin-article-add"
-	,b = 'C-admin-article-update'
+    ,a = "C-admin-aimg-add"
+	,b = 'C-admin-aimg-update'
 	,e = 'C-btn-saveorupdate'
     ,f = 'iframe'
-	,l = 'C-admin-article-table'
-	,t = 'C-admin-article-form'
+	,l = 'C-admin-aimg-table'
+	,t = 'C-admin-aimg-form'
 	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
@@ -93,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
 				type: 2
 				,title: '添加'
-				,content: 'save_or_update.chtml?type=0'
+				,content: 'save_or_update.chtml'
 				,area: ['420px', '480px']
 				,btn: ['确定', '取消']
 				,yes: function(index, layero){
@@ -105,33 +104,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			});
 		}
-		,edit_content: function(){
-			console.log("---------------------------");
-			var n = parent === self ? layui: top.layui;
-			console.log(n.index.openTabsPage);	
-			var checkStatus = table.checkStatus(l)
-			,data = checkStatus.data; //得到选中的数据
-			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
-			n.index.openTabsPage("../article/edit_content.chtml?id="+data[0].id, "编辑["+data[0].name+"]");
-			/*
-			layer.open({
-	                type: 2
-	                ,title: "编辑"
-	                ,content: "edit_content.chtml?type=1&id="+data[0].id
-	               	,area: ["420px", "480px"]
-	                ,btn: ["确定", "取消"]
-	                ,yes: function(index, layero) {
-	                    layero.find(f).contents().find("#"+b).click();
-	                }
-	                ,success: function(e, index) {
-						//这是渲染完之后调用 可以用于初始化
-						var iframe = e.find(f).contents().find("#"+t);
-						iframe.find('input[name="id"]')[0].value = data[0].id
-						,iframe.find('input[name="name"]')[0].value = data[0].name
-					}
-	            })
-			*/
-		}
 		,edit: function(){
 			var checkStatus = table.checkStatus(l)
 			,data = checkStatus.data; //得到选中的数据
@@ -139,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			layer.open({
                 type: 2
                 ,title: "编辑"
-                ,content: "save_or_update.chtml?type=1&id="+data[0].id
+                ,content: "save_or_update.chtml"
                	,area: ["420px", "480px"]
                 ,btn: ["确定", "取消"]
                 ,yes: function(index, layero) {
@@ -152,9 +124,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					,iframe.find('input[name="name"]')[0].value = data[0].name
 					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
 					,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
-					,iframe.find('input[name="pit_url"]')[0].value = data[0].pit_url
-					,iframe.find('input[name="mark_url"]')[0].value = data[0].mark_url
-					,iframe.find('input[name="simp_desc"]')[0].value = data[0].simp_desc
+					,iframe.find('input[name="path"]')[0].value = data[0].path
+					,iframe.find('textarea[name="desc"]')[0].value = data[0].desc
 
 				}
             })
@@ -166,12 +137,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID'}
-			,{field:'name', title:'文章名称'}
+			,{field:'name', title:'名称'}
 			,{field:'create_time', title:'创建时间'}
 			,{field:'update_time', title:'修改时间'}
-			,{field:'pit_url', title:'图片'}
-			,{field:'mark_url', title:'资源地址'}
-			,{field:'simp_desc', title:'描述'}
+			,{field:'path', title:'路径'}
+			,{field:'desc', title:'备注'}
 
         ]],
         text: "对不起，加载出现异常！"
@@ -180,6 +150,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';
     });
+    
+    var upload = layui.upload; 
+	//普通图片上传
+    var uploadInst = upload.render({
+	    elem: '#upload'
+	    ,url: 'editMovieInfo.do'
+	    ,before: function(obj){
+	      //预读本地文件示例，不支持ie8
+	      obj.preview(function(index, file, result){
+	    	  // 展示所上传的图片
+	        //$('#demo1').attr('src', result); //图片链接（base64）
+	      });
+	    }
+	    ,done: function(data){ 
+	    	var index = parent.layer.getFrameIndex(window.name); 
+	    	data.code == '0' && (parent.layer.msg("操作成功！"), parent.layer.close(index), table.reload(l)),
+			data.code == '2' && (parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
+	    }
+	    ,error: function(){
+	      //演示失败状态，并实现重传
+	      var demoText = $('#demoText');
+	      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+	      demoText.find('.demo-reload').on('click', function(){
+	        uploadInst.upload();
+	      });
+	    }
+	});  
   });
   </script>
 </body>

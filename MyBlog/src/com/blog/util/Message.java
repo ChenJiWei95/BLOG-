@@ -62,6 +62,10 @@ public class Message {
 	 *            参数
 	 * @return 成功消息
 	 */
+	public static Message success(String content) {
+		return new Message("0", content, null);
+	}
+	
 	public static Message success(String content, Object data) {
 		return new Message("0", content, data);
 	}
@@ -88,6 +92,9 @@ public class Message {
 	 *            参数
 	 * @return 错误消息
 	 */
+	public static Message error(String content) {
+		return new Message("2", content, null);
+	}
 	public static Message error(String content, Object data) {
 		return new Message("2", content, data);
 	}

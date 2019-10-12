@@ -19,19 +19,40 @@ import com.blog.util.CharStreamImpl;
  * @author cjw
  */
 public class TempJava {
-//	判断是否用textarea标签
+	// 判断是否用textarea标签
 	private static String[] descField = new String[] {"desc", "noticeContent", "remark"}; 
+	// 不可操作字段
 	private static String[] disableField = new String[] {"create_time", "update_time", "createDate", "modifyDate"};
+	// 隐藏字段
 	private static String[] layuihideField = new String[] {"id"};
+	//前缀 顺序不可修改--需要改动命令值
+	private static String[] prefix = {"dao", "service", "entity", "mapper", "service/impl", "control/admin"};
+	//后缀 顺序不可修改--需要改动命令值
+	private static String[] suffix = {"Dao.java", "Service.java", ".java", "Mapper.xml", "ServiceImpl.java", "Control.java"};
+	// 模板文件
+	private static String[] temp = {"dao.txt", "service.txt", "", "mapper.xml", "serviceImpl.txt"};
+	// 命令描述
+	private static String[] commomdText = {"操作dao层代码", "操作service层代码", "操作实体层代码", "操作mapper配置代码", "操作service实现层代码", "操作control层代码", "操作mybatise配置文件代码"};
+	
+	// 要执行的命令下标  对应 前缀和后缀
+	// 0 	操作dao层代码
+	// 1 	操作service层代码
+	// 2 	操作实体层代码
+	// 3 	操作mapper配置代码
+	// 4 	操作service实现层代码
+	// 5 	操作control层代码
+	// 6 	操作mybatise配置文件代码
+	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
+	
 	public static void main(String[] args) throws IOException {
-		String fileds = "t_id a_id";
-		String texts = "ID 公告标题 公告内容 状态 创建时间 修改时间 有效期 优先值 描述";
+		String fileds = "id name create_time update_time path desc";
+		String texts = "ID 名称 创建时间 修改时间 路径 备注";
 		
 		// 生成js和java代码 调用这个  
-//		do1_1("notice", "article", "notice", fileds, texts, "公告通知管理");
+		do1_1("aimg", "aimg", "aimg", fileds, texts, "图片管理");
 
 		// 下面为测试
-		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));
+//		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));
 		// 生成前端模板文件     字段name值， 字段显示值，分类，title
 //		do7(fileds.split(" "), texts.split(" "), "cjw2", "测试2");
 //		doHTML(fileds.split(" "), texts.split(" "));
@@ -40,45 +61,49 @@ public class TempJava {
 		
 		// 只操作字符串类型的数据
 		// 类名称-小写	 	表名称 	实体类字段 
-//		delete("tagBrige");
+//		delete("notice");
 		
 		// 生成控制类
 //		do6("TempText", "tempText", "temp"); 
 	}
 	
 	public static void delete(String name_) {
-		String name = upFirst(name_);
-		String[] prefix = {"dao", "service", "entity", "mapper", "service/impl"};//前缀
-		String[] suffix = {"Dao.java", "Service.java", ".java", "Mapper.xml", "ServiceImpl.java"};//后缀
-		for(int i = 0; i < prefix.length; i++) {
-			
-			String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[i]+"/"+name+suffix[i];
-			File file = new File(copyPath);
-			if(file.exists()) {
-				file.delete();
-				System.out.println("删除文件," + copyPath);
+		String name = upFirst(name_); 
+		for (Integer index : commond) {
+			System.out.println("当前执行："+commomdText[index]);
+			if(index == 6) {
+				// 清除 mybatis-config.xml 配置mapper项
+				delete2(name);
+			} else {
+				String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[index]+"/"+name+suffix[index];
+				File file = new File(copyPath);
+				if(file.exists()) {
+					file.delete();
+					System.out.println("删除文件," + copyPath);
+				}
 			}
 		}
-		delete2(name);
-		
 	}
-	
+	static boolean fristLine = true;
 	private static void delete2(String name) {
+		fristLine  =true;
 		// mybatis-config.xml 配置mapper项
 		CharStreamImpl c = new CharStreamImpl(srcPath("config/mybatis-config.xml"));
 		StringBuilder sb = new StringBuilder();
 		String configFileName = name+"Mapper.xml";
+		
 		c.read(line -> {
 			String str = (String) line;
 			if(str.indexOf(configFileName) == -1) 
-				sb.append(line).append(System.lineSeparator());
+				sb.append(fristLine ? "" : System.lineSeparator()).append(line);
 			else 
-				System.out.println("删除mapper配置信息：找到删除项，"+str);	
+				System.out.print("删除mapper配置信息：找到删除项，"+str);	
+			fristLine = false;
 		});
 		
 		c.write(sb.toString());
 		c.close();
-		System.out.println("删除mapper配置信息：已删除！");		
+		System.out.println("--已删除！");		
 	}
 	
 	private static int num = 0;
@@ -99,30 +124,24 @@ public class TempJava {
 
 	public static void do1(String name_, String table, String classify,  String[] args) {
 		String name = name_.substring(0,1).toUpperCase() + name_.substring(1);
-		
-		// 生成实体类
-		do3(name, args);
-		
-		String[] prefix = {"dao", "service"/*, "entity"*/, "mapper", "service/impl"};//前缀
-		String[] temp = {"dao.txt", "service.txt"/*, "entity.txt"*/, "mapper.xml", "serviceImpl.txt"};
-		String[] suffix = {"Dao.java", "Service.java"/*, ".java"*/, "Mapper.xml", "ServiceImpl.java"};//后缀
-		for(int i = 0; i < prefix.length; i++) {
-			
-			String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[i]+"/"+name+suffix[i];
-			File file = new File(copyPath);
-			if(file.exists()) file.delete();
-			do2(TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"config/temp/"+temp[i], copyPath, name, name_, table);
-		
-		}
-		
-		// 配置文件
-		do5(name);
-		
-		// 生成控制类
-		do6(name, name_, classify);
-		
-		// 生成前端模板文件     字段name值， 字段显示值，分类，title
-//		do7(fileds.split(" "), texts.split(" "), "cjw2", "测试2");
+		for (Integer index : commond) {
+			System.out.println("当前执行："+commomdText[index]);
+			if(index == 2) {
+				// 生成实体类
+				do3(name, args);
+			} else if(index == 5) {
+				// 生成控制类
+				do6(name, name_, classify);
+			}  else if(index == 6) {
+				// 配置文件
+				do5(name);
+			} else {
+				String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[index]+"/"+name+suffix[index];
+				File file = new File(copyPath);
+				if(file.exists()) file.delete();
+				do2(TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"config/temp/"+temp[index], copyPath, name, name_, table);
+			}
+		} 
 	}
 	
 	// 生成前端模板文件

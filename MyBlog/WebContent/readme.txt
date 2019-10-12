@@ -1,4 +1,6 @@
 
+id name create_time update_time path desc
+ID 名称 创建时间 修改时间 路径 备注
 #form-item# #title# #classify# #js-edit# #table-head#
 数据字典
 	id name value code type desc create_time update_time

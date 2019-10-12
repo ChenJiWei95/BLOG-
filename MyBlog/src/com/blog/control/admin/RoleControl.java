@@ -19,8 +19,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
-import com.blog.entity.RoleItem;
-import com.blog.entity.WebsiteBase;
 import com.blog.service.MenuService;
 import com.blog.service.RoleItemService;
 import com.blog.service.RoleService;
@@ -37,12 +35,7 @@ public class RoleControl extends BaseControl{
 	@Autowired
 	private MenuService menuServiceImpl;
 	@Autowired
-	private RoleService roleServiceImpl;
-	@Autowired
-	private RoleItemService roleItemService;
-	
-	@Autowired
-	private WebsiteBaseService websiteBaseServiceImpl;
+	private RoleService roleServiceImpl; 
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
