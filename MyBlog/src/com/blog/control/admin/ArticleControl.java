@@ -1,5 +1,6 @@
 package com.blog.control.admin;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +18,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
 import com.blog.entity.ATag;
 import com.blog.entity.Article;
-import com.blog.entity.Menu;
-import com.blog.entity.Role;
 import com.blog.entity.TagBrige;
 import com.blog.service.ATagService;
 import com.blog.service.ArticleService;
 import com.blog.service.TagBrigeService;
+import com.blog.test.TempJava;
 import com.blog.util.ActionUtil;
+import com.blog.util.CharStreamImpl;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
-import com.blog.util.TimeUtil;
 
 @Controller
 // 数据字典
@@ -46,6 +46,20 @@ public class ArticleControl extends BaseControl{
 		return "../../views/admin/article/list";
 	}
 	// 返回 页面 
+	@RequestMapping("/edit_content.chtml") 
+	public String edit_content(HttpServletRequest request, String id, ModelMap model){
+		Article a = articleServiceImpl.get(singleMarkOfEq("id", id));
+		File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
+		CharStreamImpl c = new CharStreamImpl(file);
+		StringBuilder sb = new StringBuilder();
+		c.read(line->{
+			sb.append(line);
+		});
+		model.addAttribute("mark_code", sb);
+		model.addAttribute("name", a.getName());
+		model.addAttribute("id", id);
+		return "../../views/admin/article/edit_content";
+	}
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String type, String id, ModelMap model){
 		// 角色集供选择
@@ -68,10 +82,16 @@ public class ArticleControl extends BaseControl{
 	// 添加
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(Article t, HttpServletRequest request) throws IOException{ 
-		System.out.println("添加接收参数："+t); 
+	public Object add(Article t, HttpServletRequest request) throws IOException{
+		System.out.println("添加接收参数："+t);
 		try{
 			t.setCreate_time(getNowTime());
+			String path = String.valueOf(new SnowFlakeGenerator(2, 2).nextId());
+			
+			//D:\wokespace1\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\MyBlog\WEB-INF\classes\config\mark 
+			File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+path+".txt");
+			file.createNewFile();
+			t.setMark_url(path);
 			articleServiceImpl.insert(t);
 			
 			Map<String, String> params = getRequestParameterMap(request); System.out.println(params);
@@ -88,7 +108,8 @@ public class ArticleControl extends BaseControl{
 			}
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
-			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
+			e.printStackTrace();
+			return Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}
 	
@@ -101,7 +122,6 @@ public class ArticleControl extends BaseControl{
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(HttpServletRequest request) throws IOException{
-		
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
 			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
@@ -109,6 +129,9 @@ public class ArticleControl extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
+				Article a = articleServiceImpl.get(singleMarkOfEq("id", object.getString("id")));
+				File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
+				file.delete();
 				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
@@ -117,9 +140,9 @@ public class ArticleControl extends BaseControl{
 			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
-		}
-		
+			e.printStackTrace();
+			return Message.error("请求失败，"+e.getMessage(), null);
+		}		 
 	}
 	
 	/**
@@ -129,6 +152,23 @@ public class ArticleControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
+	@RequestMapping("editcontent.do")
+	public Object editcontent(String id, String mark_code, HttpServletRequest request) throws IOException{
+		try {
+			System.out.println("editcontent "+ id);
+			Article a =  articleServiceImpl.get(singleMarkOfEq("id", id));
+			File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
+			CharStreamImpl c = new CharStreamImpl(file);
+			c.write(mark_code);
+			c.close();
+			return Message.success("请求成功");
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			return Message.error("请求失败，"+e.getMessage());
+		}
+	}
+	
+	
 	@RequestMapping("update.do")
 	@ResponseBody
 	public Object update(Article t, HttpServletRequest request) throws IOException{ 
@@ -173,12 +213,14 @@ public class ArticleControl extends BaseControl{
 				}
 			}	
 			
-			return Message.success("请求成功", null);
+			return Message.success("请求成功");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return Message.error("请求失败，"+e.getMessage(), null);
 		}
 	} 
+	
+	
 	
 	/**
 	 * 初始化
@@ -192,10 +234,13 @@ public class ArticleControl extends BaseControl{
 			List<Article> list = articleServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
+			e.printStackTrace();
+			return Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}
 	
-	
+	public String srcPath(String path){
+		return TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+path;
+	}
 	
 }
