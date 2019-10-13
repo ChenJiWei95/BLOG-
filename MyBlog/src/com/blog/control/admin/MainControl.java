@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -35,12 +36,15 @@ public class MainControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		String base = basePath(request);
+		try {
+			System.out.println(getIpAddr(request));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "../../views/admin_view";
 	}	
 	@RequestMapping("/aly_control.chtml")
 	public String control(HttpServletRequest request, String agentno, ModelMap model){
-		String base = basePath(request);
 		return "redirect:https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard";
 	}
 	
@@ -49,7 +53,6 @@ public class MainControl extends BaseControl{
 	 * @param id
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	protected JSONArray init_(String id){
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
@@ -86,7 +89,6 @@ public class MainControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("init.do")
 	@ResponseBody
 	public JSONObject init() throws IOException{
@@ -132,4 +134,36 @@ public class MainControl extends BaseControl{
 		return resultObj;
 	}
 	
+	public final String getIpAddr(final HttpServletRequest request)
+            throws Exception {
+        if (request == null) {
+            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));
+        }
+        String ipString = request.getHeader("x-forwarded-for");
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getRemoteAddr();
+        }
+     
+        // 多个路由时，取第一个非unknown的ip
+        final String[] arr = ipString.split(",");
+        for (final String str : arr) {
+            if (!"unknown".equalsIgnoreCase(str)) {
+                ipString = str;
+                break;
+            }
+        }
+     
+        String requestUrlIP = request.getServerName();
+        String userIpAddr = request.getRemoteAddr();
+        System.out.println("***访问的Url中的服务器IP："+requestUrlIP);
+        System.out.println("***用户客户端的IP地址："+userIpAddr); 
+        
+        return ipString;
+    }
 }
