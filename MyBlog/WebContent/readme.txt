@@ -1,5 +1,27 @@
+|Author|威
+|:---:|:---:
+|E-mail|chenJiWey@163.com\
+|date|2018/10/11
+# Ajax异步交互
+### 说明
+    描述
+### 字段描述
+|类型|字段|描述
+|---|---|---
+### 构造描述
+|构造|描述
+|---|---
+|模板|模板
+### 方法描述
+|返回值|方法|参数
+|---|---|---
+|模板|模板|模板
+### 案例
+### 详细描述
+
 对消息通知的处理
 	id ref_id ref_name executor type content time isRead desc
+	ID 关联ID 关联名称 执行者 消息类型 内容 时间 状态 描述
 	CREATE TABLE `message` (
 	  `id` varchar(30) NOT NULL COMMENT 'ID',
 	  `ref_id` varchar(30) DEFAULT NULL COMMENT '关联对象id',
