@@ -7,6 +7,11 @@ import com.blog.dao.BaseDao;
 import com.blog.entity.Menu;
 
 public interface BasiService<T, V> {
+	Integer count();
+	Integer count(String eq);
+	Integer count(Map<String, Object> eq);
+	Integer count(T t);
+	
 	List<T> find(String sql);
 	
 	BaseDao<T> getDao();

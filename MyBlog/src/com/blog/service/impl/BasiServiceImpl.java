@@ -403,4 +403,55 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	@Override
+	public Integer count() {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setColumns("count(\"1\")");
+		try {
+			return getDao().count(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public Integer count(String eq) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setColumns("count(\"1\")")
+				.setEqSql(eq);
+		try {
+			return getDao().count(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public Integer count(Map<String, Object> eq) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setColumns("count(\"1\")")
+				.eq(eq);
+		try {
+			return getDao().count(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public Integer count(T t) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setColumns("count(\"1\")")
+				.setTarget(t);
+		try {
+			return getDao().count(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

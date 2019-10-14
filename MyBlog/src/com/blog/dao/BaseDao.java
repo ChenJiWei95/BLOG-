@@ -70,4 +70,6 @@ public interface BaseDao<T> {
 	 * @since 1.0
 	 */
 	List<Target__> associate(EqAdapter eq);
+	
+	Integer count(EqAdapter eq);
 }
