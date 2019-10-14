@@ -3,26 +3,26 @@ layui.define(["admin", "table", "util"],
 function(e) {
     var jquery = layui.$,
     table = (layui.admin, layui.table)
-	,t_a = 'LAY-app-message-aticle'
-	,t_b = 'LAY-app-message-direct'
-	,t_c = 'LAY-app-message-sys'
-	,t_d = 'LAY-app-message-all'
+	,t_a = 'C-admin-message-aticle'
+	,t_b = 'C-admin-message-direct'
+	,t_c = 'C-admin-message-sys'
+	,t_d = 'C-admin-message-all'
     adapter = (layui.element, {//数据暂存 适配 对准type
         all: {
             text: "全部消息",
-            id: "LAY-app-message-all"
+            id: "C-admin-message-all"
         },
         aticle: {
             text: "随笔",
-            id: "LAY-app-message-aticle"
+            id: "C-admin-message-aticle"
         },
         direct: {
             text: "留言",
-            id: "LAY-app-message-direct"
+            id: "C-admin-message-direct"
         },
         sys: {
             text: "系统",
-            id: "LAY-app-message-sys"
+            id: "C-admin-message-sys"
         }
     }),
     a = function(e) {//这里通过模板调用 e为默认传进来的数据
@@ -170,7 +170,7 @@ function(e) {
 			});
         }
     };
-    jquery(".LAY-app-message-btns .layui-btn").on("click",
+    jquery(".C-admin-message-btns .layui-btn").on("click",
     function() {
         var e = jquery(this),
         events = e.data("events"),

@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <div class="layui-fluid" id="LAY-app-message">
+  <div class="layui-fluid" id="C-admin-message">
     <div class="layui-card">
       <div class="layui-tab layui-tab-brief">
         <ul class="layui-tab-title">
@@ -24,36 +24,36 @@
         </ul>
         <div class="layui-tab-content">
           <div class="layui-tab-item layui-show">
-            <div class="LAY-app-message-btns" style="margin-bottom: 10px;">
+            <div class="C-admin-message-btns" style="margin-bottom: 10px;">
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="ready">标记已读</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="readyAll">全部已读</button>
             </div>
-            <table id="LAY-app-message-all" lay-filter="LAY-app-message-all"></table>
+            <table id="C-admin-message-all" lay-filter="C-admin-message-all"></table>
           </div> 
 		  <div class="layui-tab-item">
-            <div class="LAY-app-message-btns" style="margin-bottom: 10px;">
-              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>
-              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="ready">标记已读</button>
-              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="readyAll">全部已读</button>
+            <div class="C-admin-message-btns" style="margin-bottom: 10px;">
+              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="art" data-events="del">删除</button>
+              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="art" data-events="ready">标记已读</button>
+              <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="art" data-events="readyAll">全部已读</button>
             </div>
-            <table id="LAY-app-message-aticle" lay-filter="LAY-app-message-aticle"></table>
+            <table id="C-admin-message-article" lay-filter="C-admin-message-article"></table>
           </div> 
           <div class="layui-tab-item">
-            <div class="LAY-app-message-btns" style="margin-bottom: 10px;">
+            <div class="C-admin-message-btns" style="margin-bottom: 10px;">
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="del">删除</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="ready">标记已读</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="readyAll">全部已读</button>
             </div>
-            <table id="LAY-app-message-direct" lay-filter="LAY-app-message-direct"></table>
+            <table id="C-admin-message-direct" lay-filter="C-admin-message-direct"></table>
           </div>
 		  <div class="layui-tab-item">
-            <div class="LAY-app-message-btns" style="margin-bottom: 10px;">
+            <div class="C-admin-message-btns" style="margin-bottom: 10px;">
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="sys" data-events="del">删除</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="sys" data-events="ready">标记已读</button>
               <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="sys" data-events="readyAll">全部已读</button>
             </div>
-            <table id="LAY-app-message-sys" lay-filter="LAY-app-message-sys"></table>
+            <table id="C-admin-message-sys" lay-filter="C-admin-message-sys"></table>
           </div>
         </div>
       </div>
@@ -68,10 +68,10 @@
     index: 'lib/index' //主入口模块
   }).use(['index', 'message'], function(){
 	//
-	var t_a = 'LAY-app-message-aticle'
-	,t_b = 'LAY-app-message-direct'
-	,t_c = 'LAY-app-message-sys'
-	,t_d = 'LAY-app-message-all'
+	var t_a = 'C-admin-message-article'
+	,t_b = 'C-admin-message-direct'
+	,t_c = 'C-admin-message-sys'
+	,t_d = 'C-admin-message-all'
 	,table = layui.table
 	;
   });

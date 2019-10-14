@@ -43,6 +43,7 @@
 		<mapper resource="com/blog/mapper/ArticleMapper.xml" />
 		<mapper resource="com/blog/mapper/TagBrigeMapper.xml" />
 		<mapper resource="com/blog/mapper/AimgMapper.xml" />
+		<mapper resource="com/blog/mapper/MessageMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
-</configuration>  
+</configuration>   

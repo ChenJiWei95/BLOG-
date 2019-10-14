@@ -1,8 +1,34 @@
+对消息通知的处理
+	id ref_id ref_name executor type content time isRead desc
+	CREATE TABLE `message` (
+	  `id` varchar(30) NOT NULL COMMENT 'ID',
+	  `ref_id` varchar(30) DEFAULT NULL COMMENT '关联对象id',
+	  `ref_name` varchar(30) DEFAULT NULL COMMENT '关联对象名称',
+	  `executor` varchar(30) DEFAULT NULL COMMENT '执行者',
+	  `type` varchar(400) DEFAULT NULL,
+	  `content` char(2) DEFAULT NULL,
+	  `time` datetime DEFAULT NULL,
+	  `isRead` char(2) DEFAULT '00',
+	  `desc` varchar(100) DEFAULT NULL,
+	  PRIMARY KEY (`id`) USING BTREE
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='文章标签关联表';
 
-id name create_time update_time path desc
-ID 名称 创建时间 修改时间 路径 备注
-#form-item# #title# #classify# #js-edit# #table-head#
-数据字典
+	ALTER TABLE `C_BLOG`.`message` 
+	CHANGE COLUMN `aticle_id` `ref_id` varchar(30) NULL DEFAULT NULL COMMENT '关联对象id' AFTER `id`,
+	CHANGE COLUMN `to` `ref_name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '关联对象名称' AFTER `ref_id`,
+	CHANGE COLUMN `self` `executor` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行者' AFTER `ref_name`,
+	MODIFY COLUMN `id` varchar(30) NOT NULL COMMENT 'ID' FIRST;
+
+图片管理
+	id name create_time update_time path desc
+	ID 名称 创建时间 修改时间 路径 备注
+	
+代码自动生成
+	#form-item# #title# #classify# #js-edit# #table-head#
+	
+数据字典 想法 
+	type 用于区分某种类型的字典
+	value 主要信息
 	id name value code type desc create_time update_time
 	ID 名称 值 代码 类型 描述 创建时间 修改时间
 	
@@ -735,6 +761,7 @@ config是如何被传入
 	id 评论者 评论内容 评论时间 随笔标题 回复数 点赞数 查看原文
 	表 ： id 评论者 评论内容 评论时间 随笔标题 回复数 点赞数
 消息通知
+
 	浏览（文章、）评论（文章） 点赞（文章） 留言
 	表 ： id 标题 type 时间 isRead msg
 	type 02随笔 03留言 04系统
@@ -751,7 +778,7 @@ config是如何被传入
 		0008 超级管理员
 	点击可以查看详细
 	消息临时表 	ID 备注 时间 type  取消
-	消息表 		ID 操作人 关联文章 关联的人 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
+	消息表 		ID 操作人 关联id 关联name 备注 内容 时间 type(信息类型-隐藏) isRead（是否已读）
 	
 	消息被查看之后就会在临时表中删除已查看的消息
 	0001 
