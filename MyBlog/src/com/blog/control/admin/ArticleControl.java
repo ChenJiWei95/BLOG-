@@ -171,6 +171,7 @@ public class ArticleControl extends BaseControl{
 	 * @throws IOException
 	 */
 	@RequestMapping("editcontent.do")
+	@ResponseBody
 	public Object editcontent(String id, String mark_code, HttpServletRequest request) throws IOException{
 		try {
 			System.out.println("editcontent "+ id);
@@ -183,7 +184,7 @@ public class ArticleControl extends BaseControl{
 //			CharStreamImpl c = new CharStreamImpl(file);
 //			c.write(mark_code);
 //			c.close();
-//			System.out.println("结束");
+			System.out.println("结束");
 			return Message.success("请求成功");
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -194,7 +195,7 @@ public class ArticleControl extends BaseControl{
 	
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Article t, HttpServletRequest request) throws IOException{ 
+	public Object update(Article t, HttpServletRequest request) throws IOException{
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改

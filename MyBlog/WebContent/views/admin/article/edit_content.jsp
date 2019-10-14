@@ -38,12 +38,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               </div> 
               <div class="layui-form-item layui-form-text">
                 <div class="layui-input-block">
-                  <textarea name="mark_code" style="height: 600px;" placeholder="请输入内容" class="layui-textarea">${mark_code}</textarea>
+                  <textarea name="mark_code" class="mark_code" style="height: 600px;" placeholder="请输入内容" class="layui-textarea c-textarea">${mark_code}</textarea>
                 </div>
               </div>
               <div class="layui-form-item"> 
                 <div class="layui-input-block">
 					<button class="layui-btn c-button" lay-submit lay-filter="edit_submit">提交</button>
+					<button class="layui-btn C-btn-operate c-button" data-type="view">查看</button>
                 </div>
               </div>
             </div>
@@ -62,14 +63,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).use(['index', 'form', 'admin'], function(){
     form = layui.form
 	,admin = layui.admin
-	,b = "edit_submit";
+	,b = "edit_submit"
+	,e = "C-btn-operate";
 	form.on("submit("+b+")", function(data){
 		admin.cajax({
 			method: 'editcontent'
 			,data: data.field
 		});
 		return !1;
-	}); 	
+	});
+	active = {
+		view: function(e){
+			layer.open({
+				title: '页面层'
+				,type: '1'
+				,shadeClose: true
+				,area: ['780px', '500px']
+				,content: ''
+			});
+			$(".mark_code").eq(0).text();
+			new GitManage(gitStr).getElements().forEach(item => {
+				item.appendTo($(".git-show-cnt-in").eq(0));
+			});
+		}
+	}
+	$('.layui-btn.'+e).on('click', function(){
+		var type = $(this).data('type');
+		active[type] ? active[type].call(this) : '';
+    });
   });
   </script>
 </body>

@@ -8,6 +8,15 @@ html #layuicss-layuiAdmin {
 .c-button, .layui-card {border-radius: 5px;}
 .c-button {background: #555;}
 
+.c-textarea {
+    font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+    color: #555;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    padding: 10px;
+    outline: none;
+}
+
 ::-webkit-input-placeholder {
 	color: #ccc
 }
