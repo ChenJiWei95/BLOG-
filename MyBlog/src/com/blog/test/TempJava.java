@@ -32,7 +32,7 @@ public class TempJava {
 	// 模板文件
 	private static String[] temp = {"dao.txt", "service.txt", "", "mapper.xml", "serviceImpl.txt"};
 	// 命令描述
-	private static String[] commomdText = {"操作dao层代码", "操作service层代码", "操作实体层代码", "操作mapper配置代码", "操作service实现层代码", "操作control层代码", "操作mybatise配置文件代码"};
+	private static String[] commomdText = {"操作dao层代码", "操作service层代码", "操作实体层代码", "操作mapper配置代码", "操作service实现层代码", "操作control层代码", "操作mybatise配置文件代码", "操作前端代码"};
 	
 	// 要执行的命令下标  对应 前缀和后缀
 	// 0 	操作dao层代码
@@ -42,14 +42,18 @@ public class TempJava {
 	// 4 	操作service实现层代码
 	// 5 	操作control层代码
 	// 6 	操作mybatise配置文件代码
-	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
+	// 7  	操作前端代码
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
+	private static Integer[] commond = {};
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
+//	private static Integer[] commond = {7};
 	
 	public static void main(String[] args) throws IOException {
-		String fileds = "id name create_time update_time path desc";
-		String texts = "ID 名称 创建时间 修改时间 路径 备注";
+		String fileds = "id title ref_id ref_name executor exe_name type content time isRead desc";
+		String texts = "ID 描述 时间 状态";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("aimg", "aimg", "aimg", fileds, texts, "图片管理");
+		do1_1("message", "message", "message", fileds, texts, "消息中心");
 
 		// 下面为测试
 //		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));
@@ -113,28 +117,29 @@ public class TempJava {
 	
 	// 生成js代码
 	public static void do1_1(String name_, String table, String classify,  String fileds, String Texts, String title){
-		//args 根据字段生成表头js文
-		try {
-			do7(fileds.split(" "), Texts.split(" "), classify, title);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		do1(name_, table, classify, fileds.split(" "));
+		do1(name_, table, classify, fileds.split(" "), Texts.split(" "), title);
 	}
 
-	public static void do1(String name_, String table, String classify,  String[] args) {
+	public static void do1(String name_, String table, String classify,  String[] fileds, String[] Texts, String title) {
 		String name = name_.substring(0,1).toUpperCase() + name_.substring(1);
 		for (Integer index : commond) {
 			System.out.println("当前执行："+commomdText[index]);
 			if(index == 2) {
 				// 生成实体类
-				do3(name, args);
+				do3(name, fileds);
 			} else if(index == 5) {
 				// 生成控制类
 				do6(name, name_, classify);
 			}  else if(index == 6) {
 				// 配置文件
 				do5(name);
+			} else if(index == 7){
+				//args 根据字段生成表头js文
+				try {
+					do7(fileds, Texts, classify, title);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} else {
 				String copyPath = TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+"com/blog/"+prefix[index]+"/"+name+suffix[index];
 				File file = new File(copyPath);
