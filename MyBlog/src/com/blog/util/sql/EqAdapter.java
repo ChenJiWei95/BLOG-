@@ -154,8 +154,8 @@ public abstract class EqAdapter{
 		return columns;
 	}
 
-	public void setColumns(String columns) {
-		this.columns = columns;
+	public EqAdapter setColumns(String columns) {
+		this.columns = columns; return this;
 	}
 
 	public String getEqSql() {
