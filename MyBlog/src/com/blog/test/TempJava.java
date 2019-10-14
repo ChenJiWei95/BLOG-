@@ -39,21 +39,21 @@ public class TempJava {
 	// 1 	操作service层代码
 	// 2 	操作实体层代码
 	// 3 	操作mapper配置代码
-	// 4 	操作service实现层代码
+	// 4 	操作service实现层代码 
 	// 5 	操作control层代码
 	// 6 	操作mybatise配置文件代码
 	// 7  	操作前端代码
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
 	private static Integer[] commond = {};
-//	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
 //	private static Integer[] commond = {7};
 	
 	public static void main(String[] args) throws IOException {
-		String fileds = "id title ref_id ref_name executor exe_name type content time isRead desc";
+		String fileds = "id content a_id";
 		String texts = "ID 描述 时间 状态";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("message", "message", "message", fileds, texts, "消息中心");
+		do1_1("articleContent", "article_content", "articleContent", fileds, texts, "消息中心");
 
 		// 下面为测试
 //		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));

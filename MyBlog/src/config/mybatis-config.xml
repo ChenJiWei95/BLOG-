@@ -44,6 +44,8 @@
 		<mapper resource="com/blog/mapper/TagBrigeMapper.xml" />
 		<mapper resource="com/blog/mapper/AimgMapper.xml" />
 		<mapper resource="com/blog/mapper/MessageMapper.xml" />
+		<mapper resource="com/blog/mapper/ArticleContentMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>   
+

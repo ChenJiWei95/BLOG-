@@ -5,20 +5,20 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.blog.dao.ArticleDao;
+import com.blog.dao.ArticleContentDao;
 import com.blog.dao.BaseDao;
-import com.blog.entity.Article;
-import com.blog.service.ArticleService;
+import com.blog.entity.ArticleContent;
+import com.blog.service.ArticleContentService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class ArticleServiceImpl extends BasiServiceImpl<Article, Object> implements ArticleService, AssociaInterface  {
+public class ArticleContentServiceImpl extends BasiServiceImpl<ArticleContent, Object> implements ArticleContentService, AssociaInterface  {
 	@Resource
-	ArticleDao articleDao; 
+	ArticleContentDao articleContentDao; 
 	
-	public BaseDao<Article> getDao(){
-		return articleDao;
+	public BaseDao<ArticleContent> getDao(){
+		return articleContentDao;
 	}
 	
 	@Override
@@ -47,7 +47,7 @@ public class ArticleServiceImpl extends BasiServiceImpl<Article, Object> impleme
 	}
 	@Override
 	public String getTable() {
-		return "article";
+		return "article_content";
 	}
 }
 

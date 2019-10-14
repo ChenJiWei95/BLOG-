@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.blog.dao.ArticleDao">
+<mapper namespace="com.blog.dao.ArticleContentDao">
 	
 	<select id="count" parameterType="com.blog.util.sql.EqAdapter" resultType="INTEGER" useCache="false">
 		SELECT ${columnSql} FROM ${table}
@@ -125,7 +125,7 @@
 	</resultMap> -->
 	
 	<!-- user集合 -->
-	<resultMap id="userList" type="com.blog.entity.Article"> 
+	<resultMap id="userList" type="com.blog.entity.ArticleContent"> 
 	</resultMap>
 	 
 	
