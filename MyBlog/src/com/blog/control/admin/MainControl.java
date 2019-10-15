@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.blog.Constant;
 import com.blog.control.BaseControl;
 import com.blog.entity.Menu;
 import com.blog.entity.WebsiteBase;
@@ -36,12 +37,14 @@ public class MainControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+		System.out.println("session: "+request.getSession().getAttribute(Constant.USER_CONTEXT));
+		model.addAttribute("name", "123456");
 		try {
 			System.out.println(getIpAddr(request));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "../../views/admin_view";
+		return "admin/admin_view";
 	}	
 	@RequestMapping("/aly_control.chtml")
 	public String control(HttpServletRequest request, String agentno, ModelMap model){

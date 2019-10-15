@@ -14,40 +14,40 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
-import com.blog.entity.#name#;
-import com.blog.service.#name#Service;
+import com.blog.entity.ArticleContent;
+import com.blog.service.ArticleContentService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 
 @Controller
 // 数据字典
-@RequestMapping("/admin/#classify#")
-public class #name#Control extends BaseControl{
+@RequestMapping("/admin/articleContent")
+public class ArticleContentControl extends BaseControl{
 	
 	@Autowired
-	private #name#Service #name_#ServiceImpl;
+	private ArticleContentService articleContentServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(ModelMap model){
-		return "admin/#classify#/list";
+		return "admin/articleContent/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(ModelMap model){
 		// 角色集供选择
-		return "admin/#classify#/save_or_update";
+		return "admin/articleContent/save_or_update";
 	} 
 	
 	// 添加
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(#name# t) throws IOException{ 
+	public Object add(ArticleContent t) throws IOException{ 
 		System.out.println("添加接收参数："+t); 
 		
 		try{
 			t.setCreate_time(getNowTime());
-			#name_#ServiceImpl.insert(t);
+			articleContentServiceImpl.insert(t);
 			
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
@@ -76,7 +76,7 @@ public class #name#Control extends BaseControl{
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
-				#name_#ServiceImpl.delete(sb.toString());
+				articleContentServiceImpl.delete(sb.toString());
 			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
@@ -94,12 +94,12 @@ public class #name#Control extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(#name# t) throws IOException{ 
+	public Object update(ArticleContent t) throws IOException{ 
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			articleContentServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);
@@ -115,7 +115,7 @@ public class #name#Control extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			List<#name#> list = #name_#ServiceImpl.getAll();
+			List<ArticleContent> list = articleContentServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);

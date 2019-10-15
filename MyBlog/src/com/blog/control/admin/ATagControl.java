@@ -32,13 +32,13 @@ public class ATagControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		return "../../views/admin/atag/list";
+		return "admin/atag/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		// 角色集供选择
-		return "../../views/admin/atag/save_or_update";
+		return "admin/atag/save_or_update";
 	} 
 	
 	// 添加

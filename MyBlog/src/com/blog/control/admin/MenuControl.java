@@ -61,12 +61,12 @@ public class MenuControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		return "../../views/admin/menu/list";
+		return "admin/menu/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
-		return "../../views/admin/menu/save_or_update";
+		return "admin/menu/save_or_update";
 	} 
 	
 	/**

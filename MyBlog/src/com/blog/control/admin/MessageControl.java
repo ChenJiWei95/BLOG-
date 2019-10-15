@@ -33,7 +33,7 @@ public class MessageControl extends BaseControl{
 		model.addAttribute("repCount", messageServiceImpl.count(singleMarkOfEq("type", "03")+" AND "+singleMarkOfEq("isRead", "01")));
 		model.addAttribute("sysCount", messageServiceImpl.count(singleMarkOfEq("type", "04")+" AND "+singleMarkOfEq("isRead", "01")));
 		
-		return "../../views/admin/message/list";
+		return "admin/message/list";
 	}
 	
 	/*@RequestMapping("artCount.do")
@@ -50,7 +50,7 @@ public class MessageControl extends BaseControl{
 		messageServiceImpl.update(m, singleMarkOfEq("id", id));
 		model.addAttribute("message", messageServiceImpl.get(singleMarkOfEq("id", id)));
 		// 角色集供选择
-		return "../../views/admin/message/detail";
+		return "admin/message/detail";
 	} 
 	
 	/**

@@ -44,16 +44,16 @@ public class TempJava {
 	// 6 	操作mybatise配置文件代码
 	// 7  	操作前端代码
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
-	private static Integer[] commond = {};
-//	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
-//	private static Integer[] commond = {7};
+//	private static Integer[] commond = {};
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
+	private static Integer[] commond = {5};
 	
 	public static void main(String[] args) throws IOException {
 		String fileds = "id content a_id";
 		String texts = "ID 描述 时间 状态";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("articleContent", "article_content", "articleContent", fileds, texts, "消息中心");
+		do1_1("admin", "article_content", "admin", fileds, texts, "消息中心");
 
 		// 下面为测试
 //		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));

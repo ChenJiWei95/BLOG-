@@ -40,7 +40,7 @@ public class RoleControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(ModelMap model){ 
-		return "../../views/admin/role/list";
+		return "admin/role/list";
 	}
 	// 返回 页面 
 	@Transactional
@@ -59,7 +59,7 @@ public class RoleControl extends BaseControl{
 			model.addAttribute("type", false );
 		}
 			
-		return "../../views/admin/role/save_or_update";
+		return "admin/role/save_or_update";
 	}  
 	
 	// 添加

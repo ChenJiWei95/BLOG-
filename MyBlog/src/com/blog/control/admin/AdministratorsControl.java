@@ -34,9 +34,6 @@ import com.blog.util.TimeUtil;
 public class AdministratorsControl extends BaseControl{
 	
 	@Autowired
-	private MenuService menuServiceImpl;
-	
-	@Autowired
 	private RoleService roleServiceImpl;
 	
 	@Autowired
@@ -49,14 +46,14 @@ public class AdministratorsControl extends BaseControl{
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
 		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
-		return "../../views/admin/administrators/list";
+		return "admin/administrators/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		// 角色集供选择
 		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
-		return "../../views/admin/administrators/save_or_update";
+		return "admin/administrators/save_or_update";
 	} 
 	
 	// 添加
@@ -68,7 +65,7 @@ public class AdministratorsControl extends BaseControl{
 		// 保存admin账号 密码默认    保存admin信息
 		try{
 			admin.setId(TimeUtil.randomId());
-			admin.setLogin_count(0);
+			admin.setLogin_count("0");
 			admin.setPassword("12345678");
 			adminServiceImpl.insert(admin);
 			

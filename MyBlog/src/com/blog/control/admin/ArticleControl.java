@@ -1,6 +1,5 @@
 package com.blog.control.admin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import com.blog.service.ArticleService;
 import com.blog.service.TagBrigeService;
 import com.blog.test.TempJava;
 import com.blog.util.ActionUtil;
-import com.blog.util.CharStreamImpl;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 
@@ -49,7 +47,7 @@ public class ArticleControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		return "../../views/admin/article/list";
+		return "admin/article/list";
 	}
 	
 	// 返回 页面 
@@ -67,7 +65,7 @@ public class ArticleControl extends BaseControl{
 		model.addAttribute("mark_code", cnt.getContent());
 		model.addAttribute("name", a.getName());
 		model.addAttribute("id", id);
-		return "../../views/admin/article/edit_content";
+		return "admin/article/edit_content";
 	}
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String type, String id, ModelMap model){
@@ -85,7 +83,7 @@ public class ArticleControl extends BaseControl{
 			model.addAttribute("tagsed", list_);
 			model.addAttribute("type", false );
 		}		
-		return "../../views/admin/article/save_or_update";
+		return "admin/article/save_or_update";
 	} 
 	
 	// 添加

@@ -1,23 +1,23 @@
-|Author|威
-|:---:|:---:
-|E-mail|chenJiWey@163.com\
-|date|2018/10/11
-# Ajax异步交互
-### 说明
-    描述
-### 字段描述
-|类型|字段|描述
-|---|---|---
-### 构造描述
-|构造|描述
-|---|---
-|模板|模板
-### 方法描述
-|返回值|方法|参数
-|---|---|---
-|模板|模板|模板
-### 案例
-### 详细描述
+
+@Controller
+public class LoginController extends BaseController {
+    @RequestMapping("/login.action")
+    public String login(HttpServletRequest request,User user,Model model) {
+        setSessionUser(request, user);
+        System.out.println("username:"+user.getName());
+        System.out.println("password:"+user.getPassword());
+        model.addAttribute("name", user);
+        return "success";
+    }
+    @RequestMapping("/logout.action")
+    public String logout(HttpServletRequest request,HttpServletResponse response) {
+        User user=getSessionUser(request);
+        System.out.println(user.getName());
+        System.err.println(user.getPassword());
+        setSessionUser(request, null);
+        return "logout";
+    } 
+}
 
 对消息通知的处理
 	id ref_id ref_name executor type content time isRead desc

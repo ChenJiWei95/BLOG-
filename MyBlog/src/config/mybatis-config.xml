@@ -21,9 +21,9 @@
     </environments> -->
     
     <!-- 配置mapper 打印查询语句 -->
-	<settings>
+	<!-- <settings>
         <setting name="logImpl" value="STDOUT_LOGGING" />
-	</settings>
+	</settings> -->
    	<!--  配置mapper -->
     <mappers>
     	<!-- https://blog.csdn.net/zhoujiyu123/article/details/79076579 -->

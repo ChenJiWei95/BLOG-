@@ -41,34 +41,34 @@ public class TemplateControl extends BaseControl{
 	// 打开主要页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		return "../../views/admin/template/list";
+		return "admin/template/list";
 	}
 	// 打开详细页
 	@RequestMapping("/detail.chtml") 
 	public String detail(HttpServletRequest request, String id, ModelMap model){
 		model.addAttribute("id", id);
-		return "../../views/admin/template/listview";
+		return "admin/template/listview";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		 
-		return "../../views/admin/template/save_or_update";
+		return "admin/template/save_or_update";
 	} 
 	@RequestMapping("/search_save_or_update.chtml") 
 	public String save_or_update1(HttpServletRequest request, String agentno,ModelMap model){
 		 
-		return "../../views/admin/template/search_save_or_update";
+		return "admin/template/search_save_or_update";
 	} 
 	@RequestMapping("/table_save_or_update.chtml") 
 	public String save_or_update2(HttpServletRequest request,ModelMap model){
 		 
-		return "../../views/admin/template/table_save_or_update";
+		return "admin/template/table_save_or_update";
 	} 
 	@RequestMapping("/form_save_or_update.chtml") 
 	public String save_or_update3(HttpServletRequest request, String agentno,ModelMap model){
 		 
-		return "../../views/admin/template/form_save_or_update";
+		return "admin/template/form_save_or_update";
 	} 
 	/**
 	 * 初始化

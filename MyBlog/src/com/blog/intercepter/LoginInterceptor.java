@@ -20,6 +20,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
 		System.out.println("拦截登录");
+		// login.chtml 进入登录页面  
+		// login.do 登录请求
 		if(arg0.getRequestURI().indexOf("login.chtml")>0 || arg0.getRequestURI().indexOf("login.do")>0) {
 			return true;
 		}

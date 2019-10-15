@@ -8,7 +8,7 @@ public class Admin extends Base{
 	private String username;
 	private String password; 
 	private String state;
-	private Integer login_count;
+	private String login_count;
 	
 	public String getId() {
 		return id;
@@ -34,10 +34,10 @@ public class Admin extends Base{
 	public void setState(String state) {
 		this.state = state;
 	}
-	public Integer getLogin_count() {
+	public String getLogin_count() {
 		return login_count;
 	}
-	public void setLogin_count(Integer login_count) {
+	public void setLogin_count(String login_count) {
 		this.login_count = login_count;
 	}
 	
