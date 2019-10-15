@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </a>
           </li>
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
-            <a href="http://www.layui.com/admin/" target="_blank" title="前台">
+            <a href="http://www.chenjiwey.cn:8080" target="_blank" title="前台">
               <i class="layui-icon layui-icon-website"></i>
             </a>
           </li>
@@ -44,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
           
           <li class="layui-nav-item" lay-unselect>
-            <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+            <a lay-href="<%=basePath%>admin/message/listview.chtml" layadmin-event="message" lay-text="消息中心">
               <i class="layui-icon layui-icon-notice"></i>  
               
               <!-- 如果有新消息，则显示小圆点 -->
@@ -68,11 +68,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </li>
           <li class="layui-nav-item" lay-unselect>
             <a href="javascript:;">
-              <cite>${adminName}</cite>
+              <cite>${name}</cite>
             </a>
             <dl class="layui-nav-child">
-              <dd><a lay-href="set/user/info.html">基本资料</a></dd>
-              <dd><a lay-href="set/user/password.html">修改密码</a></dd>
+              <dd><a lay-href="<%=basePath%>admin/administrators/info.chtml">基本资料</a></dd>
+              <dd><a lay-href="<%=basePath%>admin/administrators/password.chtml">修改密码</a></dd>
               <hr>
               <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
             </dl>
@@ -111,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="home/console.chtml" lay-attr="home/console.chtml" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="home/console.html" frameborder="0" class="layadmin-iframe"></iframe>
+          <iframe src="home/console.chtml" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       

@@ -230,7 +230,7 @@ function(e) {console.log("admin");
             document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen()
         }
     },
-    F = P.events = {//点击回调
+    F = P.events = {//点击回调 
         flexible: function(e) {console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);

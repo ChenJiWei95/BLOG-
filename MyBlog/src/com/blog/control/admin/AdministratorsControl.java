@@ -29,7 +29,6 @@ import com.blog.util.Message;
 import com.blog.util.TimeUtil;
 
 @Controller
-// 数据字典
 @RequestMapping("/admin/administrators")
 public class AdministratorsControl extends BaseControl{
 	
@@ -48,12 +47,24 @@ public class AdministratorsControl extends BaseControl{
 		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "admin/administrators/list";
 	}
+	
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		// 角色集供选择
 		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
 		return "admin/administrators/save_or_update";
+	} 
+	
+	@RequestMapping("/info.chtml") 
+	public String info(HttpServletRequest request, String agentno,ModelMap model){
+		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+		return "admin/administrators/info";
+	} 
+	
+	@RequestMapping("/password.chtml") 
+	public String password(HttpServletRequest request, String agentno,ModelMap model){
+		return "admin/administrators/password";
 	} 
 	
 	// 添加

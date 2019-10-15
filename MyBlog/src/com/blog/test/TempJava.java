@@ -46,14 +46,14 @@ public class TempJava {
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
 //	private static Integer[] commond = {};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
-	private static Integer[] commond = {5};
+	private static Integer[] commond = {2};
 	
 	public static void main(String[] args) throws IOException {
-		String fileds = "id content a_id";
+		String fileds = "id username name name_ create_time update_time phone email admin_id role_id desc";
 		String texts = "ID 描述 时间 状态";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("admin", "article_content", "admin", fileds, texts, "消息中心");
+		do1_1("adminInfor", "article_content", "admin", fileds, texts, "消息中心");
 
 		// 下面为测试
 //		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));

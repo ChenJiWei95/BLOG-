@@ -1,25 +1,29 @@
 package com.blog.entity;
-/**
- * 管理员登录表
- * @author cjw
- */
 public class AdminInfor extends Base{
 	private String id;
+	private String username;
 	private String name;
-	private String name_; 
+	private String name_;
 	private String create_time;
 	private String update_time;
 	private String phone;
 	private String email;
 	private String admin_id;
-	private String role_id;	//为空 未授权 IS NULL / IS NOT NULL
+	private String role_id;
 	private String desc;
-	
+
+
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getName() {
 		return name;
@@ -75,5 +79,4 @@ public class AdminInfor extends Base{
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-	
 }

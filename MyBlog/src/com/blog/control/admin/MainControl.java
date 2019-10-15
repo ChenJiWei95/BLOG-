@@ -1,6 +1,7 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +17,17 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.Constant;
 import com.blog.control.BaseControl;
+import com.blog.entity.Admin;
+import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
+import com.blog.entity.Role;
 import com.blog.entity.WebsiteBase;
+import com.blog.service.AdminInforService;
+import com.blog.service.AdminService;
 import com.blog.service.MenuService;
+import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.util.ActionUtil;
 
 /**
  * 
@@ -34,11 +42,22 @@ public class MainControl extends BaseControl{
 	@Autowired
 	WebsiteBaseService websiteBaseServiceImpl;
 	
+	@Autowired
+	private AdminInforService adminInforServiceImpl;
+	
+	@Autowired
+	private AdminService adminServiceImpl;
+	
+	@Autowired
+	private RoleService roleServiceImpl;
+	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		System.out.println("session: "+request.getSession().getAttribute(Constant.USER_CONTEXT));
-		model.addAttribute("name", "123456");
+		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		AdminInfor ai = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
+		model.addAttribute("name", ai.getName());
+		
 		try {
 			System.out.println(getIpAddr(request));
 		} catch (Exception e) {
@@ -46,6 +65,22 @@ public class MainControl extends BaseControl{
 		}
 		return "admin/admin_view";
 	}	
+	
+	@RequestMapping("logout.do")
+	@ResponseBody
+	public Object logout(Admin t, HttpServletRequest re, ModelMap model) throws IOException{ 
+		try{
+			System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
+			Admin a = (Admin) re.getSession().getAttribute(Constant.USER_CONTEXT);
+			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
+			a.setState("01");
+			adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
+			return com.blog.util.Message.success("已登出");
+		}catch(Exception e){
+			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
+		}
+	}
+	
 	@RequestMapping("/aly_control.chtml")
 	public String control(HttpServletRequest request, String agentno, ModelMap model){
 		return "redirect:https://swas.console.aliyun.com/?spm=5176.12818093.aliyun_sidebar.aliyun_sidebar_swas.488716d06X0Cxb#/server/801f7b4cfd3f4a40b65d5e40132ede11/cn-shenzhen/dashboard";
@@ -56,7 +91,7 @@ public class MainControl extends BaseControl{
 	 * @param id
 	 * @return
 	 */
-	protected JSONArray init_(String id){
+	protected JSONArray init_(String id, List<String> app_ids){
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
 		menu.setRelate_id(id); 
@@ -65,23 +100,23 @@ public class MainControl extends BaseControl{
 			jsonArray = new JSONArray();
 			for(Menu item : ms) { 
 				JSONObject object = jsonToJSONObject(item); 
-				object.remove("name"); 
-				object.remove("id"); 
-				object.remove("url"); 
-				object.remove("update_time"); 
-				object.remove("create_time"); 
-				object.remove("relate_id"); 
-				object.remove("msg"); 
-				object.remove("priority"); 
+				object.remove("name"); object.remove("id"); object.remove("url"); 
+				object.remove("update_time"); object.remove("create_time"); object.remove("relate_id"); 
+				object.remove("msg"); object.remove("priority"); 
 				object.put("desc", item.getName()); 
 				object.put("key", item.getId());
 				object.put("href", item.getUrl());
-				if(item.getUrl().indexOf("####") != -1)
-					object.put("dataName", item.getId()); 
-				JSONArray jsonArray_;
-				if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId())) != null) 
-					object.put("children", jsonArray_);
-				jsonArray.add(object); 
+				// url不是#### 那么判断id是否在权限中
+				if(item.getUrl().indexOf("####") != -1) {
+					object.put("dataName", item.getId());
+					JSONArray jsonArray_ = null;
+					if((jsonArray_ = init_(item.getId(), app_ids)) != null) {
+						object.put("children", jsonArray_);
+					}
+					if(jsonArray_ != null && jsonArray_.size() > 0) jsonArray.add(object); 
+				}else {
+					if(app_ids.contains(item.getId())) jsonArray.add(object);
+				}
 			}
 		}
 		return jsonArray;
@@ -94,8 +129,18 @@ public class MainControl extends BaseControl{
 	 */
 	@RequestMapping("init.do")
 	@ResponseBody
-	public JSONObject init() throws IOException{
+	public JSONObject init(HttpServletRequest request) throws IOException{
 		
+		// 用户根据权限获取 appid集合
+		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		AdminInfor adminInfor = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
+		List<Role> roles = roleServiceImpl.gets(singleMarkOfEq("role_id", adminInfor.getRole_id()));
+		List<String> app_ids = new ArrayList<>();
+		for(Role role : roles) {
+			app_ids.add(role.getApp_id());
+		}
+		
+		// 收集菜单信息
 		Menu m = new Menu();
 		m.setRelate_id("");
 		List<Menu> ms = menuServiceImpl.getOfOrderBySort(m, "ASC", "priority"); 
@@ -115,10 +160,10 @@ public class MainControl extends BaseControl{
 			object.put("href", item.getUrl());
 			if(item.getUrl().indexOf("####") != -1)
 				object.put("dataName", item.getId()); 
-			JSONArray jsonArray_;
-			if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId())) != null) 
+			JSONArray jsonArray_ = null;
+			if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId(), app_ids)) != null) 
 				object.put("children", jsonArray_);
-			jsonArray.add(object); 
+			if(jsonArray_ != null && jsonArray_.size() > 0) jsonArray.add(object); // 子元素为空夹也不需要了
 		} 
 		
 		WebsiteBase base = new WebsiteBase();

@@ -52,9 +52,9 @@ public class LoginControl extends BaseControl{
 					return com.blog.util.Message.error("账号已锁定！");
 			} else {
 				// 密码错误或账号不存在
-				if(Integer.parseInt(a.getLogin_count()) >= 5) 
-					return com.blog.util.Message.error("账号已锁定！");
 				if(a != null) {
+					if(Integer.parseInt(a.getLogin_count()) >= 5) 
+						return com.blog.util.Message.error("账号已锁定！");
 					t.setLogin_count((Integer.parseInt(a.getLogin_count())+1)+"");
 					t.setPassword(null);
 					adminServiceImpl.update(t, singleMarkOfEq("username", t.getUsername()));
@@ -69,6 +69,7 @@ public class LoginControl extends BaseControl{
 			re.getSession().setAttribute(Constant.USER_CONTEXT, a);
 			return com.blog.util.Message.success("登录成功", data);
 		}catch(Exception e){
+			e.printStackTrace();
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
 	}
@@ -83,6 +84,7 @@ public class LoginControl extends BaseControl{
 			adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){
+			e.printStackTrace();
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
 	}
@@ -112,6 +114,7 @@ public class LoginControl extends BaseControl{
 			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 		
@@ -133,6 +136,7 @@ public class LoginControl extends BaseControl{
 			adminServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	} 
@@ -149,6 +153,7 @@ public class LoginControl extends BaseControl{
 			List<Admin> list = adminServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}
