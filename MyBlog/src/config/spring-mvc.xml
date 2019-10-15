@@ -26,8 +26,14 @@
     	这只是其中一种视图解析的方式链接下还有其他的介绍
     	https://blog.csdn.net/superdog007/article/details/28857495
     -->
+    <mvc:interceptors>
+    	<mvc:interceptor>
+    	 	<mvc:mapping path="/**"/>
+    		<bean class="com.blog.intercepter.LoginInterceptor"/>
+    	</mvc:interceptor>
+    </mvc:interceptors>
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    	<property name="prefix" value=""></property>
+    	<property name="prefix" value="/WEB-INF/views/"></property>
     	<!-- 
     	suffix 
     	此处结尾为.jsp
@@ -59,7 +65,6 @@
 	 	</property>
 	</bean>
     -->
-    
 	<bean id="bundleViewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
   		<property name="basename">
    			<value>views</value>
