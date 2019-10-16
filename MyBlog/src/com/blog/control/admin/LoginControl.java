@@ -33,7 +33,7 @@ public class LoginControl extends BaseControl{
 	private AdminService adminServiceImpl;
 
 	@Autowired
-	private MessageService messageServiceImpl;
+	private MessageService messageServiceImpl; 
 	
 	// 返回 页面 
 	@RequestMapping("/login.chtml") 
