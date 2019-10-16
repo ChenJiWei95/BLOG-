@@ -33,17 +33,17 @@ public class LoginControl extends BaseControl{
 	private AdminService adminServiceImpl;
 
 	@Autowired
-	private MessageService messageServiceImpl; 
+	private MessageService messageServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/login.chtml") 
 	public String listview1(ModelMap model){
-		return "admin/login";
+		return "admin/login";  
 	}
 	  
 	// 添加
-	@RequestMapping("login.do")
-	@ResponseBody 
+	@RequestMapping("login.do") 
+	@ResponseBody
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
 		CMessage cm = new CMessage();
 		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
