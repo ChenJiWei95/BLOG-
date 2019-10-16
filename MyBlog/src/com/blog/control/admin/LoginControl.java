@@ -42,7 +42,7 @@ public class LoginControl extends BaseControl{
 	}
 	  
 	// 添加
-	@RequestMapping("login.do")
+	@RequestMapping("login.do") 
 	@ResponseBody
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
 		CMessage cm = new CMessage();
