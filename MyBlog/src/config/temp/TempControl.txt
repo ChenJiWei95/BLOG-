@@ -20,7 +20,6 @@ import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 
 @Controller
-// 数据字典
 @RequestMapping("/admin/#classify#")
 public class #name#Control extends BaseControl{
 	

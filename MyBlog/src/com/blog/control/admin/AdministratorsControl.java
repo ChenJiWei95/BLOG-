@@ -71,7 +71,7 @@ public class AdministratorsControl extends BaseControl{
 		model.addAttribute("roleName", list.get(0).get("name"));
 		System.out.println(list.get(0).get("name"));
 		return "admin/administrators/info";
-	} 
+	}
 	
 	@RequestMapping("/password.chtml") 
 	public String password(HttpServletRequest request, ModelMap model){
@@ -108,7 +108,7 @@ public class AdministratorsControl extends BaseControl{
 				adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
 				return Message.success("密码修改成功!");
 			}
-			return Message.error("旧密码错误!");
+			return Message.error("当前密码错误!");
 		}catch(RuntimeException e) {
 			e.printStackTrace();
 			return Message.error("操作失败!"+e.getMessage());

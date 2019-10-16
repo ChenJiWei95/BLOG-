@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
-import com.blog.entity.Message;
+import com.blog.entity.CMessage;
 import com.blog.service.MessageService;
 import com.blog.util.ActionUtil;
 
@@ -45,7 +45,7 @@ public class MessageControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/detail.chtml") 
 	public String save_or_update(String id, ModelMap model){
-		Message m = new Message();
+		CMessage m = new CMessage();
 		m.setIsRead("00");
 		messageServiceImpl.update(m, singleMarkOfEq("id", id));
 		model.addAttribute("message", messageServiceImpl.get(singleMarkOfEq("id", id)));
@@ -97,7 +97,7 @@ public class MessageControl extends BaseControl{
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
-				Message m = new Message();
+				CMessage m = new CMessage();
 				m.setIsRead("00");
 				messageServiceImpl.update(m, sb.toString());
 			}
@@ -112,7 +112,7 @@ public class MessageControl extends BaseControl{
 	public Object readyAll(String type) throws IOException{ 
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
-			Message m = new Message();
+			CMessage m = new CMessage();
 			m.setIsRead("00");
 			messageServiceImpl.update(m, singleMarkOfEq("isRead", "01") + ("00".equals(type) ? "" : " AND" + singleMarkOfEq("type", type)));
 			return com.blog.util.Message.success("请求成功");
@@ -131,7 +131,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			List<Message> list = messageServiceImpl.getAll();
+			List<CMessage> list = messageServiceImpl.getAll();
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -142,7 +142,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object articleList() throws IOException{
 		try {
-			List<Message> list = messageServiceImpl.gets(singleMarkOfEq("type", "02"));
+			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "02"));
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -152,7 +152,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object directList() throws IOException{
 		try {
-			List<Message> list = messageServiceImpl.gets(singleMarkOfEq("type", "03"));
+			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "03"));
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -162,7 +162,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object sysList() throws IOException{
 		try {
-			List<Message> list = messageServiceImpl.gets(singleMarkOfEq("type", "04"));
+			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "04"));
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);

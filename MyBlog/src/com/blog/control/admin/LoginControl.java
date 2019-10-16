@@ -2,6 +2,7 @@ package com.blog.control.admin;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,6 @@ import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 
 @Controller
-// 数据字典
 @RequestMapping("/admin")
 public class LoginControl extends BaseControl{
 	
@@ -45,15 +45,15 @@ public class LoginControl extends BaseControl{
 	@RequestMapping("login.do")
 	@ResponseBody
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
-		System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
 		CMessage cm = new CMessage();
 		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 		cm.setExe_name(t.getUsername());
 		cm.setDesc("登录提示--后台管理系统");
-		cm.setIsRead("01");
+		cm.setIsRead(Constant.MESSAGE_NO_READ);
+		cm.setType(Constant.MESSAGE_TYPE_SYS);
 		cm.setTime(getNowTime());
 		cm.setTitle("登录提示");
-		cm.setContent(t.getUsername()+"于"+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
+		cm.setContent(t.getUsername()+" 于 "+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
 		messageServiceImpl.insert(cm);
 		try{
 			Admin a = adminServiceImpl.get(singleMarkOfEq("username", t.getUsername()));
@@ -62,7 +62,6 @@ public class LoginControl extends BaseControl{
 					return com.blog.util.Message.error("账号已禁用！");
 				} else if(Integer.parseInt(a.getLogin_count()) < 5) {
 					t.setLogin_count("0");
-					t.setState("00");
 					adminServiceImpl.update(t, singleMarkOfEq("username", t.getUsername()));
 				} else 
 					return com.blog.util.Message.error("账号已锁定！");
@@ -83,21 +82,93 @@ public class LoginControl extends BaseControl{
 					
 			data.put("token", token);
 			re.getSession().setAttribute(Constant.USER_CONTEXT, a);
+			List<Map<String, Object>> list = adminServiceImpl.getOfManyTable("c.url AS url", 
+					"`admin_infor` a, `role` b, `menu` c", 
+					singleOfEq("a.`admin_id`", quma2(a.getId())+" AND "
+					+singleOfEq("a.`role_id`", "b.`role_id`")+" AND "
+					+singleOfEq("b.`app_id`", "c.id")));
+			/*
+			
+			
+			
+			*/
+			re.getSession().setAttribute(Constant.PERMISSION_LIST, list);
 			return com.blog.util.Message.success("登录成功", data);
 		}catch(Exception e){
 			e.printStackTrace();
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
 	}
+	static class ColStatement { 
+		private String table;
+		private String alias;
+		private String[] cols;
+		private String[] calias;
+		
+		public ColStatement(){ }
+		public ColStatement(String table){
+			this(table, null);
+		}
+		public ColStatement(String table, String alias){
+			this.table = table;
+			this.alias = alias;
+		}
+		
+		public String getTable() {
+			return table;
+		}
+		public void setTable(String table) {
+			this.table = table;
+		}
+		public String getAlias() {
+			return alias;
+		}
+		public void setAlias(String alias) {
+			this.alias = alias;
+		}
+		public String[] getCols() {
+			return cols;
+		}
+		public void setCols(String[] cols) {
+			this.cols = cols;
+		}
+		public String[] getCalias() {
+			return calias;
+		}
+		public void setCalias(String[] calias) {
+			this.calias = calias;
+		}
+		/*// 表别名
+		public ColStatement alias(String alias){
+			this.alias = alias;
+//			sb.append(alias+".");
+			return this;
+		}
+		public ColStatement cols(String... cols){
+			this.cols = cols;
+			return this;
+		}
+		// 字段别名
+		public ColStatement colAlias(String... calias){
+			this.calias = calias;
+			return this;
+		}
+		public ColStatement sep(){
+			sb.append(", ");
+			return this;
+		}
+		*/
+		public String getStatement(){
+			StringBuilder sb = new StringBuilder();
+			return sb.toString();
+		}
+		
+	}
 	@RequestMapping("logout.do")
 	@ResponseBody
-	public Object logout(Admin t, HttpServletRequest re, ModelMap model) throws IOException{ 
+	public Object logout(HttpServletRequest re) throws IOException{ 
 		try{
-			System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
-			Admin a = (Admin) re.getSession().getAttribute(Constant.USER_CONTEXT);
 			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
-			a.setState("01");
-			adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){
 			e.printStackTrace();
