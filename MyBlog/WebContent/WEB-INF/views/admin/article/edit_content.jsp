@@ -16,6 +16,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 	
+  <link rel="stylesheet" href="<%=basePath%>css/git-plugin.css" media="all"> 	
 </head>
 <body>
   <div class="layui-fluid">
@@ -38,7 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               </div> 
               <div class="layui-form-item layui-form-text">
                 <div class="layui-input-block">
-                  <textarea name="mark_code" class="mark_code" style="height: 600px;" placeholder="请输入内容" class="layui-textarea c-textarea">${mark_code}</textarea>
+                  <textarea name="mark_code" style="height: 600px;" placeholder="请输入内容" class="layui-textarea c-textarea mark_code">${mark_code}</textarea>
                 </div>
               </div>
               <div class="layui-form-item"> 
@@ -55,6 +56,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>  
 
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
+  <script src="<%=basePath%>js/git-plugin V0.js"></script>
   <script>
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
@@ -62,6 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     index: 'lib/index' //主入口模块
   }).use(['index', 'form', 'admin'], function(){
     form = layui.form
+    ,$ = layui.$
 	,admin = layui.admin
 	,b = "edit_submit"
 	,e = "C-btn-operate";
@@ -78,13 +81,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				title: '页面层'
 				,type: '1'
 				,shadeClose: true
-				,area: ['780px', '500px']
-				,content: ''
+				,area: ['80%', '80%']
+				,content: '<div class="layui-fluid" style="background: #dddddd91;"><div class="layui-card"><div class="layui-card-body mark_code_cnt" pad15></div></div></div>'
+				,success:function(){
+					new GitManage($(".mark_code").eq(0).text()).getElements().forEach(function(item) {
+						item.appendTo($$$(".mark_code_cnt").eq(0));
+					});
+				}
 			});
-			$(".mark_code").eq(0).text();
-			new GitManage(gitStr).getElements().forEach(item => {
-				item.appendTo($(".git-show-cnt-in").eq(0));
-			});
+			
 		}
 	}
 	$('.layui-btn.'+e).on('click', function(){

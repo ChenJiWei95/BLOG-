@@ -145,6 +145,671 @@
 		console.log(item.html());
 	});
 	*/
+	var $$ = {
+		//$$对象中的暂缓数据
+		tempData:undefined,
+		//获取$$对象中的暂缓数据
+		getTempData:function(){
+			var temp = $$.tempData;
+			$$.tempData = null;
+			return temp;
+		},
+		cre:function(tag){
+			return createElement(tag);
+		},
+		//异常
+		nullError:function(obj, objName) {
+			if(obj == undefined)
+				throw new Error("参数" + objName + "不能为空 == " + obj);
+		},
+		//异常
+		error:function(msg){
+			throw new Error(msg);
+		},
+		//表单异步交互
+		formAjax:function(data){
+			$$.tempData = data;
+			var str = "abcdefghijklmnopqrstuvwxyz";
+			var result = "";
+			for(var i = 0; i <8; i++){
+				result += str.charAt(Math.floor(Math.random()*25));
+			}
+			var scri = $("body")[0].creEle("script");
+			scri.innerHTML = 'var formAjaxData = $$.getTempData();' +
+			'formAjaxData.callbackObj = "' + result + '";' +
+			'var ' + result + ' = new FormAjax(formAjaxData);';
+		},
+		//表单验证
+		formVerifi:function(data){
+			new FormVerifi(data);
+		},
+		//工具库
+		util:{
+			isJSON:function(jsonStr){
+				return (jsonStr.charAt(0) == '{' || jsonStr.charAt(0) == '[') ? true : false;
+			},
+			isNumber:function(field){
+				return !(isNaN(field));
+			},
+			isBool:function(field){ //包括字符串的判断
+				return field == "true" || field == "false" || $$.util.isBoolean(field);
+			},
+			isBoolean:function(bool){//只判断布尔对象不包括字符串
+				if(!(typeof bool == "boolean"))
+					return false;
+				return String(bool) == "true" || String(bool) == "false"; 
+			},
+			isChinese:function(field){		//全中文
+				return unicodeUtil.isChinese(field);
+			},
+			isString:function(field) {		//不是数字，不是bool对象
+				return !$$.util.isNumber(field) && !$$.util.isBoolean(field);
+			},
+			isEnglish:function (c) {
+				//是否为英文
+				return c >= 'a' && c <= 'z'	|| c >= 'A' && c <= 'Z';
+			},
+			isHalfSymbol:function(c){
+				//英文符号
+				var code = c.charCodeAt(0);
+				return code >= 33 && code <= 47
+				|| code >= 59 && code <= 64
+				|| code >= 91 && code <= 96
+				|| code >= 124 && code <= 127;
+			},
+			isAllSymbol:function(c){
+				//中文符号
+				var code = c.charCodeAt(0);
+				return code == 126 || code == 8216 || code == 8221 ||
+					code == 12289 || code == 12290 || code == 12298 || 
+					code == 12299 || code == 12304 || code == 12305  ||
+					code == 65306 || code == 65307 || code == 65281 || 
+					code == 65292 || code == 65311;
+			},
+			isNullReturn:function(obj, dobj){
+				//如果obj未定义 则返回dobj 
+				return obj == undefined ? dobj : obj;
+			},
+			date:{
+			
+			},
+			//填充成指定位数的字符
+			fillString:function(string, num, fillChar){
+				//fillChar 默认为零
+				//num      需要多少位的数字
+				fillChar = fillChar == undefined ? "0" : fillChar;
+				var temp = "";
+				string = string + "";
+				var len = num - string.length;
+				for(var i = 0; i < len; i++) temp += fillChar;
+				return temp + "" + string;
+			},
+			//去填充
+			fillString_recover:function(string, fillChar){
+				//fillChar 填充符 默认为零
+				fillChar = fillChar == undefined ? "0" : fillChar;
+				var len = string.length;
+				for(var i = 0; i < len; i++){
+					if(!(string.charAt(i) == fillChar))
+						return string.substring(i, string.length);
+				}
+				return string; 
+			},
+			getRan:function(){
+				return Num_ran5();
+			},
+			firstUpperCase:function(str){
+				//首字母大写
+				return str.charAt(0).toUpperCase() + str.substring(1);
+			},
+			firstLowercase:function(str){
+				//首字母小写
+				return str.charAt(0).toLowerCase() + str.substring(1);
+			}, 
+			inputInsert:function(target, str){
+				//向某一个输入框的特定位置输入特定字符串或者字符
+				//参数 target(输入框元素) 、 输入字符/字符串
+				if (target.selectionStart || target.selectionStart == '0'){
+					var startPos = target.selectionStart;
+					var endPos = target.selectionEnd;
+					target.value = target.value.substring(0, startPos) 
+					+ str
+					+ target.value.substring(endPos, target.value.length);
+					target.selectionStart = startPos + 1;
+					target.selectionEnd = endPos + 1;
+				} else target.value += str;
+			},
+		},
+		//json
+		json:{
+			toObject:function(jsonStr) {return Tokener.parseObject(jsonStr);},
+			toString:function(jsonObj) {return Tokener.parseString(jsonObj);},
+			toJSON:function(jsonObj) {return new ObjectParseJSON().parseJSON(jsonObj)},
+		},
+	}
+	
+	//快速在js中创建link标签
+	function createLink(hrefPath){
+		var link = document.createElement("link");
+		link.attr("rel", "stylesheet");
+		link.attr("type", "text/css");
+		link.attr("href", hrefPath);
+		document.head.creEle("link");
+	}
+	function createElement(tag){
+		return document.createElement(tag);
+	}
+	
+	/**
+	* 2018/9/26 
+	* 范例： "p.example" - 选择class名为example的p标签元素
+	*		 "a[target]" - 选择有target属性的a标签元素
+	*		 ""h2, h3""  - 选择h2，h3标签元素
+	*		 "." - 返回对应的class类名的元素集
+	*		 "#" - 返回对应的id名的元素（单个）
+	*		 ""  - 返回对应标签名的元素集
+ 	* 更新： 修改为以querySelector为核心的元素选择
+	* 方法: $$$(elementName)
+	* 用途：根据id、class、元素名选取元素
+	*/
+	function $$$(elementName){
+		return select(document, elementName);
+		/*
+		2018/9/26 废弃
+		if(elementName.charAt(0) == "#"){
+			return document.getElementById(elementName.substring(1, elementName.length));
+		}else if(elementName.charAt(0) == "."){
+			return document.getElementsByClassName(elementName.substring(1, elementName.length));
+
+		}else
+			return document.getElementsByTagName(elementName);
+		*/
+	}
+	function select(e, eName){
+		if(eName.charAt(0) == "#") return e.querySelector(eName);
+		return e.querySelectorAll(eName);
+	}
+	/**
+	更新：
+	2018/9/25 getWidth、getHeight、getMarginLeft、getMarginRight、getMarginTop、getMarginBottom
+
+	解析接口：
+		creEle		给一个Node创建一个ChildNode并追加在Node的尾部
+		creEleTop	给一个Node创建一个ChildNode并追加在Node的首部
+	
+	参数	
+		creEle		tag	标签名
+		creEleTop	tag	标签名
+
+	案例：
+		$(".self_layer_user_id")[0].creEle("Label").text("cjw1");
+		$(".self_layer_user_id")[0].creEleTop("Label").text("cjw2");
+		效果如下：
+		<label class="self_layer_user_id">
+			<label>cjw2</label>
+			<label>cjw2</label>
+		</label>
+	
+	*/
+	Node.prototype.getWidth = function(){
+		
+		return this.offsetWidth;
+	}
+	Node.prototype.getHeight = function(){
+		
+		return this.offsetHeight;
+	}
+	Node.prototype.getMarginLeft = function(){
+		
+		return this.getBoundingClientRect().left;
+	}
+	Node.prototype.getMarginRight = function(){
+		
+		return this.getBoundingClientRect().right;
+	}
+	Node.prototype.getMarginTop = function(){
+		
+		return this.getBoundingClientRect().top;
+	}
+	Node.prototype.getMarginBottom = function(){
+		
+		return this.getBoundingClientRect().bottom;
+	}
+	//在尾部创建子元素
+	Node.prototype.creEle = function(tag){
+		var E = document.createElement(tag);
+		this.appendChild(E);
+		return E;
+	}
+	//在顶部创建子元素
+	Node.prototype.creEleTop = function(tag){
+		var newNode = document.createElement(tag);
+		this.insertBefore(newNode, this.firstChild); //childNodes(0)
+		return newNode;
+	}
+	//给一个元素添加属性或者获取属性
+	Node.prototype.attr = function(attrName, Value){
+		if(Value == undefined)
+			return this.getAttribute(attrName);
+		this.setAttribute(attrName, Value);
+		return this;
+	}
+	//给一个元素添加文本或者获取文本值
+	Node.prototype.text = function(text){
+		if(text == undefined)
+			return this.innerHTML;
+		this.innerHTML = text;
+		return this;
+	}
+	//删除一个元素自身
+	Node.prototype.remove = function(){
+		var temp = this;
+		this.parentNode.removeChild(this);
+		return temp;
+	}
+	//
+	Node.prototype.removeAttr = function(attrName){
+		this.removeAttribute(attrName);
+	}
+	//获取节点名称
+	Node.prototype.tName = function (){
+		return this.nodeName.toLowerCase();
+	}
+	//获取标签名为name的父元素 name为空则获取当前元素的父元素
+	Node.prototype.parent = function (name){
+		if(name != undefined){
+			var currentNode = this;
+			while((currentNode = currentNode.parentNode) != null){
+				if(currentNode.tName() == name)
+					return currentNode;
+			}
+			return null;
+		}
+		return this.nodeParent;
+	}
+	Node.prototype.isParentNode = function (parent){
+		if(parent == undefined)
+			return false;
+		var currentNode = this;
+		if(currentNode.parent(parent.tName()) == parent){
+			return true;
+		}
+		return false;
+	}
+	/**
+	解析接口：
+		append		给一个Node添加一个兄弟节点并追加在Node的后面
+		appendTop	给一个Node添加一个兄弟节点并追加在Node的前面
+		insert		给一个Node插入一个ChildNode并追加在Node的尾部
+		insertTop	给一个Node插入一个ChildNode并追加在Node的首部
+	
+	参数	
+		append		htmlText	HTML代码
+		appendTop	htmlText	HTML代码
+		insert		htmlText	HTML代码
+		insertTop	htmlText	HTML代码
+
+	案例：
+		$(".self_layer_user_id")[0].creEle("Label").text("cjw1");
+		$(".self_layer_user_id")[0].creEleTop("Label").text("cjw2");
+		效果如下：
+		<label class="self_layer_user_id">
+			<label>cjw2</label>
+			<label>cjw2</label>
+		</label>
+	*/
+	Node.prototype.append_ = function(htmlText){
+		this.insertAdjacentHTML("afterEnd",htmlText);
+		return this.nextElementSibling;
+	}	
+	Node.prototype.appendTop = function(htmlText){
+		this.insertAdjacentHTML("beforeBegin",htmlText);
+		return this.previousElementSibling;
+	}
+	Node.prototype.insert = function(htmlText){
+		this.insertAdjacentHTML("beforeEnd",htmlText);
+		return this.lastElementChild;
+	}
+	Node.prototype.insertTop = function(htmlText){
+		this.insertAdjacentHTML("afterBegin",htmlText);
+		return this.firstElementChild;
+	}
+	//
+	Node.prototype.$ = function(elementName){
+		if(elementName.charAt(0) == "#"){
+			return this.getElementById(elementName.substring(1, elementName.length));
+		}else if(elementName.charAt(0) == "."){
+			return this.getElementsByClassName(elementName.substring(1, elementName.length));
+
+		}else
+			return this.getElementsByTagName(elementName);
+	}
+	//2018/9/26
+	Node.prototype.addClass = function(className){
+		//feb 21 bug
+		//修复添加覆盖全部的问题
+		var classNames = this.getAttribute("class");
+		/*
+		mar 2,2019 修复有null class的问题
+		if (classNames == undefined || classNames.indexOf(className) == -1) {
+			this.setAttribute("class", classNames + " " + className);
+		}
+		可能结果 class="null page_ctl_click"
+		*/
+		if(classNames == undefined || classNames == "" || classNames == null){
+			this.setAttribute("class", className);
+		} else if (classNames.indexOf(className) == -1) {
+			this.setAttribute("class", classNames + " " + className);
+		} 	
+		return this;
+	}
+	//2018/9/26 删除整个class属性
+	Node.prototype.removeClass = function(className){
+		//feb 21 bug
+		//删除指定class名称
+		if(className == undefined) 
+			this.removeAttribute("class");
+		else {
+			var classNames = this.getAttribute("class");
+			var index; 
+			if((index = classNames.indexOf(className)) != -1){
+				
+				this.setAttribute("class", classNames.substring(0, index === 0 ? 0 : index-1) 
+					+ classNames.substring(index + className.length));
+			}
+		}
+		return this;
+	}
+
+	
+	
+	/**
+	为当前元素添加样式，样式的参数方式与页面中的参数形式一致
+	参数 isFlag 为覆盖参数  默认不覆盖 false为覆盖 
+	案例：e.css("border:1px solid #ccc; width:200px; height:200px;");
+	2017/12/6
+	*/
+	Node.prototype.css = function(cssText, isFlag){
+		if((isFlag === true) && (this.style.cssText.length > 0))
+			cssText += this.style.cssText;
+		this.style.cssText = cssText;
+	}
+	Node.prototype.removeCss = function(cssText, isFlag){
+		this.style.cssText = '';
+	}
+	//单独设置样式 以key--value的形式设置样式
+	Node.prototype.cssKV = function (styleKey, styleValue){
+		if(styleValue == undefined)
+			return this.style.getPropertyValue(styleKey);
+		this.style.setProperty(styleKey, styleValue);
+	}
+	Node.prototype.removeCssKV = function (styleKey){
+		this.style.removeProperty(styleKey);
+	}
+	//2018/9/27
+	Element.prototype.first = function(){
+		//console.log(this);
+		return this.firstElementChild;
+	}
+	//2018/9/27
+	Element.prototype.last = function(){
+		return this.lastElmentChild;
+	}
+	//2018/9/28
+	Element.prototype.childs = function(){
+		return this.children;
+	}
+	
+	Element.prototype.pre = function(){
+		if(this.previousElementSibling) return this.previousElementSibling;
+		var sib = this.previousSibling;
+		while(sib && sib.nodeType !== 1) sib = sib.previousSibling;
+		return sib;
+	}
+	Node.prototype.appendTo = function(e){
+		e.appendChild(this);
+		return this;
+	}
+	Element.prototype.appendTo = function(e){
+		e.appendChild(this);
+		return this;
+	}
+
+	Element.prototype.next = function(){
+		if(this.nextElementSibling) return this.nextElementSibling;
+		var sib = this.nextSibling;
+		while(sib && sib.nodeType !== 1) sib = sib.nextSibling;
+		return sib;
+	}
+	//对其他兄弟元素进行操作
+	Element.prototype.siblings = function(){
+		var nl = new NodeListC();//NodeListC 装元素的集合
+		//获取父元素
+		var p = this.parentNode;
+		var next = p.first();
+		//遍历装 剩下的
+		while(next != null){
+			nl.add(next);
+			next = next.next()
+		}
+		nl.remove(this);	//删除自身
+		return nl;
+	}
+	//可以完成DOM链式操作
+	//返回所有子元素
+	Element.prototype.end = function(){
+		var parent = this.parentElement;
+		return parent.children;
+	}
+	//返回当前元素的子元素的第一个
+	Element.prototype.frist = function(){
+		return this.firstElementChild;
+	}
+	//返回当前元素的子元素的最后一个
+	/*
+	Element.prototype.last = function(){
+		return this.lastElementChild;
+	}
+	*/
+
+	/**
+		replaceAll 替换所有
+	*/
+	String.prototype.replaceAll = function(repChar, newChar){
+		var startIndex = 0;
+		var str = tempstr = this;
+		while((startIndex = tempstr.indexOf(repChar, startIndex)) != -1){
+			str = str.replace(repChar, newChar);
+			startIndex++;
+		}
+		return str;
+	}
+	String.prototype.forEach = function(fn){
+		for(var i = 0; i < this.length; i++){
+			fn(this.charAt(i), i);
+		}
+	}
+
+	/**
+	 * 对HTMLCollection 进行属性添加
+	 * 2018/9/26
+	 *	eq
+	 *	css
+	 *	each
+	 *	forEach
+	 *
+	 */
+	/*
+	通常，NodeList和HTMLCollection的实时性非常有用。但是，如果要在迭代一个NodeList对象时在文档
+	中添加或者删除元素，首先会需要对NodeList对象生成一个静态的副本：
+	var snapshot=Array.prototype.slice.call(nodelist,0);
+
+	NodeList和HTMLCollection对象不是历史文档状态的一个静态快照，而通常是实时的，并且当文档变化
+	时它们所包含的元素列表能随之改变
+	
+
+	*/
+	//根据index找元素
+	NodeList.prototype.eq = function (index){
+		return this[index];
+	}
+	//设置元素集的样式
+	NodeList.prototype.css = function (css){
+		
+	}
+	//返回的是下标 传递的是下标
+	NodeList.prototype.each = function (fn){
+		for(var i = 0; i < this.length; i++){
+			(fn(i))(i);
+		}
+	}
+	//返回的是元素 传递的是元素
+	NodeList.prototype.forEach = function (fn){
+		for(var i = 0, len = this.length; i < len; i++){
+			fn(this.eq(i));
+		}
+	}
+	NodeList.prototype.last = function (){
+		return this.eq(this.length-1);
+	}
+
+	NodeList.prototype.first = function (){
+		console.log(this);
+		return this.eq(0);
+	}
+	NodeList.prototype.removeClass = function(className){
+		this.forEach((item)=>{
+			item.removeClass(className);
+		});
+	}
+	NodeList.prototype.addClass = function(className){
+		this.forEach((item)=>{
+			item.addClass(className);
+		});
+	}
+
+	HTMLCollection.prototype.eq = function (index){
+		return this[index];
+	}
+	//设置元素集的样式
+	HTMLCollection.prototype.css = function (css){
+		
+	}
+	//返回的是下标
+	HTMLCollection.prototype.each = function (fn){
+		for(var i = 0; i < this.length; i++){
+			(fn(i))(i);
+		}
+	}
+	//返回的是元素
+	HTMLCollection.prototype.forEach = function (fn){
+		for(var i = 0; i < this.length; i++){
+			fn(this.eq(i));
+		}
+	}
+	HTMLCollection.prototype.last = function (){
+		return this.eq(this.length-1);
+	}
+
+	HTMLCollection.prototype.first = function (){
+		return this.eq(0);
+	}
+	HTMLCollection.prototype.removeClass = function(className){
+		this.forEach((item)=>{
+			item.removeClass(className);
+		});
+	}
+	HTMLCollection.prototype.addClass = function(className){
+		this.forEach((item)=>{
+			item.addClass(className);
+		});
+	}
+	HTMLCollection.prototype.remove = function(){
+		var f;
+		while((f = this.first()) != undefined)
+			f.remove();
+	}
+	
+	/**
+	 * @Name NodeListC
+	 * @Version V1
+	 * @Date 2018/9/26
+	 * @Desc(
+	 *    用于收集兄弟元素并封装成此对象，实现批量删除removeClass方法
+	 *    size				获取长度
+	 *    add				添加元素进集
+	 *    removeClass		给集里面的所有元素删除class属性
+	 * )
+	 * @Param
+	 * @Renew
+	 * @History
+	 */
+	//在Element.prototype.siblings中会用到
+	function NodeListC(){
+		var arr = [];
+		this.size = function(){
+			return arr.length;
+		}
+		//添加元素
+		this.add = function(item){
+			arr.push(item);
+		}
+		//删除数组中的元素
+		this.remove = function(item){
+			if(classof(item) == "Number")
+				return arr.splice(item, 1);
+			else{
+				for(var i = 0; i < arr.length; i++){
+					if(arr[i] == item){
+						return arr.splice(i, 1);
+					}
+				}
+			}	
+		}
+		
+		/*
+		案例：
+		var testArr = ["sj", "sh", "sg", "sf"];
+		function rep(str){
+			var result = str.replace("s", "e");
+			return result;
+		}
+		alert(testArr.map(rep));
+		*/
+		this.removeClass = function(className){
+			for(var i = 0, len = arr.length; i < len; i++)
+				arr[i].removeClass(className);
+		}
+		//mar 1,2019
+		this.addClass = function(className){
+			for(var i = 0, len = arr.length; i < len; i++)
+				arr[i].addClass(className);
+		}
+		//mar 1,2019
+		this.forEach = function(fn){
+			for(var i = 0, len = arr.length; i < len; i++){
+				fn(arr[i], i);
+			}
+		}
+		/*
+		mar 1,2019 异常 不能够完成命令
+		//私有方法
+		function removeC(item){
+
+			//console.log(item instanceof Node);
+			item.removeClass();
+			return item;
+		}
+		//mar 1,2019
+		function addC(className){
+			item.addClass(className);
+		}
+		*/
+		//给元素集设置样式
+		this.css = function(css){}
+	}
+	
+
 	var gTokener = new GTokener();
 	//栈保存的对象 {list:, h:, } 
 	function DataStack(l, height){
@@ -231,16 +896,16 @@
 		//自定义封装 触发事件 文本键盘事件 的处理 2018/10/12
 		function DefaultOp(data){
 			//初始化相关事件
-			var textarea = $(data.textArea).eq(0);//文本
-			var bt = $(data.runButton).eq(0);//执行按钮
-			var git_cnt = $(data.gitContain).eq(0);//外容器
+			var textarea = $$$(data.textArea).eq(0);//文本
+			var bt = $$$(data.runButton).eq(0);//执行按钮
+			var git_cnt = $$$(data.gitContain).eq(0);//外容器
 			var git_cnt_in_class = data.gitContainIn;//内容器 可删除
 			//textarea.value = "";
 			//点击按钮进行转换
 			bt.onclick = function(e){
 				var str = textarea.tName() == "textarea" ? textarea.value : textarea.text();
 				if($(git_cnt_in_class).eq(0) !== undefined)
-					$(git_cnt_in_class).eq(0).remove();
+					$$$(git_cnt_in_class).eq(0).remove();
 				$$.cre("div").addClass(data.gitContainInClass).appendTo(git_cnt);
 				arr = new GitManage(str).getElements();
 				arr.forEach(item => {
@@ -249,8 +914,8 @@
 				//$(".git-cnt").eq(0).insert('<div class="git-cnt-in">' 
 				//+ new GitManage(str).html() + "</div>");
 				if($(git_cnt_in_class).eq(0) !== undefined 
-					&& $(git_cnt_in_class).eq(0).first() !== undefined)
-					$(git_cnt_in_class).eq(0).first().css("margin-top: 0px !important;");
+					&& $$$(git_cnt_in_class).eq(0).first() !== undefined)
+					$$$(git_cnt_in_class).eq(0).first().css("margin-top: 0px !important;");
 				if(data.fn !== undefined) data.fn(e);
 			}
 			

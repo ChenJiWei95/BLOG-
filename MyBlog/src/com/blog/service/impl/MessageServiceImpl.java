@@ -7,17 +7,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.dao.MessageDao;
 import com.blog.dao.BaseDao;
-import com.blog.entity.Message;
+import com.blog.entity.CMessage;
 import com.blog.service.MessageService;
 import com.blog.util.sql.AssociaInterface;
 
 @Service
 @Transactional
-public class MessageServiceImpl extends BasiServiceImpl<Message, Object> implements MessageService, AssociaInterface  {
+public class MessageServiceImpl extends BasiServiceImpl<CMessage, Object> implements MessageService, AssociaInterface  {
 	@Resource
 	MessageDao messageDao; 
 	
-	public BaseDao<Message> getDao(){
+	public BaseDao<CMessage> getDao(){
 		return messageDao;
 	}
 	

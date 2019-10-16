@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,7 +17,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.blog.Constant;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
+import com.blog.entity.CMessage;
 import com.blog.service.AdminService;
+import com.blog.service.MessageService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
@@ -28,6 +31,9 @@ public class LoginControl extends BaseControl{
 	
 	@Autowired
 	private AdminService adminServiceImpl;
+
+	@Autowired
+	private MessageService messageServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/login.chtml") 
@@ -38,13 +44,23 @@ public class LoginControl extends BaseControl{
 	// 添加
 	@RequestMapping("login.do")
 	@ResponseBody
-	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws IOException{ 
+	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
 		System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
-		
+		CMessage cm = new CMessage();
+		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+		cm.setExe_name(t.getUsername());
+		cm.setDesc("登录提示--后台管理系统");
+		cm.setIsRead("01");
+		cm.setTime(getNowTime());
+		cm.setTitle("登录提示");
+		cm.setContent(t.getUsername()+"于"+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
+		messageServiceImpl.insert(cm);
 		try{
 			Admin a = adminServiceImpl.get(singleMarkOfEq("username", t.getUsername()));
 			if(a != null && a.getPassword().equals(t.getPassword())) {
-				if(Integer.parseInt(a.getLogin_count()) < 5) {
+				if("01".equals(a.getState())) {
+					return com.blog.util.Message.error("账号已禁用！");
+				} else if(Integer.parseInt(a.getLogin_count()) < 5) {
 					t.setLogin_count("0");
 					t.setState("00");
 					adminServiceImpl.update(t, singleMarkOfEq("username", t.getUsername()));
@@ -158,6 +174,37 @@ public class LoginControl extends BaseControl{
 		}
 	}
 	
-	
+	public final String getIpAddr(final HttpServletRequest request)
+            throws Exception {
+        if (request == null) {
+            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));
+        }
+        String ipString = request.getHeader("x-forwarded-for");
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getRemoteAddr();
+        }
+     
+        // 多个路由时，取第一个非unknown的ip
+        final String[] arr = ipString.split(",");
+        for (final String str : arr) {
+            if (!"unknown".equalsIgnoreCase(str)) {
+                ipString = str;
+                break;
+            }
+        }
+     
+        String requestUrlIP = request.getServerName();
+        String userIpAddr = request.getRemoteAddr();
+        System.out.println("***访问的Url中的服务器IP："+requestUrlIP);
+        System.out.println("***用户客户端的IP地址："+userIpAddr); 
+        
+        return ipString;
+    }
 	
 }

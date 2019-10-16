@@ -54,13 +54,7 @@ public class ArticleControl extends BaseControl{
 	@RequestMapping("/edit_content.chtml") 
 	public String edit_content(HttpServletRequest request, String id, ModelMap model){
 		fristLine = false;
-		Article a = articleServiceImpl.get(singleMarkOfEq("id", id));
-		/*File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
-		CharStreamImpl c = new CharStreamImpl(file);
-		StringBuilder sb = new StringBuilder();
-		c.read(line->{
-			sb.append(fristLine ? "" : System.lineSeparator()).append(line);
-		});*/
+		Article a = articleServiceImpl.get(singleMarkOfEq("id", id)); 
 		ArticleContent cnt = articleContentServiceImpl.get(singleMarkOfEq("a_id", id));
 		model.addAttribute("mark_code", cnt.getContent());
 		model.addAttribute("name", a.getName());

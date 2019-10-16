@@ -1,5 +1,5 @@
 package com.blog.entity;
-public class Message extends Base{
+public class CMessage extends Base{
 	private String id;
 	private String title;
 	private String ref_id;

@@ -37,8 +37,10 @@ import com.blog.util.ActionUtil;
 @RequestMapping("/admin/main")
 @Controller
 public class MainControl extends BaseControl{
+	
 	@Autowired
 	MenuService menuServiceImpl;
+	
 	@Autowired
 	WebsiteBaseService websiteBaseServiceImpl;
 	
@@ -129,7 +131,7 @@ public class MainControl extends BaseControl{
 	 */
 	@RequestMapping("init.do")
 	@ResponseBody
-	public JSONObject init(HttpServletRequest request) throws IOException{
+	public JSONObject init(HttpServletRequest request, ModelMap model) throws IOException{
 		
 		// 用户根据权限获取 appid集合
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
@@ -169,15 +171,17 @@ public class MainControl extends BaseControl{
 		WebsiteBase base = new WebsiteBase();
 		base.setId("1"); 
 		base = websiteBaseServiceImpl.get(base);
-//		System.out.println(base);
+		
+		model.addAttribute("sitename", base.getSitename());
+		model.addAttribute("index_url", base.getIndex_url());
 		
 		JSONObject resultObj = new JSONObject();
 		resultObj.put("responseCode", "success");
 		resultObj.put("responseMsg", "初始化成功！");
 		resultObj.put("data", jsonArray);
 		resultObj.put("spread", base.getSpread());
-		resultObj.put("desc", base.getName());
-		resultObj.put("href", base.getUrl());
+		resultObj.put("desc", base.getSitename());
+		resultObj.put("href", base.getIndex_url());
 //		System.out.println("初始化返回数据："+resultObj.toString());
 		return resultObj;
 	}

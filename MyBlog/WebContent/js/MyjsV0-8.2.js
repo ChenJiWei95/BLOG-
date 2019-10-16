@@ -375,31 +375,7 @@
     function _(id){
        return $("#" + id);
     }
-	/**
-	* 2018/9/26 
-	* 范例： "p.example" - 选择class名为example的p标签元素
-	*		 "a[target]" - 选择有target属性的a标签元素
-	*		 ""h2, h3""  - 选择h2，h3标签元素
-	*		 "." - 返回对应的class类名的元素集
-	*		 "#" - 返回对应的id名的元素（单个）
-	*		 ""  - 返回对应标签名的元素集
- 	* 更新： 修改为以querySelector为核心的元素选择
-	* 方法: $(elementName)
-	* 用途：根据id、class、元素名选取元素
-	*/
-	function $(elementName){
-		return select(document, elementName);
-		/*
-		2018/9/26 废弃
-		if(elementName.charAt(0) == "#"){
-			return document.getElementById(elementName.substring(1, elementName.length));
-		}else if(elementName.charAt(0) == "."){
-			return document.getElementsByClassName(elementName.substring(1, elementName.length));
-
-		}else
-			return document.getElementsByTagName(elementName);
-		*/
-	}
+	
 	function select(e, eName){
 		if(eName.charAt(0) == "#") return e.querySelector(eName);
 		return e.querySelectorAll(eName);
@@ -2324,6 +2300,31 @@
 	}
 	
 /********************************************************************************/
+	/**
+	* 2018/9/26 
+	* 范例： "p.example" - 选择class名为example的p标签元素
+	*		 "a[target]" - 选择有target属性的a标签元素
+	*		 ""h2, h3""  - 选择h2，h3标签元素
+	*		 "." - 返回对应的class类名的元素集
+	*		 "#" - 返回对应的id名的元素（单个）
+	*		 ""  - 返回对应标签名的元素集
+ 	* 更新： 修改为以querySelector为核心的元素选择
+	* 方法: $(elementName)
+	* 用途：根据id、class、元素名选取元素
+	*/
+	function $(elementName){
+		return select(document, elementName);
+		/*
+		2018/9/26 废弃
+		if(elementName.charAt(0) == "#"){
+			return document.getElementById(elementName.substring(1, elementName.length));
+		}else if(elementName.charAt(0) == "."){
+			return document.getElementsByClassName(elementName.substring(1, elementName.length));
+
+		}else
+			return document.getElementsByTagName(elementName);
+		*/
+	}
 	/**
 	更新：
 	2018/9/25 getWidth、getHeight、getMarginLeft、getMarginRight、getMarginTop、getMarginBottom

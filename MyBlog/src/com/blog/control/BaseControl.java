@@ -32,6 +32,15 @@ public class BaseControl {
 	protected String singleMarkOfEq(String col, String fields) {
 		return "`"+col+"` = '"+fields+"' ";
 	}
+	protected String singleOfEq(String col, String fields) {
+		return col + " = " + fields + " ";
+	}
+	protected String quma(String str) {
+		return "`"+str+"`";
+	}
+	protected String quma2(String str) {
+		return "'"+str+"'";
+	}
 	protected String getNowTime() {
 		return com.blog.util.TimeUtil.getDatetime();
 	}

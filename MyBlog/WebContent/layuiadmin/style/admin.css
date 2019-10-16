@@ -7,6 +7,11 @@ html #layuicss-layuiAdmin {
 
 .c-button, .layui-card {border-radius: 5px;}
 .c-button {background: #555;}
+.c-button-primary{
+    background: white;
+    color: #555;
+    border: 1px solid #b3acac;
+}
 
 .c-textarea {
     font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;

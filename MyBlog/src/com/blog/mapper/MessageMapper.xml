@@ -125,7 +125,7 @@
 	</resultMap> -->
 	
 	<!-- user集合 -->
-	<resultMap id="userList" type="com.blog.entity.Message"> 
+	<resultMap id="userList" type="com.blog.entity.CMessage"> 
 	</resultMap>
 	 
 	

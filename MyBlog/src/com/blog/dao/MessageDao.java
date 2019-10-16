@@ -1,7 +1,7 @@
 package com.blog.dao;
 
-import com.blog.entity.Message;
+import com.blog.entity.CMessage;
 
-public interface MessageDao extends BaseDao<Message> {
+public interface MessageDao extends BaseDao<CMessage> {
 
 }

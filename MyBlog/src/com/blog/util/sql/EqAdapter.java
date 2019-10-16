@@ -184,7 +184,7 @@ public abstract class EqAdapter{
 	
 
 	public String getTable() {
-		return cloumnUtil(table);
+		return table;
 	}
 	
 	public String getColumnSql() {
@@ -261,7 +261,12 @@ public abstract class EqAdapter{
 		return this;
 	}
 	
+	
 	public EqAdapter setTable(String table) {
+		this.table = cloumnUtil(table);
+		return this;
+	}
+	public EqAdapter setTableStatement(String table) {
 		this.table = table;
 		return this;
 	}

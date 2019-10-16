@@ -29,7 +29,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if(arg0.getSession().getAttribute(Constant.USER_CONTEXT)!=null) {
 			return true;
 		}
-		arg1.sendRedirect("../login.chtml");
+		String basePath = arg0.getScheme()+"://"+arg0.getServerName()+":"+arg0.getServerPort()+arg0.getContextPath()+"/";
+		arg1.sendRedirect(basePath+"admin/login.chtml");
 		return false;
 	} 
 }

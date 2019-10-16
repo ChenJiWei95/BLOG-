@@ -16,32 +16,9 @@ function(t) {
             if (t !== i("#LAY_password").val()) return "两次密码输入不一致"
         }
     }),
-	// 站点的设置
-    n.on("submit(set_website)",
-    function(t) {
-        return e.msg(JSON.stringify(t.field)),
-        !1
-    }),
 	// 邮件服务
     n.on("submit(set_system_email)",
     function(t) {
-        return e.msg(JSON.stringify(t.field)),
-        !1
-    }),
-	// 当期管理员的基本信息
-    n.on("submit(setmyinfo)",
-    function(t) {
-		/*
-		a.req({
-			url: 'http://localhost:8080/MyBlog/api/test/role/add.do'
-			,type: 'post'	
-			,dataType: "json"
-			,done: function(data){
-				layer.msg("添加成功！", {time: 2000}),
-				parent.table.reload(l);
-			} 
-		});
-		*/
         return e.msg(JSON.stringify(t.field)),
         !1
     });
@@ -68,11 +45,6 @@ function(t) {
             closeBtn: 1,
             anim: 5
         })
-    },
-    n.on("submit(setmypass)",
-    function(t) {
-        return e.msg(JSON.stringify(t.field)),
-        !1
-    }),
+    }, 
     t("set", {})
 });

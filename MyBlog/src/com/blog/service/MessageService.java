@@ -1,7 +1,7 @@
 package com.blog.service;
 
-import com.blog.entity.Message;
+import com.blog.entity.CMessage;
 
-public interface MessageService extends BasiService<Message, Object>{
+public interface MessageService extends BasiService<CMessage, Object>{
 	
 }

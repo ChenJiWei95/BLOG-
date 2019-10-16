@@ -1,87 +1,95 @@
 package com.blog.entity;
-/**
- * 保存 
- * 	后台基础信息 id = 1
- * 	网站基础信息
- * @author cjw
- *
- */
-public class WebsiteBase extends Base { 
+public class WebsiteBase extends Base{
 	private String id;
-	private String name; 
-	private String url; 
-	private String update_time; 
-	private String msg;  
+	private String sitename;
+	private String update_time;
+	private String index_url;
 	private String spread;
-	
+	private String domain;
+	private String cache_time;
+	private String max_cache_size;
+	private String cache_type;
+	private String title;
+	private String keywords;
+	private String meta_desc;
+	private String copyright;
+
 	public String getId() {
 		return id;
 	}
-
-
 	public void setId(String id) {
 		this.id = id;
 	}
-
-
-	public String getName() {
-		return name;
+	public String getSitename() {
+		return sitename;
 	}
-
-
-	public void setName(String name) {
-		this.name = name;
+	public void setSitename(String sitename) {
+		this.sitename = sitename;
 	}
-
-
-	public String getUrl() {
-		return url;
-	}
-
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-
 	public String getUpdate_time() {
 		return update_time;
 	}
-
-
 	public void setUpdate_time(String update_time) {
 		this.update_time = update_time;
 	}
-
-
-	public String getMsg() {
-		return msg;
+	public String getIndex_url() {
+		return index_url;
 	}
-
-
-	public void setMsg(String msg) {
-		this.msg = msg;
+	public void setIndex_url(String index_url) {
+		this.index_url = index_url;
 	}
-
-
 	public String getSpread() {
 		return spread;
 	}
-
-
 	public void setSpread(String spread) {
 		this.spread = spread;
 	}
-
-
-	public static void main(String[] args) {
-		WebsiteBase b = new WebsiteBase();
-		b.setId("12");
-		b.setMsg("355");
-		b.setName("3566");
-		b.setUpdate_time("346");
-		b.setUrl("64657"); 
-		System.out.println(b.toString());
+	public String getDomain() {
+		return domain;
 	}
-	
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public String getCache_time() {
+		return cache_time;
+	}
+	public void setCache_time(String cache_time) {
+		this.cache_time = cache_time;
+	}
+	public String getMax_cache_size() {
+		return max_cache_size;
+	}
+	public void setMax_cache_size(String max_cache_size) {
+		this.max_cache_size = max_cache_size;
+	}
+	public String getCache_type() {
+		return cache_type;
+	}
+	public void setCache_type(String cache_type) {
+		this.cache_type = cache_type;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getKeywords() {
+		return keywords;
+	}
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+	public String getMeta_desc() {
+		return meta_desc;
+	}
+	public void setMeta_desc(String meta_desc) {
+		this.meta_desc = meta_desc;
+	}
+	public String getCopyright() {
+		return copyright;
+	}
+	public void setCopyright(String copyright) {
+		this.copyright = copyright;
+	}
 }

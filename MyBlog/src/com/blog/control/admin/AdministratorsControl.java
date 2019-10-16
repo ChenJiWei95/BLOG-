@@ -1,7 +1,6 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,15 +14,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.blog.Constant;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
-import com.blog.entity.Menu;
 import com.blog.entity.Role;
+import com.blog.entity.WebsiteBase;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
-import com.blog.service.MenuService;
 import com.blog.service.RoleService;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
@@ -40,6 +40,9 @@ public class AdministratorsControl extends BaseControl{
 	
 	@Autowired
 	private AdminInforService adminInforServiceImpl;
+	
+	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
@@ -58,14 +61,71 @@ public class AdministratorsControl extends BaseControl{
 	
 	@RequestMapping("/info.chtml") 
 	public String info(HttpServletRequest request, String agentno,ModelMap model){
-		model.addAttribute("roles", listToJSONArray(roleServiceImpl.gets("app_id IS NULL")));
+		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		AdminInfor adminInfor = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
+		model.addAttribute("admin", adminInfor);
+		Object o = new Object();
+		List<Map<String, Object>> list =  adminServiceImpl.getOfManyTable("b.name as `name`", 
+				"`admin_infor` a, `role` b", 
+				singleOfEq("a.`role_id`", "b.`id`") + " AND " + singleOfEq("a.`id`", quma2(adminInfor.getId())));
+		model.addAttribute("roleName", list.get(0).get("name"));
+		System.out.println(list.get(0).get("name"));
 		return "admin/administrators/info";
 	} 
 	
 	@RequestMapping("/password.chtml") 
-	public String password(HttpServletRequest request, String agentno,ModelMap model){
+	public String password(HttpServletRequest request, ModelMap model){
 		return "admin/administrators/password";
-	} 
+	}
+
+	@RequestMapping("/website.chtml") 
+	public String website(HttpServletRequest request, ModelMap model){
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleMarkOfEq("id", "1"));
+		model.addAttribute("website", websiteBase);
+		return "admin/administrators/website";
+	}
+	
+	@RequestMapping("/setinfo.do")
+	@ResponseBody
+	public Object setInfo(AdminInfor adminInfor) {
+		try {
+			adminInfor.setUsername(null);
+			adminInforServiceImpl.update(adminInfor, singleMarkOfEq("id", adminInfor.getId()));
+			return Message.success("信息修改成功!");
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			return Message.error("操作失败!"+e.getMessage());
+		}
+	}
+	
+	@RequestMapping("/setpassword.do")
+	@ResponseBody
+	public Object setPassword(String oldPassword, String repassword, HttpServletRequest request) {
+		try {
+			Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+			if(a.getPassword().equals(oldPassword)) {
+				a.setPassword(repassword);
+				adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
+				return Message.success("密码修改成功!");
+			}
+			return Message.error("旧密码错误!");
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			return Message.error("操作失败!"+e.getMessage());
+		}
+	}
+	@RequestMapping("/setwebsite.do")
+	@ResponseBody
+	public Object setWebsite(WebsiteBase websiteBase) {
+		try {
+			websiteBaseServiceImpl.update(websiteBase, singleMarkOfEq("id", "1"));
+			return Message.success("修改成功!");
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			return Message.error("操作失败!"+e.getMessage());
+		}
+	}
+	
 	
 	// 添加
 	@RequestMapping("add.do")
@@ -83,6 +143,7 @@ public class AdministratorsControl extends BaseControl{
 			adminI.setCreate_time(getNowTime());
 			adminI.setId(TimeUtil.randomId());
 			adminI.setName_(adminI.getName());
+			adminI.setUsername(admin.getUsername());
 			adminI.setAdmin_id(admin.getId());
 			adminI.setRole_id("-1".equals(adminI.getRole_id()) ? null : adminI.getRole_id());
 			adminInforServiceImpl.insert(adminI);
