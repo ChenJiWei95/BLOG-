@@ -44,7 +44,7 @@ public class BaseControl {
 	protected String getNowTime() {
 		return com.blog.util.TimeUtil.getDatetime();
 	}
-	protected <T> JSONArray listToJSONArray(List<T> list){
+	protected <T> JSONArray listToJSONArray(List<T> list){ 
 		JSONArray arr = new JSONArray();
 		for(T t: list){
 			arr.add(jsonToJSONObject(t));
