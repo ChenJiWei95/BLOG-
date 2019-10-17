@@ -7,5 +7,5 @@ import com.blog.entity.Admin;
 import com.blog.util.sql.EqAdapter;
 
 public interface AdminDao extends BaseDao<Admin> {
-	List<Map<String, Object>> getOfManyTable(EqAdapter eq);
+	
 }

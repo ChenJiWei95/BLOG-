@@ -26,19 +26,6 @@ public class AdminServiceImpl extends BasiServiceImpl<Admin, Object> implements 
 		return adminDao;
 	}
 	
-	public List<Map<String, Object>> getOfManyTable(String colStatement, String tableStatement, String eqStatement){
-		EqAdapter eq1 = new SelectAdapter()
-				.setColumns(colStatement)
-				.setTableStatement(tableStatement)
-				.setEqSql(eqStatement);
-		try {
-			return adminDao.getOfManyTable(eq1);
-		}catch(RuntimeException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	@Override
 	public String getBrige_table() {
 		return "role_item_brige";

@@ -558,7 +558,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		return null;
 	}
 	
-	public List<Map<String, Object>> getOfManyTable(String colStatement, String tableStatement, String eqStatement){
+	public List<Map<String, Object>> getByManyTable(String colStatement, String tableStatement, String eqStatement){
 		EqAdapter eq1 = new SelectAdapter()
 				.setColumns(colStatement)
 				.setTableStatement(tableStatement)
@@ -571,7 +571,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		return null;
 	}
 	@Override
-	public List<Map<String, Object>> getOfManyTable(ManyTable t) {
+	public List<Map<String, Object>> getByManyTable(ManyTable t) {
 		EqAdapter eq1 = new SelectAdapter()
 				.setColumns(t.getStatement()[0])
 				.setTableStatement(t.getStatement()[1])
@@ -584,7 +584,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		return null;
 	}
 	@Override
-	public List<Map<String, Object>> getOfManyTableByLimit(ManyTable t, int start, int size) {
+	public List<Map<String, Object>> getByManyTableByLimit(ManyTable t, int start, int size) {
 		EqAdapter eq1 = new SelectAdapter()
 				.setColumns(t.getStatement()[0])
 				.setTableStatement(t.getStatement()[1])
@@ -598,7 +598,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		return null;
 	}
 	@Override
-	public List<Map<String, Object>> getOfManyTableByASC(ManyTable t, String col) {
+	public List<Map<String, Object>> getByManyTableByASC(ManyTable t, String col) {
 		EqAdapter eq1 = new SelectAdapter()
 				.setColumns(t.getStatement()[0])
 				.setTableStatement(t.getStatement()[1])
@@ -612,7 +612,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		return null;
 	}
 	@Override
-	public List<Map<String, Object>> getOfManyTableByDESC(ManyTable t, String col) {
+	public List<Map<String, Object>> getByManyTableByDESC(ManyTable t, String col) {
 		EqAdapter eq1 = new SelectAdapter()
 				.setColumns(t.getStatement()[0])
 				.setTableStatement(t.getStatement()[1])

@@ -16,8 +16,8 @@ import com.blog.entity.Menu;
 import com.blog.util.GsonUtil; 
 
 public class BaseControl {
+	
 	public static Logger logger = LogManager.getLogger(BaseControl.class);
-	private Object ovje;
 	
 	/**
 	 * 例如：`id` = '1234'
@@ -32,18 +32,23 @@ public class BaseControl {
 	protected String singleMarkOfEq(String col, String fields) {
 		return "`"+col+"` = '"+fields+"' ";
 	}
+	
 	protected String singleOfEq(String col, String fields) {
 		return col + " = " + fields + " ";
 	}
+	
 	protected String quma(String str) {
 		return "`"+str+"`";
 	}
+	
 	protected String quma2(String str) {
 		return "'"+str+"'";
 	}
+	
 	protected String getNowTime() {
 		return com.blog.util.TimeUtil.getDatetime();
 	}
+	
 	protected <T> JSONArray listToJSONArray(List<T> list){ 
 		JSONArray arr = new JSONArray();
 		for(T t: list){
@@ -51,10 +56,12 @@ public class BaseControl {
 		}
 		return arr;
 	}
+	
 	// 生成JSONObject对象
 	protected <T> JSONObject jsonToJSONObject(T menu){
 		return JSONObject.parseObject(GsonUtil.objToJson(menu)); 
 	}	
+	
 	protected static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
 		Map<String, String> params = new HashMap<String, String>();
 		try {
@@ -73,6 +80,7 @@ public class BaseControl {
 		}
 		return params;
 	}
+	
 	protected String basePath(HttpServletRequest request){
 		// http://localhost:8080/MyBlog/
 		return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";

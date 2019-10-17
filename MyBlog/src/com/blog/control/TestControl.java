@@ -60,7 +60,7 @@ public class TestControl {
 		// 多个查询
 		User u = new User();
 		u.setPassword("%8%");
-		List<User> list = userServiceImpl.getOfOrderBySortAndLimit(u, "desc", "id", 0, 5);
+		List<User> list = userServiceImpl.getBySortAndLimit(u, "desc", "id", 0, 5);
 		for(User u_ : list)
 			System.out.println(u_.toString());
 		

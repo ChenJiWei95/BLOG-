@@ -238,7 +238,7 @@ public interface BasiService<T, V> {
 	 * @param eqStatement		查询条件语句
 	 * @return List<Map<String, Object>>
 	 */
-	List<Map<String, Object>> getOfManyTable(String colStatement, String tableStatement, String eqStatement);
+	List<Map<String, Object>> getByManyTable(String colStatement, String tableStatement, String eqStatement);
 	
 	/**
 	 * 多表查询
@@ -249,7 +249,7 @@ public interface BasiService<T, V> {
 	 * @see
 	 * @since 1.0
 	 */
-	List<Map<String, Object>> getOfManyTable(ManyTable t);
+	List<Map<String, Object>> getByManyTable(ManyTable t);
 
 	/**
 	 * 多表查询 分页
@@ -262,7 +262,7 @@ public interface BasiService<T, V> {
 	 * @see
 	 * @since 1.0
 	 */
-	List<Map<String, Object>> getOfManyTableByLimit(ManyTable t, int start, int size);
+	List<Map<String, Object>> getByManyTableByLimit(ManyTable t, int start, int size);
 
 	/**
 	 * 多表查询 
@@ -274,7 +274,7 @@ public interface BasiService<T, V> {
 	 * @see
 	 * @since 1.0
 	 */
-	List<Map<String, Object>> getOfManyTableByASC(ManyTable t, String col);
+	List<Map<String, Object>> getByManyTableByASC(ManyTable t, String col);
 	
 	/**
 	 * 多表查询
@@ -286,5 +286,5 @@ public interface BasiService<T, V> {
 	 * @see
 	 * @since 1.0
 	 */
-	List<Map<String, Object>> getOfManyTableByDESC(ManyTable t, String col);
+	List<Map<String, Object>> getByManyTableByDESC(ManyTable t, String col);
 }

@@ -25,6 +25,7 @@ import com.blog.service.MessageService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
+import com.blog.util.sql.ManyTable;
 
 @Controller
 @RequestMapping("/admin")
@@ -40,6 +41,10 @@ public class LoginControl extends BaseControl{
 	@RequestMapping("/login.chtml") 
 	public String listview1(ModelMap model){
 		return "admin/login";
+	}
+	@RequestMapping("/privilege.chtml") 
+	public String privilege(ModelMap model){
+		return "admin/privilege";
 	}
 	  
 	// 添加 
@@ -83,102 +88,29 @@ public class LoginControl extends BaseControl{
 					
 			data.put("token", token);
 			re.getSession().setAttribute(Constant.USER_CONTEXT, a);
-			List<Map<String, Object>> list = adminServiceImpl.getOfManyTable("c.url AS url", 
-					"`admin_infor` a, `role` b, `menu` c", 
-					singleOfEq("a.`admin_id`", quma2(a.getId())+" AND "
-					+singleOfEq("a.`role_id`", "b.`role_id`")+" AND "
-					+singleOfEq("b.`app_id`", "c.id")));
-			/*
-			ManyTable.selete("c.url").as("url").and("")
-				.form("admin_infor").as("a").and("role").as("b").and("menu").as("c")
-				.where("").and().and().or()
-			*/
-			re.getSession().setAttribute(Constant.PERMISSION_LIST, list);
+			
+			// 权限链接集
+			List<Map<String, Object>> permissionMap =  adminServiceImpl.getByManyTable(new ManyTable()
+					.selete("c.`url`").as("url")
+					.form("`admin_infor`").as("a")
+						.and("`role`").as("b")
+						.and("`menu`").as("c")
+					.where("a.`admin_id` = "+quma2(a.getId()))
+						.and("a.`role_id` = b.`role_id`")
+						.and("b.`app_id` = c.`id`"));
+			List<String> permissionList = new java.util.ArrayList<>(permissionMap.size());
+			for(int i = 0, len = permissionMap.size(); i < len; i++)
+				permissionList.add(re.getContextPath()+"/"+permissionMap.get(i).get("url"));
+			permissionList.add(re.getContextPath()+"/"+"admin/main/listview.chtml");
+			re.getSession().setAttribute(Constant.PERMISSION_LIST, permissionList);
+			
 			return com.blog.util.Message.success("登录成功", data);
 		}catch(Exception e){
 			e.printStackTrace();
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
-	}
-	public static void main(String[] args) {
-		String[] result = new LoginControl().mt()
-				.selete("c.url").as("url").and("b")
-				.form("admin_infor").as("a").and("role").as("b").and("menu").as("c")
-				.where("a.`admin_id` = '123456'").and("a.`admin_id` = '123456'").and("a.`admin_id` = '123456'").or("a.`admin_id` = '123456'")
-				.getStatement();
-		for(String str : result) {
-			System.out.println(str);
-		}
-	}
-	public ManyTable mt() {
-		return new ManyTable();
-	}
-	
-	static class ColStatement { 
-		private String table;
-		private String alias;
-		private String[] cols;
-		private String[] calias;
-		
-		public ColStatement(){ }
-		public ColStatement(String table){
-			this(table, null);
-		}
-		public ColStatement(String table, String alias){
-			this.table = table;
-			this.alias = alias;
-		}
-		
-		public String getTable() {
-			return table;
-		}
-		public void setTable(String table) {
-			this.table = table;
-		}
-		public String getAlias() {
-			return alias;
-		}
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
-		public String[] getCols() {
-			return cols;
-		}
-		public void setCols(String[] cols) {
-			this.cols = cols;
-		}
-		public String[] getCalias() {
-			return calias;
-		}
-		public void setCalias(String[] calias) {
-			this.calias = calias;
-		}
-		/*// 表别名
-		public ColStatement alias(String alias){
-			this.alias = alias;
-//			sb.append(alias+".");
-			return this;
-		}
-		public ColStatement cols(String... cols){
-			this.cols = cols;
-			return this;
-		}
-		// 字段别名
-		public ColStatement colAlias(String... calias){
-			this.calias = calias;
-			return this;
-		}
-		public ColStatement sep(){
-			sb.append(", ");
-			return this;
-		}
-		*/
-		public String getStatement(){
-			StringBuilder sb = new StringBuilder();
-			return sb.toString();
-		}
-		
-	}
+	} 
+ 
 	@RequestMapping("logout.do")
 	@ResponseBody
 	public Object logout(HttpServletRequest re) throws IOException{ 

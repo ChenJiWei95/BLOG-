@@ -207,7 +207,7 @@ public class RoleControl extends BaseControl{
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
 		menu.setRelate_id(id); 
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(menu, "ASC", "priority");
+		List<Menu> ms = menuServiceImpl.getBySort(menu, "ASC", "priority");
 		if(ms != null && ms.size() > 0){
 			jsonArray = new JSONArray();
 			for(Menu item : ms) { 

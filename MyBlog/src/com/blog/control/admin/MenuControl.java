@@ -322,7 +322,7 @@ public class MenuControl extends BaseControl{
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
 		menu.setRelate_id(id); 
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(menu, "ASC", "priority");
+		List<Menu> ms = menuServiceImpl.getBySort(menu, "ASC", "priority");
 		if(ms != null && ms.size() > 0){
 			jsonArray = new JSONArray();
 			for(Menu item : ms) { 
@@ -350,7 +350,7 @@ public class MenuControl extends BaseControl{
 		
 		Menu m = new Menu();
 		m.setRelate_id("");
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(m, "ASC", "priority"); 
+		List<Menu> ms = menuServiceImpl.getBySort(m, "ASC", "priority"); 
 		JSONArray jsonArray = new JSONArray();
 		for(Menu item : ms) { 
 			JSONObject object = jsonToJSONObject(item); 
