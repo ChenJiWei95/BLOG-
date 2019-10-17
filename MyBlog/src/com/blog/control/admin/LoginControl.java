@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Many;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -88,7 +89,9 @@ public class LoginControl extends BaseControl{
 					+singleOfEq("a.`role_id`", "b.`role_id`")+" AND "
 					+singleOfEq("b.`app_id`", "c.id")));
 			/*
-			
+			ManyTable.selete("c.url").as("url").and("")
+				.form("admin_infor").as("a").and("role").as("b").and("menu").as("c")
+				.where("").and().and().or()
 			*/
 			re.getSession().setAttribute(Constant.PERMISSION_LIST, list);
 			return com.blog.util.Message.success("登录成功", data);
@@ -97,6 +100,20 @@ public class LoginControl extends BaseControl{
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
 	}
+	public static void main(String[] args) {
+		String[] result = new LoginControl().mt()
+				.selete("c.url").as("url").and("b")
+				.form("admin_infor").as("a").and("role").as("b").and("menu").as("c")
+				.where("a.`admin_id` = '123456'").and("a.`admin_id` = '123456'").and("a.`admin_id` = '123456'").or("a.`admin_id` = '123456'")
+				.getStatement();
+		for(String str : result) {
+			System.out.println(str);
+		}
+	}
+	public ManyTable mt() {
+		return new ManyTable();
+	}
+	
 	static class ColStatement { 
 		private String table;
 		private String alias;
