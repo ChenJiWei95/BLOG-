@@ -53,12 +53,66 @@ public interface BasiService<T, V> {
 	 */
 	List<T> gets(String eq, Object column);
 	/**
-	 * 排序
+	 * 排序 	不倡导调用此接口
 	 * @param t 条件实体
 	 * @param sort 增减序
 	 * @return
 	 */
 	List<T> getOfOrderBySort(T t, String sort, String column);
+	/**
+	 * 排序 降序
+	 * @param t
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByASC(T t, String column);
+	/**
+	 * 排序 降序
+	 * @param eq
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByASC(String eq, String column);
+	/**
+	 * 排序 降序
+	 * @param eq
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByASC(Map<String, Object> eq, String column);
+	/**
+	 * 排序 降序
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByASC(String column);
+	/**
+	 * 排序 升序
+	 * @param t
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByDESC(T t, String column);
+	/**
+	 * 排序 升序
+	 * @param eq
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByDESC(String eq, String column);
+	/**
+	 * 排序 升序
+	 * @param eq
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByDESC(Map<String, Object> eq, String column);
+	/**
+	 * 排序 升序
+	 * @param column
+	 * @return
+	 */
+	List<T> getOfOrderByDESC(String column);
 	/**
 	 * 排序 分页
 	 * @param t 条件实体

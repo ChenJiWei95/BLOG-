@@ -66,22 +66,7 @@ public class MainControl extends BaseControl{
 			e.printStackTrace();
 		}
 		return "admin/admin_view";
-	}	
-	
-	@RequestMapping("logout.do")
-	@ResponseBody
-	public Object logout(Admin t, HttpServletRequest re, ModelMap model) throws IOException{ 
-		try{
-			System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
-			Admin a = (Admin) re.getSession().getAttribute(Constant.USER_CONTEXT);
-			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
-			a.setState("01");
-			adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
-			return com.blog.util.Message.success("已登出");
-		}catch(Exception e){
-			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
-		}
-	}
+	}	 
 	
 	@RequestMapping("/aly_control.chtml")
 	public String control(HttpServletRequest request, String agentno, ModelMap model){

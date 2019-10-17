@@ -231,7 +231,15 @@ function(e) {console.log("admin");
         }
     },
     F = P.events = {//点击回调 
-        flexible: function(e) {console.log("admin F.flexible");
+    	logout: function() { 
+            P.cajax({
+    			method: '../logout' 
+    			,success: function(){
+    				location.href = "../login.chtml"
+    			}
+            }) 
+    	}
+        ,flexible: function(e) {console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);
             P.sideFlexible(i ? "spread": null)

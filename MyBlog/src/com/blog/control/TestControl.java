@@ -425,7 +425,7 @@ public class TestControl {
 		m.setMsg(resultObject.getString("msg"));
 		Map<String, String> eq = new HashMap<>();
 		eq.put("id", resultObject.getString("id"));
-		menuServiceImpl.update(m, eq);
+//		menuServiceImpl.update(m, eq);
 		
 		JSONObject obj1 = new JSONObject();
 		obj1.put("id", resultObject.getString("id"));

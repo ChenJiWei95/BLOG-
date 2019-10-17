@@ -454,4 +454,106 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	@Override
+	public List<T> getOfOrderByASC(T t, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByASC(String eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByASC(Map<String, Object> eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq(eq)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByASC(String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this) 
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByDESC(T t, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByDESC(String eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByDESC(Map<String, Object> eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq(eq)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getOfOrderByDESC(String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this) 
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

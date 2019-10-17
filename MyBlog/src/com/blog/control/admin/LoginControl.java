@@ -41,7 +41,7 @@ public class LoginControl extends BaseControl{
 		return "admin/login";
 	}
 	  
-	// 添加
+	// 添加 
 	@RequestMapping("login.do")
 	@ResponseBody 
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
@@ -49,7 +49,7 @@ public class LoginControl extends BaseControl{
 		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 		cm.setExe_name(t.getUsername());
 		cm.setDesc("登录提示--后台管理系统");
-		cm.setIsRead(Constant.MESSAGE_NO_READ);
+		cm.setIsRead(Constant.COMMON_FALSE);
 		cm.setType(Constant.MESSAGE_TYPE_SYS);
 		cm.setTime(getNowTime());
 		cm.setTitle("登录提示");
@@ -88,8 +88,6 @@ public class LoginControl extends BaseControl{
 					+singleOfEq("a.`role_id`", "b.`role_id`")+" AND "
 					+singleOfEq("b.`app_id`", "c.id")));
 			/*
-			
-			
 			
 			*/
 			re.getSession().setAttribute(Constant.PERMISSION_LIST, list);
@@ -168,6 +166,7 @@ public class LoginControl extends BaseControl{
 	@ResponseBody
 	public Object logout(HttpServletRequest re) throws IOException{ 
 		try{
+			System.out.println("退出");
 			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){

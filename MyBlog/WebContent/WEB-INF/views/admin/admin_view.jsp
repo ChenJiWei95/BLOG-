@@ -135,15 +135,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   layui.config({
 	base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
-	  navTree: 'lib/navTree', //主入口模块
-	  index: 'lib/index'
-  }).use('navTree', function () { 
-	console.log("加载"); 
-	/*
-	
-	*/
-	console.log("token: " +layui.data("admin").token);
-	console.log("toke: " +layui.data("admin"));
+	  navTree: 'lib/navTree' 
+	  ,index: 'lib/index' //主入口模块
+  }).use(['navTree'], function () {   
 	
 	var navTree = layui.navTree
 	,$ = layui.$;
@@ -178,6 +172,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		);			
 	}
 	initAjax();
+	 
 	
   });
   </script>
