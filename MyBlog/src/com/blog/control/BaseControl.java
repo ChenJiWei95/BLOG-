@@ -53,7 +53,7 @@ public class BaseControl {
 	}
 	// 生成JSONObject对象
 	protected <T> JSONObject jsonToJSONObject(T menu){
-		return JSONObject.parseObject(GsonUtil.objToJson(menu));
+		return JSONObject.parseObject(GsonUtil.objToJson(menu)); 
 	}	
 	protected static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
 		Map<String, String> params = new HashMap<String, String>();
