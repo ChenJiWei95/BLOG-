@@ -44,16 +44,16 @@ public class BaseControl {
 	protected String getNowTime() {
 		return com.blog.util.TimeUtil.getDatetime();
 	}
-	protected <T> JSONArray listToJSONArray(List<T> list){
+	protected <T> JSONArray listToJSONArray(List<T> list){ 
 		JSONArray arr = new JSONArray();
 		for(T t: list){
-			arr.add(jsonToJSONObject(t));
+			arr.add(jsonToJSONObject(t)); 
 		}
 		return arr;
 	}
 	// 生成JSONObject对象
 	protected <T> JSONObject jsonToJSONObject(T menu){
-		return JSONObject.parseObject(GsonUtil.objToJson(menu));
+		return JSONObject.parseObject(GsonUtil.objToJson(menu)); 
 	}	
 	protected static Map<String, String> getRequestParameterMap(HttpServletRequest request) {
 		Map<String, String> params = new HashMap<String, String>();
