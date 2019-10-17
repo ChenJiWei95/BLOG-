@@ -47,7 +47,7 @@ public class BaseControl {
 	protected <T> JSONArray listToJSONArray(List<T> list){ 
 		JSONArray arr = new JSONArray();
 		for(T t: list){
-			arr.add(jsonToJSONObject(t));
+			arr.add(jsonToJSONObject(t)); 
 		}
 		return arr;
 	}
