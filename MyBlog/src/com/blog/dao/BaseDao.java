@@ -72,4 +72,7 @@ public interface BaseDao<T> {
 	List<Target__> associate(EqAdapter eq);
 	
 	Integer count(EqAdapter eq);
+	
+	List<Map<String, Object>> getOfManyTable(EqAdapter eq);
+	
 }

@@ -1,7 +1,5 @@
 package com.blog.util.sql;
 
-import com.blog.Constant;
-
 /**
  * 多表查询生成局部sql语句
  * @author Administrator
@@ -17,6 +15,7 @@ public class ManyTable {
 	// idnex = 0 c.url AS url, b
 	// idnex = 1 admin_infor a, role b, menu c
 	// idnex = 2 a.`admin_id` = '123456' AND a.`admin_id` = '123456' AND a.`admin_id` = '123456' OR a.`admin_id` = '123456'
+	// index = 
 	private String[] result = new String[3];
 	private StringBuilder sb;
 	private String and, or, as;
@@ -52,34 +51,7 @@ public class ManyTable {
 		sb = new StringBuilder();
 		sb.append(s);
 		return this;
-	}
-	
-	public ManyTable orderby(String s) {
-		
-		result[index] = sb.toString();
-		index = 3;
-		sb = new StringBuilder();
-		sb.append(s);
-		return this;
-	}
-	
-	public ManyTable orderbyasc() {
-		
-		result[index] = sb.toString();
-		index = 3;
-		sb = new StringBuilder();
-		sb.append(Constant.ORDERBY_ASC);
-		return this;
-	}
-	
-	public ManyTable orderbydesc() {
-		
-		result[index] = sb.toString();
-		index = 3;
-		sb = new StringBuilder();
-		sb.append(Constant.ORDERBY_DESC);
-		return this;
-	}
+	} 
 	
 	// 三种情况都有可能
 	public ManyTable and(String s) {
