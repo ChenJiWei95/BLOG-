@@ -239,6 +239,13 @@ function(e) {console.log("admin");
     			}
             }) 
     	}
+    	,pictureClick = function (e) {
+			console.log(e.src);
+			$(".myModalImg")[0].src = e.src;
+			$(".myModal .desc").eq(0).text($(e).next().children("div").children(".desc-con").text());
+			$(".myModal").eq(0).addClass("pit-open-scale");
+			$(".myModalImg").eq(0).addClass("pit-open-scale");
+		}
         ,flexible: function(e) {console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);
@@ -513,10 +520,10 @@ function(e) {console.log("admin");
         var n = parent === self ? layui: top.layui;
         n.index.openTabsPage(i, t || e.text())
     }),
-    o.on("click", "*[layadmin-event]", //打开标签页的方法
+    o.on("click", "*[admin-event]", //打开标签页的方法
     function() {
         var e = a(this),
-        i = e.attr("layadmin-event");
+        i = e.attr("admin-event");
         F[i] && F[i].call(this, e)
     }),
     o.on("mouseenter", "*[lay-tips]",

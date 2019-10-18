@@ -47,15 +47,9 @@ public class LoginControl extends BaseControl{
 		return "admin/privilege";
 	}
 	  
-<<<<<<< HEAD
 	// 添加 
 	@RequestMapping("login.do")
-	@ResponseBody 
-=======
-	// 添加
-	@RequestMapping("login.do") 
-	@ResponseBody
->>>>>>> branch 'x2' of https://github.com/ChenJiWei95/BLOG-.git
+	@ResponseBody  
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
 		CMessage cm = new CMessage();
 		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));

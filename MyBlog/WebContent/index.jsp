@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!doctype html>
 <html lang="en">
  <head>
@@ -8,9 +12,11 @@
   <meta name="Keywords" content="">
   <meta name="Description" content="">
   <title>首页</title>
-  <link type="text/css" rel="stylesheet" href="css/MyCss.css" />
-  <link type="text/css" rel="stylesheet" href="css/basi.css" />
-  <link type="text/css" rel="stylesheet" href="css/zoom.css" />
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/MyCss.css" />
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/basi.css" />
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/zoom.css" />
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
   <style>=
 	.progress-bar {position: fixed;}
 	.progress-bar {margin-left: 4px; margin-right: 4px;}
@@ -37,6 +43,7 @@
 	.label-unsele-css {border-bottom: 2px solid #0000;}
 	.con > .simple-done > .simple-content-done > div {margin: auto;}
 	.con > .simple-done > .simple-content-done > div > ul > li  {width: 302px; height: 287px; margin-left: 20px; margin-right: 20px; box-shadow: 0 1px 1px rgba(0,0,0,0.7); float: left; margin-top: 10px; margin-bottom: 10px; border-radius: 3px; overflow: hidden; cursor: pointer;}
+	.con > .simple-done > .simple-content-done > div > ul > li:hover  {box-shadow:1px 1px 4px rgba(0,0,0,0.7)}
 	.con > .simple-done > .simple-content-done > div > ul > li > img {display: block;}
 	.con > .simple-done > .simple-content-done > div > ul > li > .desc {height: 50px;}
 	.con > .simple-done > .simple-content-done > div > ul > li > .desc > div {padding: 5px; padding: 8px 12px;}
@@ -91,8 +98,8 @@
  </head>
  <body>
  	<!-- The Modal -->
-	<div class="myModal" onclick="myModalClick(this)">
-		<span class="close">×</span>
+	<div class="myModal" blog-event="myModalClick">
+		<span class="close"  blog-event="myModalClick">×</span>
 		<img class="myModalImg" alt="" />
 		<div class="desc"></div>
 	</div>
@@ -103,18 +110,18 @@
 		<!-- 导航栏 -->
 		<div class="nav-done">
 			<i class="web-icon"></i>
-			<label class="label-sele-css" onclick="nvaClick(this)">首页</label>
-			<label class="label-unsele-css" onclick="nvaClick(this)">标签</label>
-			<label class="label-unsele-css" onclick="nvaClick(this)">生活</label>
-			<label class="label-unsele-css" onclick="nvaClick(this)">邮箱我</label>
-			<label class="label-unsele-css" onclick="nvaClick(this)" data-type="1">GitHub</label>
-			<label class="label-unsele-css" onclick="nvaClick(this)">关于我</label>
+			<label class="label-sele-css" blog-event="nvaClick">首页</label>
+			<label class="label-unsele-css" blog-event="nvaClick">标签</label>
+			<label class="label-unsele-css" blog-event="nvaClick">生活</label>
+			<label class="label-unsele-css" blog-event="nvaClick">邮箱我</label>
+			<label class="label-unsele-css" blog-event="nvaClick" data-type="1">GitHub</label>
+			<label class="label-unsele-css" blog-event="nvaClick">关于我</label>
 		</div>
 		<!-- 3D particle -->
 		<div class="show-done"></div>
 		<div class="web-tip simple-done shake_effect">
 			<div class="nav-web-tip-done simple-nav-done">
-				<label class="label-sele-css" onclick="nvaClick(this)">站点信息</label>
+				<label class="label-sele-css" ">站点信息</label>
 			</div>
 			<div class="con-web-tip-done simple-content-done">
 				<div class="cle-f con-web-tip-page" style="padding: 4px 47px;">
@@ -125,15 +132,15 @@
 		<!-- 文章简要显示 -->
 		<div class="article-done simple-done">
 			<div class="nav-article-done simple-nav-done">
-				<label class="label-sele-css" onclick="nvaClick(this)">最新随笔</label>
-				<label class="label-unsele-css" onclick="nvaClick(this)">最热随笔</label>
+				<label class="label-sele-css" blog-event="nvaClick" ">最新随笔</label>
+				<label class="label-unsele-css" blog-event="nvaClick" ">最热随笔</label>
 			</div>
 			<div class="con-article-done simple-content-done">
 				<div class="cle-f con-article-page">
 					<ul class="nolist">
 						<li>
-							<img src="img/main/exa-java.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
-							<div class="desc">
+							<img src="img/main/exa-java.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
+							<div class="desc" blog-event="to">
 								<div>
 									<div class="desc-title">
 										java机密
@@ -146,21 +153,21 @@
 							</div>
 							<div class="interacte">
 								<label>
-									<i class="fa-browse"></i>
+									<i class="fa-browse" title="浏览 23"></i>
 									<span>23</span>
 								</label>
 								<label>
-									<i class="fa-heart"></i>
+									<i class="fa-heart" title="喜欢 2"></i>
 									<span>2</span>
 								</label>
 								<label>
-									<i class="fa-chat"></i>
+									<i class="fa-chat" title="评论 15"></i>
 									<span>15</span>
 								</label>
 							</div>
 						</li>
 						<li>
-							<img src="img/main/exa-thread.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
+							<img src="img/main/exa-thread.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title">java线程</div><div class="desc-con">轻量级进程，可并发执行的单位</div></div></div>
 							<div class="interacte">
 								<label>
@@ -178,7 +185,7 @@
 							</div>
 						</li>
 						<li>
-							<img src="img/main/exa-jvm.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
+							<img src="img/main/exa-jvm.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title">jvm之谈</div><div class="desc-con">结构 GC原理 加载机制 内存泄露、溢</div></div></div>
 							<div class="interacte">
 								<label>
@@ -202,13 +209,13 @@
 		<!-- 分享简要显示 -->
 		<div class="share-done simple-done">
 			<div class="nav-share-done simple-nav-done">
-				<label class="label-sele-css" onclick="nvaClick(this)">生活分享</label>
+				<label class="label-sele-css" ">生活分享</label>
 			</div>
 			<div class="con-share-done simple-content-done">
 				<div class="cle-f con-share-page">
 					<ul class="nolist">
 						<li>
-							<img src="img/main/share-1.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
+							<img src="img/main/share-1.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
 							<div class="interacte">
 								<label>
@@ -226,7 +233,7 @@
 							</div>
 						</li>
 						<li>
-							<img src="img/main/share-2.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
+							<img src="img/main/share-2.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">BBQ</div></div></div>
 							<div class="interacte">
 								<label>
@@ -244,7 +251,7 @@
 							</div>
 						</li>
 						<li>
-							<img src="img/main/share-3.jpg" alt="" width="302" height="207" onclick="pictureClick(this)"/>
+							<img src="img/main/share-3.jpg" alt="" width="302" height="207" blog-event="pictureClick" "/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
 							<div class="interacte">
 								<label>
@@ -276,47 +283,65 @@
 			</div>
 		</div>
 	</div>
-	<script src="js/MyjsV0-8.2.js"></script>
-	<script src="js/3DParticle-plugin.js"></script>
+	<script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
 	<script>
-	function nvaClick(e){
-		e.siblings().removeClass("label-sele-css");
-		e.removeClass("label-unsele-css").addClass("label-sele-css");
-		if(e.attr("data-type") == 1)
-			link.local("https://github.com/ChenJiWei95");
-		else
-			alert("正在码出来，轻耐心等待！");
-	}
-
-	var i = 4;
-	var timer = setInterval(function(){
-		i += Num_ran(1,3);
-		$(".progress-bar-con").eq(0).cssKV("width", i+"%");
-		if(i >= 97){
-			$(".progress-bar-con").eq(0).cssKV("width", "100%");
-			$(".progress-bar-con").eq(0).addClass("dialog-in-scale");
-			//为什么动画dialog-in-scale最后透明度是0却又恢复原样
-			setTimeout(function(){$(".progress-bar-con").eq(0).cssKV("opacity", 0)}, 800);
-			clearInterval(timer);
-		}
-	}, Num_ran(5, 15));
+	layui.config({
+		base: '<%=basePath%>layuiadmin/' //静态资源所在路径
+	}).extend({
+		index: 'lib/index' //主入口模块
+		,partcle: 'lib/partcle'
+	}).use(['partcle'], 
+	function () { 
+		var $ = layui.$
+		,F = {
+			pictureClick: function (e) {
+				console.log(e.attr("src"));
+				$(".myModalImg")[0].src = e.attr("src");
+				$(".myModal .desc").eq(0).text(e.next().children("div").children(".desc-con").text());
+				$(".myModal:first").addClass("pit-open-scale");
+				$(".myModalImg:first").addClass("pit-open-scale");
+			}
+			,myModalClick: function (e) {
+				if(e.attr("class").indexOf("myModalImg") == -1){
+					$(".myModal:first").addClass("pit-close-scale");
+					$(".myModal:first").removeClass("pit-open-scale");
+					setTimeout(function(){
+						$(".myModal:first").removeClass("pit-close-scale");
+					}, 700);
+				}
+			}
+			,nvaClick: function (e) {
+				e.siblings().removeClass("label-sele-css");
+				e.removeClass("label-unsele-css").addClass("label-sele-css");
+				if(e.attr("data-type") == 1)
+					self.location = "https://github.com/ChenJiWei95";
+				else
+					alert("正在码出来，轻耐心等待！");
+			}
+		};
+		layui.partcle.render();  
 	
-	function pictureClick (e) {
-		$(".myModalImg").eq(0).src = e.src;
-		$(".myModal .desc").eq(0).text(e.next().$(".desc-con").eq(0).text());
-		$(".myModal").eq(0).addClass("pit-open-scale");
-		$(".myModalImg").eq(0).addClass("pit-open-scale");
-	}
+		var i = 4;
+		var timer = setInterval(function(){
+			i += parseInt(Math.random() * (1000 - 2 + 1) + 2);
+			$(".progress-bar-con").eq(0).css("width", i+"%");
+			if(i >= 97){
+				$(".progress-bar-con").eq(0).css("width", "100%");
+				$(".progress-bar-con").eq(0).addClass("dialog-in-scale");
+				//为什么动画dialog-in-scale最后透明度是0却又恢复原样
+				setTimeout(function(){$(".progress-bar-con").eq(0).css("opacity", 0)}, 800);
+				clearInterval(timer);
+			}
+		}, Math.random() * 30);
+		
+		$("body").on("click", "*[blog-event]", //
+		function() {
+			var e = $(this),
+			i = e.attr("blog-event");
+			F[i] && F[i].call(this, e)
+		})
+	});
 	
-	function myModalClick (e) {
-		if(e.attr("class").indexOf("myModalImg") == -1){
-			$(".myModal").eq(0).addClass("pit-close-scale");
-			$(".myModal").eq(0).removeClass("pit-open-scale");
-			setTimeout(function(){
-				$(".myModal").eq(0).removeClass("pit-close-scale");
-			}, 700);
-		}
-	}
 	
 	</script>
  </body>

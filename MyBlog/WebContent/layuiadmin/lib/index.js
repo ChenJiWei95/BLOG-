@@ -3,10 +3,11 @@
  */
 ;
 layui.extend({
-	setter: "config",
-	navTree: "lib/navTree",
-    admin: "lib/admin",
-    view: "lib/view"
+	setter: "config"
+	,navTree: "lib/navTree"
+    ,admin: "lib/admin"
+    ,view: "lib/view"
+    ,partcle: 'lib/partcle'
 }).define(["setter", "admin"],
 function(export_) {console.log("index");
     var config = layui.setter,

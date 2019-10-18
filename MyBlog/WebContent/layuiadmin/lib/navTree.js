@@ -8,11 +8,11 @@ function (e){console.log('navTree');
 	modName = 'navTree',//模块名称
 	self = {
 		config: {},
-		on: function(e, i) {console.log("navTree n.on");
+		on: function(e, i) { 
             return layui.onevent.call(this, modName, e, i)
         }
 	},
-	navTree = function(e) {console.log("navTree navTree");
+	navTree = function(e) { 
 		var that = this;
 		that.config = jquery.extend({}, that.config, self.config, e),
         that.render()
@@ -32,7 +32,7 @@ function (e){console.log('navTree');
         //draggable: !1,
         //emptyText: "暂无数据"
     },
-	navTree.prototype.render = function(){console.log("navTree navTree.render");
+	navTree.prototype.render = function(){ 
 		var that = this,
 		config = that.config,
 		data = config.data,
@@ -44,12 +44,12 @@ function (e){console.log('navTree');
 		outTarget.append(logo),
 		outTarget.append(root)
 	},
-	navTree.prototype.tree = function (e, data) {console.log("navTree navTree.tree");
+	navTree.prototype.tree = function (e, data) {
 		var that = this,
 		config = that.config,
 		data = data || config.data.data;
 		//遍历
-		layui.each(data, function(e_, itemData) {console.log("each:"+itemData);
+		layui.each(data, function(e_, itemData) {
 			var hasChilds = itemData.children && itemData.children.length > 0,
 			li = jquery('<li data-name="'+itemData.dataName+'" class="layui-nav-item"><a href="javascript:;" lay-tips="'+(itemData.tips?itemData.tips:itemData.desc)+'" lay-direction="2"><i class="layui-icon '+itemData.icon+'"></i><cite>'+itemData.desc+'</cite><span class="layui-nav-more"></span></a></li>'),
 			dl = jquery('<dl class="layui-nav-child"></dl>');
@@ -57,11 +57,11 @@ function (e){console.log('navTree');
 			e.append(li)
 		})
 	},
-	navTree.prototype.child = function (e, data) {console.log("navTree navTree.child");
+	navTree.prototype.child = function (e, data) {
 		var that = this,
 		config = that.config; 
 		//如果有child
-		layui.each(data, function(e_, itemData) {console.log("each:"+itemData);
+		layui.each(data, function(e_, itemData) {
 			var hasChilds = itemData.children && itemData.children.length > 0,
 			dd = jquery('<dd><a '+(hasChilds?'href':'lay-href')+'="'+(itemData.href?(itemData.href=='####'?'javascript:;':(config.base+itemData.href)):'javascript:;')+'">'+itemData.desc+'</a></dd>'),
 			dl = jquery('<dl class="layui-nav-child"></dl>');
@@ -69,7 +69,7 @@ function (e){console.log('navTree');
 			e.append(dd)
 		})
 	},
-	self.render = function(e) {console.log("navTree self.render");//调用此开始渲染界面
+	self.render = function(e) {//调用此开始渲染界面
 		var self = new navTree(e)
 	},
 	e(modName, self)

@@ -1,6 +1,12 @@
+;
+layui.define(
+function(t) {
+	var $ = layui.$;
+	console.log($);
+
 	/*3D particle*/
 	let c = document.createElement('canvas').getContext('2d');
-	let postctx = $(".show-done").eq(0).appendChild(document.createElement('canvas')).getContext('2d');
+	let postctx = $(".show-done").eq(0).append("<canvas></canvas>").getContext('2d');
 	let canvas = c.canvas;
 	let vertices = [];
 
@@ -20,7 +26,7 @@
 
 	// Render loop
 	let loop = () => {
-		let rad = sin(frame / 100) * PI / 20;
+	  let rad = sin(frame / 100) * PI / 20;
 	  let rad2 = sin(frame / 50) * PI / 10;
 		frame++;
 		if (postctx.canvas.width !== postctx.canvas.offsetWidth || postctx.canvas.height !== postctx.canvas.offsetHeight) { 
@@ -106,7 +112,7 @@
 
 	// Generating dots
 	for (let i = 0; i < vertexCount; i++) {
-		let x = i % oceanWidth;
+	  let x = i % oceanWidth;
 	  let y = 0;
 	  let z = i / oceanWidth >> 0;
 		let offset = oceanWidth / 2;
@@ -114,3 +120,4 @@
 	}
 
 	loop();
+});
