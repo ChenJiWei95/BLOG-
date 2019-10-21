@@ -1,3 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!doctype html>
 <html lang="en">
  <head>
@@ -6,10 +12,10 @@
   <meta name="Keywords" content="">
   <meta name="Description" content="">
   <title>随笔分类</title>
-  <link type="text/css" rel="stylesheet" href="../css/MyCss.css" />
-  <link type="text/css" rel="stylesheet" href="../css/basi.css" />
-  <link type="text/css" rel="stylesheet" href="../css/git-plugin.css" />
-  <script src="../js/MyjsV0-8.js"></script>
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/MyCss.css" />
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/basi.css" />
+  <link type="text/css" rel="stylesheet" href="<%=basePath%>css/git-plugin.css" />
+  <script src="<%=basePath%>js/MyjsV0-8.js"></script>
   <style>
 	
 	.api-content {margin: auto;}
@@ -29,8 +35,8 @@
 
 	.show-content-li .item-title-ico > i { transition: all 0.2s ease-out; transform: rotate(-90deg); width:16px; height:16px;}
 	.show-content-li:active .show-content-li .item-title-ico > i {}
-	.show-content-li .item-title-ico > .open {background: url(../img/open.png); cursor: pointer;}
-	.show-content-li .item-title-ico > .open:hover {background: url(../img/open_hover.png);}
+	.show-content-li .item-title-ico > .open {background: url(<%=basePath%>img/open.png); cursor: pointer;}
+	.show-content-li .item-title-ico > .open:hover {background: url(<%=basePath%>img/open_hover.png);}
 	
 	.show-content-li .item-child {padding-left: 12px; height: 0; transition: all 0.2s ease-out; overflow: hidden;}
 
@@ -53,7 +59,7 @@
 	.calend > .calend_top{width: 236px;  height: 25px;  background: #555;  text-align: center;  line-height: 29px;  position: relative;}
 
 	.calend > .calend_top p {color: #fff;  font-size: 14px; line-height: 29px;}
-	.calend > .calend_top .calend-top-ico {width: 16px;  height: 16px; background: url(../img/calend.png); left: 66px; top: 5px; position: absolute;}
+	.calend > .calend_top .calend-top-ico {width: 16px;  height: 16px; background: url(<%=basePath%>img/calend.png); left: 66px; top: 5px; position: absolute;}
 	.calend > .calend_body{padding: 4px;  width: 218px; background: #fff;  position: relative; min-height: 125px; }
 	.calend > .calend_body table {width: 212px; text-align:center; position: absolute; z-index: 2;}
 	.calend > .calend_body table tbody tr td{color: #555; width: 28px;  height: 12px;  line-height: 18px; cursor: pointer; padding: 2px 10px; transform:1s; -moz-transition:1s; -webkit-transition:1s;}
@@ -68,10 +74,10 @@
 	.calend > .lr-bt div i {width: 16px;  height: 16px;  cursor: pointer; }
 	.calend > .lr-bt div {position: absolute;  top: 4px;   z-index:2; }
 	.calend > .lr-bt .l-bt {left: 4px; }
-	.calend > .lr-bt .l-bt i {background: url(../img/r1.png); }
+	.calend > .lr-bt .l-bt i {background: url(<%=basePath%>img/r1.png); }
 	/*.lr-bt .l-bt i:hover {background: url(); }*/
 	.calend > .lr-bt .r-bt {right: 4px; }
-	.calend > .lr-bt .r-bt i {background: url(../img/l1.png); }
+	.calend > .lr-bt .r-bt i {background: url(<%=basePath%>img/l1.png); }
 	/*.lr-bt .r-bt i:hover {background: url(); }*/
 	/*E-canlender*/
 
@@ -81,11 +87,11 @@
 	.body-content-show > .lr-bt div i {width: 64px; height: 64px; cursor: pointer;}
 	.body-content-show > .lr-bt div {position: absolute; top: 400px;  z-index:2;}
 	.body-content-show > .lr-bt .l-bt {left: 20px;}
-	.body-content-show > .lr-bt .l-bt i {background: url(../img/pre.png);}
-	.body-content-show > .lr-bt .l-bt i:hover {background: url(../img/pre_hover.png);}
+	.body-content-show > .lr-bt .l-bt i {background: url(<%=basePath%>img/pre.png);}
+	.body-content-show > .lr-bt .l-bt i:hover {background: url(<%=basePath%>img/pre_hover.png);}
 	.body-content-show > .lr-bt .r-bt {right: 20px;}
-	.body-content-show > .lr-bt .r-bt i {background: url(../img/next.png);}
-	.body-content-show > .lr-bt .r-bt i:hover {background: url(../img/next_hover.png);}
+	.body-content-show > .lr-bt .r-bt i {background: url(<%=basePath%>img/next.png);}
+	.body-content-show > .lr-bt .r-bt i:hover {background: url(<%=basePath%>img/next_hover.png);}
   </style>
  </head>
  <body>
@@ -116,7 +122,7 @@
 			<!-- 个人信息 -->
 			<div class="nav-ifnor">
 				<label>
-					<img src="../img/pho.jpg" width="80" height="80" alt="chenjiwei"/>
+					<img src="<%=basePath%>img/pho.jpg" width="80" height="80" alt="chenjiwei"/>
 				</label>
 				<label>
 					指尖的美
@@ -194,7 +200,7 @@
 									</label>
 									<!-- 内容 -->
 									<label class="item-body">
-										<label><img src="../img/pho.jpg" width="50px" height="50px" alt="chenjiwei"/></label>
+										<label><img src="<%=basePath%>img/pho.jpg" width="50px" height="50px" alt="chenjiwei"/></label>
 										<label><br><br>修改了$$.ajax函数</label>
 									</label>
 									<!-- 相关 标签 -->
@@ -233,8 +239,8 @@
 		</div>
 	</div>
 	<!-- E body -->
-	<script src="../js/canlender-plugin.js"></script>
-	<script src="../js/git-plugin V0.js"></script>
+	<script src="<%=basePath%>js/canlender-plugin.js"></script>
+	<script src="<%=basePath%>js/git-plugin V0.js"></script>
 	<script>
 	/* S 日历 */
 	var manageCanlender = new ManegeCanlender(new Canlender());

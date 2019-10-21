@@ -1,6 +1,6 @@
 	/* GIT */
 	p, pre {margin-top: 2px; color: #555;} 
-	.git-title {padding-bottom: 10px; border-bottom: 1px solid #eaecef; margin-bottom: 10px;}
+	.git-title {padding-bottom: 10px;/*  border-bottom: 1px solid #eaecef; */ margin-bottom: 10px;}
 	/*无序圆点列表*/
 	.ul-point {padding: 0px 20px;}
 	.ul-point, .ul-point > li {margin-top: 2px;}
