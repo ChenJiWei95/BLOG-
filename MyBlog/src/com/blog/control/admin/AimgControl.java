@@ -81,7 +81,7 @@ public class AimgControl extends BaseControl{
 	*/
 	@RequestMapping("/editMovieInfo.do")
 	@ResponseBody
-	public Object editMovieInfo1(MultipartFile file, String fileName) throws ClientProtocolException, IOException {
+	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {
 		String path = UUID.randomUUID().toString().replace("-", "");
 		
 		Aimg img = new Aimg();
@@ -91,7 +91,7 @@ public class AimgControl extends BaseControl{
 		img.setPath(path);
 		// 生成新的文件名
 		try {
-			String realPath = "d:/" + path + ".jpg";
+			String realPath = basePath(request)+ "img/" + path + ".jpg";
 			System.out.println(realPath);
 			File dest = new File(realPath);
 			// 判断文件父目录是否存在

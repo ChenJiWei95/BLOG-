@@ -137,71 +137,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div class="con-article-done simple-content-done">
 				<div class="cle-f con-article-page">
-					<ul class="nolist">
+					<ul class="nolist"> 
+						<c:forEach begin="0" items="${articles}" step="1" var="Article" varStatus="varsta">
 						<li>
-							<img src="img/main/exa-java.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc" blog-event="to">
-								<div>
-									<div class="desc-title">
-										java机密
-									</div>
-									<!--word-break: break-all; 超出 省略号-->
-									<div class="desc-con">
-										OOP（Object Oriented Programming）面向对象编程
-									</div>
-								</div>
-							</div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse" title="浏览 23"></i>
-									<span>23</span>
-								</label>
-								<label>
-									<i class="fa-heart" title="喜欢 2"></i>
-									<span>2</span>
-								</label>
-								<label>
-									<i class="fa-chat" title="评论 15"></i>
-									<span>15</span>
-								</label>
-							</div>
-						</li>
-						<li>
-							<img src="img/main/exa-thread.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc"><div><div class="desc-title">java线程</div><div class="desc-con">轻量级进程，可并发执行的单位</div></div></div>
+							<img src="<c:if test="${empty Article.pit_url}">img/main/exa-thread.jpg</c:if><c:if test="${not empty Article.pit_url}">${Article.pit_url}</c:if>" alt="" width="302" height="207" blog-event="pictureClick"/>
+							<div class="desc"><div><div class="desc-title">${Article.name}</div><div class="desc-con">${Article.simp_desc}</div></div></div>
 							<div class="interacte">
 								<label>
 									<i class="fa-browse"></i>
-									<span>5</span>
+									<span>666</span>
 								</label>
 								<label>
 									<i class="fa-heart"></i>
-									<span>42</span>
+									<span>666</span>
 								</label>
 								<label>
 									<i class="fa-chat"></i>
-									<span>12</span>
+									<span>666</span>
 								</label>
 							</div>
 						</li>
-						<li>
-							<img src="img/main/exa-jvm.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc"><div><div class="desc-title">jvm之谈</div><div class="desc-con">结构 GC原理 加载机制 内存泄露、溢</div></div></div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse"></i>
-									<span>12</span>
-								</label>
-								<label>
-									<i class="fa-heart"></i>
-									<span>2</span>
-								</label>
-								<label>
-									<i class="fa-chat"></i>
-									<span>42</span>
-								</label>
-							</div>
-						</li>
+						</c:forEach> 
 					</ul>
 				</div>
 			</div>
@@ -274,7 +230,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 		<div class="bom" style="position: relative;">
 			<div class="bom_container">
-				<li style="color:#586069;list-style:none;padding:10px 245px;margin: auto; width: 336px;">
+				<li style="color:#586069;list-style:none;padding:10px 245px;margin: auto; width: 511px;">
 					Copyright ©2018 
 					<span  style="color:#a71d5d;cursor:pointer;" title="作者邮箱">chenjiwey@163.com</span> 
 					 | 粤ICP备

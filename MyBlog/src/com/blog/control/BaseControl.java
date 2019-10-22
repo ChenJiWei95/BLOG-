@@ -84,6 +84,7 @@ public class BaseControl {
 	protected String basePath(HttpServletRequest request){
 		// http://localhost:8080/MyBlog/
 		return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
+
 	}
 } 
 
