@@ -47,7 +47,6 @@ public class LoginControl extends BaseControl{
 		return "admin/privilege";
 	}
 	  
-	// 添加 
 	@RequestMapping("login.do")
 	@ResponseBody  
 	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
