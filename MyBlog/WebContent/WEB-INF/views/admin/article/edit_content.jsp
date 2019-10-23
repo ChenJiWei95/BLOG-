@@ -82,7 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				,type: '1'
 				,shadeClose: true
 				,area: ['80%', '80%']
-				,content: '<div class="layui-fluid" style="background: #dddddd91;"><div class="layui-card"><div class="layui-card-body mark_code_cnt" pad15></div></div></div>'
+				,content: '<div class="layui-fluid" style="background: #dddddd91; font-size: 0.8em;"><div class="layui-card"><div class="layui-card-body mark_code_cnt" pad15></div></div></div>'
 				,success:function(){
 					new GitManage($(".mark_code").eq(0).text()).getElements().forEach(function(item) {
 						item.appendTo($$$(".mark_code_cnt").eq(0));

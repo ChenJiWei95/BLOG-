@@ -7,8 +7,7 @@
          version="3.0">
 	<!-- 默认页-主页 -->
 	<welcome-file-list>
-  		<welcome-file>index.jsp</welcome-file>
-  		<welcome-file>index.html</welcome-file>
+  		<welcome-file>blog/index.chtml</welcome-file>
 	</welcome-file-list>
 	
 	<!-- 
@@ -16,6 +15,7 @@
 		设置spring容器加载所有的配置文件的路径
 		加载spring容器配置 
 		此处在下文配置springMVC核心控制器中的参数中以有配置，
+		负责IOC操作
 	-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -38,10 +38,12 @@
 	</servlet>
 	
 	<!-- 为DispatcherServlet建立映射 -->
+	<!-- 作为方法的后缀 -->
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	<!-- 作为页面的后缀 -->
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.chtml</url-pattern>

@@ -47,8 +47,7 @@ public class MainControl extends BaseControl{
 	@Autowired
 	private AdminInforService adminInforServiceImpl;
 	
-	@Autowired
-	private AdminService adminServiceImpl;
+	
 	
 	@Autowired
 	private RoleService roleServiceImpl;
