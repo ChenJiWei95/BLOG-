@@ -60,7 +60,7 @@ public class TestControl {
 		// 多个查询
 		User u = new User();
 		u.setPassword("%8%");
-		List<User> list = userServiceImpl.getOfOrderBySortAndLimit(u, "desc", "id", 0, 5);
+		List<User> list = userServiceImpl.getBySortAndLimit(u, "desc", "id", 0, 5);
 		for(User u_ : list)
 			System.out.println(u_.toString());
 		
@@ -425,7 +425,7 @@ public class TestControl {
 		m.setMsg(resultObject.getString("msg"));
 		Map<String, String> eq = new HashMap<>();
 		eq.put("id", resultObject.getString("id"));
-		menuServiceImpl.update(m, eq);
+//		menuServiceImpl.update(m, eq);
 		
 		JSONObject obj1 = new JSONObject();
 		obj1.put("id", resultObject.getString("id"));

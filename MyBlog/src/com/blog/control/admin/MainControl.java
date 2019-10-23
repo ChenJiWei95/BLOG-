@@ -66,22 +66,7 @@ public class MainControl extends BaseControl{
 			e.printStackTrace();
 		}
 		return "admin/admin_view";
-	}	
-	
-	@RequestMapping("logout.do")
-	@ResponseBody
-	public Object logout(Admin t, HttpServletRequest re, ModelMap model) throws IOException{ 
-		try{
-			System.out.println("添加接收参数："+ t + " " + ActionUtil.read(re)); 
-			Admin a = (Admin) re.getSession().getAttribute(Constant.USER_CONTEXT);
-			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
-			a.setState("01");
-			adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
-			return com.blog.util.Message.success("已登出");
-		}catch(Exception e){
-			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
-		}
-	}
+	}	 
 	
 	@RequestMapping("/aly_control.chtml")
 	public String control(HttpServletRequest request, String agentno, ModelMap model){
@@ -97,7 +82,7 @@ public class MainControl extends BaseControl{
 		JSONArray jsonArray = null;
 		Menu menu = new Menu();
 		menu.setRelate_id(id); 
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(menu, "ASC", "priority");
+		List<Menu> ms = menuServiceImpl.getBySort(menu, "ASC", "priority");
 		if(ms != null && ms.size() > 0){
 			jsonArray = new JSONArray();
 			for(Menu item : ms) { 
@@ -145,7 +130,7 @@ public class MainControl extends BaseControl{
 		// 收集菜单信息
 		Menu m = new Menu();
 		m.setRelate_id("");
-		List<Menu> ms = menuServiceImpl.getOfOrderBySort(m, "ASC", "priority"); 
+		List<Menu> ms = menuServiceImpl.getBySort(m, "ASC", "priority"); 
 		JSONArray jsonArray = new JSONArray();
 		for(Menu item : ms) { 
 			JSONObject object = jsonToJSONObject(item); 

@@ -8,6 +8,7 @@ import com.blog.service.BasiService;
 import com.blog.util.sql.AssociaInterface;
 import com.blog.util.sql.EqAdapter;
 import com.blog.util.sql.InsertAdapter;
+import com.blog.util.sql.ManyTable;
 import com.blog.util.sql.SelectAdapter;
 import com.blog.util.sql.UpdateAdapter;
 /**
@@ -62,7 +63,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
-	public List<T> getOfOrderBySort(T t, String sort, String column) {
+	public List<T> getBySort(T t, String sort, String column) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t);
@@ -80,7 +81,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
-	public List<T> getOfOrderBySortAndLimit(T t, String sort, String column, int start, int size) {
+	public List<T> getBySortAndLimit(T t, String sort, String column, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t)
@@ -99,7 +100,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
-	public List<T> getOfLimit(T t, int start, int size) {
+	public List<T> getByLimit(T t, int start, int size) {
 		EqAdapter sql = new SelectAdapter()
 				.setParame(this)
 				.setTarget(t)
@@ -450,6 +451,176 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		try {
 			return getDao().count(sql);
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByASC(T t, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByASC(String eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByASC(Map<String, Object> eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq(eq)
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByASC(String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this) 
+				.setOrderByASC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByDESC(T t, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setTarget(t)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByDESC(String eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.setEqSql(eq)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByDESC(Map<String, Object> eq, String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq(eq)
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<T> getByDESC(String column) {
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this) 
+				.setOrderByDESC(column); 
+		try {
+			return (List<T>) getDao().get(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getByManyTable(String colStatement, String tableStatement, String eqStatement){
+		EqAdapter eq1 = new SelectAdapter()
+				.setColumns(colStatement)
+				.setTableStatement(tableStatement)
+				.setEqSql(eqStatement);
+		try {
+			return getDao().getOfManyTable(eq1);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<Map<String, Object>> getByManyTable(ManyTable t) {
+		EqAdapter eq1 = new SelectAdapter()
+				.setColumns(t.getStatement()[0])
+				.setTableStatement(t.getStatement()[1])
+				.setEqSql(t.getStatement()[2]);
+		try {
+			return getDao().getOfManyTable(eq1);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<Map<String, Object>> getByManyTableByLimit(ManyTable t, int start, int size) {
+		EqAdapter eq1 = new SelectAdapter()
+				.setColumns(t.getStatement()[0])
+				.setTableStatement(t.getStatement()[1])
+				.setEqSql(t.getStatement()[2])
+				.setLimit(start, size);
+		try {
+			return getDao().getOfManyTable(eq1);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<Map<String, Object>> getByManyTableByASC(ManyTable t, String col) {
+		EqAdapter eq1 = new SelectAdapter()
+				.setColumns(t.getStatement()[0])
+				.setTableStatement(t.getStatement()[1])
+				.setEqSql(t.getStatement()[2])
+				.setOrderByASC(col);
+		try {
+			return getDao().getOfManyTable(eq1);
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public List<Map<String, Object>> getByManyTableByDESC(ManyTable t, String col) {
+		EqAdapter eq1 = new SelectAdapter()
+				.setColumns(t.getStatement()[0])
+				.setTableStatement(t.getStatement()[1])
+				.setEqSql(t.getStatement()[2])
+				.setOrderByDESC(col);
+		try {
+			return getDao().getOfManyTable(eq1);
+		}catch(RuntimeException e) {
 			e.printStackTrace();
 		}
 		return null;

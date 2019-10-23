@@ -131,7 +131,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
-			List<CMessage> list = messageServiceImpl.getAll();
+			List<CMessage> list = messageServiceImpl.getByDESC("isRead");
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -142,7 +142,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object articleList() throws IOException{
 		try {
-			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "02"));
+			List<CMessage> list = messageServiceImpl.getByDESC(singleMarkOfEq("type", "02"), "isRead");
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -152,7 +152,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object directList() throws IOException{
 		try {
-			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "03"));
+			List<CMessage> list = messageServiceImpl.getByDESC(singleMarkOfEq("type", "03"), "isRead");
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
@@ -162,7 +162,7 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object sysList() throws IOException{
 		try {
-			List<CMessage> list = messageServiceImpl.gets(singleMarkOfEq("type", "04"));
+			List<CMessage> list = messageServiceImpl.getByDESC(singleMarkOfEq("type", "04"), "isRead");
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);

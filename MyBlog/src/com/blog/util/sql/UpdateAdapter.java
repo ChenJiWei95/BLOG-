@@ -25,9 +25,9 @@ public class UpdateAdapter extends EqAdapter {
 		
 		StringBuilder updateSql = new StringBuilder();
 		for(Map.Entry<String, Object> item : updateMap.entrySet()){
-			updateSql.append(" `"+ item.getKey() +"` = ")
+			updateSql.append(" "+quma(item.getKey())+" = ")
 					 .append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
-							? "'"+item.getValue()+"' " 
+							? quma2((String) item.getValue())+" " 
 							: (item.getValue()) + " ")
 					 .append(",");
 		}

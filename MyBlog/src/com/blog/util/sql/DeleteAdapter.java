@@ -13,7 +13,7 @@ public class DeleteAdapter extends EqAdapter {
 	}	
 	 
 	public EqAdapter like(String cloumn, String likeStr) {
-		setLike(cloumnUtil(cloumn) + " LIKE '" + likeStr + "'");
+		setLike(cloumnUtil(cloumn)+" "+SQL_LIKE+quma2(likeStr));
 		return this;
 	}
 	 	

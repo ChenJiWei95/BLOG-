@@ -57,7 +57,7 @@ public class InsertAdapter extends EqAdapter {
 		StringBuffer temp = new StringBuffer();
 		for(Object item : vals){
 			if("string".equals(TypeToolsGenerics.getType(item)))
-				temp.append("'"+item+"', ");
+				temp.append(quma2((String) item)+", ");
 			else 
 				temp.append(item+", ");
 		}

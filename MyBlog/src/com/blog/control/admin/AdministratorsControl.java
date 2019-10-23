@@ -65,7 +65,7 @@ public class AdministratorsControl extends BaseControl{
 		AdminInfor adminInfor = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
 		model.addAttribute("admin", adminInfor);
 		Object o = new Object();
-		List<Map<String, Object>> list =  adminServiceImpl.getOfManyTable("b.name as `name`", 
+		List<Map<String, Object>> list =  adminServiceImpl.getByManyTable("b.name as `name`", 
 				"`admin_infor` a, `role` b", 
 				singleOfEq("a.`role_id`", "b.`id`") + " AND " + singleOfEq("a.`id`", quma2(adminInfor.getId())));
 		model.addAttribute("roleName", list.get(0).get("name"));

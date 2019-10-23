@@ -35,14 +35,25 @@ public class SelectAdapter extends EqAdapter {
 			eq(parseMapOfObject(target));
 		
 		return super.getWhereSql();
-	}		
+	}	
+	/**
+	 * 
+	 * @param columnName
+	 * @param sort EqAdapter.ORDERBY_DESC EqAdapter.ORDERBY_ASC
+	 * @return
+	 */
+	public EqAdapter setOrderByDESC(String columnName, String sort) {
+		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
+		orderBySql = SQL_ORDERBY + quma(columnName)+" "+sort+" ";
+		return this;
+	}
 	/**
 	 * 升序
 	 * @param columnName
 	 */
 	public EqAdapter setOrderByDESC(String columnName) {
 		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
-		orderBySql = ORDER_BY_FIX + "`" + columnName + "` DESC ";
+		orderBySql = SQL_ORDERBY + quma(columnName)+" "+EqAdapter.SQL_ORDERBY_DESC+" ";
 		return this;
 	}
 	/**
@@ -51,7 +62,7 @@ public class SelectAdapter extends EqAdapter {
 	 */
 	public EqAdapter setOrderByASC(String columnName) {
 		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
-		orderBySql = ORDER_BY_FIX + "`" + columnName + "` ASC ";
+		orderBySql = SQL_ORDERBY + quma(columnName)+" "+EqAdapter.SQL_ORDERBY_ASC+" ";
 		return this;
 	}
 	
@@ -110,15 +121,15 @@ public class SelectAdapter extends EqAdapter {
 		Map<String, Object> eqAndPutMap = this.getEqAndPutMap();
 		if(eqAndPutMap == null || eqAndPutMap.size() == 0)
 			throw new NullPointerException("条件查询结果集为空：map = " + eqAndPutMap);
-		StringBuilder whereSql = new StringBuilder(WHERE_FIX);
+		StringBuilder whereSql = new StringBuilder(SQL_WHERE);
 		whereSql.append(" "+getBrige_table()+"."+getBrige_key()+" = ");
-		whereSql.append(getTable()+"."+getId()+" ").append(AND_FIX);
+		whereSql.append(getTable()+"."+getId()+" ").append(SQL_AND);
 		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
-			whereSql	.append(" `"+ item.getKey() +"` = ")
+			whereSql	.append(" "+quma(item.getKey())+" = ")
 					.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
-							? "'"+item.getValue()+"' " 
+							? quma2((String) item.getValue())+" " 
 							: (item.getValue()) + " ")
-					.append(AND_FIX);
+					.append(SQL_AND);
 		}
 		whereSql.delete(whereSql.length()-4, whereSql.length());
 		return whereSql.toString();
@@ -132,7 +143,7 @@ public class SelectAdapter extends EqAdapter {
 	 * @param size	 长度
 	 */
 	public EqAdapter setLimit(int start, int size) {
-		limitSql = LIMIT_FIX + start + "," + size;
+		limitSql = SQL_LIMIT + start + "," + size;
 		return this;
 	}	
 	

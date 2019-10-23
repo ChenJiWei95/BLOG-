@@ -30,10 +30,17 @@ import com.blog.util.TypeToolsGenerics;
  */
 public abstract class EqAdapter{
 	
-	public static final String WHERE_FIX 		= "WHERE"		;
-	public static final String AND_FIX 			= "AND"			;
-	public static final String ORDER_BY_FIX 	= "ORDER BY "	;
-	public static final String LIMIT_FIX 		= "LIMIT "		;
+	public static final String SQL_WHERE 		= "WHERE"		;
+	public static final String SQL_INSERT 		= "INSERT INTO ";
+	public static final String SQL_AND 			= " AND "		;
+	public static final String SQL_MULL 		= "NULL "		;
+	public static final String SQL_ORDERBY 		= "ORDER BY "	;
+	public static final String SQL_LIMIT 		= "LIMIT "		;
+	public static final String SQL_ORDERBY_DESC = "DESC "		;
+	public static final String SQL_ORDERBY_ASC 	= "ASC "		;
+	public static final String SQL_TABLE 		= "table "		;
+	public static final String SQL_LIKE 		= "LIKE "		;
+	
 	 
 	protected String id						; // 主键 
 	private String table					; // 表名 
@@ -59,7 +66,7 @@ public abstract class EqAdapter{
 	// 条件语句
 	public String getWhereSql() throws Exception { 
 		if(getEqSql() != null || "".equals(getEqSql()))
-			return AND_FIX + " " + getEqSql();
+			return SQL_AND + " " + getEqSql();
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);
 		if(eqAndPutMap == null || eqAndPutMap.size() < 0)
@@ -75,12 +82,12 @@ public abstract class EqAdapter{
 	protected String createEqSql() {
 		StringBuilder whereSql = new StringBuilder();
 		for(Map.Entry<String, Object> item : eqAndPutMap.entrySet()){
-			whereSql.append(AND_FIX)
-					.append(" `" + item.getKey() + "` = ")
+			whereSql.append(SQL_AND)
+					.append(quma(item.getKey())+" = ")
 //					.append((isLike(((String) item.getValue()).trim()) ? " LIKE " : " = "))
 					.append("string".equals(TypeToolsGenerics.getType(item.getValue()))
-							? "'"+item.getValue()+"' "
-							: (item.getValue() == null ? "NULL" : item.getValue()) + " "); 	
+							? quma2((String) item.getValue())+" "
+							: (item.getValue() == null ? SQL_MULL : item.getValue()) + " "); 	
 		}
 		return whereSql.toString();
 	}
@@ -96,7 +103,7 @@ public abstract class EqAdapter{
 	public String getInsertSql() throws Exception{
 		
 		if(eqAndPutMap == null || eqAndPutMap.size() == 0)
-			throw new Exception("集合为空或者集合元素不能为零：map = " + eqAndPutMap);
+			throw new Exception("数据库插入操作-插入数据不能为空；集合为空或者集合元素不能为零：map = " + eqAndPutMap);
 		if(table == null || "".equals(table))
 			throw new Exception("table = " + table);
 		
@@ -106,17 +113,18 @@ public abstract class EqAdapter{
 		{
 			if(item.getKey() == null || "".equals(item.getKey()))
 				continue;
-			cloumns.append("`"+item.getKey()+"`,");
+			cloumns.append(quma(item.getKey())+",");
 			values.append("string".equals(TypeToolsGenerics.getType(item.getValue())) 
-							? "'"+item.getValue()+"'" 
+							? quma2((String) item.getValue())
 							: (item.getValue())).append(",");
 		}
 		
 		StringBuilder insertSql = new StringBuilder();
-		insertSql.append("insert into ").append(table)
+		insertSql.append(SQL_INSERT).append(table)
 		.append("(").append(cloumns.deleteCharAt(cloumns.length()-1)).append(") ")
 		.append("values(").append(values.deleteCharAt(values.length()-1)).append(");");
 		return insertSql.toString();
+		
 	}
 	
 	
@@ -202,9 +210,6 @@ public abstract class EqAdapter{
 		return "*";
 	}
 	
-	protected String cloumnUtil(String cloumn){
-		return "`" + cloumn + "`";
-	}
 
 	/**
 	 * 自定义查找列名 否则默认‘*’
@@ -219,7 +224,7 @@ public abstract class EqAdapter{
 		for(Object item : columns){
 			if(item == null || "".equals(item))
 				continue;
-			temp.append("`"+item+"`, ");
+			temp.append(quma((String) item)+", ");
 		}
 		this.columns = temp.length() > 0 ? temp.deleteCharAt(temp.length()-1).deleteCharAt(temp.length()-1).toString() : temp.toString(); 
 		return this;
@@ -243,6 +248,7 @@ public abstract class EqAdapter{
 		if(eqAndPutMap == null) eqAndPutMap = new HashMap<>();
 		eqAndPutMap.put(key, value);
 		return this;
+		
 	}
 	
 	/**
@@ -386,4 +392,29 @@ public abstract class EqAdapter{
 		this.like = like;
 	}
 	
+	/**
+	 * 加符号 通常为字段或表 返回 `str`
+	 * @param str
+	 * @return
+	 */
+	protected String quma(String str) {
+		return "`"+str+"`";
+	}
+	/**
+	 * 加符号 通常为字符串 返回 'str'
+	 * @param str
+	 * @return
+	 */
+	protected String quma2(String str) {
+		return "'"+str+"'";
+	}
+	
+	/**
+	 * 加符号 通常为字段或表 返回 `str`
+	 * @param str
+	 * @return
+	 */
+	protected String cloumnUtil(String cloumn){
+		return "`"+cloumn+"`";
+	}
 }
