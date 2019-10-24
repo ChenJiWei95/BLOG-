@@ -239,7 +239,7 @@ function(e) {console.log("admin");
     			}
             }) 
     	}
-    	,pictureClick = function (e) {
+    	,pictureClick: function (e) {
 			console.log(e.src);
 			$(".myModalImg")[0].src = e.src;
 			$(".myModal .desc").eq(0).text($(e).next().children("div").children(".desc-con").text());

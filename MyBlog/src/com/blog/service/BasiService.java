@@ -33,6 +33,8 @@ public interface BasiService<T, V> {
 	T get(String eq); 
 	
 	T getForColum(String eq, Object column); 
+
+	T getByID(String id); 
 	
 	List<T> getAll(); 
 	

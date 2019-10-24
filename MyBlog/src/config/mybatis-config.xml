@@ -45,7 +45,9 @@
 		<mapper resource="com/blog/mapper/AimgMapper.xml" />
 		<mapper resource="com/blog/mapper/MessageMapper.xml" />
 		<mapper resource="com/blog/mapper/ArticleContentMapper.xml" />
+		<mapper resource="com/blog/mapper/UsertestMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>   
+
 

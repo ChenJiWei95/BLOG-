@@ -21,13 +21,15 @@ import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
+import com.blog.entity.Usertest;
 import com.blog.entity.WebsiteBase;
 import com.blog.service.AdminInforService;
-import com.blog.service.AdminService;
 import com.blog.service.MenuService;
 import com.blog.service.RoleService;
+import com.blog.service.UsertestService;
 import com.blog.service.WebsiteBaseService;
-import com.blog.util.ActionUtil;
+import com.blog.util.SnowFlakeGenerator;
+import com.sun.mail.imap.protocol.UID;
 
 /**
  * 
@@ -46,6 +48,9 @@ public class MainControl extends BaseControl{
 	
 	@Autowired
 	private AdminInforService adminInforServiceImpl;
+
+	@Autowired
+	private UsertestService usertestServiceImpl;
 	
 	
 	
@@ -55,6 +60,14 @@ public class MainControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+		// 测试缓存
+		Usertest u = new Usertest();
+		u.setId(String.valueOf(new SnowFlakeGenerator(1,1).nextId()));
+		u.setName("xiaoming");
+		usertestServiceImpl.save(u);
+//		System.out.println("获取："+usertestServiceImpl.getByID("384778304613388281"));
+		System.out.println("获取："+usertestServiceImpl.getByID(u.getId()));
+		
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 		AdminInfor ai = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
 		model.addAttribute("name", ai.getName());

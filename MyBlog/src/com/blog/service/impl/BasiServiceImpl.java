@@ -3,6 +3,9 @@ package com.blog.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+
 import com.blog.dao.BaseDao;
 import com.blog.service.BasiService;
 import com.blog.util.sql.AssociaInterface;
@@ -141,6 +144,7 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
+	@CachePut(value = "users", key = "#t.id")
 	public void insert(T t) {
 		EqAdapter sql = new InsertAdapter()
 				.setParame(this)
@@ -621,6 +625,21 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		try {
 			return getDao().getOfManyTable(eq1);
 		}catch(RuntimeException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	@Cacheable(value="users", key = "#id")
+	public T getByID(String id) {
+		System.out.println("缓存没有数据则执行getByID，ID："+id);
+		EqAdapter sql = new SelectAdapter()
+				.setParame(this)
+				.eq("id", id)
+				.setLimit(0, 1);
+		try {
+			return (T) getDao().get(sql);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

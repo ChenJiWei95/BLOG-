@@ -46,14 +46,14 @@ public class TempJava {
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
 //	private static Integer[] commond = {};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
-	private static Integer[] commond = {2};
+	private static Integer[] commond = {2, 1, 0, 3, 4, 6};
 	
 	public static void main(String[] args) throws IOException {
-		String fileds = "id sitename update_time index_url spread domain cache_time max_cache_size cache_type title keywords meta_desc copyright";
+		String fileds = "id name";
 		String texts = "ID 描述 时间 状态";
 		
 		// 生成js和java代码 调用这个  
-		do1_1("WebsiteBase", "article_content", "admin", fileds, texts, "消息中心");
+		do1_1("usertest", "usertest", "admin", fileds, texts, "消息中心");
 
 		// 下面为测试
 //		do1("tagBrige", "article_tag_brige", "tagBrige", fileds.split(" "));
@@ -116,6 +116,15 @@ public class TempJava {
 	}
 	
 	// 生成js代码
+	/**
+	 * 
+	 * @param name_		类名前缀小写 例：‘UserService.java’ 那么 ‘name_=user’
+	 * @param table		表名
+	 * @param classify	分类 前端文件夹 
+	 * @param fileds	表字段  实体类生成、前端文件生成
+	 * @param Texts		表字段名称 前端文件生成
+	 * @param title		前端页面标题
+	 */
 	public static void do1_1(String name_, String table, String classify,  String fileds, String Texts, String title){
 		do1(name_, table, classify, fileds.split(" "), Texts.split(" "), title);
 	}
