@@ -17,6 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <link type="text/css" rel="stylesheet" href="<%=basePath%>css/zoom.css" />
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
+  
   <style>=
 	.progress-bar {position: fixed;}
 	.progress-bar {margin-left: 4px; margin-right: 4px;}
