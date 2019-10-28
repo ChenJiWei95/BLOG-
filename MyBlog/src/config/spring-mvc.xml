@@ -85,6 +85,23 @@
    			<value>views</value>
   		</property>
  	</bean>
+ 	
+ 	<mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+    </mvc:interceptors>
+    
+    <!-- 国际化配置 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="cacheSeconds" value="${message.cache_seconds}" />
+		<property name="useCodeAsDefaultMessage" value="true" />
+		<property name="basenames">
+			<list>
+				<value>${message.common_path}</value>
+				<value>${message.msg_path}</value>
+			</list>
+		</property>
+	</bean>
 	<!-- 然后是资源文件：
 	views_en_US.properties:courseList.class=xx.CourseListPdfView
 	views_fr_FR.properties:courseList.class=xx.CoureseListExcelView

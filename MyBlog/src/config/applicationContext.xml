@@ -12,8 +12,8 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- 加载配置文件 -->
-	<!-- <context:property-placeholder location="classpath*:/config.properties"
-		ignore-resource-not-found="true" ignore-unresolvable="true" /> -->
+	<context:property-placeholder location="classpath*:/config.properties"
+		ignore-resource-not-found="true" ignore-unresolvable="true" />
 	
 	<!-- 数据源：DriverManagerDataSource -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
@@ -59,6 +59,7 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="100000"></property>
 	</bean> 
+	
 	
 	<!-- 3.mybatis自动扫描加载Sql映射文件、接口：MapperScannerConfigurer sqlSessionFactory
 	basePackage：指定sql接口所在的包（自动扫描）注意：不是映射文件 -->
