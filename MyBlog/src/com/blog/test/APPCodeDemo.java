@@ -134,11 +134,11 @@ public class APPCodeDemo {
     }*/
     public static void main(String[] args) {
         // 将图片转换为base64编码格式
-       /* String imgPath = "d:/3.png";
+        String imgPath = "d:/3.png";
         String imgStr = imgToBase64(imgPath);
-        ocr(imgStr);*/
+        ocr(imgStr);
     	
-    	ocrBank();
+//    	ocrBank();
     }
     /**
      * 阿里OCR接口
