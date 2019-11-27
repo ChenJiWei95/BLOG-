@@ -41,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if(		arg0.getRequestURI().indexOf("login.chtml") > 0 
 				|| arg0.getRequestURI().indexOf("login.do") > 0 
 				|| arg0.getRequestURI().indexOf("/MyBlog/blog") == 0
-				|| "/MyBlog/".equals(arg0.getRequestURI())) {
+				|| "/MyBlog/".equals(arg0.getRequestURI())) { 
 			// 登录页面、登录请求、博客请求、基本请求 跳过
 			return true;
 		}
