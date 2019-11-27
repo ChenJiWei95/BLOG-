@@ -1,4 +1,4 @@
-package com.blog.control.view;
+package com.blog.control.fore;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,14 +13,21 @@ import com.blog.service.ArticleService;
 @RequestMapping("/blog")
 @Controller
 public class IndexControl {
+	
 	@Autowired
 	private ArticleService articleServiceImpl;
 
 	// 返回 页面 
 	@RequestMapping("/index.chtml")
-	public String index(HttpServletRequest request, String agentno, ModelMap model){
-//		model.addAttribute("articles", articleServiceImpl.getBySortAndLimit(null, Constant.ORDERBY_ASC, "", 1, 3));
-		
-		return "../../index";
+	public String index(HttpServletRequest request, 
+			String agentno, 
+			ModelMap model){
+		model.addAttribute("articles", 
+				articleServiceImpl.getBySortAndLimit(null, 
+						Constant.ORDERBY_ASC, 
+						"create_time", 
+						0, 
+						3));
+		return "fore/index";
 	}	
 }

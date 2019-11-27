@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ 
+<% 
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <!doctype html>
 <html lang="en">
@@ -28,7 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.con > div {margin-top: 10px; margin-bottom: 10px;  position: relative; background: #fff; border-radius: 4px; overflow: hidden; padding: 10px;}
 	.con > div:nth-child(1) {margin-top: 5px}
 	.con > .nav-done {padding: 5px 7px; overflow: hidden; }
-	.web-icon {background: url(img/pho.jpg); width: 32px; height: 32px; float: left;     background-size: cover; border-radius: 3px; box-shadow: 1px 1px 4px -1px rgba(0,0,0,0.7);}
+	.web-icon {background: url(<%=basePath%>img/pho.jpg); width: 32px; height: 32px; float: left;     background-size: cover; border-radius: 3px; box-shadow: 1px 1px 4px -1px rgba(0,0,0,0.7);}
 	.con > .nav-done > label {line-height: 29px; padding:0 4px; color: #555;}
 	/* 3D微粒显示 */
 	.con > .show-done {height: 398px; padding: 5px; overflow: hidden;}
@@ -54,9 +55,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label:first-child {margin-left:0!important;}
 	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label {float: left; margin-left: 18px;}
 	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label i{width: 19px; height: 19px; float: left; margin-right: 8px;}
-	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-browse {background: url(img/main/fa-browse.png); }
-	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-chat {background: url(img/main/fa-chat.png);}
-	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-heart {background: url(img/main/fa-heart.png);}
+	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-browse {background: url(<%=basePath%>img/main/fa-browse.png); }
+	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-chat {background: url(<%=basePath%>img/main/fa-chat.png);}
+	.con > .simple-done > .simple-content-done > div > ul > li > .interacte label .fa-heart {background: url(<%=basePath%>img/main/fa-heart.png);}
 
 	/*   */
 	.bom {margin-top: 8px; position: relative; padding: 0!important;}
@@ -66,7 +67,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	.load-css {box-shadow: 5px 7px 2px rgba(0, 0, 0, 0.25); padding: 3px; color: #fff; font-size: 14px; z-index: 20; position: absolute; background: #a9dca9; width: 
 		130px;}
-	.load-css > i {background: url(img/ref2.png); background-repeat: no-reperat; width: 32px; margin-left: 10px; float: left; }
+	.load-css > i {background: url(<%=basePath%>img/ref2.png); background-repeat: no-reperat; width: 32px; margin-left: 10px; float: left; }
 	.load-css > span {display: block; margin-left: 50px;}
 	
 	/* S Model */
@@ -122,26 +123,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="show-done"></div>
 		<div class="web-tip simple-done shake_effect">
 			<div class="nav-web-tip-done simple-nav-done">
-				<label class="label-sele-css" ">站点信息</label>
+				<label class="label-sele-css" >站点信息</label>
 			</div>
 			<div class="con-web-tip-done simple-content-done">
 				<div class="cle-f con-web-tip-page" style="padding: 4px 47px;">
-					<i style="background: url(img/main/broad.png); width: 25px; height: 20px; float: left;"></i>&nbsp;<font class="breath_light" style="color: skyblue;">站点正在开发中请耐心等候。。。</font>
+					<i style="background: url(<%=basePath%>img/main/broad.png); width: 25px; height: 20px; float: left;"></i>&nbsp;<font class="breath_light" style="color: skyblue;">站点正在开发中请耐心等候。。。</font>
 				</div>	
 			</div>
 		</div>
 		<!-- 文章简要显示 -->
 		<div class="article-done simple-done">
 			<div class="nav-article-done simple-nav-done">
-				<label class="label-sele-css" blog-event="nvaClick" ">最新随笔</label>
-				<label class="label-unsele-css" blog-event="nvaClick" ">最热随笔</label>
+				<label class="label-sele-css" blog-event="nvaClick" data-page="con-1"  data-type="2">最新随笔</label>
+				<label class="label-unsele-css" blog-event="nvaClick" data-page="con-2" data-type="2">最热随笔</label>
 			</div>
-			<div class="con-article-done simple-content-done">
-				<div class="cle-f con-article-page">
+			<div class="con-article-done simple-content-done" style="height: 307px;">
+				<div class="cle-f con-article-page" id="con-1">
 					<ul class="nolist"> 
 						<c:forEach begin="0" items="${articles}" step="1" var="Article" varStatus="varsta">
 						<li>
-							<img src="<c:if test="${empty Article.pit_url}">img/main/exa-thread.jpg</c:if><c:if test="${not empty Article.pit_url}">${Article.pit_url}</c:if>" alt="" width="302" height="207" blog-event="pictureClick"/>
+							<img src="
+								<c:if test="${empty Article.pit_url}"><%=basePath%>img/main/exa-thread.jpg</c:if>
+								<c:if test="${not empty Article.pit_url}">${Article.pit_url}</c:if>" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title">${Article.name}</div><div class="desc-con">${Article.simp_desc}</div></div></div>
 							<div class="interacte">
 								<label>
@@ -161,18 +164,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</c:forEach> 
 					</ul>
 				</div>
+				<div class="cle-f con-article-page layui-hide" id="con-2">
 			</div>
 		</div>
 		<!-- 分享简要显示 -->
 		<div class="share-done simple-done">
 			<div class="nav-share-done simple-nav-done">
-				<label class="label-sele-css" ">生活分享</label>
+				<label class="label-sele-css">生活分享</label>
 			</div>
 			<div class="con-share-done simple-content-done">
 				<div class="cle-f con-share-page">
 					<ul class="nolist">
 						<li>
-							<img src="img/main/share-1.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
+							<img src="<%=basePath%>img/main/share-1.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
 							<div class="interacte">
 								<label>
@@ -189,8 +193,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								</label>
 							</div>
 						</li>
-						<li>
-							<img src="img/main/share-2.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
+						<%-- <li>
+							<img src="<%=basePath%>img/main/share-2.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">BBQ</div></div></div>
 							<div class="interacte">
 								<label>
@@ -208,7 +212,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</div>
 						</li>
 						<li>
-							<img src="img/main/share-3.jpg" alt="" width="302" height="207" blog-event="pictureClick" "/>
+							<img src="<%=basePath%>img/main/share-3.jpg" alt="" width="302" height="207" blog-event="pictureClick" "/>
 							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
 							<div class="interacte">
 								<label>
@@ -224,7 +228,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<span>12</span>
 								</label>
 							</div>
-						</li>
+						</li> --%>
 					</ul>
 				</div>
 			</div>
@@ -272,6 +276,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				e.removeClass("label-unsele-css").addClass("label-sele-css");
 				if(e.attr("data-type") == 1)
 					self.location = "https://github.com/ChenJiWei95";
+				else if(e.data("type") == 2){
+					$("#"+e.data("page")).siblings().addClass("layui-hide");
+					$("#"+e.data("page")).removeClass("layui-hide");
+					<div class="cle-f con-article-page con-1">
+				}
 				else
 					alert("正在码出来，轻耐心等待！");
 			}
