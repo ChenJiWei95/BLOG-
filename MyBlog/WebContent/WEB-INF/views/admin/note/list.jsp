@@ -121,7 +121,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
 					var iframe = e.find(f).contents().find("#"+t);
-					frame.find('input[name="id"]')[0].value = data[0].id
+					console.log(iframe);
+					iframe.find('input[name="id"]')[0].value = data[0].id
 					,iframe.find('input[name="name"]')[0].value = data[0].name
 					,iframe.find('input[name="create_date"]')[0].value = data[0].create_date
 					,iframe.find('input[name="update_date"]')[0].value = data[0].update_date

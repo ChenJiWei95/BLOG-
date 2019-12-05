@@ -21,13 +21,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-hide">
 		<label class="layui-form-label">ID</label>
 		<div class="layui-input-inline">
-			<input type="text" name="id" disabled autocomplete="off" class="layui-input layui-disabled">
+			<input type="text" name="id" disabled autocomplete="off" value="{note.id}" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
 		<label class="layui-form-label">名称</label>
 		<div class="layui-input-inline">
-			<input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input">
+			<input type="text" name="name" placeholder="请输入名称" value="{note.name}" autocomplete="off" class="layui-input">
 		</div>
 		<c:if test="${type}">
 		<label class="layui-form-label">新标签</label>
@@ -37,7 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</c:if>
 		<label class="layui-form-label">创建时间</label>
 		<div class="layui-input-inline">
-			<input type="text" name="create_date" placeholder="请输入创建时间" autocomplete="off" class="layui-input">
+			<input type="text" name="create_date" disabled placeholder="请输入创建时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
 		<label class="layui-form-label">修改时间</label>
 		<div class="layui-input-inline">

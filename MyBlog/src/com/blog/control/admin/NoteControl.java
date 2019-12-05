@@ -46,6 +46,18 @@ public class NoteControl extends BaseControl{
 	public String listview1(ModelMap model){
 		return "admin/note/list"; 
 	}
+	
+	@RequestMapping("/show.chtml") 
+	public String show(HttpServletRequest request){
+
+		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT); 
+		List<Note> list = noteServiceImpl.getByDESC(singleOfEqString("admin_id", admin.getId()), "create_date");
+		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
+		request.getSession().setAttribute("notes", list);
+		request.getSession().setAttribute("noteTabs", list2);
+		return "admin/note/show"; 
+	}
+	
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(String type, String id, HttpServletRequest request, ModelMap model){

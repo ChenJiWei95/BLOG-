@@ -164,7 +164,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</c:forEach> 
 					</ul>
 				</div>
-				<div class="cle-f con-article-page layui-hide" id="con-2">
+				<div class="cle-f con-article-page layui-hide" id="con-2"></div>
 			</div>
 		</div>
 		<!-- 分享简要显示 -->
@@ -279,7 +279,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				else if(e.data("type") == 2){
 					$("#"+e.data("page")).siblings().addClass("layui-hide");
 					$("#"+e.data("page")).removeClass("layui-hide");
-					<div class="cle-f con-article-page con-1">
+					//<div class="cle-f con-article-page con-1">
 				}
 				else
 					alert("正在码出来，轻耐心等待！");
