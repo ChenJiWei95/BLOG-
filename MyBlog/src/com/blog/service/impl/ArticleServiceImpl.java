@@ -1,5 +1,7 @@
 package com.blog.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -48,6 +50,11 @@ public class ArticleServiceImpl extends BasiServiceImpl<Article, Object> impleme
 	@Override
 	public String getTable() {
 		return "article";
+	}
+
+	@Override
+	public List<Article> getHotArticles() {
+		return null;
 	}
 }
 

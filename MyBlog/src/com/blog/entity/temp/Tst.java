@@ -1,5 +1,7 @@
 package com.blog.entity.temp;
 
+import com.blog.entity.TempContext;
+
 public class Tst {
 	private static TempContext context;
 	public static void main(String[] args) {

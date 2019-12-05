@@ -46,7 +46,6 @@ public class ArticleContentControl extends BaseControl{
 		System.out.println("添加接收参数："+t); 
 		
 		try{
-			t.setCreate_time(getNowTime());
 			articleContentServiceImpl.insert(t);
 			
 			return com.blog.util.Message.success("请求成功", null);
@@ -98,7 +97,6 @@ public class ArticleContentControl extends BaseControl{
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-			t.setUpdate_time(getNowTime());
 			articleContentServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
