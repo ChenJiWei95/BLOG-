@@ -62,7 +62,7 @@ public class AdministratorsControl extends BaseControl{
 	@RequestMapping("/info.chtml") 
 	public String info(HttpServletRequest request, String agentno,ModelMap model){
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
-		AdminInfor adminInfor = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
+		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("admin", adminInfor);
 		Object o = new Object();
 		List<Map<String, Object>> list =  adminServiceImpl.getByManyTable("b.name as `name`", 
@@ -80,7 +80,7 @@ public class AdministratorsControl extends BaseControl{
 
 	@RequestMapping("/website.chtml") 
 	public String website(HttpServletRequest request, ModelMap model){
-		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleMarkOfEq("id", "1"));
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
 		model.addAttribute("website", websiteBase);
 		return "admin/administrators/website";
 	}
@@ -90,7 +90,7 @@ public class AdministratorsControl extends BaseControl{
 	public Object setInfo(AdminInfor adminInfor) {
 		try {
 			adminInfor.setUsername(null);
-			adminInforServiceImpl.update(adminInfor, singleMarkOfEq("id", adminInfor.getId()));
+			adminInforServiceImpl.update(adminInfor, singleOfEqString("id", adminInfor.getId()));
 			return Message.success("信息修改成功!");
 		}catch(RuntimeException e) {
 			e.printStackTrace();
@@ -105,7 +105,7 @@ public class AdministratorsControl extends BaseControl{
 			Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 			if(a.getPassword().equals(oldPassword)) {
 				a.setPassword(repassword);
-				adminServiceImpl.update(a, singleMarkOfEq("id", a.getId()));
+				adminServiceImpl.update(a, singleOfEqString("id", a.getId()));
 				return Message.success("密码修改成功!");
 			}
 			return Message.error("当前密码错误!");
@@ -118,7 +118,7 @@ public class AdministratorsControl extends BaseControl{
 	@ResponseBody
 	public Object setWebsite(WebsiteBase websiteBase) {
 		try {
-			websiteBaseServiceImpl.update(websiteBase, singleMarkOfEq("id", "1"));
+			websiteBaseServiceImpl.update(websiteBase, singleOfEqString("id", "1"));
 			return Message.success("修改成功!");
 		}catch(RuntimeException e) {
 			e.printStackTrace();

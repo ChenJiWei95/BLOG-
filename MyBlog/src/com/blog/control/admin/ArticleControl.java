@@ -54,8 +54,8 @@ public class ArticleControl extends BaseControl{
 	@RequestMapping("/edit_content.chtml") 
 	public String edit_content(HttpServletRequest request, String id, ModelMap model){
 		fristLine = false;
-		Article a = articleServiceImpl.get(singleMarkOfEq("id", id)); 
-		ArticleContent cnt = articleContentServiceImpl.get(singleMarkOfEq("a_id", id));
+		Article a = articleServiceImpl.get(singleOfEqString("id", id)); 
+		ArticleContent cnt = articleContentServiceImpl.get(singleOfEqString("a_id", id));
 		model.addAttribute("mark_code", cnt.getContent());
 		model.addAttribute("name", a.getName());
 		model.addAttribute("id", id);
@@ -73,7 +73,7 @@ public class ArticleControl extends BaseControl{
 			// 修改 查找已授权的页面传入 获取appid
 			Article t = new Article();
 			t.setId(id);
-			List<TagBrige> list_ = tagBrigeServiceImpl.gets(singleMarkOfEq("a_id", id));
+			List<TagBrige> list_ = tagBrigeServiceImpl.gets(singleOfEqString("a_id", id));
 			model.addAttribute("tagsed", list_);
 			model.addAttribute("type", false );
 		}		
@@ -139,8 +139,8 @@ public class ArticleControl extends BaseControl{
 //				Article a = articleServiceImpl.get(singleMarkOfEq("id", object.getString("id")));
 //				File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
 //				file.delete();
-				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
-				sb1.append(singleMarkOfEq("a_id", object.getString("id"))).append(" OR ");
+				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
+				sb1.append(singleOfEqString("a_id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
@@ -168,9 +168,9 @@ public class ArticleControl extends BaseControl{
 		try {
 			System.out.println("editcontent "+ id);
 			
-			ArticleContent c = articleContentServiceImpl.get(singleMarkOfEq("a_id", id));
+			ArticleContent c = articleContentServiceImpl.get(singleOfEqString("a_id", id));
 			c.setContent(mark_code);
-			articleContentServiceImpl.update(c, singleMarkOfEq("id", c.getId()));
+			articleContentServiceImpl.update(c, singleOfEqString("id", c.getId()));
 //			Article a =  articleServiceImpl.get(singleMarkOfEq("id", id));
 //			File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
 //			CharStreamImpl c = new CharStreamImpl(file);
@@ -192,14 +192,14 @@ public class ArticleControl extends BaseControl{
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			articleServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
+			articleServiceImpl.update(t, singleOfEqString("id", t.getId()));
 			
 			Map<String, String> params = getRequestParameterMap(request);
 			params.remove("id");
 			params.remove("name");	params.remove("create_time");	params.remove("pit_url");
 			params.remove("mark_url");	params.remove("update_time");	params.remove("simp_desc");
 
-			List<TagBrige> list_ = tagBrigeServiceImpl.gets(singleMarkOfEq("a_id", t.getId()));
+			List<TagBrige> list_ = tagBrigeServiceImpl.gets(singleOfEqString("a_id", t.getId()));
 			boolean isContain;
 			for(String item : params.keySet()) {
 				isContain = false;
@@ -225,7 +225,7 @@ public class ArticleControl extends BaseControl{
 					}
 				}
 				if(!isContain){
-					tagBrigeServiceImpl.delete(singleMarkOfEq("t_id", tag.getT_id()));
+					tagBrigeServiceImpl.delete(singleOfEqString("t_id", tag.getT_id()));
 				}
 			}	
 			

@@ -106,6 +106,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		layer.close(layer.index);
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType: 'text/plain'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);

@@ -137,7 +137,7 @@ public class AimgControl extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
+				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
@@ -164,7 +164,7 @@ public class AimgControl extends BaseControl{
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			aimgServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			aimgServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);

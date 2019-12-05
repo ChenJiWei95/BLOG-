@@ -101,7 +101,7 @@ public class DataControl extends BaseControl{
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			dataServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			dataServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);

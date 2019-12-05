@@ -61,13 +61,13 @@ public class LoginControl extends BaseControl{
 		cm.setContent(t.getUsername()+" 于 "+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
 		messageServiceImpl.insert(cm);
 		try{
-			Admin a = adminServiceImpl.get(singleMarkOfEq("username", t.getUsername()));
+			Admin a = adminServiceImpl.get(singleOfEqString("username", t.getUsername()));
 			if(a != null && a.getPassword().equals(t.getPassword())) {
 				if("01".equals(a.getState())) {
 					return com.blog.util.Message.error("账号已禁用！");
 				} else if(Integer.parseInt(a.getLogin_count()) < 5) {
 					t.setLogin_count("0");
-					adminServiceImpl.update(t, singleMarkOfEq("username", t.getUsername()));
+					adminServiceImpl.update(t, singleOfEqString("username", t.getUsername()));
 				} else 
 					return com.blog.util.Message.error("账号已锁定！");
 			} else {
@@ -77,7 +77,7 @@ public class LoginControl extends BaseControl{
 						return com.blog.util.Message.error("账号已锁定！");
 					t.setLogin_count((Integer.parseInt(a.getLogin_count())+1)+"");
 					t.setPassword(null);
-					adminServiceImpl.update(t, singleMarkOfEq("username", t.getUsername()));
+					adminServiceImpl.update(t, singleOfEqString("username", t.getUsername()));
 					return com.blog.util.Message.error("密码错误，第"+t.getLogin_count()+"次！连续五次输错将会锁定账户！");
 				}
 				return com.blog.util.Message.error("账号不存在！");
@@ -140,7 +140,7 @@ public class LoginControl extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
+				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
@@ -167,7 +167,7 @@ public class LoginControl extends BaseControl{
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-			adminServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
+			adminServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			e.printStackTrace();
