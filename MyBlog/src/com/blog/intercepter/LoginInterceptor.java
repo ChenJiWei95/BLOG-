@@ -76,9 +76,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if(arg0.getRequestURI().indexOf("admin/main/listview.chtml") != -1)
 			arg1.sendRedirect(basePath+"admin/login.chtml");
 		else 
-			arg1.sendRedirect(basePath+"admin/error.jsp");
-		
+			arg1.sendRedirect(basePath+"admin/error.jsp"); 
 		return false;
-		
+//		return true;
 	} 
 }

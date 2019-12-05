@@ -29,7 +29,7 @@ public class BaseControl {
 	 * @see
 	 * @since 1.0
 	 */
-	protected String singleMarkOfEq(String col, String fields) {
+	protected String singleOfEqString(String col, String fields) {
 		return "`"+col+"` = '"+fields+"' ";
 	}
 	

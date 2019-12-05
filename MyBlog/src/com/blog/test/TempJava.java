@@ -30,13 +30,53 @@ public class TempJava {
 	// 隐藏字段
 	private static String[] layuihideField = new String[] {"id"};
 	//前缀 顺序不可修改--需要改动命令值 文目录前缀 在copyPrevpath尾部拼接
-	private static String[] prefix = {"dao/", "service/", "entity/", "mapper/", "service/impl/", "control/fore/", "", "", "dao/impl/"};
+	private static String[] prefix = {
+			"dao/", 
+			"service/", 
+			"entity/", 
+			"mapper/", 
+			"service/impl/", 
+			"control/fore/",
+			"", 
+			"WEB-INF/views/admin/", 
+			"dao/impl/", 
+			"WEB-INF/views/admin/"};
 	//后缀 顺序不可修改--需要改动命令值
-	private static String[] suffix = {"Dao.java", "Service.java", ".java", "Mapper.xml", "ServiceImpl.java", "Action.java", "", "",  "DaoImpl.java"};
+	private static String[] suffix = {
+			"Dao.java", 
+			"Service.java", 
+			".java", 
+			"Mapper.xml", 
+			"ServiceImpl.java", 
+			"Control.java", 
+			"", 
+			"save_or_update.jsp",  
+			"DaoImpl.java", 
+			"list.jsp"};
 	// 模板文件名 顺序不可修改
-	private static String[] temp = {"dao.txt", "service.txt", "", "mapper.xml", "serviceImpl.txt", "TempControl.txt", "", "",  "daoImpl.txt"};
+	private static String[] temp = {
+			"dao.txt", 
+			"service.txt", 
+			"", 
+			"mapper.xml", 
+			"serviceImpl.txt", 
+			"TempControl.txt", 
+			"", 
+			"save_or_update.txt",  
+			"daoImpl.txt",
+			"list.txt"};
 	// 命令描述 顺序不可修改
-	private static String[] commomdText = {"自动生成dao层代码", "自动生成service层代码", "自动生成实体层代码", "自动生成mapper配置代码", "自动生成service实现层代码", "自动生成control层代码", "自动生成mybatise配置文件代码", "自动生成前端代码", "自动生成dao实现层代码"};
+	private static String[] commomdText = {
+			"自动生成dao层代码", 
+			"自动生成service层代码", 
+			"自动生成实体层代码", 
+			"自动生成mapper配置代码", 
+			"自动生成service实现层代码", 
+			"自动生成control层代码", 
+			"自动生成mybatise配置文件代码", 
+			"生成前端save_or_update.jsp", 
+			"自动生成dao实现层代码",
+			"生成前端list.jsp 文件"};
 	// 复制的路径前缀
 	private static String copyFilepathPrev = srcPath("com/blog/");
 //	private static String copyFilepathPrev = srcPath("com/shop/");
@@ -46,36 +86,40 @@ public class TempJava {
 	private static String mybatisConfig = srcPath("config/mybatis-config.xml"); 
 	// 要执行的命令下标  对应 前缀和后缀
 	// 0 	自动生成dao层代码 接口模式
-	// 8  	自动生成dao实现层代码 接口模式
 	// 1 	自动生成service层代码
 	// 2 	自动生成实体层代码
 	// 3 	自动生成mapper配置代码
 	// 4 	自动生成service实现层代码
 	// 5 	自动生成control层代码
-	// 6 	自动生成mybatise配置文件代码
-	// 7  	自动生成前端代码
-//	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
+	// 6 	生成mybatise配置文件代码
+	// 7  	自动生成前端代码 /save_or_update.jsp 文件
+	// 8  	自动生成dao实现层代码 接口模式
+	// 9  	生成前端代码 /save_or_update.jsp 文件
+	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
 //	private static Integer[] commond = {};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
 //	private static Integer[] commond = {2, 1, 0, 3, 4, 6};
 //	private static Integer[] commond = {2, 1, 0, 4, 8};
-	private static Integer[] commond = {2};
+//	private static Integer[] commond = {2};
 	// 实体类策略  普通通【GENERAL_STRATEGY】 hibernate注解【HIBER_ANNOTATION_STRATEGY】
 	private static String entityStrategy = GENERAL_STRATEGY;
 //	private static String entityStrategy = HIBER_ANNOTATION_STRATEGY;
 	
 	public static void main(String[] args) throws IOException {
-		String fileds 	= "id create_date file_name actual_name path status";
-		String columns	= "id create_date file_name actual_name path status";	// 其中的值对应 fileds 用于数据库表字段的对应
-		String types  	= "String String String String String String"; // BigDecimal String Integer
-		String texts 	= "ID 时间 文件名 状态";
+		String fileds 	= "id name note_id note_tab_id admin_id";
+		String columns	= "id name note_id note_tab_id admin_id";	// 其中的值对应 fileds 用于数据库表字段的对应
+		String types  	= "String String String String String"; // BigDecimal String Integer
+		String texts 	= "ID 名称 创建时间 修改时间 内容";
 		
 		ContextConfig c = new ContextConfig();
-		c.setTable("file_up_down");
-		c.setName_("fileUpAndDown");
+		c.setTable("note_tab_brige");
+		c.setName_("noteTabBrige");
 		c.setFileds(fileds);
 		c.setColumns(columns);
 		c.setTypes(types);
+		c.setTexts(texts);
+		c.setClassify("note");
+		c.setTitle("NoteEryDay");
 		doStart(c);
 		
 		// 下面为测试
@@ -186,10 +230,12 @@ public class TempJava {
 			} else if(index == 7){
 				//args 根据字段生成表头js文
 				try {
-					do7(c.getFileds(), c.getTexts(), c.getClassify(), c.getTitle());
+					do7(conf);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}else if(index == 9){
+				do9(conf);
 			} else {
 				do6(conf);	
 			}
@@ -209,23 +255,24 @@ public class TempJava {
 		conf.setSuffix(suffix[index]);
 		conf.setTable(c.getTable());
 		conf.setTemp(temp[index]);
+		conf.setClassify(c.getClassify()); 
+		conf.setTitle(c.getTitle());
+		conf.setTexts(c.getTexts());
 		return conf;
 	}
 	
 	// 生成前端模板文件
-	public static void do7 (String[] args, String[] texts, String classify, String title) throws IOException{
+	public static void do7 (Configure conf) throws IOException{
+		String [] args = conf.getFileds();
+		String[] texts = conf.getTexts();
+		String classify = conf.getClassify();
+		String title = conf.getTitle();
 		
-		String dir = webContentPath("views/admin/"+classify+"/save_or_update.jsp");
-		dir = dir.substring(0, dir.lastIndexOf("/"));
-		File file = null;
-		if(!(file = new File(dir)).isDirectory()){
-			System.out.println("创建文件夹【"+file.getPath()+"】");
-			file.mkdir();
-		}
+		createClasifyDir(conf, classify);
 		
-		CharStreamImpl c = new CharStreamImpl(srcPath("config/temp/save_or_update.txt"));
+		CharStreamImpl c = new CharStreamImpl(tempFilepathPrev+conf.getTemp());
 		
-		CharStreamImpl copy = new CharStreamImpl(webContentPath("views/admin/"+classify+"/save_or_update.jsp"));
+		CharStreamImpl copy = new CharStreamImpl(webContentPath(conf.getPrefix()+classify+"/"+conf.getSuffix()));
 		c.read(line->{
 			String str = (String) line;
 			copy.write(str
@@ -237,10 +284,30 @@ public class TempJava {
 					.replaceAll("#classify#", classify), true);
 		});
 		copy.close();
-		System.out.println("完成文件【"+webContentPath("views/admin/"+classify+"/save_or_update.jsp")+"】的生成");
+		print(conf);
+	}
+
+	// 不存在则创建文件夹
+	protected static void createClasifyDir(Configure conf, String classify) {
+		String dir = webContentPath(conf.getPrefix()+classify+"/"+conf.getSuffix());
+		dir = dir.substring(0, dir.lastIndexOf("/"));
+		File file = null;
+		if(!(file = new File(dir)).isDirectory()){
+			System.out.println("创建文件夹 "+dir);
+			file.mkdir();
+		}
+	}
+	
+	public static void do9(Configure conf) {
+		String [] args = conf.getFileds();
+		String[] texts = conf.getTexts();
+		String classify = conf.getClassify();
+		String title = conf.getTitle();
 		
-		c = new CharStreamImpl(srcPath("config/temp/list.txt"));
-		CharStreamImpl copy_ = new CharStreamImpl(webContentPath("views/admin/"+classify+"/list.jsp"));
+		createClasifyDir(conf, classify);
+		
+		CharStreamImpl c = new CharStreamImpl(tempFilepathPrev+conf.getTemp());
+		CharStreamImpl copy_ = new CharStreamImpl(webContentPath(conf.getPrefix()+classify+"/"+conf.getSuffix()));
 		c.read(line->{
 			String str = (String) line;
 			copy_.write(str
@@ -252,7 +319,7 @@ public class TempJava {
 					.replaceAll("#classify#", classify), true);
 		});
 		copy_.close();
-		System.out.println("完成文件【"+webContentPath("views/admin/"+classify+"/list.jsp")+"】的生成");
+		print(conf);
 	}
 	private static String doHTML(String[] args, String[] texts){
 		StringBuilder sb = new StringBuilder();
@@ -576,6 +643,7 @@ class ContextConfig {
 class Configure {
 	private String name;
 	private String name_;
+	private String title;
 	private Integer index;	// 下标 根据下标获取指定配置
 	private String prefix; 	// com/shop/dao   				该值为dao
 	private String suffix;  // com/shop/dao/UserDao.java  	该值为Dao.java
@@ -585,6 +653,7 @@ class Configure {
 	private String[] columns;	// 数据库字段名 {"userId":"user_id"} 键值对的数据模式 
 	private String[] fileds;// 属性集
 	private String[] types;// 属性集
+	private String[] texts;// 属性集
 	private String classify;// 在博客项目中的控制类使用的分类参数
 	
 	public String getName() {
@@ -658,6 +727,19 @@ class Configure {
 	}
 	public void setTypes(String[] types) {
 		this.types = types;
-	} 
+	}
+	public String[] getTexts() {
+		return texts;
+	}
+	public void setTexts(String[] texts) {
+		this.texts = texts;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
 	
 }

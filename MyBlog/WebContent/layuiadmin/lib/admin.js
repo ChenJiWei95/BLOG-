@@ -43,6 +43,8 @@ function(e) {console.log("admin");
 		}
 		// 适用于表格
 		,cajax: function (object) {
+			object.contentType = object.contentType || 'application/x-www-form-urlencoded';
+			
 			var index = parent.layer.getFrameIndex(window.name); 
 			//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
 			var c = parent.layer.load(2);
@@ -50,7 +52,7 @@ function(e) {console.log("admin");
 			a.ajax({
 				url: object.method + '.do'
 				,type: 'post'	
-				//,contentType: 'application/json'
+				,contentType: object.contentType//'application/json'
 				,data: object.data
 				,dataType: "json"
 				,success: function(data){

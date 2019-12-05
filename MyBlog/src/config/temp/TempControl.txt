@@ -50,6 +50,7 @@ public class #name#Control extends BaseControl{
 			
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
+			e.printStackTrace();
 			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
 		}
 	}
@@ -79,6 +80,7 @@ public class #name#Control extends BaseControl{
 			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 		
@@ -101,6 +103,7 @@ public class #name#Control extends BaseControl{
 			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	} 
@@ -117,6 +120,7 @@ public class #name#Control extends BaseControl{
 			List<#name#> list = #name_#ServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {
+			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}

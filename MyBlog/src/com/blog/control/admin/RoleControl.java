@@ -154,8 +154,10 @@ public class RoleControl extends BaseControl{
 			eq.put("id", role.getId());
 			role.setUpdate_time(getNowTime());
 			roleServiceImpl.update(role, eq);
+			
 			params.remove("id");  params.remove("desc"); params.remove("state");  params.remove("create_time");  params.remove("update_time");  params.remove("name"); 
 			Role roleItem;
+			// 角色项
 			List<Role> list_ = roleServiceImpl.gets("role_id = '"+role.getId()+"'");
 			boolean isContain;
 			for(String item : params.keySet()) {

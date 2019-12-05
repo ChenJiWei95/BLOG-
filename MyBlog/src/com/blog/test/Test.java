@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.blog.util.CharStreamImpl;
+
 import redis.clients.jedis.Jedis;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder; 
@@ -37,8 +39,8 @@ public class Test {
 		// 识别
 		// 识别出来拿去解析成 特殊记忆码
 		
-		String s = "public static void main(String[] args) throws InstantiationException, IllegalAccessException{";
-		String regex = "((private|public|protected)\\s{1})?(static\\s{1})?[a-zA-Z|_]+[0-9|_]*(\\[\\])?\\s[a-zA-Z|_]+[0-9|_]*;?"; // 函数 声明
+//		String s = "public static void main(String[] args) throws InstantiationException, IllegalAccessException{";
+//		String regex = "((private|public|protected)\\s{1})?(static\\s{1})?[a-zA-Z|_]+[0-9|_]*(\\[\\])?\\s[a-zA-Z|_]+[0-9|_]*;?"; // 函数 声明
 		
 //		String s = "djkk.test();";
 //		String regex = "[a-zA-Z|_]+[0-9|_]*"; // 变量名
@@ -55,7 +57,9 @@ public class Test {
 //		String s = "float count = 4566;";
 //		String regex = "[a-zA-Z|_]+[0-9|_]*\\s[a-zA-Z|_]+[0-9|_]*\\s?=\\s?.+;?"; // 函数声明 赋值
 //		String regex = "((private|public|protected)\\s{1})?(static\\s{1})?[a-zA-Z|_]+[0-9|_]*\\s[a-zA-Z|_]+[0-9|_]*\\s?=\\s?.+;?"; // 函数内部赋值
-		System.out.println(s.matches(regex));
+//		System.out.println(s.matches(regex));
+		
+		
 		
 		/*String str = "import package";
 		String code = "019";

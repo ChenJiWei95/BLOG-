@@ -266,7 +266,7 @@ public class TemplateControl extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append(singleMarkOfEq("id", object.getString("id")) + "OR ");
+				sb.append(singleOfEqString("id", object.getString("id")) + "OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-3, sb.length());
@@ -287,7 +287,7 @@ public class TemplateControl extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append(singleMarkOfEq("id", object.getString("id")) + "OR ");
+				sb.append(singleOfEqString("id", object.getString("id")) + "OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-3, sb.length());
@@ -312,14 +312,14 @@ public class TemplateControl extends BaseControl{
 	@ResponseBody
 	public Object update1(TempComponent t) throws IOException{ 
 		System.out.println("修改接收参数："+t);  
-		tempComponentServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
+		tempComponentServiceImpl.update(t, singleOfEqString("id", t.getId()));
 		return Message.success("请求成功！", null);
 	}  
 	@RequestMapping("table_update.do")
 	@ResponseBody
 	public Object update3(TempRow t) throws IOException{ 
 		System.out.println("修改接收参数："+t); 
-		tempRowServiceImpl.update(t, singleMarkOfEq("id", t.getId()));
+		tempRowServiceImpl.update(t, singleOfEqString("id", t.getId()));
 		return Message.success("请求成功！", null);
 	} 
 	
@@ -332,17 +332,17 @@ public class TemplateControl extends BaseControl{
 	@ResponseBody
 	public Object init1(String id) throws IOException{
 		 
-		return Message.success("请求成功", listToJSONArray(tempRowServiceImpl.gets(singleMarkOfEq("c_id", id))));
+		return Message.success("请求成功", listToJSONArray(tempRowServiceImpl.gets(singleOfEqString("c_id", id))));
 	}
 	@RequestMapping("form_list.do")
 	@ResponseBody
 	public Object init2(String id) throws IOException{ 
-		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "02")+"OR "+singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "04"))));
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "02")+"OR "+singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "04"))));
 	}
 	@RequestMapping("search_list.do")
 	@ResponseBody
 	public Object init3(String id) throws IOException{
-		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "01")+"OR "+singleMarkOfEq("c_id", id)+"AND "+singleMarkOfEq("type", "03"))));
+		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "01")+"OR "+singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "03"))));
 	}
 	
 }

@@ -47,9 +47,13 @@
 		<mapper resource="com/blog/mapper/ArticleContentMapper.xml" />
 		<mapper resource="com/blog/mapper/UsertestMapper.xml" />
 		<mapper resource="com/blog/mapper/FileUpAndDownMapper.xml" />
+		<mapper resource="com/blog/mapper/NoteMapper.xml" />
+		<mapper resource="com/blog/mapper/NoteTabBrigeMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>   
+
+
 
 
 

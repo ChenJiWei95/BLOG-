@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,7 +30,6 @@ import com.blog.service.RoleService;
 import com.blog.service.UsertestService;
 import com.blog.service.WebsiteBaseService;
 import com.blog.util.SnowFlakeGenerator;
-import com.sun.mail.imap.protocol.UID;
 
 /**
  * 
@@ -39,6 +39,8 @@ import com.sun.mail.imap.protocol.UID;
 @RequestMapping("/admin/main")
 @Controller
 public class MainControl extends BaseControl{
+	
+	private static Logger log = Logger.getLogger(MainControl.class); // 日志对象
 	
 	@Autowired
 	MenuService menuServiceImpl;
@@ -60,6 +62,8 @@ public class MainControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+		log.info("listview.chtml");
+		
 		// 测试缓存
 		Usertest u = new Usertest();
 		u.setId(String.valueOf(new SnowFlakeGenerator(1,1).nextId()));
@@ -69,7 +73,7 @@ public class MainControl extends BaseControl{
 		System.out.println("获取："+usertestServiceImpl.getByID(u.getId()));
 		
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
-		AdminInfor ai = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
+		AdminInfor ai = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("name", ai.getName());
 		
 		try {
@@ -132,8 +136,8 @@ public class MainControl extends BaseControl{
 		
 		// 用户根据权限获取 appid集合
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
-		AdminInfor adminInfor = adminInforServiceImpl.get(singleMarkOfEq("admin_id", a.getId()));
-		List<Role> roles = roleServiceImpl.gets(singleMarkOfEq("role_id", adminInfor.getRole_id()));
+		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
+		List<Role> roles = roleServiceImpl.gets(singleOfEqString("role_id", adminInfor.getRole_id()));
 		List<String> app_ids = new ArrayList<>();
 		for(Role role : roles) {
 			app_ids.add(role.getApp_id());
