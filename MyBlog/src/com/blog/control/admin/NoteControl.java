@@ -44,7 +44,7 @@ public class NoteControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(ModelMap model){
-		return "admin/note/list";
+		return "admin/note/list"; 
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 

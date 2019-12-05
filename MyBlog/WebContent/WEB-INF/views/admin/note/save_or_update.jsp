@@ -32,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<c:if test="${type}">
 		<label class="layui-form-label">新标签</label>
 		<div class="layui-input-inline">
-			<input type="text" name="tabs" placeholder="例如：Java|JavaScript；" autocomplete="off" class="layui-input">
+			<input type="text" name="tabs" placeholder="例如：Java,JavaScript" autocomplete="off" class="layui-input">
 		</div>
 		</c:if>
 		<label class="layui-form-label">创建时间</label>
