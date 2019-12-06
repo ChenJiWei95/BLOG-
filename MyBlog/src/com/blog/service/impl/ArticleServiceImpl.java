@@ -48,7 +48,7 @@ public class ArticleServiceImpl extends BasiServiceImpl<Article, Object> impleme
 		return "id";
 	}
 	@Override
-	public String getTable() {
+	public String getTable() { 
 		return "article";
 	}
 
