@@ -54,6 +54,10 @@ public class ArticleServiceImpl extends BasiServiceImpl<Article, Object> impleme
 
 	@Override
 	public List<Article> getHotArticles() {
+<<<<<<< Upstream, based on origin/master
+=======
+		// TODO Auto-generated method stub
+>>>>>>> 673dc33 1
 		return null;
 	}
 }
