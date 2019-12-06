@@ -27,7 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-form-item">
 		<label class="layui-form-label">名称</label>
 		<div class="layui-input-inline">
-			<input type="text" name="name" placeholder="请输入名称" value="{note.name}" autocomplete="off" class="layui-input">
+			<input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input">
 		</div>
 		<c:if test="${type}">
 		<label class="layui-form-label">新标签</label>
@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-form-item">
 		<label class="layui-form-label">内容</label>
 		<div class="layui-input-block">
-			<textarea name="content" style="height: 600px;" placeholder="请输入" class="layui-textarea c-textarea mark_code"></textarea>
+			<textarea name="content" style="height: 600px;" placeholder="请输入" class="layui-textarea c-textarea mark_code"><c:if test="${not empty content}">${content}</c:if></textarea>
 		</div>
 	</div>
 
@@ -85,6 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
+  <script src="<%=basePath%>js/git-plugin V0.js"></script>
   <script>
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
@@ -106,6 +107,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
+		console.log("调用更新");
 		admin.cajax({
 			method: 'update'
 			,id: l
@@ -113,6 +115,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		return false;
 	}) 
+	
+	$$$(".mark_code").eq(0).onkeydown = function(e){
+		if(e.keyCode === 9){
+			console.log();
+			//点击制表符并向其中添加制表符
+			$$.util.inputInsert(e.target, "\t");
+			return false;//返回false才不会切换焦点
+		}
+	}
   })
   </script>
 </body>

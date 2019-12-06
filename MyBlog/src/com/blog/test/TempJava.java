@@ -94,7 +94,7 @@ public class TempJava {
 	// 6 	生成mybatise配置文件代码
 	// 7  	自动生成前端代码 /save_or_update.jsp 文件
 	// 8  	自动生成dao实现层代码 接口模式
-	// 9  	生成前端代码 /save_or_update.jsp 文件
+	// 9  	生成前端代码 /list.jsp 文件
 	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
 //	private static Integer[] commond = {};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};

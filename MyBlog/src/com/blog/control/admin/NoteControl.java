@@ -48,13 +48,15 @@ public class NoteControl extends BaseControl{
 	}
 	
 	@RequestMapping("/show.chtml") 
-	public String show(HttpServletRequest request){
+	public String show(HttpServletRequest request, ModelMap model){
 
 		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT); 
 		List<Note> list = noteServiceImpl.getByDESC(singleOfEqString("admin_id", admin.getId()), "create_date");
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
-		request.getSession().setAttribute("notes", list);
-		request.getSession().setAttribute("noteTabs", list2);
+		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
+		model.addAttribute("notes", list);
+		model.addAttribute("noteTabs", list2);
+		model.addAttribute("all", listData);
 		return "admin/note/show"; 
 	}
 	

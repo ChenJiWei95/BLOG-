@@ -42,6 +42,8 @@ function(e) {console.log("admin");
 			return _date.year+""+_date.month+""+_date.date+""+(date.getTime().toString().substring(5));
 		}
 		// 适用于表格
+    	// 默认表单 application/x-www-form-urlencoded 编码
+    	// 后缀为.do
 		,cajax: function (object) {
 			object.contentType = object.contentType || 'application/x-www-form-urlencoded';
 			
@@ -51,6 +53,32 @@ function(e) {console.log("admin");
 			//执行 Ajax 后重载
 			a.ajax({
 				url: object.method + '.do'
+				,type: 'post'	
+				,contentType: object.contentType//'application/json'
+				,data: object.data
+				,dataType: "json"
+				,success: function(data){
+					data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"+data.msg), parent.layer.close(index), object.id && parent.table.reload(object.id)),
+					data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
+				} 
+				,error: function(data){
+					parent.layer.close(c),
+					parent.layer.msg("服务器异常，操作失败！"+data.msg),
+					'function' == typeof object.serverError && object.serverError(data, data.msg);
+					parent.layer.close(index)
+				}
+			});	
+		}
+		// 默认后缀为 .chtml
+		,chtml: function (object) {
+			object.contentType = object.contentType || 'application/x-www-form-urlencoded';
+			
+			var index = parent.layer.getFrameIndex(window.name); 
+			//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+			var c = parent.layer.load(2);
+			//执行 Ajax 后重载
+			a.ajax({
+				url: object.method + '.chtml'
 				,type: 'post'	
 				,contentType: object.contentType//'application/json'
 				,data: object.data

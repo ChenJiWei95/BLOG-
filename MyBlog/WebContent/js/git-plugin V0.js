@@ -267,8 +267,8 @@
 				return str.charAt(0).toLowerCase() + str.substring(1);
 			}, 
 			inputInsert:function(target, str){
-				//向某一个输入框的特定位置输入特定字符串或者字符
-				//参数 target(输入框元素) 、 输入字符/字符串
+				// 向某一个输入框的特定位置输入特定字符串或者字符
+				// 参数 target(输入框元素) 、 输入字符/字符串
 				if (target.selectionStart || target.selectionStart == '0'){
 					var startPos = target.selectionStart;
 					var endPos = target.selectionEnd;
@@ -286,6 +286,227 @@
 			toString:function(jsonObj) {return Tokener.parseString(jsonObj);},
 			toJSON:function(jsonObj) {return new ObjectParseJSON().parseJSON(jsonObj)},
 		},
+	}
+	
+	/*
+		17/11/25
+			
+		size()		长度
+		isEmpt()	是否为空
+		add()		添加
+		get(i)		获取
+		remove(i)	删除
+		remove(e)	删除
+		toArray()	返回数组形式
+		itarator()	获取一个遍历对象
+		removeLast()删除最后一个
+		removeFrist()	删除第一个
+		getFrist()	获取第一个
+		getLast()	获取最后一个
+		concat()	拼接
+		concatArray()  数组拼接
+		replace() 	替换
+		removeAll() 2017/12/28
+		serch()     2017/12/28
+			
+			
+		array_ 数组 如果为undefined则函数自个实例化
+			
+		itarator的使用案例	
+			var it = list.itarator();
+			while(it.hasNext()){
+				alert(it.next());
+			}
+	*/
+	function ArrayList(array_){
+		var array;
+		var length;
+		setInit ();
+		function setInit (){
+			array = (array_ == undefined ? new Array() : array_);
+			length = array.length;
+		}
+		this.size = function (){
+			return length;
+		}
+		this.isEmpty = function (){
+			return length == 0 ? true : false;
+		}
+		this.add = function (e){
+			array[length] = e;
+			length++;
+			return true;
+		}
+		this.concat = function (list){
+			if(list.size() != 0){
+				tempArray = list.toArray();
+				array = array.concat(tempArray);
+				length += list.size();
+				return true;
+			}
+			return false;
+		}
+		this.concatArray = function (arr){
+			array = arr.length == 0 ? array : array.concat(arr);
+			length += arr.length; 
+		}
+		this.get = function (i){
+			return array[i];
+		}
+		this.remove = function (i){
+			var removeBool = false;
+			if(i >= length){
+				return false;
+			}
+			array.splice(i, 1);
+			length--;
+			return true;
+		}
+		this.serch = function(e){
+			if(e == undefined){
+				return false;
+			}
+			for(var j = 0; j < length; j++){
+				if(array[j] == e)
+					return true;
+			}
+			return false;
+		}
+		this.removeAll = function(){
+			length = 0;
+			array = new Array();
+		}
+		this.removeElment = function (e){
+			if(e == null || e == undefined){
+				return false;
+			}
+			for(var j = 0; j < length; j++){
+				if(array[j] == e){
+					array.splice(j, 1);
+					length --;
+					return e;
+				}
+			}
+			return false;
+		}
+		this.toArray = function (){
+			return array;
+		}
+		this.toString = function (){
+			var temp = "[";
+			for(var i = 0; i < length; i++){
+				temp += i > 0 ? "," : "";
+				temp += array[i];
+			}
+			return temp + "]";  
+		}
+		this.itarator = function (){
+			return new Itarator(array);
+		}
+		this.removeLast = function (){
+			temp = array[length-1];
+			array.splice(length - 1, 1);
+			length--;
+			return temp;
+		}
+		this.removeFrist = function (){
+			temp = array[0];
+			array.splice(0, 1);
+			length--;
+			return temp;
+		}
+		this.getFrist = function (){
+			return length == 0 ? null : array[0];
+		}
+		this.getLast = function (){
+			return length == 0 ? null : array[length-1];
+		}
+		this.replace = function (i, e){
+			array.splice(i, 1, e);
+			return true;
+		}
+		this.forEach = function (fn){
+			for(var i in array){
+				if(fn instanceof Function)
+					fn(array[i]);
+				else 
+					new Exception("ArrayList", "forEach", "fn 不是一个function：" + fn);
+			}
+		}
+		this.subList = function (fromIndex, toIndex){
+			var arr__ = array.slice(fromIndex, toIndex);
+			return new ArrayList(arr__);
+		}
+	}
+	
+	/*
+		next()
+		pre()
+		hasNext()
+		hasPre()
+	
+	*/
+	function Itarator(array){
+		var index;
+		var length;
+		init();
+		function init(){
+			index = 0;
+			length = array.length;
+		}
+		this.next = function (){
+			temp = array[index];
+			index++;
+			return temp;
+		}
+		this.pre = function (){
+			temp = array[index];
+			index--;
+			return temp;
+	
+		}
+		this.hasNext = function (){
+			return index < length;
+		}
+		this.hasPre = function (){
+			return index > -1;
+		}
+	}
+	
+	/**
+	getName		通过函数名称获取方法名称
+	getArgus	通过函数名称获取所传的参数 以数组形式返回
+	*/
+	Function.prototype.getName = function(aa){
+		for(var i=0;i<arguments.length;i++){
+			alert(arguments[i]);
+		}
+		return this.name || this.toString().match(/function\s*([^(]*)\(/)[1];
+	}
+	Function.prototype.getArgus = function(aa){
+		return arguments;
+	}
+	
+	/**
+	 * extends 继承支持对象	V2
+	 * 方法解析 ：
+	 *	对继承的讲解
+	 *		可以   this.say			引用方法 可以调用      | this.a  引用属性可以调用 
+	 *		类似于 function say(){} 私有方法不能直接调用   | var a   私有属性不能调用 
+	 *		
+	 *	案例：
+	 *		子类
+     *
+	 *		必要代码
+	 *		子类名称.extends(父类名称); //参数不是字符串
+	 *
+	 * @author 威 
+	 * 2018/3/19 下午16:30:25 
+	 */
+	Function.prototype.extends = function(superClassName){
+		var Super_ = function(){};
+		eval("Super_.prototype = " + superClassName.getName() + ".prototype;");
+		eval(this.getName()+".prototype = new Super_();");
 	}
 	
 	//快速在js中创建link标签
