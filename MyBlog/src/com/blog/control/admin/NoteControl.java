@@ -55,13 +55,17 @@ public class NoteControl extends BaseControl{
 		model.addAttribute("all", listData);
 		if("0".equals(type)){
 			model.addAttribute("type", true);
-		}else if ("1".equals(type)){
+		}else if ("1".equals(type)|| "2".equals(type)){
 			// 修改 查找已授权的页面传入 获取appid
 			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT); 
 			List<NoteTabBrige> list_ = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", id));
 			model.addAttribute("seleteds", list_);
 			model.addAttribute("type", false);
+			if("2".equals(type)) {
+				model.addAttribute("content", 
+						noteServiceImpl.get(singleOfEqString("id", id)).getContent());
+			}
 		}		
 		return "admin/note/save_or_update";
 	} 
