@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.Constant;
+import com.blog.Filter;
+import com.blog.Order;
+import com.blog.Page;
+import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.Data;
@@ -48,15 +53,47 @@ public class NoteControl extends BaseControl{
 	}
 	
 	@RequestMapping("/show.chtml") 
-	public String show(HttpServletRequest request, ModelMap model){
-
-		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT); 
-		List<Note> list = noteServiceImpl.getByDESC(singleOfEqString("admin_id", admin.getId()), "create_date");
+	public String show(HttpServletRequest request, ModelMap model, String type){
+		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		List<Note> list = null;
+		log.info(type);
+		if ("2".equals(type)){
+			Map<String, String> parame = getRequestParameterMap(request);
+			parame.remove("type");
+			StringBuilder sb = new StringBuilder();
+			for(String item : parame.keySet()){
+				sb.append(singleOfEq("c.id", item)).append(" OR ");
+			}
+			if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
+			list = noteServiceImpl.find("SELECT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id FROM note a, note_tab_brige b, `data` c where 1=1 and a.id = b.note_id AND c.id = b.note_tab_id AND a.admin_id='"+admin.getId()+"' AND ("+sb.toString()+") ORDER BY a.create_date DESC ");
+		} else {
+			// 根据所传条件进行查找 
+			QueryHelper queryHelper = new QueryHelper();
+			Page page = new Page(); 
+			
+			// 制定排序
+			page.addOrder(Order.desc("create_date"));
+			
+			// 自定义查询条件 admin_id = ‘ ’
+			Filter f = new Filter();
+			f.setOperator(com.blog.Filter.Operator.eq);
+			f.setProperty("admin_id");
+			f.setValue(admin.getId());
+			page.addFilter(f);
+			
+			queryHelper.addCloumnAlias("createDate", "create_date");// 前端设定为createDate 实际数据库为 create_date 
+			queryHelper.paramBind(request, page);// 初始化数据
+			String sql = queryHelper.buildAllQuery(page);// 生成sql部分语句
+			log.info("=================show.jsp 以下是查询语句=============");
+			log.info(sql);
+			
+			list = noteServiceImpl.find("SELECT * FROM note"+sql);			
+		}
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
 		model.addAttribute("notes", list);
 		model.addAttribute("noteTabs", list2);
-		model.addAttribute("all", listData);
+		model.addAttribute("all", listData); 
 		return "admin/note/show"; 
 	}
 	
@@ -67,6 +104,7 @@ public class NoteControl extends BaseControl{
 		// 添加 查找所有页面传入 
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
 		model.addAttribute("all", listData);
+		// 0 添加  1/2 修改
 		if("0".equals(type)){
 			model.addAttribute("type", true);
 		}else if ("1".equals(type)|| "2".equals(type)){
@@ -76,7 +114,7 @@ public class NoteControl extends BaseControl{
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", id));
 			model.addAttribute("seleteds", list_);
 			model.addAttribute("type", false);
-			if("2".equals(type)) {
+			if("2".equals(type)) { // show.jsp 页面调用修改页面时 所传递的值；旨在获取note内容
 				model.addAttribute("content", 
 						noteServiceImpl.get(singleOfEqString("id", id)).getContent());
 			}
@@ -182,8 +220,7 @@ public class NoteControl extends BaseControl{
 		}catch(Exception e) {
 			e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
-		}
-		
+		} 
 	}
 	
 	/**
@@ -195,7 +232,7 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Note t, HttpServletRequest request) throws IOException{ 
+	public Object update(Note t, HttpServletRequest request){ 
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
@@ -246,8 +283,10 @@ public class NoteControl extends BaseControl{
 				}
 			}	
 			return Message.success("请求成功", null);
-		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
+		} catch(DataIntegrityViolationException e) {
+			return Message.success("修改失败，数据可能过长；"+e.getMessage(), null);
+		} catch(RuntimeException e) {
+			return Message.success("请求失败，运行异常； "+e.getMessage(), null);
 		}
 	} 
 	

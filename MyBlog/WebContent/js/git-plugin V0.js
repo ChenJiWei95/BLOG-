@@ -1032,7 +1032,7 @@
 	
 
 	var gTokener = new GTokener();
-	//栈保存的对象 {list:, h:, } 
+	//栈保存的对象 {list: 子集, h: 深度, } 用于圆点列表
 	function DataStack(l, height){
 		//
 		if(l === undefined) l = null;
@@ -1040,14 +1040,16 @@
 		this.list = l;
 		this.h = height;
 	}
-	//list保存的对象 用于圆点列表 
-	function ItemData(context, c){
+	
+	//list保存的对象 用于圆点列表 生成li标签
+	function ItemData(oddOrEven, context, c){
 		console.log(context.currentLine);
 		if(c === undefined) c = null;
 		this.text = context.currentLine;		//项值
 		this.childs = c;	//子集
 		this.html = function(){
 			var li = $$.cre("li");
+			li.addClass(oddOrEven % 2 != 0 ? "li-odd" : "li-even")
 			gTokener.done(context).appendTo(li);
 			//$$.cre("pre").text().appendTo(li)
 			if(this.childs !== null && this.childs.size() > 0){
@@ -1064,6 +1066,7 @@
 			//return '<li>'+'<pre>'+this.text+'</pre>'+html+'</li>'
 		}
 	}
+	
 	var gitUtil = {
 		//检测圆点列表
 		test1:function(str){
@@ -1085,265 +1088,399 @@
 					return [true, 0, str.substring(2)];
 			} 
 			return [false];	
-		},
-	}
-	
-		//解析上下文context类 装载textarea数据
-		function GitContext(str){
-			arr = str.split("\n");
-			this.currentLine = arr.shift(); //
-			//将this.currentLine赋值为下一行
-			this.next = function(){
-				this.currentLine = arr.shift();
-			}
-			//将currentLine从新载入数组首位
-			this.pre = function(line){
-				console.log("GitContext push " + line);
-				if(line === undefined)
-					arr.unshift(this.currentLine);
-				else {arr.unshift(line); this.currentLine = arr.shift();}
-			}
 		}
-		//解析管理类 2018/10/10
-		/*
-		使用案例 提供类名包括点符号
-		new DefaultOp({
-			textArea: ".t",
-			runButton: ".bt",
-			gitContain: ".git-cnt",
-			gitContainIn: ".git-cnt .git-cnt-in",
-		});
-		*/
-		//自定义封装 触发事件 文本键盘事件 的处理 2018/10/12
-		function DefaultOp(data){
-			//初始化相关事件
-			var textarea = $$$(data.textArea).eq(0);//文本
-			var bt = $$$(data.runButton).eq(0);//执行按钮
-			var git_cnt = $$$(data.gitContain).eq(0);//外容器
-			var git_cnt_in_class = data.gitContainIn;//内容器 可删除
-			//textarea.value = "";
-			//点击按钮进行转换
-			bt.onclick = function(e){
-				var str = textarea.tName() == "textarea" ? textarea.value : textarea.text();
-				if($(git_cnt_in_class).eq(0) !== undefined)
-					$$$(git_cnt_in_class).eq(0).remove();
-				$$.cre("div").addClass(data.gitContainInClass).appendTo(git_cnt);
-				arr = new GitManage(str).getElements();
-				arr.forEach(item => {
-					item.appendTo($(git_cnt_in_class).eq(0));
-				});
-				//$(".git-cnt").eq(0).insert('<div class="git-cnt-in">' 
-				//+ new GitManage(str).html() + "</div>");
-				if($(git_cnt_in_class).eq(0) !== undefined 
-					&& $$$(git_cnt_in_class).eq(0).first() !== undefined)
-					$$$(git_cnt_in_class).eq(0).first().css("margin-top: 0px !important;");
-				if(data.fn !== undefined) data.fn(e);
-			}
-			
-			//textarea输入制表符
-			textarea.onkeydown = function(e){
-				if(e.keyCode === 9){
-					//点击制表符并向其中添加制表符
-					$$.util.inputInsert(e.target, "\t");
-					return false;//返回false才不会切换焦点
+		,isSimpleDir: function(str){
+			if(str.charAt(0) === "\t"){ 
+				var i = 1;
+				while(true){
+					var c = str.charAt(i++);
+					if(c === "\t")
+						continue;
+					else if(c === "-"){
+						if(str.charAt(i++) === " ")
+							return [true, i - 2, str.substring(i)];
+					}
+					else break;
 				}
 			}
-		} 
-		//.getElements() 返回一个元素集 将元素集插入特定容器即可 2018/10/12
-		function GitManage(str){
-			var self = this;
-			var context = initContext();//初始化上下文对象
-			//初始化责任链
-			var gTok = new TitleTokener();
-			gTok.setNext(new OrderNumTokener()).setNext(new SepLineTokener()).setNext(new PointTokener()).setNext(new TableTokener());
-			function initContext(){
-				return new GitContext(str);
+			else if(str.charAt(0) === "-"){
+				if(str.charAt(1) === " ")
+					return [true, 0, str.substring(2)];
+			} 
+			return [false]; 
+		}
+		,firstSep: "  ├─"
+		,fullSep: "  │"
+		,lastSep: "  └─"
+		,fullSep2: "   "
+		,isLastOfFull: []
+		,getFullSep: function(count){
+			var str = '';
+			for(var i = 0; i < count; i++){ 
+				str += gitUtil.isLastOfFull[i] ? gitUtil.fullSep2 : gitUtil.fullSep; 
 			}
-			//2018/10/12
-			this.getElements = function(){
-				//var html = "";
-				var arr = new Array();
+			return str;
+		}
+	}
+	
+	//解析上下文context类  参数是未编译的文本
+	function GitContext(str){
+		arr = str.split("\n");
+		this.currentLine = arr.shift(); //
+		//将this.currentLine赋值为下一行
+		this.next = function(){
+			this.currentLine = arr.shift();
+		}
+		//将currentLine从新载入数组首位
+		this.pre = function(line){
+			// console.log("GitContext push " + line);
+			if(line === undefined)
+				arr.unshift(this.currentLine);
+			else {arr.unshift(line); this.currentLine = arr.shift();}
+		}
+	}
+	
+	//解析管理类 2018/10/10
+	/*
+	使用案例 提供类名包括点符号
+	new DefaultOp({
+		textArea: ".t",
+		runButton: ".bt",
+		gitContain: ".git-cnt",
+		gitContainIn: ".git-cnt .git-cnt-in",
+	});
+	*/	
+	//自定义封装 触发事件 文本键盘事件 的处理 2018/10/12
+	function DefaultOp(data){
+		//初始化相关事件
+		var textarea = $$$(data.textArea).eq(0);//文本
+		var bt = $$$(data.runButton).eq(0);//执行按钮
+		var git_cnt = $$$(data.gitContain).eq(0);//外容器
+		var git_cnt_in_class = data.gitContainIn;//内容器 可删除
+		//textarea.value = "";
+		//点击按钮进行转换
+		bt.onclick = function(e){
+			var str = textarea.tName() == "textarea" ? textarea.value : textarea.text();
+			if($(git_cnt_in_class).eq(0) !== undefined)
+				$$$(git_cnt_in_class).eq(0).remove();
+			$$.cre("div").addClass(data.gitContainInClass).appendTo(git_cnt);
+			arr = new GitManage(str).getElements();
+			arr.forEach(item => {
+				item.appendTo($(git_cnt_in_class).eq(0));
+			});
+			//$(".git-cnt").eq(0).insert('<div class="git-cnt-in">' 
+			//+ new GitManage(str).html() + "</div>");
+			if($(git_cnt_in_class).eq(0) !== undefined 
+				&& $$$(git_cnt_in_class).eq(0).first() !== undefined)
+				$$$(git_cnt_in_class).eq(0).first().css("margin-top: 0px !important;");
+			if(data.fn !== undefined) data.fn(e);
+		}
+		
+		//textarea输入制表符
+		textarea.onkeydown = function(e){
+			if(e.keyCode === 9){
+				//点击制表符并向其中添加制表符
+				$$.util.inputInsert(e.target, "\t");
+				return false;//返回false才不会切换焦点
+			}
+		}
+	} 
+	
+	//.getElements() 返回一个元素集 将元素集插入特定容器即可 2018/10/12
+	function GitManage(str){
+		var self = this;
+		var context = initContext();//初始化上下文对象
+		//初始化责任链
+		var gTok = new TitleTokener();
+		gTok.setNext(new OrderNumTokener())
+			.setNext(new SepLineTokener())
+			.setNext(new PointTokener())
+			.setNext(new TableTokener())
+			.setNext(new SimpleDirTokener());
+		function initContext(){
+			return new GitContext(str);
+		}
+		//2018/10/12
+		this.getElements = function(){
+			var arr = new Array();
+			try{
 				while(context.currentLine !== undefined){
-					console.log("do " + context.currentLine);
-					//html += gTok.support(context);
-					//gTok.support(context).appendTo($(git_cnt_in_class).eq(0));
 					arr.push(gTok.support(context));
 					context.next();
 				}
-				return arr;
+			}catch(err){
+				console.log(err);
+			}
+			return arr;
+		}
+	}
+	
+	//责任链拦截项超类
+	//将传入的值改为context 2018/10/10
+	function GitTokener (){
+		var next;
+		this.setNext = function (n){
+			next = n;
+			return next;
+		}
+		this.support = function (context) {
+			if(this.isSure(context)){
+				return this.done(context);
+			} else if (next != null){
+				return next.support(context);
+			} else {
+				return this.fail(context);
 			}
 		}
-		//责任链拦截项超类
-		//将传入的值改为context 2018/10/10
-		function GitTokener (){
-			var next;
-			this.setNext = function (n){
-				next = n;
-				return next;
-			}
-			this.support = function (context) {
-				if(this.isSure(context)){
-					return this.done(context);
-				} else if (next != null){
-					return next.support(context);
-				} else {
-					return this.fail(context);
+		//是否属于当前编译
+		this.isSure = function(context){return true;}
+		//完成
+		this.done = function(context){}
+		//失败 无法编译
+		this.fail = function(context){
+			return gTokener.done(context);
+		}
+	}
+	
+	//标题
+	TitleTokener.extends(GitTokener);
+	function TitleTokener (){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			if(str.charAt(0) === "#"){
+				for(var i=1; i < str.length; i++) {
+					var c = str.charAt(i);
+					if(c === "#")
+						continue;
+					else if (c === " ")
+						break;
+					else return false;
 				}
+				return true;
 			}
-			//是否属于当前编译
-			this.isSure = function(context){return true;}
-			//完成
-			this.done = function(context){}
-			//失败 无法编译
-			this.fail = function(context){
-				return gTokener.done(context);
-			}
+			else return false;
 		}
-		//标题
-		TitleTokener.extends(GitTokener);
-		function TitleTokener (){
-			GitTokener.call(this);
-			this.isSure = function(context){
-				var str = context.currentLine;
-				if(str.charAt(0) === "#"){
-					for(var i=1; i < str.length; i++) {
-						var c = str.charAt(i);
-						if(c === "#")
-							continue;
-						else if (c === " ")
-							break;
-						else return false;
-					}
-					return true;
-				}
-				else return false;
-			}
-			this.done = function(context){
-				var str = context.currentLine;
-				var tag = "";
-				//根据空格的位置计算标题码数
-				var start = str.indexOf(" ");
-				tag = "h"+start;
-				var h = $$.cre(tag);
-				return h.addClass("git-title").text(str.substring(start+1));
-				//return '<'+tag+'>'+str.substring(start+1)+'</'+tag+'>';
-			}
+		this.done = function(context){
+			var str = context.currentLine;
+			var tag = "";
+			//根据空格的位置计算标题码数
+			var start = str.indexOf(" ");
+			tag = "h"+start;
+			var h = $$.cre(tag);
+			return h.addClass("git-title").text(str.substring(start+1));
+			//return '<'+tag+'>'+str.substring(start+1)+'</'+tag+'>';
 		}
-		//有序小标题
-		OrderNumTokener.extends(GitTokener);
-		function OrderNumTokener (){
-			GitTokener.call(this);
-			this.isSure = function(context){
-				var str = context.currentLine;
-				if($$.util.isNumber(str.charAt(0)) && str.charAt(1) === ".")
-					return true;
-				return false;
-			}
-			this.done = function(context){
-				var ul = $$.cre("ul").addClass("nolist ul-ol");
-				$$.cre("li").text(context.currentLine).appendTo(ul);
+	}	
+	
+	//有序小标题
+	// 1.
+	OrderNumTokener.extends(GitTokener);
+	function OrderNumTokener (){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			if($$.util.isNumber(str.charAt(0)) && str.charAt(1) === ".")
+				return true;
+			return false;
+		}
+		this.done = function(context){
+			var ul = $$.cre("ul").addClass("nolist ul-ol");
+			$$.cre("li").text(context.currentLine).appendTo(ul);
+			//html += '<li>'+ context.currentLine +'</li>';
+			context.next();
+			while(this.isSure(context)){
 				//html += '<li>'+ context.currentLine +'</li>';
+				$$.cre("li").text(context.currentLine).appendTo(ul);
 				context.next();
-				while(this.isSure(context)){
-					//html += '<li>'+ context.currentLine +'</li>';
-					$$.cre("li").text(context.currentLine).appendTo(ul);
-					context.next();
-				}
-				if (context.currentLine !== undefined) context.pre();
-				return ul;
 			}
+			if (context.currentLine !== undefined) context.pre();
+			return ul;
 		}
-		//分隔线
-		SepLineTokener.extends(GitTokener);
-		function SepLineTokener (){
-			GitTokener.call(this);
-			this.isSure = function(context){
-				var str = context.currentLine;
-				if(str.charAt(0) === "-" && str.substring(0, 3) === "---")
-					return true;
-				return false;
-			}
-			this.done = function(context){
-				var str = context.currentLine;
-				var lastC = str.charAt(str.length-1);
-				//判断尾数为几 否则默认为1
-				var classPreDix = ($$.util.isNumber(lastC) ? lastC : 1);
-				//最大只能为3
-				return $$.cre("p").addClass("p-sep-line-" + (classPreDix > 4 ? 4 : classPreDix));
-			}
+	}
+
+	//分隔线
+	SepLineTokener.extends(GitTokener);
+	function SepLineTokener (){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			if(str.charAt(0) === "-" && str.substring(0, 3) === "---")
+				return true;
+			return false;
 		}
+		this.done = function(context){
+			var str = context.currentLine;
+			var lastC = str.charAt(str.length-1);
+			//判断尾数为几 否则默认为1
+			var classPreDix = ($$.util.isNumber(lastC) ? lastC : 1);
+			//最大只能为3
+			return $$.cre("p").addClass("p-sep-line-" + (classPreDix > 4 ? 4 : classPreDix));
+		}
+	}	
+	
 	//适配
 	function TempContext(str){
 		this.currentLine = str;
 	}
-		//小圆点列表 2018/10/10
-		PointTokener.extends(GitTokener);
-		function PointTokener(){
-			GitTokener.call(this);
-			this.isSure = function(context){
-				var str = context.currentLine;
-				return gitUtil.test1(str)[0];
-			}
-			this.done = function(context){
-				var result = analy(context);
-				//var html = '<ul class="ul-point">';
-				var ul = $$.cre("ul").addClass("ul-point");
-				result.forEach(item => {
-					//html += item.html();
-					
-					item.html().appendTo(ul);
-				});
-				return ul;
-				//return html + "</ul>";
-			}
-			//解析圆点列表 返回list
-			function analy(context){
-				var stack = new ArrayStack();//每一个深度的list栈
-				var list = new ArrayList();//顶部圆点
-				stack.push(new DataStack(list, 0));
-				var preItem;
-				var i = 0;
-				var t = gitUtil.test1(context.currentLine);
-				while(t[0]){
-					//console.log("进行 "+t[1]);
-					//是圆点列表项
-					//判断级别获取list并将项载入list
-					//栈顶深度h与此时项深度相等则进行添加操作
-					
-					if(stack.peek().h === t[1]){
-						//console.log("存在深度 " + t[2]);
-						preItem = new ItemData(new TempContext(t[2]));
-						stack.peek().list.add(preItem);
-					}
-					//栈顶深度h 大于 此时深度，则需回退
-					else if(stack.peek().h > t[1]){
-						//console.log("回退 " + t[2]);
-						//回退-- 执行pop()方法删除栈顶并达到合适深度
-						while(stack.peek().h !== t[1])
-							stack.pop();
-						//创建数据项 ItemData对象
-						preItem = new ItemData(new TempContext(t[2]));
-						stack.peek().list.add(preItem);
-					}
-					//栈顶深度h 小于 此时深度，则需创建list ；list值注入到上一个项的childs中并压入栈
-					else {
-						//
-						//console.log("深度加深，创建新的深度 "+ t[2]);
-						_list = new ArrayList();
-						preItem.childs = _list;
-						stack.push(new DataStack(preItem.childs, t[1]));
-						preItem = new ItemData(new TempContext(t[2]));
-						stack.peek().list.add(preItem);
-					}
-					context.next();
-					if (context.currentLine !== undefined)
-						t = gitUtil.test1(context.currentLine);
-					else break;
+	
+	function SimpleDirItem(text){
+		this.text = text;
+		this.childs = []; 
+	}
+	
+	// 简易目录
+	/*
+	效果：
+	  ├─GitTokener 编译类
+      │  ├─TitleTokener		标题
+      │  ├─OrderNumTokener	有序列表
+      │  ├─SepLineTokener	分割线
+      │  ├─PointTokener		无序列表
+      │  └─TableTokener		表格
+      ├─GitManage git核心类
+      └─GitContext git上下文对象
+	输入：
+		'- GitTokener 编译类\n'+
+		'	- TitleTokener		标题\n'+ 
+		'	- OrderNumTokener	有序列表\n'+ 
+		'	- SepLineTokener	分割线\n'+  
+		'	- PointTokener		无序列表\n'+ 
+		'	- TableTokener		表格\n'+  
+		'- GitManage git核心类\n'+ 
+		'- GitContext git上下文对象\n'+ 
+	 */
+	SimpleDirTokener.extends(GitTokener);
+	function SimpleDirTokener(){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			return gitUtil.isSimpleDir(str)[0];
+		}
+		this.done = function(context){
+			var result = analy(context)
+			,ul = $$.cre("ul").addClass("ul-point").attr("style", "list-style-type: none;"); 
+			done2(-1, result, ul);
+			return ul;
+		}
+		function analy(context){
+			return analy1(0, context);
+		}
+		function analy1(preIndex_, context){
+			var dirContainer = []
+			,preIndex = preIndex_
+			,t = gitUtil.isSimpleDir(context.currentLine);
+			while(t[0]) {
+				if(t[1] == preIndex){
+					dirContainer.push(new SimpleDirItem(t[2]))
+				} else if (t[1] > preIndex) {
+					dirContainer[dirContainer.length - 1].childs = analy1(t[1], context);
+				} else { 
+					context.pre();
+					return dirContainer;
+				} 	
+				context.next();
+				if (context.currentLine !== undefined)
+					t = gitUtil.isSimpleDir(context.currentLine);
+				else break;
+			}   
+			if (context.currentLine !== undefined) context.pre();//当前行不符合则回退
+			return dirContainer;
+		}
+		function done2(c, childs, ul){ 
+			var count = c+1; 
+			for(var i in childs){
+				if(i == childs.length-1){ 
+					model(true, gitUtil.lastSep);
+				} else {
+					model(false, gitUtil.firstSep);
 				}
-				if (context.currentLine !== undefined) context.pre();//当前行不符合则回退
-				return list;
+				//console.log(childs[i]);
+				if(childs[i].childs.length > 0)
+					done2(count, childs[i].childs, ul);
+			} 
+			function model(bool, sep) {
+				gitUtil.isLastOfFull[count] = bool; 
+				var li = $$.cre("li").addClass("simple-dir-li"); //li.attr("style", "text-align: center;");
+				$$.cre("pre").text(gitUtil.getFullSep(count)+sep).addClass("simple-dir-text-odd").appendTo(li); 
+				$$.cre("pre").text(childs[i].text).addClass("simple-dir-text-even").appendTo(li);
+				li.appendTo(ul);
 			}
 		}
+	}
+	
+	//小圆点列表 2018/10/10
+	// 2019/12/7  ArrayStack换成普通数组
+	PointTokener.extends(GitTokener);
+	function PointTokener(){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			return gitUtil.test1(str)[0];
+		}
+		this.done = function(context){
+			var result = analy(context);
+			//var html = '<ul class="ul-point">';
+			var ul = $$.cre("ul").addClass("ul-point");
+			result.forEach(item => {
+				//html += item.html();
+				
+				item.html().appendTo(ul);
+			});
+
+			return ul;
+			//return html + "</ul>";
+		}
+		//解析圆点列表 返回list
+		function analy(context){
+			//var stack = new ArrayStack();//每一个深度的list栈
+			var stack = [];//每一个深度的list栈
+			var list = new ArrayList();//顶部圆点
+			stack.push(new DataStack(list, 0));
+			var preItem;
+			var i = 0;
+			var t = gitUtil.test1(context.currentLine);
+			while(t[0]){
+				//console.log("进行 "+t[1]);
+				//是圆点列表项
+				//判断级别获取list并将项载入list
+				//栈顶深度h与此时项深度相等则进行添加操作
+				
+				if(stack[stack.length-1].h === t[1]){
+					//console.log("存在深度 " + t[2]);
+					preItem = new ItemData(t[1], new TempContext(t[2]));
+					stack[stack.length-1].list.add(preItem);
+				}
+				//栈顶深度h 大于 此时深度，则需回退
+				else if(stack[stack.length-1].h > t[1]){
+					//console.log("回退 " + t[2]);
+					//回退-- 执行pop()方法删除栈顶并达到合适深度
+					while(stack[stack.length-1].h !== t[1])
+						stack.pop();
+					//创建数据项 ItemData对象
+					preItem = new ItemData(t[1], new TempContext(t[2]));
+					stack[stack.length-1].list.add(preItem);
+				}
+				//栈顶深度h 小于 此时深度，则需创建list ；list值注入到上一个项的childs中并压入栈
+				else {
+					//
+					//console.log("深度加深，创建新的深度 "+ t[2]);
+					_list = new ArrayList();
+					preItem.childs = _list;
+					stack.push(new DataStack(preItem.childs, t[1]));
+					preItem = new ItemData(t[1], new TempContext(t[2]));
+					stack[stack.length-1].list.add(preItem);
+				}
+				context.next();
+				if (context.currentLine !== undefined)
+					t = gitUtil.test1(context.currentLine);
+				else break;
+			}
+			if (context.currentLine !== undefined) context.pre();//当前行不符合则回退
+			return list;
+		}
+	}
+	
 	/*
 	test6 加入表格
 	|attr_name|desc
@@ -1403,135 +1540,143 @@
 		return true;
 	}
 	*/
-		TableTokener.extends(GitTokener);
-		function TableTokener(){
-			GitTokener.call(this);
-			this.isSure = function(context){
-				var str = context.currentLine;
-				temp = str;
-				if(temp.charAt(0) === "|"){
-					context.next();
-					str = context.currentLine;
-					context.pre();
-					console.log(context.currentLine);
-					context.pre(temp);
-					console.log(context.currentLine);
-					return _isSure(str);
-				} else return false;
-			}
-			//检测第二行数据
-			function _isSure(str){
-				//判断|:---:|------ 是否正确书写
-				if(str.charAt(0) === "|"){
-					var alignArr
-					str = str.substring(1);
-					var arr = str.split("|");
-					for(var i = 0; i < arr.length; i++){
-						var align = "";
-						str = arr[i];
-						var start = 0, end = str.length-1;
-						if(str.charAt(0) === ":") start = 1;
-						if(str.charAt(end) === ":") end -= 1;
-						for(var j = start; j <= end; j++){
-							if(str.charAt(j) !== "-") return false 
-						}
-					}
-				}else return false;
-				return true;
-			}
-			//获取每一项的Align数据
-			function _getAligns(str){
-				//判断|:---:|------ 是否正确书写
-				var alignArr = new Array();
+	
+	TableTokener.extends(GitTokener);
+	function TableTokener(){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			temp = str;
+			if(temp.charAt(0) === "|"){
+				context.next();
+				str = context.currentLine;
+				context.pre();
+				console.log(context.currentLine);
+				context.pre(temp);
+				console.log(context.currentLine);
+				return _isSure(str);
+			} else return false;
+		}
+		//检测第二行数据
+		function _isSure(str){
+			//判断|:---:|------ 是否正确书写
+			if(str.charAt(0) === "|"){
+				var alignArr
 				str = str.substring(1);
 				var arr = str.split("|");
 				for(var i = 0; i < arr.length; i++){
 					var align = "";
 					str = arr[i];
 					var start = 0, end = str.length-1;
-					if(str.charAt(0) === ":") align = "left";
-					console.log("str.charAt(end) "+str.charAt(end));
-					if(str.charAt(end) === ":") align = (align == "left" ? "center" : "right");
-					alignArr.push(align);
-				}
-				return alignArr;
-			}
-			this.done = function(context){
-				console.log("######################################");
-				var result = _done(context);
-				return new SuperTableV2(result.array, result.alignArray).html().addClass("commonly-table");
-			}
-			//处理 获取数据
-			function _done(context){
-				var arr = new Array();
-				console.log(context.currentLine);
-				arr.push(context.currentLine.substring(1).split("|"));
-				context.next();
-				var alignArr = _getAligns(context.currentLine);
-				context.next();
-				while(context.currentLine !== undefined && 
-					context.currentLine.charAt(0) === "|"){
-					arr.push(context.currentLine.substring(1).split("|"));
-					context.next();
-				}
-				if(context.currentLine !== undefined) context.pre();
-				console.log(arr);
-				return {array: arr, alignArray: alignArr};
-			}
-		}
-		function SuperTableV2(data, alignArr){
-			this.headTrCode = function(text){
-				return $$.cre("tr");
-			}
-			this.headThCode = function(text){
-				return $$.cre("th").text(text);
-			}
-			this.trCode = function(text){
-				return $$.cre("tr");
-			}
-			this.tdCode = function(text){
-				return $$.cre("td").text(text);
-			}
-			this.html = function(){
-				var headArr = data[0];
-				var table = $$.cre("table");
-				//var html = "<thead>";
-				var thead = $$.cre("thead");
-				var tr = $$.cre("tr").appendTo(thead);
-				for(var i in headArr){
-					$$.cre("th").text(headArr[i]).appendTo(tr);
-				}
-				thead.appendTo(table);
-				var tbody = $$.cre("tbody");
-				console.log(alignArr);
-				for(var i = 1; i < data.length; i++){
-					var arr = data[i];
-					var tr = $$.cre("tr").appendTo(tbody);
-					for(var j = 0; j < alignArr.length; j++){
-						console.log("alignArr[j] " + alignArr[j]);
-						if (i%2 === 0) tr.addClass("tr-odd");
-						$$.cre("td").text(arr[j]).attr("align", alignArr[j]).appendTo(tr);
+					if(str.charAt(0) === ":") start = 1;
+					if(str.charAt(end) === ":") end -= 1;
+					for(var j = start; j <= end; j++){
+						if(str.charAt(j) !== "-") return false 
 					}
 				}
-				tbody.appendTo(table)
-				return table;
-			}
+			}else return false;
+			return true;
 		}
-		//图片
-		//文字链接、图片链接
+		//获取每一项的Align数据
+		function _getAligns(str){
+			//判断|:---:|------ 是否正确书写
+			var alignArr = new Array();
+			str = str.substring(1);
+			var arr = str.split("|");
+			for(var i = 0; i < arr.length; i++){
+				var align = "";
+				str = arr[i];
+				var start = 0, end = str.length-1;
+				if(str.charAt(0) === ":") align = "left";
+				console.log("str.charAt(end) "+str.charAt(end));
+				if(str.charAt(end) === ":") align = (align == "left" ? "center" : "right");
+				alignArr.push(align);
+			}
+			return alignArr;
+		}
+		this.done = function(context){
+			var result = _done(context);
+			return new SuperTableV2(result.array, 
+					result.alignArray).html().addClass("commonly-table");
+		}
+		//处理 获取数据
+		function _done(context){
+			var arr = new Array();
+			console.log(context.currentLine);
+			arr.push(context.currentLine.substring(1).split("|"));
+			context.next();
+			var alignArr = _getAligns(context.currentLine);
+			context.next();
+			while(context.currentLine !== undefined && 
+				context.currentLine.charAt(0) === "|"){
+				arr.push(context.currentLine.substring(1).split("|"));
+				context.next();
+			}
+			if(context.currentLine !== undefined) context.pre();
+			console.log(arr);
+			return {array: arr, alignArray: alignArr};
+		}
+	}
+	function SuperTableV2(data, alignArr){
+		this.headTrCode = function(text){
+			return $$.cre("tr");
+		}
+		this.headThCode = function(text){
+			return $$.cre("th").text(text);
+		}
+		this.trCode = function(text){
+			return $$.cre("tr");
+		}
+		this.tdCode = function(text){
+			return $$.cre("td").text(text);
+		}
+		this.html = function(){
+			var headArr = data[0];
+			var table = $$.cre("table");
+			//var html = "<thead>";
+			var thead = $$.cre("thead");
+			var tr = $$.cre("tr").appendTo(thead);
+			for(var i in headArr){
+				$$.cre("th").text(headArr[i]).appendTo(tr);
+			}
+			thead.appendTo(table);
+			var tbody = $$.cre("tbody");
+			console.log(alignArr);
+			for(var i = 1; i < data.length; i++){
+				var arr = data[i];
+				var tr = $$.cre("tr").appendTo(tbody);
+				for(var j = 0; j < alignArr.length; j++){
+					console.log("alignArr[j] " + alignArr[j]);
+					if (i%2 === 0) tr.addClass("tr-odd");
+					console.log(arr[j]);
+					var pre = gTokener.done(new TempContext(arr[j]));
+					var th = $$.cre("td").attr("align", alignArr[j]);
+					pre.appendTo(th);
+					th.appendTo(tr);
+				}
+			}
+			tbody.appendTo(table)
+			return table;
+		}
+	}	
 		
-
-		//一般编译
-		//处理高亮 处理文本链接 图片链接
-		GTokener.extends(GitTokener);
-		function GTokener (){
-			GitTokener.call(this);
-			this.done = function(context){
-				var str = context.currentLine;
-				var i = 0;
-				var c;
-				var pre = $$.cre("pre").addClass("pre-line");
+	//图片
+	//文字链接、图片链接
+	//一般编译
+	//处理	 处理文本链接 图片链接
+	GTokener.extends(GitTokener);
+	function GTokener (){
+		GitTokener.call(this);
+		this.done = function(context){
+			var str = context.currentLine;
+			
+			var i = 0;
+			var c;
+			var pre = $$.cre("pre").addClass("pre-line");
+			try{
+				if(typeof(str) != "string") throw "不是字符串，str:"+str;
 				while(i < str.length){
+				
 					c = str.charAt(i++);
 					if(c === "`") {
 						c = str.charAt(i++);
@@ -1541,7 +1686,7 @@
 							c = str.charAt(i++);
 						}
 						$$.cre("code").addClass("p-box").text(line).appendTo(pre);
-					} else if(c === "[") {
+					} else if(c === "[") { //[title](url) 文字链接   
 						//[title](url) 文字链接 
 						//<a class="a-url" target="_blank" href="http://baidu.com" title>示范链接</a>
 						var sepLastIndex = str.indexOf("]", i);
@@ -1566,7 +1711,7 @@
 						}else 
 							$$.cre("span").text(c).appendTo(pre);
 						a.appendTo(pre);
-					} else if (c === "!") {
+					} else if (c === "!") { //图片 ![alt](src)
 						c = str.charAt(i++);
 						if(c === "["){
 							//图片 ![alt](src)
@@ -1594,7 +1739,10 @@
 					}else 
 						$$.cre("span").text(c).appendTo(pre);
 				}
-				return pre;
+			} catch (err){
+				cosnole.log(err);
 			}
+			return pre;
 		}
+	}	
 	/* ## E-GIT ## */

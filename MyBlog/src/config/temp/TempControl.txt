@@ -102,9 +102,10 @@ public class #name#Control extends BaseControl{
 			t.setUpdate_time(getNowTime());
 			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
 			return Message.success("请求成功", null);
-		}catch(Exception e) {
-			e.printStackTrace();
-			return Message.success("请求失败，"+e.getMessage(), null);
+		}catch(DataIntegrityViolationException e) {
+			return Message.success("修改失败，数据可能过长；"+e.getMessage(), null);
+		} catch(RuntimeException e) {
+			return Message.success("请求失败，运行异常； "+e.getMessage(), null);
 		}
 	} 
 	

@@ -26,7 +26,7 @@ public class Tst {
 		set.add(select);
 		
 		context = new TempContext();
-		context.setSearchSet(set);
+//		context.setSearchSet(set);
 		System.out.println(set.toString());
 	}
 }
