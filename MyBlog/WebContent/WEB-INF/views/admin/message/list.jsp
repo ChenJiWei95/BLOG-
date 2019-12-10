@@ -198,10 +198,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});  
         }
     };
-    
+	var data1 = {};
+	data1['Qu_type_eq_s'] = '02';
+	var data2 = {};
+	data1['Qu_type_eq_s'] = '03';
+	var data3 = {};
+	data1['Qu_type_eq_s'] = '04';
 	table.render({//全部
         elem: "#"+t_d,
         url: 'list.do',
+        method: 'post',
         page: !0,
         limit: 20,
         cols: [[
@@ -213,9 +219,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         ]]
     }),
+    
     table.render({//文章
         elem: "#"+t_a,
-        url: 'article_list.do',
+        url: 'list.do?Qu_type_eq_s=02',
+        data: data1,
+        method: 'post',
+        limit: 20,
         page: !0,
         cols: [[
         	{type:"checkbox", fixed:"left"}
@@ -228,7 +238,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }),
     table.render({//留言
         elem: "#"+t_b,
-        url: 'direct_list.do',
+        url: 'list.do?Qu_type_eq_s=03',
+        data: data2,
+        method: 'post',
+        limit: 20,
         page: !0,
         cols: [[
         	{type:"checkbox", fixed:"left"}
@@ -241,7 +254,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }),
 	table.render({//系统
         elem: "#"+t_c,
-        url: 'sys_list.do',
+        url: 'list.do?Qu_type_eq_s=04',
+        data: data3,
+        method: 'post',
+        limit: 20,
         page: !0,
         cols: [[
         	{type:"checkbox", fixed:"left"}

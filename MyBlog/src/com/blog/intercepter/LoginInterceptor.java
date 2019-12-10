@@ -1,7 +1,5 @@
 package com.blog.intercepter;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +33,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			HttpServletResponse arg1, 
 			Object arg2) throws Exception {
 		
-		System.out.println(arg0.getRequestURI());
+		log.info(arg0.getRequestURI());
 		log.info(arg0.getServerPort()+arg0.getContextPath());
 		
 		if(		arg0.getRequestURI().indexOf("login.chtml") > 0 
@@ -46,7 +44,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		
-		System.out.println("拦截登录");
+		log.info("拦截登录");
 		
 		String basePath = arg0.getScheme()+
 				"://"+arg0.getServerName()+
@@ -56,7 +54,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 				"/";
 		
 		/*if(arg0.getRequestURI().indexOf(".chtml") != -1){
-			System.out.println(arg0.getRequestURI());
+			log.info(arg0.getRequestURI());
 			// ‘.chtml’ 页面专属结尾 
 			// 对页面链接进行匹配是否在授权范围
 			List<String> permissionList = (List<String>) arg0.getSession().getAttribute(Constant.PERMISSION_LIST);
@@ -67,7 +65,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			}
 		}*/
 		
-		System.out.println((arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null)+" <<<<<<<< 权限");
+		log.info((arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null)+" <<<<<<<< 权限");
 		if(arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null) {
 			return true;
 		}

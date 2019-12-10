@@ -110,8 +110,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="con">
 		<!-- 导航栏 -->
+<<<<<<< HEAD
 		<%@ include file="../include/fore/indexNav.jsp" %>
 		
+=======
+		<div class="nav-done">
+			<i class="web-icon"></i>
+			<label class="label-sele-css" blog-event="nvaClick">首页</label>
+			<label class="label-unsele-css" blog-event="nvaClick">标签</label>
+			<label class="label-unsele-css" blog-event="nvaClick">生活</label>
+			<label class="label-unsele-css" blog-event="nvaClick" data-type="4">邮箱我</label>
+			<label class="label-unsele-css" blog-event="nvaClick" data-type="1">GitHub</label>
+			<label class="label-unsele-css" blog-event="nvaClick">关于我</label>
+		</div>
+>>>>>>> refs/remotes/origin/master
 		<!-- 3D particle -->
 		<div class="show-done"></div>
 		
@@ -170,6 +182,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$("#"+e.data("page")).siblings().addClass("layui-hide");
 					$("#"+e.data("page")).removeClass("layui-hide");
 					//<div class="cle-f con-article-page con-1">
+				} else if(e.data("type") == 4){
+					self.location = "<%=basePath%>blog/email.chtml";
 				}
 				else
 					alert("正在码出来，轻耐心等待！");

@@ -75,7 +75,7 @@
 	/*E-canlender*/
   </style>
  </head>
- <body>
+ <body style="">
 	<!-- 隐藏栏 -->
 	<div class="more-oprate">
 		<ul class="nolist">
@@ -233,25 +233,58 @@
 		});
 	}
 	var gitStr = "|Author|威\n"+
-"|:---:|:---:\n"+
-"|E-mail|chenJiWey@163.com\n"+
-"|date|2018/10/11\n"+
-"# Ajax异步交互\n"+
-"### 说明\n"+
-"    描述\n"+
-"### 字段描述\n"+
-"|类型|字段|描述\n"+
-"|---|---|---\n"+
-"### 构造描述\n"+
-"|构造|描述\n"+
-"|---|---\n"+
-"|模板|模板\n"+
-"### 方法描述\n"+
-"|返回值|方法|参数\n"+
-"|---|---|---\n"+
-"|模板|模板|模板\n"+
-"### 案例\n"+
-"### 详细描述";
+	"|:---:|:---:\n"+
+	"|E-mail|chenJiWey@163.com\n"+
+	"|date|2018/10/11\n"+
+	"# Ajax异步交互\n"+
+	'- GitTokener 编译类\n'+
+	'	- TitleTokener		标题\n'+ 
+	'	- OrderNumTokener	有序列表\n'+ 
+	'	- SepLineTokener	分割线\n'+  
+	'	- PointTokener		无序列表\n'+ 
+	'	- TableTokener		表格\n'+  
+	'- GitManage git核心类\n'+ 
+	'- GitContext git上下文对象\n'+ 
+	"---1\n"+
+	"\n"+
+	"---2\n"+
+	"\n"+
+	"---3\n"+
+	"\n"+
+	"---4\n"+
+	"\n"+
+	"---5\n"+
+	"\n"+
+	"### 说明\n"+
+	"    描述\n"+
+	"### 一、字段描述\n"+
+	"#### 1.1 字段描述\n"+
+	"|类型|字段|描述\n"+
+	"|---|---|---\n"+
+	"### 构造描述\n"+
+	"|构造|描述\n"+
+	"|---|---\n"+
+	"|模板|模板\n"+
+	"### 方法描述\n"+
+	"|返回值|方法|参数\n"+
+	"|---|---|---\n"+
+	"|模板|模板|模板\n"+
+	"### 案例\n"+
+	"1. 有序标题\n"+
+	"	1) 案例\n"+
+	"		1.1 **案例**\n"+
+	"		 内容\n"+
+	"	2) 案例\n"+
+	"2.案例\n"+
+	"3.案例\n"+
+	"4.案例\n"+
+	"* 案例\n"+
+	"	* 案例\n"+
+	"	* 案例\n"+
+	"	* 案例\n"+
+	"		* 案例\n"+
+	"			* 案例\n"+
+	"### 详细描述";
 	new GitManage(gitStr).getElements().forEach(item => {
 		item.appendTo($(".git-show-cnt-in").eq(0));
 	});
@@ -266,6 +299,7 @@
 	window.onresize = function(e){
 		initAndUpdate();
 	}
+	
 	function initAndUpdate(){
 		document.body.style.minHeight = window.innerHeight+"px";
 		//对导航条的初始化和随着窗口的变动进行更新
@@ -343,6 +377,13 @@
 		},
 	});
 	*/
+	ajax({
+		url:"http://localhost:8080/MyBlog/api/rePayNotify.do",
+		type:"get",
+		success:function(e){
+			alert(e);
+		},
+	});
 	</script>
  </body>
 </html>

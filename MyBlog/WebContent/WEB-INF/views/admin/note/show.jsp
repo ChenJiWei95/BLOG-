@@ -16,7 +16,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 
-  <link rel="stylesheet" href="<%=basePath%>css/git-plugin.css" media="all"> 	
+  <link rel="stylesheet" href="<%=basePath%>css/git-plugin.css" media="all">  	
   <link rel="stylesheet" href="<%=basePath%>css/basi.css" media="all"> 	
   <style>
   * {
@@ -73,11 +73,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<ul class="nolist">
 		<li title="查找">
 			<i class="layui-icon layui-icon-search"></i>
-			<div class="li-cnt layui-form" action="show.chtml" style=" overflow: hidden; height: 362px;">
+			<form action="show.chtml?type=1" method="post" enctype="application/x-www-form-urlencoded">
+			<div class="li-cnt layui-form" action="show.chtml" style=" overflow: hidden; height: 200px;">
 				<div class="layui-form-item" style="margin-top: 20px;">
 					<label class="layui-form-label">名称</label>
 					<div class="layui-input-inline" style="width: 250px;">
-						<input type="text" name="name" placeholder="请日志名称" autocomplete="off" class="layui-input">
+						<input type="text" name="Qu_name_lk_s" placeholder="请日志名称" autocomplete="off" class="layui-input">
 					</div> 
 				</div>
 				<div class="layui-form-item">
@@ -85,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="layui-input-inline" style="width: 120px;">
 						<input 
 							type="text" 
-							name="start_date" 
+							name="Qu_createDate_ge_s" 
 							placeholder="请输入开始时间" 
 							id="date" 
 							autocomplete="off" 
@@ -95,22 +96,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="layui-input-inline" style="width: 120px;">
 						<input 
 							type="text" 
-							name="end_date" 
+							name="Qu_createDate_le_s" 
 							placeholder="请输入结束时间" 
 							id="date1" 
 							autocomplete="off" 
 							style="width: 120px;" 
 							class="layui-input">
 					</div>
-				</div> 
-				<div class="layui-form-item">
-					<label class="layui-form-label">筛选标签</label>
-					<div class="layui-input-inline" style="width: 250px;"> 
-						<c:forEach begin="0" items="${all}" step="1" var="Data" varStatus="varsta">
-						   	 <input type="checkbox" name="${Data.id}|${Data.name}" lay-skin="primary" title="${Data.name}">
-						</c:forEach>
-					</div>
-				</div>
+				</div>  
 				<div class="layui-form-item" style="margin-bottom: 20px;">
 					<button 
 						lay-submit 
@@ -118,13 +111,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						id="C-btn-search" 
 						class="layui-btn c-button" 
 						style="float: right; margin-right: 60px;">确认</button>
+					<input type="submit" id="submit" class="layui-hide"/>
 				</div>
 			</div>
+			</form>
 		</li> 
+		<li title="标签查找" >
+			<i class="layui-icon layui-icon-note"></i>
+			<form action="show.chtml?type=2" method="post" enctype="application/x-www-form-urlencoded">
+			<div class="li-cnt layui-form" action="show.chtml" style=" overflow: hidden; height: 300px;">
+				<div class="layui-form-item">
+					<label class="layui-form-label">筛选标签</label>
+					<div class="layui-input-inline" style="width: 250px;"> 
+						<c:forEach begin="0" items="${all}" step="1" var="Data" varStatus="varsta">
+						   	 <input type="checkbox" name="${Data.id}" lay-skin="primary" title="${Data.name}">
+						</c:forEach>
+					</div>
+				</div>
+				<div class="layui-form-item" style="margin-bottom: 20px;">
+					<button 
+						lay-submit 
+						lay-filter="C-btn-search2" 
+						id="C-btn-search" 
+						class="layui-btn c-button" 
+						style="float: right; margin-right: 60px;">确认</button>
+					<input type="submit" id="submit2" class="layui-hide"/>
+				</div>
+			</div>
+			</form>
+		</li>
 		<li title="TOP" class="li-top">
 			<i class="layui-icon layui-icon-upload-circle"></i>
 			<div class="li-cnt" style="height: 36px;">
-				<label class="msg-label">点击返回顶部</label>
 			</div>
 		</li>
 	</ul>
@@ -189,6 +207,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,l = 'C-admin-note-table'
 	,t = 'C-admin-note-form'
 	,s = 'C-btn-search'
+	,s2 = 'C-btn-search2'
     ,admin = layui.admin
     ,laytpl = layui.laytpl
     ,table = layui.table;
@@ -294,14 +313,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         ,type: 'datetime'
     });
     
-    /* form.on("submit("+b+")", function(data){
-		admin.cajax({
-			method: 'update'
-			,id: l
+    form.on("submit("+s+")", function(data){
+		/* admin.chtml({
+			method: 'show'
+			,contentType: 'application/x-www-form-urlencoded'
 			,data: data.field  
-		});
+		}); */
+		$("#submit").click();
 		return false;
-	}) */
+	}) 
+    form.on("submit("+s2+")", function(data){ 
+		$("#submit2").click();
+		return false;
+	}) 
     
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');

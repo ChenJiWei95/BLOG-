@@ -196,7 +196,7 @@ public class NotifyControl {
                     return new PasswordAuthentication(p.getProperty("mail.smtp.user"),p.getProperty("mail.smtp.pass"));
                 }
             });
-            session.setDebug(true);
+//            session.setDebug(true);
             Message message = new MimeMessage(session);
             //消息发送的主题
             message.setSubject(subject);
