@@ -222,7 +222,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     for(var i in $(".content")){
     	new GitManage($(".content").eq(i).text()).getElements().forEach(function(item) {
         	var e = $(item);
-        	console.log(e);
+        	//console.log(e);
         	$(".mark_code").eq(i).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
         });
     }

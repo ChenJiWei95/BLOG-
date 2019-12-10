@@ -895,7 +895,7 @@
 	}
 
 	NodeList.prototype.first = function (){
-		console.log(this);
+		//console.log(this);
 		return this.eq(0);
 	}
 	NodeList.prototype.removeClass = function(className){
@@ -1043,7 +1043,7 @@
 	
 	//list保存的对象 用于圆点列表 生成li标签
 	function ItemData(oddOrEven, context, c){
-		console.log(context.currentLine);
+		//console.log(context.currentLine);
 		if(c === undefined) c = null;
 		this.text = context.currentLine;		//项值
 		this.childs = c;	//子集
@@ -1109,13 +1109,14 @@
 			} 
 			return [false]; 
 		}
-		,firstSep: "  ├─"
-		,fullSep: "  │"
-		,lastSep: "  └─"
-		,fullSep2: "   "
+		,firstSep	: "  ├─"
+		,fullSep	: "  │"
+		,lastSep	: "  └─"
+		,fullSep2	: "    "
 		,isLastOfFull: []
 		,getFullSep: function(count){
 			var str = '';
+			
 			for(var i = 0; i < count; i++){ 
 				str += gitUtil.isLastOfFull[i] ? gitUtil.fullSep2 : gitUtil.fullSep; 
 			}
@@ -1551,9 +1552,9 @@
 				context.next();
 				str = context.currentLine;
 				context.pre();
-				console.log(context.currentLine);
+				//console.log(context.currentLine);
 				context.pre(temp);
-				console.log(context.currentLine);
+				//console.log(context.currentLine);
 				return _isSure(str);
 			} else return false;
 		}
@@ -1588,7 +1589,7 @@
 				str = arr[i];
 				var start = 0, end = str.length-1;
 				if(str.charAt(0) === ":") align = "left";
-				console.log("str.charAt(end) "+str.charAt(end));
+				//console.log("str.charAt(end) "+str.charAt(end));
 				if(str.charAt(end) === ":") align = (align == "left" ? "center" : "right");
 				alignArr.push(align);
 			}
@@ -1602,7 +1603,7 @@
 		//处理 获取数据
 		function _done(context){
 			var arr = new Array();
-			console.log(context.currentLine);
+			//console.log(context.currentLine);
 			arr.push(context.currentLine.substring(1).split("|"));
 			context.next();
 			var alignArr = _getAligns(context.currentLine);
@@ -1613,7 +1614,7 @@
 				context.next();
 			}
 			if(context.currentLine !== undefined) context.pre();
-			console.log(arr);
+			//console.log(arr);
 			return {array: arr, alignArray: alignArr};
 		}
 	}
@@ -1641,14 +1642,14 @@
 			}
 			thead.appendTo(table);
 			var tbody = $$.cre("tbody");
-			console.log(alignArr);
+			//console.log(alignArr);
 			for(var i = 1; i < data.length; i++){
 				var arr = data[i];
 				var tr = $$.cre("tr").appendTo(tbody);
 				for(var j = 0; j < alignArr.length; j++){
-					console.log("alignArr[j] " + alignArr[j]);
+					//console.log("alignArr[j] " + alignArr[j]);
 					if (i%2 === 0) tr.addClass("tr-odd");
-					console.log(arr[j]);
+					//console.log(arr[j]);
 					var pre = gTokener.done(new TempContext(arr[j]));
 					var th = $$.cre("td").attr("align", alignArr[j]);
 					pre.appendTo(th);
@@ -1711,15 +1712,14 @@
 						}else 
 							$$.cre("span").text(c).appendTo(pre);
 						a.appendTo(pre);
-					} else if (c === "!") { //图片 ![alt](src)
+					} else if (c === "!") { // 图片 ![alt](src)
 						c = str.charAt(i++);
 						if(c === "["){
-							//图片 ![alt](src)
+							// 图片 ![alt](src)
 							//![百度](https://www.baidu.com/img/baidu_jgylogo3.gif)
 							//<img alt="" src=""/>
 							var sepLastIndex = str.indexOf("]", i);
-							var alt;
-							var src;
+							var alt,src;
 							alt = str.substring(i , sepLastIndex);
 							tempIndex = sepLastIndex;
 							sepLastIndex = str.indexOf(")", sepLastIndex+1);
@@ -1735,7 +1735,7 @@
 							.text(str.substring(i, sepLastIndex)).appendTo(pre);
 							i = sepLastIndex + 1;
 						} else $$.cre("span").text(c).appendTo(pre);
-						//加粗 **content**
+						// 加粗 **content**
 					}else 
 						$$.cre("span").text(c).appendTo(pre);
 				}
