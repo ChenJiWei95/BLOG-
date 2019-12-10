@@ -1492,6 +1492,36 @@
 			return JSONAc.cls.doReducte(str)
 		}
 	}
+	function NoteAmbiguitychar(){
+		var mapCode = new Map();
+		_init();
+		var keys = mapCode.getKeys();
+		var values = mapCode.getValues();
+		function _init(){
+			mapCode.put("[", "#5B#");
+			mapCode.put("]", "#5D#");
+			mapCode.put("\'", "#27#");
+		}
+		this.doCheckAndReplace = function(str){
+			for(var i in keys){
+				if(str.indexOf(keys[i]) != -1)
+					str = str.replaceAll(keys[i], values[i]);
+			}
+			return str;
+		}
+		//mar 3, 2019 bug 判断是否为字符串 是则恢复 不是则不处理
+		this.doReducte = function(str){
+			if(typeof str == "string"){
+				for(var i in keys){
+					if(str.indexOf(values[i]) != -1){
+						//var bool = (keys[i] == "\"" || keys[i] == "\'");
+						str = str.replaceAll(values[i],  keys[i]);
+					}	
+				}
+			}
+			return str;
+		}
+	}
 	function JSONAmbiguitychar(){
 		var mapCode = new Map();
 		_init();

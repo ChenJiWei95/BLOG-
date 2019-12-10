@@ -203,6 +203,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         elem: "#"+t_d,
         url: 'list.do',
         page: !0,
+        limit: 20,
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}

@@ -17,6 +17,7 @@ import com.blog.control.BaseControl;
 import com.blog.entity.CMessage;
 import com.blog.service.MessageService;
 import com.blog.util.ActionUtil;
+import com.blog.util.Pages;
 
 @Controller
 // 数据字典
@@ -131,6 +132,8 @@ public class MessageControl extends BaseControl{
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
+			Pages page = new Pages();
+			
 			List<CMessage> list = messageServiceImpl.getByDESC("isRead");
 			return com.blog.util.Message.success("请求成功", listToJSONArray(list));
 		}catch(Exception e) {

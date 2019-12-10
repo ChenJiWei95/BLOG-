@@ -110,17 +110,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="con">
 		<!-- 导航栏 -->
-		<div class="nav-done">
-			<i class="web-icon"></i>
-			<label class="label-sele-css" blog-event="nvaClick">首页</label>
-			<label class="label-unsele-css" blog-event="nvaClick">标签</label>
-			<label class="label-unsele-css" blog-event="nvaClick">生活</label>
-			<label class="label-unsele-css" blog-event="nvaClick">邮箱我</label>
-			<label class="label-unsele-css" blog-event="nvaClick" data-type="1">GitHub</label>
-			<label class="label-unsele-css" blog-event="nvaClick">关于我</label>
-		</div>
+		<%@ include file="../include/fore/indexNav.jsp" %>
+		
 		<!-- 3D particle -->
 		<div class="show-done"></div>
+		
+		
 		<div class="web-tip simple-done shake_effect">
 			<div class="nav-web-tip-done simple-nav-done">
 				<label class="label-sele-css" >站点信息</label>
@@ -131,118 +126,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>	
 			</div>
 		</div>
+		
 		<!-- 文章简要显示 -->
-		<div class="article-done simple-done">
-			<div class="nav-article-done simple-nav-done">
-				<label class="label-sele-css" blog-event="nvaClick" data-page="con-1"  data-type="2">最新随笔</label>
-				<label class="label-unsele-css" blog-event="nvaClick" data-page="con-2" data-type="2">最热随笔</label>
-			</div>
-			<div class="con-article-done simple-content-done" style="height: 307px;">
-				<div class="cle-f con-article-page" id="con-1">
-					<ul class="nolist"> 
-						<c:forEach begin="0" items="${articles}" step="1" var="Article" varStatus="varsta">
-						<li>
-							<img src="
-								<c:if test="${empty Article.pit_url}"><%=basePath%>img/main/exa-thread.jpg</c:if>
-								<c:if test="${not empty Article.pit_url}">${Article.pit_url}</c:if>" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc"><div><div class="desc-title">${Article.name}</div><div class="desc-con">${Article.simp_desc}</div></div></div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse"></i>
-									<span>666</span>
-								</label>
-								<label>
-									<i class="fa-heart"></i>
-									<span>666</span>
-								</label>
-								<label>
-									<i class="fa-chat"></i>
-									<span>666</span>
-								</label>
-							</div>
-						</li>
-						</c:forEach> 
-					</ul>
-				</div>
-				<div class="cle-f con-article-page layui-hide" id="con-2"></div>
-			</div>
-		</div>
+		<%@ include file="../include/fore/artcle.jsp" %> 
 		<!-- 分享简要显示 -->
-		<div class="share-done simple-done">
-			<div class="nav-share-done simple-nav-done">
-				<label class="label-sele-css">生活分享</label>
-			</div>
-			<div class="con-share-done simple-content-done">
-				<div class="cle-f con-share-page">
-					<ul class="nolist">
-						<li>
-							<img src="<%=basePath%>img/main/share-1.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse"></i>
-									<span>33</span>
-								</label>
-								<label>
-									<i class="fa-heart"></i>
-									<span>11</span>
-								</label>
-								<label>
-									<i class="fa-chat"></i>
-									<span>12</span>
-								</label>
-							</div>
-						</li>
-						<%-- <li>
-							<img src="<%=basePath%>img/main/share-2.jpg" alt="" width="302" height="207" blog-event="pictureClick"/>
-							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">BBQ</div></div></div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse"></i>
-									<span>11</span>
-								</label>
-								<label>
-									<i class="fa-heart"></i>
-									<span>32</span>
-								</label>
-								<label>
-									<i class="fa-chat"></i>
-									<span>33</span>
-								</label>
-							</div>
-						</li>
-						<li>
-							<img src="<%=basePath%>img/main/share-3.jpg" alt="" width="302" height="207" blog-event="pictureClick" "/>
-							<div class="desc"><div><div class="desc-title"> </div><div class="desc-con">描述一些什么</div></div></div>
-							<div class="interacte">
-								<label>
-									<i class="fa-browse"></i>
-									<span>32</span>
-								</label>
-								<label>
-									<i class="fa-heart"></i>
-									<span>12</span>
-								</label>
-								<label>
-									<i class="fa-chat"></i>
-									<span>12</span>
-								</label>
-							</div>
-						</li> --%>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="bom" style="position: relative;">
-			<div class="bom_container">
-				<li style="color:#586069;list-style:none;padding:10px 245px;margin: auto; width: 511px;">
-					Copyright ©2018 
-					<span  style="color:#a71d5d;cursor:pointer;" title="作者邮箱">chenjiwey@163.com</span> 
-					 | 粤ICP备
-					<span  style="color:#a71d5d;cursor:pointer;" title="备案号">19034391</span>
-				</li>
-			</div>
-		</div>
+		<%@ include file="../include/fore/shareLife.jsp" %>
+		
+		<%@ include file="../include/fore/bom.jsp" %>
 	</div>
 	<script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
 	<script>
