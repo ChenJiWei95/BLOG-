@@ -23,6 +23,7 @@ import com.blog.Page;
 import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
+import com.blog.entity.CMessage;
 import com.blog.entity.Data;
 import com.blog.entity.Note;
 import com.blog.entity.NoteTabBrige;
@@ -32,6 +33,7 @@ import com.blog.service.NoteTabBrigeService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
+import com.blog.util.sql.EqAdapter;
 
 @Controller
 @RequestMapping("/admin/note")
@@ -53,7 +55,7 @@ public class NoteControl extends BaseControl{
 	}
 	
 	@RequestMapping("/show.chtml") 
-	public String show(HttpServletRequest request, ModelMap model, String type){
+	public String show(HttpServletRequest request, ModelMap model, String type, Page page){
 		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 		List<Note> list = null;
 		log.info(type);
@@ -66,32 +68,32 @@ public class NoteControl extends BaseControl{
 			}
 			if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
 			list = noteServiceImpl.find("SELECT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id FROM note a, note_tab_brige b, `data` c where 1=1 and a.id = b.note_id AND c.id = b.note_tab_id AND a.admin_id='"+admin.getId()+"' AND ("+sb.toString()+") ORDER BY a.create_date DESC ");
+			model.addAttribute("notes", list);
 		} else {
-			// 根据所传条件进行查找 
-			QueryHelper queryHelper = new QueryHelper();
-			Page page = new Page(); 
-			
-			// 制定排序
-			page.addOrder(Order.desc("create_date"));
-			
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			// log.info(limit+ ","+pageNum);
+			QueryHelper queryHelper = new QueryHelper(); 
+			queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
+			queryHelper.paramBind(request, page);	// 获取前台参数
 			// 自定义查询条件 admin_id = ‘ ’
 			Filter f = new Filter();
 			f.setOperator(com.blog.Filter.Operator.eq);
 			f.setProperty("admin_id");
 			f.setValue(admin.getId());
-			page.addFilter(f);
+			page.addFilter(f);		
+			page.addOrder(Order.desc("create_date"));		// 排序
+			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+			// 进行分页
+			List<Note> resultList = noteServiceImpl.find("SELECT * FROM note "+
+			queryHelper.buildAllQuery(page)+ 
+			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
 			
-			queryHelper.addCloumnAlias("createDate", "create_date");// 前端设定为createDate 实际数据库为 create_date 
-			queryHelper.paramBind(request, page);// 初始化数据
-			String sql = queryHelper.buildAllQuery(page);// 生成sql部分语句
-			log.info("=================show.jsp 以下是查询语句=============");
-			log.info(sql);
-			
-			list = noteServiceImpl.find("SELECT * FROM note"+sql);			
+			model.addAttribute("notes", resultList);
 		}
+		
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
-		model.addAttribute("notes", list);
 		model.addAttribute("noteTabs", list2);
 		model.addAttribute("all", listData); 
 		return "admin/note/show"; 
@@ -297,12 +299,46 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object init() throws IOException{
-		try {
-			List<Note> list = noteServiceImpl.getAll();
-			return Message.success("请求成功", listToJSONArray(list));
+	public Object init(Page page, HttpServletRequest request) throws IOException{
+		try { 
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			// log.info(limit+ ","+pageNum);
+			QueryHelper queryHelper = new QueryHelper(); 
+			queryHelper.paramBind(request, page);	// 获取前台参数
+			page.addOrder(Order.desc("time"));		// 排序
+			page.addOrder(Order.desc("isRead"));	// 排序
+			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+			// 进行分页
+			List<Note> list = noteServiceImpl.find("SELECT * FROM message "+
+			queryHelper.buildAllQuery(page)+ 
+			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
+			
+			Integer count = 0;
+			if(page.getFilters().size() > 0) {
+				// 拼接查询数量的条件
+				StringBuilder eq = new StringBuilder();
+				List<Filter> fs = page.getFilters();
+				for(Filter item : fs) {
+					eq.append(item.getProperty())
+					.append(item.getQueryOperator())
+					.append(item.getValue());
+					eq.append(" AND ");
+				}
+				if(fs.size()>0)eq.delete(eq.length()-4, eq.length());// 删除多余
+				count = noteServiceImpl.count(eq.toString());
+			}
+			else
+				count = noteServiceImpl.count();
+			
+			// 构建返回数据
+			page.setData(list);
+			page.setMsg("ok");
+			page.setCount(count);
+			page.setCode("0"); 
+			return page;
 		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
+			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}
 	

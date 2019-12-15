@@ -66,15 +66,71 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     line-height: 39px;
     margin: 4px;
   }
+  	.iframe_box{width:800px; height:480px; border:1px solid #ddd; border-radius:5px; overflow:hidden; padding:5px;}
+	.iframe_box_title{height:30px; background:rgba(85, 85, 85, 0.15)}
+	.iframe_box_title i {cursor:pointer; width:16px; height:16px;}
+	.iframe_box_title #switch_button{background:url(images/hide.png); margin:0px 782px;}
+	.iframe_box_title #big_button{background:url(images/big.png); margin:0 761px;}
+	.iframe_box_title span{color:#555; line-height:30px; padding:8px;}
+	.iframe_box iframe{width:798px; height:450px; border:1px solid #ddd;}
+	.code_box .iframe_div{height:30px;width:800px;border-bottom:1px solid #ccc; background:rgba(85, 85, 85, 0.15)}
+	.code_box .iframe_div i{background:url(images/hide.png); margin:0px 782px; cursor:pointer; display:none; width:16px; height:16px;}
+	.code_box .iframe_div span{color:#555; line-height:30px; padding:8px;}
+	.code_box .code_div{background:#f6f4f0; padding:10px;}
+	.code_box .code::-webkit-scrollbar {width: 4px;border-radius:2px;}
+	.code_box .code::-webkit-scrollbar-button {background-color: #fff;}
+	.code_box .code::-webkit-scrollbar-track {height:100px;background: #fff;}
+	.code_box .code::-webkit-scrollbar-thumb {background: #ccc;border-radius: 5px;}
+	.code_box .code{overflow:hidden; height:700px; overflow-y:auto; overflow-x:auto; width:781px; }
+	.code_box .code table tbody tr td span{color:blue;}
+	.code_box .code table tbody tr td span.red{color:red;}
+	.code_box .code table tbody tr td span.purple{color:#ff66ff}
+	.code_box .code table tbody tr td span.text{color:#555}
+	.code_box .code table tbody tr td span.content{color:#00cc33;}
+
+	.code_box{margin-top:10px; width:800px; min-height:500px; border:1px solid #ddd; border-radius:5px; padding:5px; font-size:12px; font-family:Consolas; overflow:hidden;}
+	.code_box .code table{border-spacing: 0;border-collapse: collapse; background: #f6f4f0;}
+	.code_box .code table tbody{display: table-row-group;vertical-align: middle;border-color: inherit;}
+	.code_box .code table tbody tr{height:24px; white-space:nowrap;}
+	.code_box .code table tbody tr:hover{background:#ece8dd;}
+	.code_box .code table tbody tr td{padding:5px 10px;}
+	.code_box .code table tbody tr .Serial{width:20px; color:rgba(27,31,35,0.3); text-align:right;}
+	.code_box .code table tbody tr .Serial:hover{color:rgba(27,31,35,0.5); cursor:pointer;}
+	.code_box .code table tbody tr .row_code{}
+  </style>
+  <style id="code-css">
+  	
   </style>
 </head>
 <body>
+	<div class="code_box" style="margin-top: 0px;">
+					<!--显示基本的行数和文件大小以及一些基本的操作-->
+					<div class="iframe_div">
+						<span>源码</span>
+					</div>
+					<!--显示从后台读取的代码-->
+					<div class="code_div">
+						<div class="code">
+							<table class="code_table">
+								<tbody id="code"></tbody>
+							</table>
+						</div>
+					</div>
+	</div>
+	
+	<div class="myModal" click-event="myModalClick">
+		<span class="close" click-event="myModalClick">×</span>
+		<img class="myModalImg" alt="">
+		<div class="desc"></div>
+	</div>
+
   <div class="more-oprate" style="right: 30px; top: 30px;">
   	<ul class="nolist">
-		<li title="查找">
+		<li title="查找" click-event="search"> 
 			<i class="layui-icon layui-icon-search"></i>
 			<form action="show.chtml?type=1" method="post" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style=" overflow: hidden; height: 200px;">
+			<div class="li-cnt layui-form" action="show.chtml" style="height: 200px;">
+				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
 				<div class="layui-form-item" style="margin-top: 20px;">
 					<label class="layui-form-label">名称</label>
 					<div class="layui-input-inline" style="width: 250px;">
@@ -116,10 +172,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			</form>
 		</li> 
-		<li title="标签查找" >
+		<li title="标签查找" click-event="search">
 			<i class="layui-icon layui-icon-note"></i>
 			<form action="show.chtml?type=2" method="post" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style=" overflow: hidden; height: 300px;">
+			<div class="li-cnt layui-form" action="show.chtml" style="height: 300px;">
+				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
 				<div class="layui-form-item">
 					<label class="layui-form-label">筛选标签</label>
 					<div class="layui-input-inline" style="width: 250px;"> 
@@ -140,10 +197,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			</form>
 		</li>
-		<li title="TOP" class="li-top">
+		<li title="TOP" class="li-top" click-event="top">
 			<i class="layui-icon layui-icon-upload-circle"></i>
-			<div class="li-cnt" style="height: 36px;">
-			</div>
 		</li>
 	</ul>
   	 
@@ -181,6 +236,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
   <script src="<%=basePath%>js/git-plugin V0.js"></script>
+  <script src="<%=basePath%>js/DealCodeV0-1.js"></script>
   <script id="demo" type="text/html">
   {{# 
 	new GitManage(d).getElements().forEach(function(item) { 
@@ -197,7 +253,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin', 'laytpl', 'laydate'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'laytpl', 'laydate', 'util'], function(){
     var form = layui.form
     ,laydate = layui.laydate
     ,a = "C-admin-note-add"
@@ -209,9 +265,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,s = 'C-btn-search'
 	,s2 = 'C-btn-search2'
     ,admin = layui.admin
+    ,util = layui.util
     ,laytpl = layui.laytpl
     ,table = layui.table;
     $ = layui.$;
+    
+    //code-cnt
+    var dealCode = new DealCode();
+    dealCode.setInit('<div class="comment_atta"><Label><!--表情评论--><img id="face" width="25px" height="25px" title="" src="images/face.png" alt="" onmousemove="this.src=\'images/face_hover.png\'" onmouseout="this.src=\'images/face.png\'"/><!--图片评论--><img id="picture" width="25px" height="25px" title="" src="images/pi.png" alt="" onmousemove="this.src=\'images/pi_hover.png\'" onmouseout="this.src=\'images/pi.png\'" onclick = "file_picture.click()"/><div style="clear:both;"></div></Label><Label><img id="send" width="25px" height="25px" title="" src="images/send.png" alt="" onmousemove="this.src=\'images/send_hover.png\'" onmouseout="this.src=\'images/send.png\'"/></Label><div class="float"></div></div>', 'code-css', 'code');
     /* var getTpl = demo.innerHTML;
     laytpl(getTpl).render($(".content").eq(0).text(), function(html){
     	console.log("html");
@@ -235,6 +296,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	where: field
       	});
     });
+  	
+  	util.clickEvent({
+  		pictureDetail: function(e){
+  			//console.log(e.attr("src"));
+			$(".myModalImg")[0].src = e.attr("src");
+			$(".myModal .desc").eq(0).text(e.attr("alt"));
+			$(".myModal:first").addClass("pit-open-scale");
+			$(".myModalImg:first").addClass("pit-open-scale");
+  		}
+	  	,myModalClick: function (e) {
+			if(e.attr("class").indexOf("myModalImg") == -1){
+				$(".myModal:first").addClass("pit-close-scale");
+				$(".myModal:first").removeClass("pit-open-scale");
+				setTimeout(function(){
+					$(".myModal:first").removeClass("pit-close-scale");
+				}, 700);
+			}
+		}
+	  	,top: function(e){
+	  		// 回到顶部
+	  		
+	  	}
+	  	,search: function(e){
+	  		// 模糊查询
+	  		console.log('模糊查询');
+	  		//console.log();
+	  		for(var i = 0; i < e.siblings().length; i++){
+	  			e.siblings().eq(i).find(".li-cnt").removeClass('active-div');
+	  			e.siblings().eq(i).find("i").removeClass('active-li');
+	  		}
+	  		e.find("i").eq(0).addClass('active-li');
+	  		//console.log(e.next());
+	  		
+	  		
+	  		e.find(".li-cnt").addClass('active-div');
+	  		
+	  		return !1;
+	  	}
+	  	,moreOprateClose: function(e){
+	  		console.log('关闭');
+	  		console.log();
+	  		
+	  		e.parents("li").eq(0).find(".li-cnt").removeClass('active-div');
+	  		e.parents("li").eq(0).find("i").removeClass('active-li');
+	  		return !1;
+	  	}
+	  	
+  	});
   
     //事件
     var active = {

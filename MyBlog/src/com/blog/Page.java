@@ -35,13 +35,15 @@ public class Page<T> implements Serializable {
 	/** 页码 */
 	private int page = DEFAULT_PAGE_NUMBER;// 当前页
 	/** 每页记录数 */
-	private int rows = DEFAULT_PAGE_SIZE;// 每页显示记录数
+//	private int rows = DEFAULT_PAGE_SIZE;// 每页显示记录数
 	
 	private String sort;// 排序字段
 	private String msg;// 
 	private String order;// asc/desc
-	private String code;// 
-	private int limit;	
+	private String code;// 0/1
+	
+	/** 每页记录数 */
+	private int limit = DEFAULT_PAGE_SIZE;// 每页显示记录数
 	
 	private String alias;//查询别名
 	
@@ -109,7 +111,7 @@ public class Page<T> implements Serializable {
 	 * @return 总页数
 	 */
 	public int getTotalPages() {
-		return (int) Math.ceil((double) getCount() / (double) this.rows);
+		return (int) Math.ceil((double) getCount() / (double) this.limit);
 	}
 
 	
@@ -163,24 +165,7 @@ public class Page<T> implements Serializable {
 	}
 	
 	public int getPageSize(){
-		return this.rows;
-	}
-
-	/**
-	 * 设置每页记录数
-	 * 
-	 * @param rows
-	 *            每页记录数
-	 */
-	public void setRows(int rows) {
-		if (rows < 1 || rows > MAX_PAGE_SIZE) {
-			rows = DEFAULT_PAGE_SIZE;
-		}
-		this.rows = rows;
-	}
-	
-	public int getRows() {
-		return rows;
+		return this.limit;
 	}
 
 	public String getSort() {

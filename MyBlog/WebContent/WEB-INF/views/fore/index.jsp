@@ -110,23 +110,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<div class="con">
 		<!-- 导航栏 -->
-<<<<<<< HEAD
 		<%@ include file="../include/fore/indexNav.jsp" %>
-		
-=======
-		<div class="nav-done">
-			<i class="web-icon"></i>
-			<label class="label-sele-css" blog-event="nvaClick">首页</label>
-			<label class="label-unsele-css" blog-event="nvaClick">标签</label>
-			<label class="label-unsele-css" blog-event="nvaClick">生活</label>
-			<label class="label-unsele-css" blog-event="nvaClick" data-type="4">邮箱我</label>
-			<label class="label-unsele-css" blog-event="nvaClick" data-type="1">GitHub</label>
-			<label class="label-unsele-css" blog-event="nvaClick">关于我</label>
-		</div>
->>>>>>> refs/remotes/origin/master
+
 		<!-- 3D particle -->
 		<div class="show-done"></div>
-		
 		
 		<div class="web-tip simple-done shake_effect">
 			<div class="nav-web-tip-done simple-nav-done">

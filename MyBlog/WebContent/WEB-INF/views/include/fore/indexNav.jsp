@@ -6,7 +6,7 @@
 			<label class="label-sele-css" blog-event="nvaClick">首页</label>
 			<label class="label-unsele-css" blog-event="nvaClick">标签</label>
 			<label class="label-unsele-css" blog-event="nvaClick">生活</label>
-			<label class="label-unsele-css" blog-event="nvaClick">邮箱我</label>
+			<label class="label-unsele-css" blog-event="nvaClick" data-type="4">邮箱我</label>
 			<label class="label-unsele-css" blog-event="nvaClick" data-type="1">GitHub</label>
 			<label class="label-unsele-css" blog-event="nvaClick">关于我</label>
 		</div>

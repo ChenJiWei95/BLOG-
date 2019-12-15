@@ -107,7 +107,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
-		console.log("调用更新");
+		//console.log("调用更新");
+		data.field['content'] = data.field['content'].replace(/\'/g, '\'\'');
 		admin.cajax({
 			method: 'update'
 			,id: l

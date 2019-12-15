@@ -1725,8 +1725,8 @@
 							sepLastIndex = str.indexOf(")", sepLastIndex+1);
 							src = str.substring(tempIndex+2, sepLastIndex);
 							i = sepLastIndex + 1;
-						}else $$.cre("span").text(c).appendTo(pre);
-						$$.cre("img").attr("alt", alt).attr("src", src).appendTo(pre);
+							$$.cre("img").attr("alt", alt).attr("src", src).attr("width", "80%").attr("click-event", "pictureDetail").appendTo(pre);
+						}else $$.cre("span").text('!'+c).appendTo(pre);
 					} else if (c === "*"){
 						c = str.charAt(i++);
 						if(c === "*"){
