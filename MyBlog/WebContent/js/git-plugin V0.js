@@ -1320,6 +1320,26 @@
 		}
 	}	
 	
+	HTMLCodeTokener.extends(GitTokener);
+	function HTMLCodeTokener (){
+		GitTokener.call(this);
+		this.isSure = function(context){
+			var str = context.currentLine;
+			
+			if(str.charAt(0) === "-" && str.substring(0, 3) === "---")
+				return true;
+			return false;
+		}
+		this.done = function(context){
+			var str = context.currentLine;
+			var lastC = str.charAt(str.length-1);
+			//判断尾数为几 否则默认为1
+			var classPreDix = ($$.util.isNumber(lastC) ? lastC : 1);
+			//最大只能为3
+			return $$.cre("p").addClass("p-sep-line-" + (classPreDix > 4 ? 4 : classPreDix));
+		}
+	}
+	
 	//适配
 	function TempContext(str){
 		this.currentLine = str;

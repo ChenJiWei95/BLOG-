@@ -81,14 +81,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.code_box .code::-webkit-scrollbar-button {background-color: #fff;}
 	.code_box .code::-webkit-scrollbar-track {height:100px;background: #fff;}
 	.code_box .code::-webkit-scrollbar-thumb {background: #ccc;border-radius: 5px;}
-	.code_box .code{overflow:hidden; height:700px; overflow-y:auto; overflow-x:auto; width:781px; }
+	.code_box .code{overflow:hidden; max-height:700px; overflow-y:auto; overflow-x:auto; width:781px; }
 	.code_box .code table tbody tr td span{color:blue;}
 	.code_box .code table tbody tr td span.red{color:red;}
 	.code_box .code table tbody tr td span.purple{color:#ff66ff}
 	.code_box .code table tbody tr td span.text{color:#555}
 	.code_box .code table tbody tr td span.content{color:#00cc33;}
 
-	.code_box{margin-top:10px; width:800px; min-height:500px; border:1px solid #ddd; border-radius:5px; padding:5px; font-size:12px; font-family:Consolas; overflow:hidden;}
+	.code_box{margin-top:10px; width:800px; min-height:300px; border:1px solid #ddd; border-radius:5px; padding:5px; font-size:12px; font-family:Consolas; overflow:hidden;}
 	.code_box .code table{border-spacing: 0;border-collapse: collapse; background: #f6f4f0;}
 	.code_box .code table tbody{display: table-row-group;vertical-align: middle;border-color: inherit;}
 	.code_box .code table tbody tr{height:24px; white-space:nowrap;}
@@ -103,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </style>
 </head>
 <body>
-	<div class="code_box" style="margin-top: 0px;">
+	<div class="code_box code-box1" style="margin-top: 0px;">
 					<!--显示基本的行数和文件大小以及一些基本的操作-->
 					<div class="iframe_div">
 						<span>源码</span>
@@ -216,7 +216,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  		</label>
 		</div>
   		<div class="layui-card-body" style="overflow: hidden;">
+  			<!-- 内容中转 -->
   			<div class="content layui-hide">${Note.content}</div>
+  			<!-- 编译之后的内容 -->
   			<div class="mark_code"></div>
   			<label class="item-tag">
 				<c:forEach begin="0" items="${noteTabs}" step="1" var="NoteTabBrige" varStatus="varsta">
@@ -272,7 +274,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     //code-cnt
     var dealCode = new DealCode();
-    dealCode.setInit('<div class="comment_atta"><Label><!--表情评论--><img id="face" width="25px" height="25px" title="" src="images/face.png" alt="" onmousemove="this.src=\'images/face_hover.png\'" onmouseout="this.src=\'images/face.png\'"/><!--图片评论--><img id="picture" width="25px" height="25px" title="" src="images/pi.png" alt="" onmousemove="this.src=\'images/pi_hover.png\'" onmouseout="this.src=\'images/pi.png\'" onclick = "file_picture.click()"/><div style="clear:both;"></div></Label><Label><img id="send" width="25px" height="25px" title="" src="images/send.png" alt="" onmousemove="this.src=\'images/send_hover.png\'" onmouseout="this.src=\'images/send.png\'"/></Label><div class="float"></div></div>', 'code-css', 'code');
+    dealCode.setInit('<div class="comment_atta"><Label><!--表情评论--><img id="face" width="25px" height="25px" title="" src="images/face.png" alt="" onmousemove="this.src=\'images/face_hover.png\'" onmouseout="this.src=\'images/face.png\'"/><!--图片评论--><img id="picture" width="25px" height="25px" title="" src="images/pi.png" alt="" onmousemove="this.src=\'images/pi_hover.png\'" onmouseout="this.src=\'images/pi.png\'" onclick = "file_picture.click()"/><div style="clear:both;"></div></Label><Label><img id="send" width="25px" height="25px" title="" src="images/send.png" alt="" onmousemove="this.src=\'images/send_hover.png\'" onmouseout="this.src=\'images/send.png\'"/></Label><div class="float"></div></div>', 
+    'code-css', 
+    'code',
+    '.code-box1');
     /* var getTpl = demo.innerHTML;
     laytpl(getTpl).render($(".content").eq(0).text(), function(html){
     	console.log("html");
@@ -283,7 +288,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     for(var i in $(".content")){
     	new GitManage($(".content").eq(i).text()).getElements().forEach(function(item) {
         	var e = $(item);
-        	//console.log(e);
+        	// console.log(e);
+        	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
         	$(".mark_code").eq(i).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
         });
     }
