@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%> 
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -82,13 +83,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.code_box .code::-webkit-scrollbar-track {height:100px;background: #fff;}
 	.code_box .code::-webkit-scrollbar-thumb {background: #ccc;border-radius: 5px;}
 	.code_box .code{overflow:hidden; max-height:700px; overflow-y:auto; overflow-x:auto; width:781px; }
+	.code_box .code table tbody tr td {padding-top: 0 !important; padding-bottom: 0 !important}
 	.code_box .code table tbody tr td span{color:blue;}
 	.code_box .code table tbody tr td span.red{color:red;}
 	.code_box .code table tbody tr td span.purple{color:#ff66ff}
 	.code_box .code table tbody tr td span.text{color:#555}
 	.code_box .code table tbody tr td span.content{color:#00cc33;}
 
-	.code_box{margin-top:10px; width:800px; min-height:300px; border:1px solid #ddd; border-radius:5px; padding:5px; font-size:12px; font-family:Consolas; overflow:hidden;}
+	.code_box{margin-top:10px; width:800px; border:1px solid #ddd; border-radius:5px; padding:5px; font-size:12px; font-family:Consolas; overflow:hidden;}
 	.code_box .code table{border-spacing: 0;border-collapse: collapse; background: #f6f4f0;}
 	.code_box .code table tbody{display: table-row-group;vertical-align: middle;border-color: inherit;}
 	.code_box .code table tbody tr{height:24px; white-space:nowrap;}
@@ -97,118 +99,57 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.code_box .code table tbody tr .Serial{width:20px; color:rgba(27,31,35,0.3); text-align:right;}
 	.code_box .code table tbody tr .Serial:hover{color:rgba(27,31,35,0.5); cursor:pointer;}
 	.code_box .code table tbody tr .row_code{}
+	
+	.note-more {padding-top: 20px; padding-bottom: 20px;}
+	.note-more:hover {cursor: pointer; color: #000;}
   </style>
   <style id="code-css">
   	
   </style>
 </head>
 <body>
-	<div class="code_box code-box1" style="margin-top: 0px;">
-					<!--显示基本的行数和文件大小以及一些基本的操作-->
-					<div class="iframe_div">
-						<span>源码</span>
-					</div>
-					<!--显示从后台读取的代码-->
-					<div class="code_div">
-						<div class="code">
-							<table class="code_table">
-								<tbody id="code"></tbody>
-							</table>
-						</div>
-					</div>
+  <!-- <div class="code_box code-box1" style="margin-top: 0px;">
+	显示基本的行数和文件大小以及一些基本的操作
+	<div class="iframe_div">
+		<span>源码</span>
 	</div>
+	显示从后台读取的代码
+	<div class="code_div">
+		<div class="code">
+			<table class="code_table">
+				<tbody id="code"></tbody>
+			</table>
+		</div>
+	</div>
+  </div> -->
 	
-	<div class="myModal" click-event="myModalClick">
-		<span class="close" click-event="myModalClick">×</span>
-		<img class="myModalImg" alt="">
-		<div class="desc"></div>
+  <div class="myModal" click-event="myModalClick">
+	<span class="close" click-event="myModalClick">×</span>
+	<img class="myModalImg" alt="">
+	<div class="desc"></div>
+ </div>
+	
+  <%@ include file="../../include/admin/note/shop-more-oprate.jsp" %>
+  
+  <%@ include file="../../include/admin/note/shop-note-list.jsp" %>
+  
+  <div class="layui-container note-more" click-event="noteMore" data-page="1">
+  	<div class="layui-card" style="text-align:center; line-height: 30px;">
+	  	更多
 	</div>
-
-  <div class="more-oprate" style="right: 30px; top: 30px;">
-  	<ul class="nolist">
-		<li title="查找" click-event="search"> 
-			<i class="layui-icon layui-icon-search"></i>
-			<form action="show.chtml?type=1" method="post" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style="height: 200px;">
-				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
-				<div class="layui-form-item" style="margin-top: 20px;">
-					<label class="layui-form-label">名称</label>
-					<div class="layui-input-inline" style="width: 250px;">
-						<input type="text" name="Qu_name_lk_s" placeholder="请日志名称" autocomplete="off" class="layui-input">
-					</div> 
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">选择时间</label>
-					<div class="layui-input-inline" style="width: 120px;">
-						<input 
-							type="text" 
-							name="Qu_createDate_ge_s" 
-							placeholder="请输入开始时间" 
-							id="date" 
-							autocomplete="off" 
-							style="width: 120px;" 
-							class="layui-input">
-					</div> 
-					<div class="layui-input-inline" style="width: 120px;">
-						<input 
-							type="text" 
-							name="Qu_createDate_le_s" 
-							placeholder="请输入结束时间" 
-							id="date1" 
-							autocomplete="off" 
-							style="width: 120px;" 
-							class="layui-input">
-					</div>
-				</div>  
-				<div class="layui-form-item" style="margin-bottom: 20px;">
-					<button 
-						lay-submit 
-						lay-filter="C-btn-search" 
-						id="C-btn-search" 
-						class="layui-btn c-button" 
-						style="float: right; margin-right: 60px;">确认</button>
-					<input type="submit" id="submit" class="layui-hide"/>
-				</div>
-			</div>
-			</form>
-		</li> 
-		<li title="标签查找" click-event="search">
-			<i class="layui-icon layui-icon-note"></i>
-			<form action="show.chtml?type=2" method="post" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style="height: 300px;">
-				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
-				<div class="layui-form-item">
-					<label class="layui-form-label">筛选标签</label>
-					<div class="layui-input-inline" style="width: 250px;"> 
-						<c:forEach begin="0" items="${all}" step="1" var="Data" varStatus="varsta">
-						   	 <input type="checkbox" name="${Data.id}" lay-skin="primary" title="${Data.name}">
-						</c:forEach>
-					</div>
-				</div>
-				<div class="layui-form-item" style="margin-bottom: 20px;">
-					<button 
-						lay-submit 
-						lay-filter="C-btn-search2" 
-						id="C-btn-search" 
-						class="layui-btn c-button" 
-						style="float: right; margin-right: 60px;">确认</button>
-					<input type="submit" id="submit2" class="layui-hide"/>
-				</div>
-			</div>
-			</form>
-		</li>
-		<li title="TOP" class="li-top" click-event="top">
-			<i class="layui-icon layui-icon-upload-circle"></i>
-		</li>
-	</ul>
-  	 
   </div>
-  <div class="layui-container cartlist-cnt" style="padding-top: 20px;">
-  	<c:forEach begin="0" items="${notes}" step="1" var="Note" varStatus="varsta">
-  	<div class="layui-card note-item" data-id="${Note.id}">
+  
+  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
+  <script src="<%=basePath%>js/git-plugin V0.js"></script>
+  <script src="<%=basePath%>js/DealCodeV0-1.js"></script>
+  
+  <c:set var="jsonStr" value="${noteTabsJSON}"></c:set> 
+  
+  <script id="noteTpl" type="text/html">
+	<div class="layui-card note-item" data-id="{{d.id}}">
   		<div class="layui-card-header">
 			<label class="name" style="display: block; float: left; font-size: 14px; font-weight: bold; color: #555;"
-			>${Note.name}</label>
+			>{{d.name}}</label>
 	  		<label style="display: block; float: right; ">
 	  			<i class="layui-icon layui-icon-close" blog-event="remove" style="font-size: 24px; cursor: pointer;"></i>
 	  			<i class="layui-icon layui-icon-edit" blog-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
@@ -217,29 +158,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
   		<div class="layui-card-body" style="overflow: hidden;">
   			<!-- 内容中转 -->
-  			<div class="content layui-hide">${Note.content}</div>
-  			<!-- 编译之后的内容 -->
+  			<xmp class="content layui-hide">{{d.content}}</xmp>
+  			<!-- 编译之后的内容 --> 
   			<div class="mark_code"></div>
   			<label class="item-tag">
-				<c:forEach begin="0" items="${noteTabs}" step="1" var="NoteTabBrige" varStatus="varsta">
-					<c:if test="${NoteTabBrige.note_id == Note.id}"><label class="item-tag-block">${NoteTabBrige.name}</label></c:if>
-				</c:forEach>
+				{{d.tabCode}}
 			</label>
 			<label style="display: block; float: right; ">
-	  			上一次修改：<font class="update_date"><c:if test="${empty Note.update_date}">
-	  			xxxx-xx-xx xx:xx:xx</c:if><c:if test="${not empty Note.update_date}">${Note.update_date}</c:if></font>
+	  			上一次修改：<font class="update_date">{{ d.update_date }}</font>
 	  		</label>
 	  		<label style="display: block; float: right; margin-right: 30px;">
-	  			创建时间：<font class="create_date">${Note.create_date}</font>
+	  			创建时间：<font class="create_date">{{d.create_date}}</font>
 	  		</label>
   		</div> 
 	</div>
-	</c:forEach>
-  </div>
-  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
-  <script src="<%=basePath%>js/git-plugin V0.js"></script>
-  <script src="<%=basePath%>js/DealCodeV0-1.js"></script>
+  </script>
   <script id="demo" type="text/html">
+  /*
   {{# 
 	new GitManage(d).getElements().forEach(function(item) { 
 		d["item"] = $(item); }}
@@ -247,10 +182,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			{{ d.item.innerHTML }}
 		</pre>
   {{# }); }}
+  */
+
+  <div class="code_box code-box{{d.index}}" style="margin-top: 0px;">
+	<!--显示基本的行数和文件大小以及一些基本的操作-->
+	<div class="iframe_div">
+		<span>源码</span>
+	</div>
+	<!--显示从后台读取的代码-->
+	<div class="code_div">
+		<div class="code">
+			<table class="code_table">
+				<tbody id="code{{d.index}}"></tbody>
+			</table>
+		</div>
+	</div>
+  </div>
   
   </script> 
   <script>
-  var $;
+  var noteTabs = JSON.parse('${jsonStr}'); 
+  // codeCount 	html代码处理计数
+  // codeArr	html代码处理数组 暂时存储用
+  // currentCount html代码处理保存某一阶段的下标位置     比如初始阶段，或者再获取更多的时候也是一个阶段
+  var $, codeCount, codeArr, currentCount;
+  codeCount = 0
+  ,codeArr = [];
+  
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -273,11 +231,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $ = layui.$;
     
     //code-cnt
-    var dealCode = new DealCode();
+    /*  var dealCode = new DealCode();
     dealCode.setInit('<div class="comment_atta"><Label><!--表情评论--><img id="face" width="25px" height="25px" title="" src="images/face.png" alt="" onmousemove="this.src=\'images/face_hover.png\'" onmouseout="this.src=\'images/face.png\'"/><!--图片评论--><img id="picture" width="25px" height="25px" title="" src="images/pi.png" alt="" onmousemove="this.src=\'images/pi_hover.png\'" onmouseout="this.src=\'images/pi.png\'" onclick = "file_picture.click()"/><div style="clear:both;"></div></Label><Label><img id="send" width="25px" height="25px" title="" src="images/send.png" alt="" onmousemove="this.src=\'images/send_hover.png\'" onmouseout="this.src=\'images/send.png\'"/></Label><div class="float"></div></div>', 
     'code-css', 
     'code',
-    '.code-box1');
+    '.code-box1');*/
     /* var getTpl = demo.innerHTML;
     laytpl(getTpl).render($(".content").eq(0).text(), function(html){
     	console.log("html");
@@ -285,14 +243,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	$(".mark_code").eq(0).innerHTML = html;
     	//console.log($(".mark_code").eq(0));
     }); */
+    // 渲染git组件
     for(var i in $(".content")){
-    	new GitManage($(".content").eq(i).text()).getElements().forEach(function(item) {
+    	var contentText = $(".content").eq(i).text();
+    	// 创建 GitManage 定义渲染完后调用的
+    	var gitManage = new GitManage(contentText);
+    	// 获取git组件渲染元素 并添加进对应的位置
+    	gitManage.getElements().forEach(
+    	function(item) {
         	var e = $(item);
         	// console.log(e);
         	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
         	$(".mark_code").eq(i).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
         });
     }
+    
+    // trim 方法 没有则创建
+    if (!String.prototype.trim) {
+    (function() {
+    	String.prototype.trim = function() {return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'')}
+    })()}
+    
+    // git组件渲染完后 进行html代码的渲染
+    for(var i = 0; i < codeCount; i++){
+    	var codeStr = codeArr[i];
+    	if(codeStr != void 0 && codeStr.trim() != ''){
+    		// console.log('codeStr:'+codeStr);
+    		$('.code_box').eq(i).addClass("code-box"+i);
+    		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
+    		var dealCode = new DealCode(); // 创建代码处理类
+        	dealCode.setInit(codeStr, 
+        	    'code-css'+i, 
+        	    'code'+i,
+        	    '.code-box'+i);
+    	}
+    }
+   	currentCount = codeCount;
         
   	//监听搜索
     form.on('submit('+s+')', function(data){
@@ -342,13 +328,98 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	}
 	  	,moreOprateClose: function(e){
 	  		console.log('关闭');
-	  		console.log();
 	  		
 	  		e.parents("li").eq(0).find(".li-cnt").removeClass('active-div');
 	  		e.parents("li").eq(0).find("i").removeClass('active-li');
 	  		return !1;
 	  	}
-	  	
+	  	,selectByTab: function(){
+	  		console.log('selectByTab');
+	  		$("#selectByTab").submit();
+	  		return !1;
+	  	}
+	  	,selectByName: function(){
+	  		console.log('selectByName');
+	  		$("#selectByName").submit();
+	  		return !1;
+	  	}
+	  	,noteMore: function(e){
+	  		var data = {};
+	  		data['page'] = e.data('page')+1;
+	  		data['limit'] = 10;
+	  		admin.cajax({
+			  	method: 'list'
+			  	,data: data
+			  	,success: function(resultData){
+			  		e.data('page', data.page);
+			  		try{
+				  		// cartlist-cnt 插入到这个容器
+				  		for(var i in resultData){
+				  			var tabCode = '';// 对标签进行确认 并生成html代码 最后定义为tabCode	
+				  			for(var j in noteTabs){
+				  				if(noteTabs[j].note_id == resultData[i].id){
+					  				//console.log("输出note_id id");
+							  		//console.log(noteTabs[j].note_id + " " + resultData[i].id);
+				  					tabCode += '<label class="item-tag-block">'+noteTabs[j].name+'</label>';
+				  				}
+				  			}
+				  			//console.log("tabCode ");
+					  		//console.log(tabCode);
+					  		
+				  			resultData[i]['tabCode'] = tabCode;
+				  			//console.log("输出处理后的resultData["+i+"] ");
+				  			//eval("obj.p" + key + "='" + value + "'");
+					  		//console.log(resultData[i]);
+					  		// 调用模板并插入
+					  		laytpl(noteTpl.innerHTML).render(resultData[i], 
+					  		function(html){
+					  	    	//console.log("模板处理后输出html ");
+					  	    	//console.log(html);
+					  	    	$(".cartlist-cnt").eq(0).append(html);
+					  	    });
+				  		} /**/
+				  		// 插入之后 进行编译 
+				  		console.log(startIndex + " " + endIndex);
+				  		var startIndex = (data.page-1)*data.limit-1;
+				  		var endIndex = startIndex + data.limit;
+				  		for(var n = startIndex; n < endIndex; n++){
+				  			var contentText = $(".content").eq(n).text();
+				  			console.log('创建 GitManage 定义渲染完后调用的');
+			  		    	// 创建 GitManage 定义渲染完后调用的
+			  		    	var gitManage_ = new GitManage(contentText);
+			  		    	// 获取git组件渲染元素 并添加进对应的位置
+			  		    	gitManage_.getElements().forEach(
+			  		    	function(item) {
+			  		        	var e = $(item);
+			  		        	// console.log(e);
+			  		        	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
+			  		        	$(".mark_code").eq(n).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
+			  		        });	
+				  		}
+				  		
+				  		// git组件渲染完后 进行html代码的渲染
+				  		// ##############如果有错乱就是渲染下标的问题 日后可以根据此来维护##############
+				  		var tempCount = currentCount;
+				  		for(var i = tempCount; i < codeCount; i++){
+				  	    	var codeStr = codeArr[i];
+				  	    	if(codeStr != void 0 && codeStr.trim() != ''){
+				  	    		// console.log('codeStr:'+codeStr);
+				  	    		$('.code_box').eq(i).addClass("code-box"+i);
+				  	    		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
+				  	    		var dealCode = new DealCode(); // 创建代码处理类
+				  	        	dealCode.setInit(codeStr, 
+				  	        	    'code-css'+i, 
+				  	        	    'code'+i,
+				  	        	    '.code-box'+i);
+				  	    	}
+				  	    }    
+				  	    currentCount = codeCount;
+			  		} catch(err){
+			  			console.log(err);
+			  		}
+			  	}
+		  	}); 
+	  	}
   	});
   
     //事件
@@ -427,20 +498,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         elem: '#date1'
         ,type: 'datetime'
     });
-    
-    form.on("submit("+s+")", function(data){
-		/* admin.chtml({
-			method: 'show'
-			,contentType: 'application/x-www-form-urlencoded'
-			,data: data.field  
-		}); */
-		$("#submit").click();
-		return false;
-	}) 
-    form.on("submit("+s2+")", function(data){ 
-		$("#submit2").click();
-		return false;
-	}) 
     
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');

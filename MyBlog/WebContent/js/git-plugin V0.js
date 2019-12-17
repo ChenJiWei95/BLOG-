@@ -1188,27 +1188,33 @@
 	} 
 	
 	//.getElements() 返回一个元素集 将元素集插入特定容器即可 2018/10/12
-	function GitManage(str){
+	function GitManage(str, success){
 		var self = this;
-		var context = initContext();//初始化上下文对象
+		var context;//初始化上下文对象
 		//初始化责任链
 		var gTok = new TitleTokener();
 		gTok.setNext(new OrderNumTokener())
 			.setNext(new SepLineTokener())
 			.setNext(new PointTokener())
 			.setNext(new TableTokener())
+			.setNext(new HTMLCodeTokener())
 			.setNext(new SimpleDirTokener());
 		function initContext(){
-			return new GitContext(str);
+			context = new GitContext(str);
 		}
 		//2018/10/12
-		this.getElements = function(){
-			var arr = new Array();
+		this.getElements = function(){// 获取编译后的封装元素
+			var arr;
 			try{
-				while(context.currentLine !== undefined){
+				arr = new Array();
+				initContext();// 初始化context
+				// 对每一行进行编译
+				while(context.currentLine !== void 0){
 					arr.push(gTok.support(context));
 					context.next();
 				}
+				// 编译结束 执行最后的方法 未渲染完
+				success != void 0 && 'function' == typeof success && success(); 
 			}catch(err){
 				console.log(err);
 			}
@@ -1225,11 +1231,11 @@
 			return next;
 		}
 		this.support = function (context) {
-			if(this.isSure(context)){
+			if(this.isSure(context)){// 在责任链中找到负责方则执行done
 				return this.done(context);
-			} else if (next != null){
+			} else if (next != null){// 责任链中寻找下一个负责方
 				return next.support(context);
-			} else {
+			} else {// 责任链中找不到负责方
 				return this.fail(context);
 			}
 		}
@@ -1326,17 +1332,34 @@
 		this.isSure = function(context){
 			var str = context.currentLine;
 			
-			if(str.charAt(0) === "-" && str.substring(0, 3) === "---")
+			if(str.indexOf('```code') == 0 || str.indexOf('```html') == 0 || str.indexOf('```HTML') == 0)
 				return true;
 			return false;
 		}
 		this.done = function(context){
-			var str = context.currentLine;
-			var lastC = str.charAt(str.length-1);
-			//判断尾数为几 否则默认为1
-			var classPreDix = ($$.util.isNumber(lastC) ? lastC : 1);
-			//最大只能为3
-			return $$.cre("p").addClass("p-sep-line-" + (classPreDix > 4 ? 4 : classPreDix));
+			var str = context.currentLine
+			,codeStr = ''; 
+			context.next();
+			while(context.currentLine !== undefined && 
+				context.currentLine.indexOf("```") === -1){
+				codeStr += context.currentLine;
+				context.next();
+			}
+			var index = codeCount++;
+			var code = '<div class="code_box"><div class="iframe_div">' +
+				'<span>源码</span>' +
+			'</div>' +
+			'<!--显示从后台读取的代码-->' +
+			'<div class="code_div">' +
+				'<div class="code">' +
+					'<table class="code_table">' +
+						'<tbody id="code'+index+'"></tbody>' +
+					'</table>' +
+				'</div>' +
+			'</div></div>';
+			codeArr[index] = codeStr; // 保存编译内容， 等待git组件渲染完后使用
+		    var div =$$.cre("div");
+			return div.insert(code);
 		}
 	}
 	

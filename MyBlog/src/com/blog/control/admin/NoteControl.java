@@ -56,22 +56,34 @@ public class NoteControl extends BaseControl{
 	
 	@RequestMapping("/show.chtml") 
 	public String show(HttpServletRequest request, ModelMap model, String type, Page page){
+		
+		int limit = page.getLimit();
+		int pageNum = page.getPage();
+		
 		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 		List<Note> list = null;
 		log.info(type);
-		if ("2".equals(type)){
+		if ("2".equals(type)){  //  根据标签查找
 			Map<String, String> parame = getRequestParameterMap(request);
 			parame.remove("type");
 			StringBuilder sb = new StringBuilder();
-			for(String item : parame.keySet()){
+			for(String item : parame.keySet()){	// 拼接标签id
 				sb.append(singleOfEq("c.id", item)).append(" OR ");
 			}
 			if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
-			list = noteServiceImpl.find("SELECT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id FROM note a, note_tab_brige b, `data` c where 1=1 and a.id = b.note_id AND c.id = b.note_tab_id AND a.admin_id='"+admin.getId()+"' AND ("+sb.toString()+") ORDER BY a.create_date DESC ");
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id ");
+			sql.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
+			sql.append("where a.id = b.note_id")
+				.append(" AND c.id = b.note_tab_id")
+				.append(" AND a.admin_id='"+admin.getId()+"'")
+				.append(" AND ("+sb.toString()+")")
+				.append(" ORDER BY a.create_date DESC ")
+				.append(" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
+			log.info("根据标签查找：" + sql.toString());
+			list = noteServiceImpl.find(sql.toString());
 			model.addAttribute("notes", list);
 		} else {
-			int limit = page.getLimit();
-			int pageNum = page.getPage();
 			// log.info(limit+ ","+pageNum);
 			QueryHelper queryHelper = new QueryHelper(); 
 			queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
@@ -95,6 +107,7 @@ public class NoteControl extends BaseControl{
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
 		model.addAttribute("noteTabs", list2);
+		model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());
 		model.addAttribute("all", listData); 
 		return "admin/note/show"; 
 	}
@@ -131,6 +144,7 @@ public class NoteControl extends BaseControl{
 		System.out.println("添加接收参数："+t); 
 		
 		try{
+			t.setUpdate_date("xxxx-xx-xx xx:xx:xx");
 			t.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 			if(tabs != null && !"".equals(tabs)) {
@@ -299,18 +313,26 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object init(Page page, HttpServletRequest request) throws IOException{
+	public Object list(Page page, HttpServletRequest request) throws IOException{
+		
 		try { 
+			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 			int limit = page.getLimit();
 			int pageNum = page.getPage();
 			// log.info(limit+ ","+pageNum);
 			QueryHelper queryHelper = new QueryHelper(); 
+			queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
 			queryHelper.paramBind(request, page);	// 获取前台参数
-			page.addOrder(Order.desc("time"));		// 排序
-			page.addOrder(Order.desc("isRead"));	// 排序
+			// 自定义查询条件 admin_id = ‘ ’
+			Filter f = new Filter();
+			f.setOperator(com.blog.Filter.Operator.eq);
+			f.setProperty("admin_id");
+			f.setValue(admin.getId());
+			page.addFilter(f);		
+			page.addOrder(Order.desc("create_date"));		// 排序
 			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
 			// 进行分页
-			List<Note> list = noteServiceImpl.find("SELECT * FROM message "+
+			List<Note> resultList = noteServiceImpl.find("SELECT * FROM note "+
 			queryHelper.buildAllQuery(page)+ 
 			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
 			
@@ -332,7 +354,7 @@ public class NoteControl extends BaseControl{
 				count = noteServiceImpl.count();
 			
 			// 构建返回数据
-			page.setData(list);
+			page.setData(resultList);
 			page.setMsg("ok");
 			page.setCount(count);
 			page.setCode("0"); 

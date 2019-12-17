@@ -42,7 +42,7 @@
 			singlecharstrategy = new SingleCharStrategy();
 		}
 		this.setInit = function (dealStr_, styleElementName, codeElementName, boxClassName){
-			str = dealStr_,
+			str = dealStr_.replace(/[\t]/g,"").replace(/[\r\n]/g,""),// 清除回车 空格 制表符
 			styleElement = document.getElementById(styleElementName),
 			codeElement = document.getElementById(codeElementName),
 			codeBoxClassName = boxClassName;

@@ -108,7 +108,7 @@ function(e) {console.log("admin");
         escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);
             return String(e || "").replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;")
         },
-        on: function(e, a) {console.log("admin P.on e:"+e+" a:"+a);
+        on: function(e, a) {console.log("on"); // console.log("admin P.on e:"+e+" a:"+a);
             return layui.onevent.call(this, n.MOD_NAME, e, a)
         },
         sendAuthCode: function(e) {console.log("admin P.sendAuthCode");
