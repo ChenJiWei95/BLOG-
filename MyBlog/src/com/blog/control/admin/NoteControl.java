@@ -55,61 +55,81 @@ public class NoteControl extends BaseControl{
 	}
 	
 	@RequestMapping("/show.chtml") 
-	public String show(HttpServletRequest request, ModelMap model, String type, Page page){
+	public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
 		
 		int limit = page.getLimit();
 		int pageNum = page.getPage();
 		
+		// 拼接 更多加载的 条件
+		StringBuilder query = new StringBuilder();
+		Map<String, String> parame = getRequestParameterMap(request);
+		for(Map.Entry<String, String> item : parame.entrySet()) {
+			log.info("==========================");
+			log.info(item.getKey() + "=" + item.getValue());
+			query.append(item.getKey() + "=" + item.getValue()).append("&");
+		}
+		if(parame.size() > 0) query.delete(query.length()-1, query.length());// 删除多余符号
+		
 		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
-		List<Note> list = null;
 		log.info(type);
 		if ("2".equals(type)){  //  根据标签查找
-			Map<String, String> parame = getRequestParameterMap(request);
-			parame.remove("type");
-			StringBuilder sb = new StringBuilder();
-			for(String item : parame.keySet()){	// 拼接标签id
-				sb.append(singleOfEq("c.id", item)).append(" OR ");
-			}
-			if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id ");
-			sql.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
-			sql.append("where a.id = b.note_id")
-				.append(" AND c.id = b.note_tab_id")
-				.append(" AND a.admin_id='"+admin.getId()+"'")
-				.append(" AND ("+sb.toString()+")")
-				.append(" ORDER BY a.create_date DESC ")
-				.append(" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
-			log.info("根据标签查找：" + sql.toString());
-			list = noteServiceImpl.find(sql.toString());
-			model.addAttribute("notes", list);
-		} else {
-			// log.info(limit+ ","+pageNum);
-			QueryHelper queryHelper = new QueryHelper(); 
-			queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
-			queryHelper.paramBind(request, page);	// 获取前台参数
-			// 自定义查询条件 admin_id = ‘ ’
-			Filter f = new Filter();
-			f.setOperator(com.blog.Filter.Operator.eq);
-			f.setProperty("admin_id");
-			f.setValue(admin.getId());
-			page.addFilter(f);		
-			page.addOrder(Order.desc("create_date"));		// 排序
-			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
-			// 进行分页
-			List<Note> resultList = noteServiceImpl.find("SELECT * FROM note "+
-			queryHelper.buildAllQuery(page)+ 
-			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
 			
-			model.addAttribute("notes", resultList);
+			model.addAttribute("notes", getNoteByTag(parame, page, admin)); 
+		} else {
+			model.addAttribute("notes", getNoteByNameAndDate(request, page, admin));
 		}
 		
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
-		model.addAttribute("noteTabs", list2);
-		model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());
-		model.addAttribute("all", listData); 
-		return "admin/note/show"; 
+		model.addAttribute("noteTabs", list2);// 标签集 用于note获取对应的标签
+		model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
+		model.addAttribute("all", listData); // 标签集 用于标签查找
+		model.addAttribute("query", query.toString()); // 更多加载的原始查询条件
+		return "admin/note/show";
+	}
+
+	protected List<Note> getNoteByNameAndDate(HttpServletRequest request, Page page, Admin admin) {
+		QueryHelper queryHelper = new QueryHelper(); 
+		queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
+		queryHelper.paramBind(request, page);	// 获取前台参数
+		// 自定义查询条件 admin_id = ‘ ’
+		Filter f = new Filter();
+		f.setOperator(com.blog.Filter.Operator.eq);
+		f.setProperty("admin_id");
+		f.setValue(admin.getId());
+		page.addFilter(f);		
+		page.addOrder(Order.desc("create_date"));		// 排序
+		// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+		// 进行分页
+		List<Note> resultList = noteServiceImpl.find("SELECT * FROM note "+
+		queryHelper.buildAllQuery(page)+ 
+		" "+EqAdapter.SQL_LIMIT + (page.getPage()-1)*page.getLimit() + "," + page.getLimit());
+		return resultList;
+	}
+
+	//  根据标签查找
+	protected List<Note> getNoteByTag(Map<String, String> parame, Page page, Admin admin) {
+		// 清除多余的字段
+		parame.remove("type");
+		parame.remove("limit");
+		parame.remove("page");
+		StringBuilder sb = new StringBuilder();
+		for(String item : parame.keySet()){	// 拼接标签id
+			sb.append(singleOfEq("c.id", "'"+item+"'")).append(" OR ");
+		}
+		if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id ");
+		sql.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
+		sql.append("where a.id = b.note_id")
+			.append(" AND c.id = b.note_tab_id")
+			.append(" AND a.admin_id='"+admin.getId()+"'")
+			.append(" AND ("+sb.toString()+")")
+			.append(" ORDER BY a.create_date DESC ")
+			.append(" "+EqAdapter.SQL_LIMIT + (page.getPage()-1)*page.getLimit() + "," + page.getLimit());
+		log.info("根据标签查找：" + sql.toString());
+		return noteServiceImpl.find(sql.toString());
+		
 	}
 	
 	// 返回 页面 
@@ -313,14 +333,14 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object list(Page page, HttpServletRequest request) throws IOException{
+	public Object list(String type, Page page, HttpServletRequest request) throws IOException{
 		
 		try { 
 			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
-			int limit = page.getLimit();
-			int pageNum = page.getPage();
+			List<Note> resultList = null;
+			JSONObject resultJson = new JSONObject();
 			// log.info(limit+ ","+pageNum);
-			QueryHelper queryHelper = new QueryHelper(); 
+			/*QueryHelper queryHelper = new QueryHelper(); 
 			queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
 			queryHelper.paramBind(request, page);	// 获取前台参数
 			// 自定义查询条件 admin_id = ‘ ’
@@ -334,25 +354,41 @@ public class NoteControl extends BaseControl{
 			// 进行分页
 			List<Note> resultList = noteServiceImpl.find("SELECT * FROM note "+
 			queryHelper.buildAllQuery(page)+ 
-			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);
+			" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit);*/
+			if ("2".equals(type)){  //  根据标签查找
+				Map<String, String> parame = getRequestParameterMap(request);
+				resultList = getNoteByTag(parame, page, admin);
+				/*resultJson.put("type", type);
+				for(Filter item : (List<Filter>) page.getFilters()) {
+					item.getProperty()
+					item.getValue()
+				}*/
+				for(Map.Entry<String, String> item : parame.entrySet()) {
+					log.info("==========================");
+					log.info(item.getKey() + " " + item.getValue());
+				}
+			} else {
+				resultList = getNoteByNameAndDate(request, page, admin);
+			}
 			
 			Integer count = 0;
-			if(page.getFilters().size() > 0) {
+			/*if(page.getFilters().size() > 0) {
 				// 拼接查询数量的条件
 				StringBuilder eq = new StringBuilder();
 				List<Filter> fs = page.getFilters();
 				for(Filter item : fs) {
 					eq.append(item.getProperty())
 					.append(item.getQueryOperator())
-					.append(item.getValue());
+					.append(item.getQueryOperator().indexOf("like") != -1 ? "%"+item.getValue()+"%" : item.getValue());
 					eq.append(" AND ");
 				}
 				if(fs.size()>0)eq.delete(eq.length()-4, eq.length());// 删除多余
 				count = noteServiceImpl.count(eq.toString());
 			}
 			else
-				count = noteServiceImpl.count();
+				count = noteServiceImpl.count();*/
 			
+			// 根据实际情况 更多加载需要保留原有查询状态 所以
 			// 构建返回数据
 			page.setData(resultList);
 			page.setMsg("ok");
@@ -363,7 +399,36 @@ public class NoteControl extends BaseControl{
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}
-	
+	protected String getRequestPostStr(HttpServletRequest request)  
+            throws IOException {  
+        byte buffer[] = getRequestPostBytes(request);  
+        if(buffer == null) return "";
+        
+        String charEncoding = request.getCharacterEncoding();  
+        if (charEncoding == null) {  
+            charEncoding = "UTF-8";  
+        }  
+        
+        return new String(buffer, charEncoding);  
+    }
+	protected byte[] getRequestPostBytes(HttpServletRequest request)  
+            throws IOException {  
+        int contentLength = request.getContentLength();  
+        if(contentLength<0){  
+            return null;  
+        }  
+        byte buffer[] = new byte[contentLength];  
+        for (int i = 0; i < contentLength;) {  
+  
+            int readlen = request.getInputStream().read(buffer, i,  
+                    contentLength - i);  
+            if (readlen == -1) {  
+                break;  
+            }  
+            i += readlen;  
+        }  
+        return buffer;  
+    }  
 	
 	
 }

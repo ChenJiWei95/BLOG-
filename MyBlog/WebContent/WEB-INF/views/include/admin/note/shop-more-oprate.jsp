@@ -44,7 +44,6 @@
 						class="layui-btn c-button" 
 						click-event="selectByName"
 						style="float: right; margin-right: 60px;">确认</button>
-					<input type="submit" id="submit" class="layui-hide"/>
 				</div>
 			</div>
 			</form>

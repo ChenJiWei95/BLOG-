@@ -1326,14 +1326,20 @@
 		}
 	}	
 	
+	var codeType;
 	HTMLCodeTokener.extends(GitTokener);
 	function HTMLCodeTokener (){
 		GitTokener.call(this);
+		
 		this.isSure = function(context){
 			var str = context.currentLine;
-			
-			if(str.indexOf('```code') == 0 || str.indexOf('```html') == 0 || str.indexOf('```HTML') == 0)
+			if(str.indexOf('```code') == 0){
+				codeType = 'code';
 				return true;
+			} else if (str.indexOf('```html') == 0 || str.indexOf('```HTML') == 0){
+				codeType = 'html';
+				return true;
+			}
 			return false;
 		}
 		this.done = function(context){
@@ -1346,7 +1352,7 @@
 				context.next();
 			}
 			var index = codeCount++;
-			var code = '<div class="code_box"><div class="iframe_div">' +
+			var code = '<div class="code_box" date-type="'+codeType+'"><div class="iframe_div">' +
 				'<span>源码</span>' +
 			'</div>' +
 			'<!--显示从后台读取的代码-->' +
@@ -1357,8 +1363,12 @@
 					'</table>' +
 				'</div>' +
 			'</div></div>';
+			
 			codeArr[index] = codeStr; // 保存编译内容， 等待git组件渲染完后使用
 		    var div =$$.cre("div");
+		    
+		    console.log('===================');
+		    console.log(div.insert(code));
 			return div.insert(code);
 		}
 	}

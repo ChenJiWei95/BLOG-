@@ -144,6 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script src="<%=basePath%>js/DealCodeV0-1.js"></script>
   
   <c:set var="jsonStr" value="${noteTabsJSON}"></c:set> 
+  <c:set var="queryStr" value="${query}"></c:set> 
   
   <script id="noteTpl" type="text/html">
 	<div class="layui-card note-item" data-id="{{d.id}}">
@@ -252,9 +253,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	gitManage.getElements().forEach(
     	function(item) {
         	var e = $(item);
+        	alert(e.attr("class"));
+        	var dataHtml = e.data('type') ? 'date-type='+e.data('type') : '';
         	// console.log(e);
         	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
-        	$(".mark_code").eq(i).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
+        	$(".mark_code").eq(i).append("<"+e.prop("tagName")+" "+dataHtml+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
         });
     }
     
@@ -275,7 +278,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	dealCode.setInit(codeStr, 
         	    'code-css'+i, 
         	    'code'+i,
-        	    '.code-box'+i);
+        	    '.code-box'+i,
+        	    $('.code_box').eq(i).data("type") == 'code' ? true : false); // 是否需要清空换行符和空格
     	}
     }
    	currentCount = codeCount;
@@ -341,12 +345,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	,selectByName: function(){
 	  		console.log('selectByName');
 	  		$("#selectByName").submit();
-	  		return !1;
+	  		return !0;
 	  	}
 	  	,noteMore: function(e){
 	  		var data = {};
 	  		data['page'] = e.data('page')+1;
 	  		data['limit'] = 10;
+	  		var queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多
+	  		var queryArr = queryStr.split("&");
+	  		for(var i = 0; i < queryArr.length; i++){
+	  			var queryArr_ = queryArr[i].split("=");
+	  			data[queryArr_[0]] = queryArr_[1];
+	  		}
+	  		
 	  		admin.cajax({
 			  	method: 'list'
 			  	,data: data
@@ -382,7 +393,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  		console.log(startIndex + " " + endIndex);
 				  		var startIndex = (data.page-1)*data.limit-1;
 				  		var endIndex = startIndex + data.limit;
-				  		for(var n = startIndex; n < endIndex; n++){
+				  		for(var n = startIndex+1; n <= endIndex; n++){
 				  			var contentText = $(".content").eq(n).text();
 				  			console.log('创建 GitManage 定义渲染完后调用的');
 			  		    	// 创建 GitManage 定义渲染完后调用的
@@ -410,7 +421,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	        	dealCode.setInit(codeStr, 
 				  	        	    'code-css'+i, 
 				  	        	    'code'+i,
-				  	        	    '.code-box'+i);
+				  	        	    '.code-box'+i,
+				  	        	  	$('.code_box').eq(i).data("type") == 'code' ? true : false); // 是否需要清空换行符和空格
 				  	    	}
 				  	    }    
 				  	    currentCount = codeCount;

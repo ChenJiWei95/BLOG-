@@ -41,8 +41,9 @@
 			strategy = new DealCodeStrategy(),
 			singlecharstrategy = new SingleCharStrategy();
 		}
-		this.setInit = function (dealStr_, styleElementName, codeElementName, boxClassName){
-			str = dealStr_.replace(/[\t]/g,"").replace(/[\r\n]/g,""),// 清除回车 空格 制表符
+		this.setInit = function (dealStr_, styleElementName, codeElementName, boxClassName, isCode){// isCode ture 通用代码
+			
+			str = isCode ? dealStr_.replace(/[\t]/g,"").replace(/[\r\n]/g,"") : dealStr_,// 清除回车 空格 制表符
 			styleElement = document.getElementById(styleElementName),
 			codeElement = document.getElementById(codeElementName),
 			codeBoxClassName = boxClassName;
