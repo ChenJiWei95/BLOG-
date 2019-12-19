@@ -85,6 +85,7 @@ public class NoteControl extends BaseControl{
 		model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
 		model.addAttribute("all", listData); // 标签集 用于标签查找
 		model.addAttribute("query", query.toString()); // 更多加载的原始查询条件
+		model.addAttribute("adminId", admin.getId());
 		return "admin/note/show";
 	}
 
@@ -93,11 +94,11 @@ public class NoteControl extends BaseControl{
 		queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
 		queryHelper.paramBind(request, page);	// 获取前台参数
 		// 自定义查询条件 admin_id = ‘ ’
-		Filter f = new Filter();
+		/*Filter f = new Filter();
 		f.setOperator(com.blog.Filter.Operator.eq);
 		f.setProperty("admin_id");
 		f.setValue(admin.getId());
-		page.addFilter(f);		
+		page.addFilter(f);	*/	
 		page.addOrder(Order.desc("create_date"));		// 排序
 		// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
 		// 进行分页
@@ -123,7 +124,7 @@ public class NoteControl extends BaseControl{
 		sql.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
 		sql.append("where a.id = b.note_id")
 			.append(" AND c.id = b.note_tab_id")
-			.append(" AND a.admin_id='"+admin.getId()+"'")
+			/*.append(" AND a.admin_id='"+admin.getId()+"'")*/
 			.append(" AND ("+sb.toString()+")")
 			.append(" ORDER BY a.create_date DESC ")
 			.append(" "+EqAdapter.SQL_LIMIT + (page.getPage()-1)*page.getLimit() + "," + page.getLimit());

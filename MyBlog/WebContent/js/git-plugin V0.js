@@ -1348,11 +1348,11 @@
 			context.next();
 			while(context.currentLine !== undefined && 
 				context.currentLine.indexOf("```") === -1){
-				codeStr += context.currentLine;
+				codeStr += context.currentLine+"\n";
 				context.next();
 			}
 			var index = codeCount++;
-			var code = '<div class="code_box" date-type="'+codeType+'"><div class="iframe_div">' +
+			var code = '<div class="code_box code-box'+index+'" data-type="'+codeType+'"><div class="iframe_div">' +
 				'<span>源码</span>' +
 			'</div>' +
 			'<!--显示从后台读取的代码-->' +

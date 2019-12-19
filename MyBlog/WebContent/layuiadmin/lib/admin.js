@@ -58,8 +58,8 @@ function(e) {console.log("admin");
 				,data: object.data
 				,dataType: "json"
 				,success: function(data){
-					data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"+data.msg), parent.layer.close(index), object.id && parent.table.reload(object.id)),
-					data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
+					data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg(data.msg), parent.layer.close(index), object.id && parent.table.reload(object.id)),
+					data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg(data.msg), parent.layer.close(index));
 				} 
 				,error: function(data){
 					parent.layer.close(c),

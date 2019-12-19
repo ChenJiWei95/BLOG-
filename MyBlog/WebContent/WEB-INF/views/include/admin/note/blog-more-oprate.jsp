@@ -74,7 +74,7 @@
 			</div>
 			</form>
 		</li>
-		<li title="TOP" class="li-top" click-event="top">
+		<li title="TOP" class="li-top" click-event="top" style="/* display: none; */">
 			<i class="layui-icon layui-icon-upload-circle"></i>
 		</li>
 	</ul>

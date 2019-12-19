@@ -4,6 +4,90 @@
 	//异常点属性中的下划线影响
 	//enctype="multipart/form-data"
 	//代码不规范时
+	function CommonDealCode(){// ```code 调用此
+		var str
+		,code	// 代码 
+		,code_style	// 样式
+		,endIndex
+		,index
+		,suport
+		,codeBoxClassName
+		,styleElement
+		,codeElement
+		,row
+		;
+		this.setInit = function (dealStr_, styleElementName, codeElementName, boxClassName){// isCode ture 通用代码
+			str = dealStr_ ,// 清除回车 空格 制表符
+			styleElement = document.getElementById(styleElementName),
+			codeElement = document.getElementById(codeElementName),
+			codeBoxClassName = boxClassName;
+			this.start();
+		}
+		this.start = function (){
+			//setInit(); // 初始化
+			
+			index = 0
+			,suport = new DealCodeSuport()
+			,row = 0
+			,endIndex = str.indexOf("\n") === -1 ? str.length : str.indexOf("\n")
+			,code_style = ''
+			,code = ''
+			;
+			
+			do{
+				row++; // 行数递增
+				var line = str.substring(index, endIndex).replace(/\'/g, '\\\'');// 解决css上引号冲突
+				code += suport.getCode(row, space(line), suport.spanCode_text());
+				code_style += suport.styleCode(row, 1, line.trim());
+				index = endIndex+1;
+			}
+			while((endIndex = str.indexOf("\n", index)) != -1)
+				 
+			styleElement.innerHTML = code_style;
+			codeElement.innerHTML = code;
+		}
+		function space(line){
+			var space = '';
+			for(var i = 0; i < line.length; i++){
+				var c = line.charAt(i);
+				if(c == " ") space += '&nbsp;';
+				else if (c == "\t") space += '&nbsp;&nbsp;&nbsp;&nbsp;';
+				else break;// 只找其他字符之前
+			}
+			return space;
+		}
+		function DealCodeSuport(){
+			// 内容都会设置到css中的伪元素中 请见styleCode方法		例如:before{content:'</div>'} 
+			this.spanCode_ = function (){
+				return '<span></span>';
+			}
+			this.spanCode_red = function(){
+				return '<span class="red"></span>';
+			}
+			this.spanCode_purple = function(){
+				return '<span class="purple"></span>';
+			}
+			this.spanCode_text = function(){
+				return '<span class="text"></span>';
+			}
+			this.spanCode_content = function(){
+				return '<span class="content"></span>';
+			}
+			// row 行数 ； space 空格 ； element_cod 封装html代码 
+			this.getCode = function (row,space,element_cod){
+				return '<tr><td class="Serial">'+row+'</td>'+
+							'<td class="row_code">'+
+								space+
+								element_cod+
+							'</td></tr>';
+			}
+			this.styleCode = function (count,min_count,content){
+				// 默认类名称是code_box
+				return (codeBoxClassName == void 0 ? ".code_box" : codeBoxClassName) +" tr:nth-child("+count+") .row_code span:nth-child("+min_count+"):before{content:'"+content+"';}"
+			}
+		}
+	}
+
 	function DealCode(){
 		var str		// 需显示的代码原文本
 		,code		// 代码 
@@ -42,37 +126,40 @@
 			singlecharstrategy = new SingleCharStrategy();
 		}
 		this.setInit = function (dealStr_, styleElementName, codeElementName, boxClassName, isCode){// isCode ture 通用代码
-			
-			str = isCode ? dealStr_.replace(/[\t]/g,"").replace(/[\r\n]/g,"") : dealStr_,// 清除回车 空格 制表符
-			styleElement = document.getElementById(styleElementName),
-			codeElement = document.getElementById(codeElementName),
-			codeBoxClassName = boxClassName;
-			this.start();
+			if(isCode) {
+				new CommonDealCode().setInit(dealStr_, styleElementName, codeElementName, boxClassName);
+			}else {
+				str = dealStr_.replace(/[\t]/g,"").replace(/[\r\n]/g,""),// 清除回车 空格 制表符
+				styleElement = document.getElementById(styleElementName),
+				codeElement = document.getElementById(codeElementName),
+				codeBoxClassName = boxClassName;
+				this.start();
+			}
 		}
 		this.start = function (){
 			setInit(); // 初始化
-			//console.log('==========================================================');
 			util.dealLabelFristChar(0); // 启动编译
 			styleElement.innerHTML = code_style;
 			codeElement.innerHTML = code;
 		}
 		function DealCodeSuport(){
-		
+			// 内容都会设置到css中的伪元素中 请见styleCode方法		例如:before{content:'</div>'} 
 			this.spanCode_ = function (){
-				return '<span></span>'; 
+				return '<span></span>';
 			}
 			this.spanCode_red = function(){
-				return '<span class="red"></span>'; 
+				return '<span class="red"></span>';
 			}
 			this.spanCode_purple = function(){
-				return '<span class="purple"></span>'; 
+				return '<span class="purple"></span>';
 			}
 			this.spanCode_text = function(){
-				return '<span class="text"></span>'; 
+				return '<span class="text"></span>';
 			}
 			this.spanCode_content = function(){
-				return '<span class="content"></span>'; 
+				return '<span class="content"></span>';
 			}
+			// row 行数 ； space 空格 ； element_cod 封装html代码 
 			this.getCode = function (row,space,element_cod){
 				return '<tr><td class="Serial">'+row+'</td>'+
 							'<td class="row_code">'+
@@ -81,6 +168,7 @@
 							'</td></tr>';
 			}
 			this.styleCode = function (count,min_count,content){
+				// 默认类名称是code_box
 				return (codeBoxClassName == void 0 ? ".code_box" : codeBoxClassName) +" tr:nth-child("+count+") .row_code span:nth-child("+min_count+"):before{content:'"+content+"';}"
 			}
 		}
@@ -230,7 +318,7 @@
 				row++; // 行数递增 
 				util.dealLabel(index);
 			}
-			this.dealTextLabel = function(index){	
+			this.dealTextLabel = function(index){	// 一般文本的处理
 				row++; // 行数递增
 				endIndex = str.indexOf("<", index);
 				if(endIndex == -1)

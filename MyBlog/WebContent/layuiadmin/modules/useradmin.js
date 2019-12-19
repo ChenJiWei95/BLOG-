@@ -4,6 +4,7 @@ function(e) {
     var t = layui.$,
     table = layui.table;
     layui.form;
+    layui.layer.msg("调用useradmin");
     table.render({
         elem: "#LAY-user-manage",
         url: layui.setter.base + "json/useradmin/webuser.js",

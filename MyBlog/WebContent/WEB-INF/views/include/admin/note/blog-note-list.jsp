@@ -6,11 +6,13 @@
   		<div class="layui-card-header">
 			<label class="name" style="display: block; float: left; font-size: 14px; font-weight: bold; color: #555;"
 			>${Note.name}</label>
+			<c:if test="${Note.admin_id eq adminId}">
 	  		<label style="display: block; float: right; ">
-	  			<i class="layui-icon layui-icon-close" blog-event="remove" style="font-size: 24px; cursor: pointer;"></i>
-	  			<i class="layui-icon layui-icon-edit" blog-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
-	  			<i class="layui-icon layui-icon-add-circle-fine" blog-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i>
+	  			<i class="layui-icon layui-icon-close" click-event="remove" style="font-size: 24px; cursor: pointer;"></i>
+	  			<i class="layui-icon layui-icon-edit" click-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
+	  			<i class="layui-icon layui-icon-add-circle-fine" click-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i>
 	  		</label>
+	  		</c:if>
 		</div>
   		<div class="layui-card-body" style="overflow: hidden;">
   			<!-- 内容中转 -->
