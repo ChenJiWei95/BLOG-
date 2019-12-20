@@ -45,7 +45,8 @@ function(e) {
 				  	,contentType: 'text/plain'
 				  	,data: JSON.stringify(arr) 
 				  	,success: function(){
-				  		self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
+				  		target.parents(".note-item").eq(0).remove();
+				  		//self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
 				  	}
 			  	}); 	  
 		  	});	
@@ -89,6 +90,8 @@ function(e) {
 					iframe.find('input[name="id"]')[0].value = note_item.data("id")
 					,iframe.find('input[name="name"]')[0].value = note_item.find(".name").text()
 					,iframe.find('input[name="create_date"]')[0].value = note_item.find(".create_date").text()
+					,iframe.find('input[name="tags"]')[0].value = note_item.find(".tags-value").text()
+					,iframe.find('select[name="status"]')[0].value = note_item.find(".status").text()
 					,iframe.find('input[name="update_date"]')[0].value = note_item.find(".update_date").text()
 				}
 	        })
@@ -112,18 +115,18 @@ function(e) {
 			  		try{
 				  		// cartlist-cnt 插入到这个容器
 				  		for(var i in resultData){
-				  			var tabCode = '';// 对标签进行确认 并生成html代码 最后定义为tabCode	
-				  			for(var j in noteTabs){
-				  				if(noteTabs[j].note_id == resultData[i].id){
+				  			//var tabCode = '';// 对标签进行确认 并生成html代码 最后定义为tabCode	
+				  			//for(var j in noteTabs){
+				  			//	if(noteTabs[j].note_id == resultData[i].id){
 					  				//console.log("输出note_id id");
 							  		//console.log(noteTabs[j].note_id + " " + resultData[i].id);
-				  					tabCode += '<label class="item-tag-block">'+noteTabs[j].name+'</label>';
-				  				}
-				  			}
+				  			//		tabCode += '<label class="item-tag-block">'+noteTabs[j].name+'</label>';
+				  			//	}
+				  			//}
 				  			//console.log("tabCode ");
 					  		//console.log(tabCode);
 					  		
-				  			resultData[i]['tabCode'] = tabCode;
+				  			//resultData[i]['tabCode'] = tabCode;
 				  			//console.log("输出处理后的resultData["+i+"] ");
 				  			//eval("obj.p" + key + "='" + value + "'");
 					  		//console.log(resultData[i]);
@@ -136,10 +139,11 @@ function(e) {
 					  	    });
 				  		} /**/
 				  		// 插入之后 进行编译 
-				  		//console.log(startIndex + " " + endIndex);
 				  		var startIndex = (data.page-1)*data.limit-1;
 				  		var endIndex = startIndex + data.limit;
+				  		console.log(startIndex + " " + endIndex);
 				  		for(var n = startIndex+1; n <= endIndex; n++){
+				  			console.log(n);
 				  			var contentText = $(".content").eq(n).text();
 				  			//console.log('创建 GitManage 定义渲染完后调用的');
 			  		    	// 创建 GitManage 定义渲染完后调用的
@@ -148,10 +152,18 @@ function(e) {
 			  		    	gitManage_.getElements().forEach(
 			  		    	function(item) {
 			  		        	var e = $(item);
-			  		        	//console.log(e);
+			  		        	console.log(e);
 			  		        	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
-			  		        	$(".mark_code").eq(n).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
+			  		        	$(".mark_code").eq(n).append(e); 
 			  		        });	
+			  		    	
+			  		    	// 生成标签<label class="item-tag-block">${NoteTabBrige.name}</label>
+			  		    	var tagVal = $(".tags-value").eq(n).text();
+			  		    	var tagArr = tagVal.split(',');
+			  		    	for(var i in tagArr){
+			  		    		if(tagArr[i] != '')
+			  		    			$(".item-tag").eq(n).append('<label class="item-tag-block">'+tagArr[i]+'</label>');
+			  		    	}
 				  		}
 				  		
 				  		// git组件渲染完后 进行html代码的渲染
@@ -192,6 +204,14 @@ function(e) {
         	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
         	$(".mark_code").eq(i).append(e); 
         });
+    	
+    	// 生成标签<label class="item-tag-block">${NoteTabBrige.name}</label>
+    	var tagVal = $(".tags-value").eq(i).text();
+    	var tagArr = tagVal.split(',');
+    	for(var n in tagArr){
+    		if(tagArr[n] != '')
+    			$(".item-tag").eq(i).append('<label class="item-tag-block">'+tagArr[n]+'</label>');
+    	}
     }
     
     // git组件渲染完后 进行html代码的渲染

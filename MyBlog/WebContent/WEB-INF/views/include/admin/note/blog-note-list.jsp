@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
   <div class="layui-container cartlist-cnt" style="padding-top: 20px;">
   	<c:forEach begin="0" items="${notes}" step="1" var="Note" varStatus="varsta">
+  	<c:if test='${Note.admin_id eq adminId or Note.status ne "01"}'>
   	<div class="layui-card note-item" data-id="${Note.id}">
   		<div class="layui-card-header">
 			<label class="name" style="display: block; float: left; font-size: 14px; font-weight: bold; color: #555;"
@@ -19,11 +20,9 @@
   			<xmp class="content layui-hide">${Note.content}</xmp>
   			<!-- 编译之后的内容 --> 
   			<div class="mark_code"></div>
-  			<label class="item-tag">
-				<c:forEach begin="0" items="${noteTabs}" step="1" var="NoteTabBrige" varStatus="varsta">
-					<c:if test="${NoteTabBrige.note_id == Note.id}"><label class="item-tag-block">${NoteTabBrige.name}</label></c:if>
-				</c:forEach>
-			</label>
+  			<label class="tags-value layui-hide">${Note.tags}</label>
+  			<label class="status layui-hide">${Note.status}</label>
+  			<label class="item-tag"></label>
 			<label style="display: block; float: right; ">
 	  			上一次修改：<font class="update_date"><c:if test="${empty Note.update_date}">
 	  			xxxx-xx-xx xx:xx:xx</c:if><c:if test="${not empty Note.update_date}">${Note.update_date}</c:if></font>
@@ -33,5 +32,6 @@
 	  		</label>
   		</div> 
 	</div>
+	</c:if>
 	</c:forEach>
   </div>

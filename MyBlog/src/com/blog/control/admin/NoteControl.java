@@ -56,6 +56,20 @@ public class NoteControl extends BaseControl{
 	
 	@RequestMapping("/show.chtml") 
 	public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
+		// 对标签进行更新
+		/*List<Note> temps = noteServiceImpl.getAll();   
+		for(Note item : temps) {
+			List<NoteTabBrige> tempss = noteTabBrigeServiceImpl.gets(singleOfEqString("note_id", item.getId()));
+			StringBuilder tempsss = new StringBuilder("");
+			for(NoteTabBrige item_ : tempss) {
+				tempsss.append(item_.getName()).append(",");
+			}
+			Note note = new Note();
+			note.setTags(tempsss.toString());
+			noteServiceImpl.update(note, singleOfEqString("id", item.getId()));
+			log.info("特殊更新完毕====================="+item.getName());
+		} */
+		
 		
 		// 拼接 更多加载的 条件
 		StringBuilder query = new StringBuilder("");
@@ -70,8 +84,8 @@ public class NoteControl extends BaseControl{
 		
 		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
-		model.addAttribute("noteTabs", list2);// 标签集 用于note获取对应的标签
-		model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
+		//model.addAttribute("noteTabs", list2);// 标签集 用于note获取对应的标签
+		//model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
 		model.addAttribute("all", listData); // 标签集 用于标签查找
 		model.addAttribute("query", query.toString()); // 更多加载的原始查询条件
 		model.addAttribute("adminId", admin.getId());
@@ -112,7 +126,7 @@ public class NoteControl extends BaseControl{
 		}
 		StringBuilder sql = new StringBuilder();
 		if(tagQueryStr.length() > 0 || "2".equals(type)) // 如果有标签则进行标签查询
-			sql.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id ")
+			sql.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.status, a.tags, a.content, a.admin_id ")
 			.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
 		else // 一般查询
 			sql.append("SELECT * FROM note a ");
@@ -161,6 +175,7 @@ public class NoteControl extends BaseControl{
 		System.out.println("添加接收参数："+t); 
 		
 		try{
+			StringBuilder tags = new StringBuilder("");
 			t.setUpdate_date("xxxx-xx-xx xx:xx:xx");
 			t.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
@@ -168,16 +183,16 @@ public class NoteControl extends BaseControl{
 				String[] arr = tabs.split(",");
 				for(String item : arr) {
 					log.info("',' arr:"+item);
-					Data ded = dataServiceImpl.get(singleOfEqString("name", item));
-					log.info("==============data:"+ded);
-					if(ded == null) {
-						ded = new Data();
-						ded.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-						ded.setType("note_tab");
-						ded.setName(item);
-						ded.setDesc("note标签");
-						ded.setCreate_time(getNowTime());
-						dataServiceImpl.insert(ded);
+					Data dataTable = dataServiceImpl.get(singleOfEqString("name", item));
+					log.info("==============data:"+dataTable);
+					if(dataTable == null) {
+						dataTable = new Data();
+						dataTable.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+						dataTable.setType("note_tab");
+						dataTable.setName(item);
+						dataTable.setDesc("note标签");
+						dataTable.setCreate_time(getNowTime());
+						dataServiceImpl.insert(dataTable);
 					}
 					
 					NoteTabBrige newTab = new NoteTabBrige();
@@ -185,38 +200,41 @@ public class NoteControl extends BaseControl{
 					newTab.setAdmin_id(admin.getId());
 					newTab.setName(item);
 					newTab.setNote_id(t.getId());
-					newTab.setNote_tab_id(ded.getId());
+					newTab.setNote_tab_id(dataTable.getId());
 					noteTabBrigeServiceImpl.insert(newTab);
+					
+					tags.append(newTab.getName()).append(",");
 				}
 			}
 			
-			Map<String, String> params = getRequestParameterMap(request);
-			params.remove("id"); 
-			params.remove("create_date");  
-			params.remove("update_date");  
-			params.remove("name");
-			params.remove("admin_id");
-			params.remove("content");
-			params.remove("tabs");
+			Map<String, String> params = getRequestParameterMap(request); 
 			
-			for(String item : params.keySet()) {
-				NoteTabBrige newTab = new NoteTabBrige();
-				newTab.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-				newTab.setAdmin_id(admin.getId());
-				newTab.setName(item.substring(item.indexOf("|")+1));
-				newTab.setNote_id(t.getId());
-				newTab.setNote_tab_id(item.substring(0, item.indexOf("|")));
-				noteTabBrigeServiceImpl.insert(newTab);
+			// 获取check表单值
+			
+			for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
+				if("on".equals(item.getValue())) {
+					String key = item.getKey();
+					NoteTabBrige newTab = new NoteTabBrige();
+					newTab.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+					newTab.setAdmin_id(admin.getId());
+					newTab.setName(key.substring(key.indexOf("|")+1));
+					newTab.setNote_id(t.getId());
+					newTab.setNote_tab_id(key.substring(0, key.indexOf("|")));
+					noteTabBrigeServiceImpl.insert(newTab);
+					
+					tags.append(newTab.getName()).append(",");
+				}
 			}
 			
 			t.setCreate_date(getNowTime());
 			t.setAdmin_id(admin.getId());
+			t.setTags(tags.toString());
 			noteServiceImpl.insert(t);
 			
-			return com.blog.util.Message.success("请求成功", null);
+			return com.blog.util.Message.success("添加成功", null);
 		}catch(Exception e){
 			e.printStackTrace();
-			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
+			return com.blog.util.Message.error("添加失败，"+e.getMessage(), null);
 		}
 	}
 	
@@ -249,10 +267,10 @@ public class NoteControl extends BaseControl{
 				sb.delete(sb.length()-4, sb.length());
 				noteServiceImpl.delete(sb.toString());
 			}
-			return Message.success("请求成功", null);
+			return Message.success("已删除", null);
 		}catch(Exception e) {
 			e.printStackTrace();
-			return Message.success("请求失败，"+e.getMessage(), null);
+			return Message.success("删除失败，"+e.getMessage(), null);
 		} 
 	}
 	
@@ -268,57 +286,69 @@ public class NoteControl extends BaseControl{
 	public Object update(Note t, HttpServletRequest request){ 
 		try {
 			System.out.println("修改接收参数："+t); 
+			
+			StringBuilder tags = new StringBuilder(t.getTags());
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_date(getNowTime());
-			noteServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			
-			Map<String, String> params = getRequestParameterMap(request);
-			params.remove("id"); 
-			params.remove("create_date");  
-			params.remove("update_date");  
-			params.remove("name");
-			params.remove("admin_id");
-			params.remove("content");
-			
+			Map<String, String> params = getRequestParameterMap(request); 
 			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 			List<NoteTabBrige> list = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", t.getId()));
 			boolean isContain;
-			for(String item : params.keySet()) {
-				isContain = false;
-				for(NoteTabBrige tab : list) {
-					if(tab.getNote_tab_id().equals(item.substring(0, item.indexOf("|")))) {
-						isContain = true;
-						break;
+			
+			for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
+				if("on".equals(item.getValue())) {
+					isContain = false;
+					String key = item.getKey();
+					for(NoteTabBrige tab : list) {
+						if(tab.getNote_tab_id().equals(key.substring(0, key.indexOf("|")))) {
+							isContain = true;
+							break;
+						}
+					}
+					if(!isContain){
+						NoteTabBrige newTab = new NoteTabBrige();
+						newTab.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+						newTab.setAdmin_id(admin.getId());
+						newTab.setName(key.substring(key.indexOf("|")+1));
+						newTab.setNote_id(t.getId());
+						newTab.setNote_tab_id(key.substring(0, key.indexOf("|")));
+						noteTabBrigeServiceImpl.insert(newTab);
+						
+						tags.append(newTab.getName()).append(",");
+						 
 					}
 				}
-				if(!isContain){
-					NoteTabBrige newTab = new NoteTabBrige();
-					newTab.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-					newTab.setAdmin_id(admin.getId());
-					newTab.setName(item.substring(item.indexOf("|")+1));
-					newTab.setNote_id(t.getId());
-					newTab.setNote_tab_id(item.substring(0, item.indexOf("|")));
-					noteTabBrigeServiceImpl.insert(newTab);
-					 
-				}
-			}
+			} 
+			
 			for(NoteTabBrige tab : list) {
 				isContain = false;
-				for(String item : params.keySet()) {
-					if(tab.getNote_tab_id().equals(item.substring(0, item.indexOf("|")))){
+				for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
+					String key = item.getKey();
+					if("on".equals(item.getValue()) 
+							&& tab.getNote_tab_id().equals(key.substring(0, key.indexOf("|")))) {
 						isContain = true;
 						break;
 					}
-				}
+				} 
 				if(!isContain){
-					noteTabBrigeServiceImpl.delete("note_tab_id = "+ tab.getNote_tab_id());
+					int index = tags.indexOf(tab.getName());
+					if(index != -1) tags.delete(index, index+tab.getName().length()+1);
+					noteTabBrigeServiceImpl.delete("id = "+ tab.getId());
 				}
 			}	
-			return Message.success("请求成功", null);
-		} catch(DataIntegrityViolationException e) {
+			
+			t.setTags(tags.toString());
+			log.info(tags.toString());
+			noteServiceImpl.update(t, singleOfEqString("id", t.getId())); 
+			
+			return Message.success("修改成功", null);
+		} catch(DataIntegrityViolationException e) { 
+			e.printStackTrace();
 			return Message.success("修改失败，数据可能过长；"+e.getMessage(), null);
 		} catch(RuntimeException e) {
+			e.printStackTrace();
 			return Message.success("请求失败，运行异常； "+e.getMessage(), null);
 		}
 	} 
@@ -387,16 +417,18 @@ public class NoteControl extends BaseControl{
 			
 			// 根据实际情况 更多加载需要保留原有查询状态 所以
 			// 构建返回数据
-			page.setData(getNoteByTagAndName(type, 
+			List<Note> resultList = getNoteByTagAndName(type, 
 					getRequestParameterMap(request), 
 					request, 
 					page, 
-					admin));
-			page.setMsg("ok");
+					admin);
+			page.setData(resultList);
+			page.setMsg(resultList.size() > 0 ? "已新增了"+resultList.size()+"条。" : "已没有更多了！");
 			page.setCount(0);
 			page.setCode("0"); 
 			return page;
 		}catch(Exception e) {
+			e.printStackTrace();
 			return com.blog.util.Message.success("请求失败，"+e.getMessage(), null);
 		}
 	}

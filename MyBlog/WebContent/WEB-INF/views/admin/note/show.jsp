@@ -165,9 +165,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   			<xmp class="content layui-hide">{{d.content}}</xmp>
   			<!-- 编译之后的内容 --> 
   			<div class="mark_code"></div>
-  			<label class="item-tag">
-				{{d.tabCode}}
-			</label>
+  			<label class="tags-value layui-hide">{{d.tags}}</label>
+			<label class="status layui-hide">{{d.status}}</label>
+  			<label class="item-tag"></label>
 			<label style="display: block; float: right; ">
 	  			上一次修改：<font class="update_date">{{ d.update_date }}</font>
 	  		</label>
@@ -205,8 +205,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   </script> 
   <script>
-  var noteTabs = JSON.parse('${jsonStr}')
-  ,queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多 
+  //var noteTabs = JSON.parse('${jsonStr}')
+  var queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多 
   // codeCount 	html代码处理计数
   // codeArr	html代码处理数组 暂时存储用
   // currentCount html代码处理保存某一阶段的下标位置     比如初始阶段，或者再获取更多的时候也是一个阶段
