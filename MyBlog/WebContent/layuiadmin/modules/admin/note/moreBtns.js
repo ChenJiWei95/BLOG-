@@ -1,7 +1,7 @@
 ;
 layui.define(['laydate', "table", 'util'],
 function(e) { 
-	console.log("调用 moreBtns--------------------------");
+	//console.log("调用 moreBtns--------------------------");
 	var util = layui.util
 	,laydate = layui.laydate
 	,$ = layui.$
@@ -22,7 +22,7 @@ function(e) {
             },100) 
 	  	}
 	  	,search: function(e){// 打开模糊查询窗口
-	  		console.log('模糊查询');
+	  		//console.log('模糊查询');
 	  		for(var i = 0; i < e.siblings().length; i++){
 	  			e.siblings().eq(i).find(".li-cnt").removeClass('active-div');
 	  			e.siblings().eq(i).find("i").removeClass('active-li');
@@ -37,12 +37,12 @@ function(e) {
 	  		return !1;
 	  	}
 	  	,selectByTab: function(){// 查询
-	  		console.log('selectByTab');
+	  		//console.log('selectByTab');
 	  		$("#selectByTab").submit();
 	  		return !1;
 	  	}
 	  	,selectByName: function(){// 查询
-	  		console.log('selectByName');
+	  		//console.log('selectByName');
 	  		$("#selectByName").submit();
 	  		return !0;
 	  	}
