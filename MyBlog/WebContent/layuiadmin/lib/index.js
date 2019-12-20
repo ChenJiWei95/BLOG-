@@ -9,7 +9,7 @@ layui.extend({
     ,view: "lib/view"
     ,partcle: 'lib/partcle'
 }).define(["setter", "admin"],
-function(export_) {console.log("index");
+function(export_) {//console.log("index");
     var config = layui.setter,
     element = layui.element, 
     admin, 
@@ -41,7 +41,7 @@ function(export_) {console.log("index");
 			return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
 		}
 	},
-    iframe = function(url, desc) {console.log("index iframe");//点击左栏 创建一个iframe窗口
+    iframe = function(url, desc) {//console.log("index iframe");//点击左栏 创建一个iframe窗口
         var flag, elements_ = selectElement("#LAY_app_tabsheader>li"),//query - $() 匹配元素
         attr = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, "");
 		elements_.each(function(e) { 
@@ -51,7 +51,7 @@ function(export_) {console.log("index");
         })
 		desc = desc || "新标签页"
         if (config.pageTabs){
-			console.log("是否存在顶栏标签 " + flag + " ");
+			//console.log("是否存在顶栏标签 " + flag + " ");
 			flag || (selectElement(LAY_app_body).append(['<div class="layadmin-tabsbody-item layui-show">'
 				, '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>'
 				, "</div>"].join("")), page.index = elements_.length, element.tabAdd(layadmin_layout_tabs, {
@@ -61,7 +61,7 @@ function(export_) {console.log("index");
 			}));
 		}
         else {
-			console.log("存在顶栏标签 则直接修改链接" + url);
+			//console.log("存在顶栏标签 则直接修改链接" + url);
             var u = admin.tabsBody(admin.tabsPage.index).find(".layadmin-iframe");
             u[0].contentWindow.location.href = url
         }

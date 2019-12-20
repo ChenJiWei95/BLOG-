@@ -6,7 +6,7 @@ function(t) {
 	,self = {
 		config: {}
 	};
-	console.log($);
+	//console.log($);
 	self.render = function(){
 		/*3D particle*/
 		let c = document.createElement('canvas').getContext('2d');

@@ -1,7 +1,7 @@
 ;
 layui.define(['util', 'admin', 'laytpl'],
 function(e) { 
-	console.log("调用 noteList--------------------------");
+	//console.log("调用 noteList--------------------------");
 	var util = layui.util
 	,f = 'iframe'
 	,t = 'C-admin-note-form'
@@ -35,17 +35,17 @@ function(e) {
 		  		var data = {}
 		  		, arr = [];
 			  	data["id"] = target.parents(".note-item").eq(0).data("id");
-			  	console.log(target);
-			  	console.log(target.parents(".note-item"));
+			  	//console.log(target);
+			  	//console.log(target.parents(".note-item"));
 			  	arr[0] = data;
-			  	console.log("正在进行删除，输出data:");
-			  	console.log(data);
+			  	//console.log("正在进行删除，输出data:");
+			  	//console.log(data);
 			  	admin.cajax({
 				  	method: 'remove'
 				  	,contentType: 'text/plain'
 				  	,data: JSON.stringify(arr) 
 				  	,success: function(){
-				  		self.location.href="show.chtml";
+				  		self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
 				  	}
 			  	}); 	  
 		  	});	
@@ -60,7 +60,7 @@ function(e) {
 				,yes: function(index, layero){
 					layero.find(f).contents().find("#"+a).click();
 					setTimeout(function(){
-						self.location.href="show.chtml";
+						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
 					}, 500);
 				}
 				,success: function(e, index) {
@@ -80,7 +80,7 @@ function(e) {
 	            ,yes: function(index, layero) {
 	                layero.find(f).contents().find("#"+b).click();
 	                setTimeout(function(){
-						self.location.href="show.chtml";
+						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
 					}, 500);
 	            }
 	            ,success: function(e, index) {
@@ -97,7 +97,7 @@ function(e) {
 	  		var data = {};
 	  		data['page'] = e.data('page')+1;
 	  		data['limit'] = 10;
-	  		var queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多
+	  		
 	  		var queryArr = queryStr.split("&");
 	  		for(var i = 0; i < queryArr.length; i++){
 	  			var queryArr_ = queryArr[i].split("=");
@@ -136,19 +136,19 @@ function(e) {
 					  	    });
 				  		} /**/
 				  		// 插入之后 进行编译 
-				  		console.log(startIndex + " " + endIndex);
+				  		//console.log(startIndex + " " + endIndex);
 				  		var startIndex = (data.page-1)*data.limit-1;
 				  		var endIndex = startIndex + data.limit;
 				  		for(var n = startIndex+1; n <= endIndex; n++){
 				  			var contentText = $(".content").eq(n).text();
-				  			console.log('创建 GitManage 定义渲染完后调用的');
+				  			//console.log('创建 GitManage 定义渲染完后调用的');
 			  		    	// 创建 GitManage 定义渲染完后调用的
 			  		    	var gitManage_ = new GitManage(contentText);
 			  		    	// 获取git组件渲染元素 并添加进对应的位置
 			  		    	gitManage_.getElements().forEach(
 			  		    	function(item) {
 			  		        	var e = $(item);
-			  		        	// console.log(e);
+			  		        	//console.log(e);
 			  		        	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
 			  		        	$(".mark_code").eq(n).append("<"+e.prop("tagName")+" class="+e.attr("class")+">"+e.html()+"</"+e.prop("tagName")+">"); 
 			  		        });	
@@ -160,7 +160,7 @@ function(e) {
 				  		for(var i = tempCount; i < codeCount; i++){
 				  	    	var codeStr = codeArr[i];
 				  	    	if(codeStr != void 0 && codeStr.trim() != ''){
-				  	    		// console.log('codeStr:'+codeStr);
+				  	    		//console.log('codeStr:'+codeStr);
 				  	    		$('.code_box').eq(i).addClass("code-box"+i);
 				  	    		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
 				  	    		var dealCode = new DealCode(); // 创建代码处理类
@@ -198,7 +198,7 @@ function(e) {
     for(var i = 0; i < codeCount; i++){
     	var codeStr = codeArr[i];
     	if(codeStr != void 0 && codeStr.trim() != ''){
-    		// console.log('codeStr:'+codeStr);
+    		//console.log('codeStr:'+codeStr);
     		//$('.code_box').eq(i).addClass("code-box"+i);
     		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
     		var dealCode = new DealCode(); // 创建代码处理类

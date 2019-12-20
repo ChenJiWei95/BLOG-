@@ -16,15 +16,15 @@ function(e) {
         this.container = t("#" + (e || s))
     };
     i.loading = function(e) {  //载入
-		console.log("view i.loading");
+		//console.log("view i.loading");
         e.append(this.elemLoad = t('<i class="layui-anim layui-anim-rotate layui-anim-loop layui-icon layui-icon-loading layadmin-loading"></i>'))
     },
     i.removeLoad = function() {  //删除
-		console.log("view i.removeLoad");
+		//console.log("view i.removeLoad");
         this.elemLoad && this.elemLoad.remove()
     },
     i.exit = function(e) {
-		console.log("view i.exit");
+		//console.log("view i.exit");
         layui.data(r.tableName, {
             key: r.request.tokenName,
             remove: !0
@@ -32,7 +32,7 @@ function(e) {
         e && e()
     },
     i.req = function(e) {//ajax请求
-		console.log("view i.req");
+		//console.log("view i.req");
         var a = e.success,// success 初始化完毕
         n = (e.error, r.request),
         o = r.response,
@@ -75,7 +75,7 @@ function(e) {
         e))
     },
     i.popup = function(e) {
-		console.log("view i.popup 默认提示框 根据传进来的值定制");
+		//console.log("view i.popup 默认提示框 根据传进来的值定制");
         var a = e.success,
         r = e.skin;
         return delete e.success,
@@ -89,7 +89,7 @@ function(e) {
             shadeClose: !0,
             closeBtn: !1,
             success: function(e, r) {
-				console.log("初始化 。。。 ");
+				//console.log("初始化 。。。 ");
                 var o = t('<i class="layui-icon" close>&#x1006;</i>');
                 e.append(o),
                 o.on("click",
@@ -102,7 +102,7 @@ function(e) {
         e))
     },
     i.error = function(e, a) {
-		console.log("view i.error 错误框定制");
+		//console.log("view i.error 错误框定制");
         return i.popup(t.extend({
             content: e,
             maxWidth: 300,
@@ -113,7 +113,7 @@ function(e) {
         a))
     },
     d.prototype.render = function(e, a) {
-		console.log("view d.render");
+		//console.log("view d.render");
         var n = this;
         layui.router();
         return e = r.views + e + r.engine,
@@ -149,7 +149,7 @@ function(e) {
         n
     },
     d.prototype.parse = function(e, n, r) {
-		console.log("view d.parse");
+		//console.log("view d.parse");
         var s = this,
         d = "object" == typeof e,
         l = d ? e: t(e),
@@ -212,7 +212,7 @@ function(e) {
         return s
     },
     d.prototype.autoRender = function(e, a) {
-		console.log("view d.autoRender");
+		//console.log("view d.autoRender");
         var that = this;
         t(e || "body").find("*[template]").each(function(e, a) {
             var r = t(this);
@@ -220,12 +220,12 @@ function(e) {
             that.parse(r, "refresh")
         })
     },
-    d.prototype.send = function(e, t) {console.log("view d.send");
+    d.prototype.send = function(e, t) {//console.log("view d.send");
         var n = a(e || this.container.html()).render(t || {});
         return this.container.html(n),
         this
     },
-    d.prototype.refresh = function(e) {console.log("view d.refresh");
+    d.prototype.refresh = function(e) {//console.log("view d.refresh");
         var that = this,
         next = that.container.next(),
         attr = next.attr("lay-templateid");
@@ -235,11 +235,11 @@ function(e) {
             "function" == typeof e && e()
         }), that)
     },
-    d.prototype.then = function(e) {console.log("view d.then");
+    d.prototype.then = function(e) {//console.log("view d.then");
         return this.then = e,
         this
     },
-    d.prototype.done = function(e) {console.log("view d.done");
+    d.prototype.done = function(e) {//console.log("view d.done");
         return this.done = e,
         this
     },

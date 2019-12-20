@@ -3,7 +3,7 @@
 */
 ;
 layui.define("jquery",
-function (e){console.log('navTree');
+function (e){//console.log('navTree');
 	var jquery = layui.$,
 	modName = 'navTree',//模块名称
 	self = {

@@ -154,9 +154,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			>{{d.name}}</label>
 			{{# if(d.admin_id == ${adminID}){ }}
 	  		<label style="display: block; float: right; ">
-	  			<i class="layui-icon layui-icon-close" blog-event="remove" style="font-size: 24px; cursor: pointer;"></i>
-	  			<i class="layui-icon layui-icon-edit" blog-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
-	  			<i class="layui-icon layui-icon-add-circle-fine" blog-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i>
+	  			<i class="layui-icon layui-icon-close" click-event="remove" style="font-size: 24px; cursor: pointer;"></i>
+	  			<i class="layui-icon layui-icon-edit" click-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
+	  			<i class="layui-icon layui-icon-add-circle-fine" click-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i>
 	  		</label>
 			{{# } }}
 		</div>
@@ -205,7 +205,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   </script> 
   <script>
-  var noteTabs = JSON.parse('${jsonStr}'); 
+  var noteTabs = JSON.parse('${jsonStr}')
+  ,queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多 
   // codeCount 	html代码处理计数
   // codeArr	html代码处理数组 暂时存储用
   // currentCount html代码处理保存某一阶段的下标位置     比如初始阶段，或者再获取更多的时候也是一个阶段

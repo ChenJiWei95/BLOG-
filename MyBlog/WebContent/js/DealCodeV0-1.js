@@ -216,7 +216,7 @@
 					space += '&nbsp;&nbsp;';
 				}
 				
-				console.log("getSpance:"+count);
+				//console.log("getSpance:"+count);
 				return space;
 			}
 			this.dealLabel = function(index){ // 处理开始标签 和 闭标签
@@ -295,7 +295,7 @@
 				row++; // 行数递增 // 行数递增
 				var endIndex = str.indexOf(">", beginIndex) + 1;
 				count--;
-				console.log("dealEndLabel "+"specialType_Label:"+specialType_Label+" "+str.substring(beginIndex, endIndex) + " count:"+count);
+				//console.log("dealEndLabel "+"specialType_Label:"+specialType_Label+" "+str.substring(beginIndex, endIndex) + " count:"+count);
 				code += suport.getCode(row, util.getSpance(lock_count ? count-1 : count), suport.spanCode_());  
 				code_style += suport.styleCode(row, min_count, str.substring(beginIndex, endIndex));
 				if(endIndex <= str.length-1)
@@ -304,7 +304,7 @@
 			this.dealBeginLabel = function (index){
 				isEndLabel = util.isEnd(index);	// 是否为闭标签
 				row++; // 行数递增 
-				console.log('dealBeginLabel 行数递增 isEndLabel:'+isEndLabel+' lock_count:'+lock_count+' count:'+count)
+				//console.log('dealBeginLabel 行数递增 isEndLabel:'+isEndLabel+' lock_count:'+lock_count+' count:'+count)
 				if(!lock_count){
 					count++;
 				}
@@ -350,7 +350,7 @@
 					code_span += suport.spanCode_purple();
 					
 				}else{ // false则是标签前缀  例如：<img 或者属性名 onclick
-					console.log('strategySpaceChar isAttr:'+isAttr + " "+str.substring(beginIndex, index));
+					//console.log('strategySpaceChar isAttr:'+isAttr + " "+str.substring(beginIndex, index));
 					code_style += suport.styleCode(row, min_count, str.substring(beginIndex, index) + ' '); 
 					code_span += suport.spanCode_();
 				}

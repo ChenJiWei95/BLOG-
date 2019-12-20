@@ -118,15 +118,16 @@ public class NoteControl extends BaseControl{
 		for(String item : parame.keySet()){	// 拼接标签id
 			sb.append(singleOfEq("c.id", "'"+item+"'")).append(" OR ");
 		}
-		if(parame.size() > 0) sb.delete(sb.length()-4, sb.length());
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.content, a.admin_id ");
 		sql.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
-		sql.append("where a.id = b.note_id")
+		sql.append("where 1=1");
+		if(parame.size() > 0) 
+			sql.append(" AND a.id = b.note_id")
 			.append(" AND c.id = b.note_tab_id")
 			/*.append(" AND a.admin_id='"+admin.getId()+"'")*/
-			.append(" AND ("+sb.toString()+")")
-			.append(" ORDER BY a.create_date DESC ")
+			.append(" AND ("+sb.delete(sb.length()-4, sb.length()).toString()+")");// 
+		sql.append(" ORDER BY a.create_date DESC ")
 			.append(" "+EqAdapter.SQL_LIMIT + (page.getPage()-1)*page.getLimit() + "," + page.getLimit());
 		log.info("根据标签查找：" + sql.toString());
 		return noteServiceImpl.find(sql.toString());

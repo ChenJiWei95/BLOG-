@@ -1367,8 +1367,8 @@
 			codeArr[index] = codeStr; // 保存编译内容， 等待git组件渲染完后使用
 		    var div =$$.cre("div");
 		    
-		    console.log('===================');
-		    console.log(div.insert(code));
+		    //console.log('===================');
+		    //console.log(div.insert(code));
 			return div.insert(code);
 		}
 	}

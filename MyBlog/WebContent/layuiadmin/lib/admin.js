@@ -1,7 +1,7 @@
 /** layuiAdmin.std-v1.2.1 LPPL License By http://www.layui.com/admin/ */
 ;
 layui.define("view",
-function(e) {console.log("admin");
+function(e) {//console.log("admin");
     var a = layui.jquery,
     i = layui.laytpl,
     t = layui.element,
@@ -105,13 +105,13 @@ function(e) {console.log("admin");
 			return '';
 		}
 		,exit: l.exit,
-        escape: function(e) {console.log("admin P.escape 所传的值 ：" + e);
+        escape: function(e) {////console.log("admin P.escape 所传的值 ：" + e);
             return String(e || "").replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;")
         },
-        on: function(e, a) {console.log("on"); // console.log("admin P.on e:"+e+" a:"+a);
+        on: function(e, a) {//console.log("on"); // console.log("admin P.on e:"+e+" a:"+a);
             return layui.onevent.call(this, n.MOD_NAME, e, a)
         },
-        sendAuthCode: function(e) {console.log("admin P.sendAuthCode");
+        sendAuthCode: function(e) {//console.log("admin P.sendAuthCode");
             e = a.extend({
                 seconds: 60,
                 elemPhone: "#LAY_phone",
@@ -161,11 +161,11 @@ function(e) {console.log("admin");
                 }
             })
         },
-        screen: function() {console.log("admin P.screen");
+        screen: function() {//console.log("admin P.screen");
             var e = r.width();
             return e > 1200 ? 3 : e > 992 ? 2 : e > 768 ? 1 : 0
         },
-        sideFlexible: function(e) {console.log("admin P.sideFlexible");
+        sideFlexible: function(e) {//console.log("admin P.sideFlexible");
             var i = u,
             t = a("#" + h),
             l = P.screen();
@@ -175,7 +175,7 @@ function(e) {console.log("admin");
             })
         },
         popup: l.popup,
-        popupRight: function(e) {console.log("admin P.popupRight");
+        popupRight: function(e) {//console.log("admin P.popupRight");
             return P.popup.index = layer.open(a.extend({
                 type: 1,
                 id: "LAY_adminPopupR",
@@ -190,7 +190,7 @@ function(e) {console.log("admin");
             },
             e))
         },
-        theme: function(e) {console.log("admin P.theme 皮肤设置");
+        theme: function(e) {//console.log("admin P.theme 皮肤设置");
             var t = (n.theme, layui.data(n.tableName)),
             l = "LAY_layadmin_theme",
             s = document.createElement("style"),
@@ -204,7 +204,7 @@ function(e) {console.log("admin");
             o.attr("layadmin-themealias", e.color.alias),
             t.theme = t.theme || {},
             layui.each(e,
-            function(e, a) {console.log("输出tableName-theme-a:");console.log(n.tableName);console.log(t.theme);console.log(a);
+            function(e, a) {//console.log("输出tableName-theme-a:");console.log(n.tableName);console.log(t.theme);console.log(a);
                 t.theme[e] = a
             }),
             layui.data(n.tableName, {
@@ -212,7 +212,7 @@ function(e) {console.log("admin");
                 value: t.theme
             })
         },
-        initTheme: function(e) {console.log("admin P.initTheme");
+        initTheme: function(e) {//console.log("admin P.initTheme");
             var a = n.theme;
             e = e || 0,
             a.color[e] && (a.color[e].index = e, P.theme({
@@ -220,10 +220,10 @@ function(e) {console.log("admin");
             }))
         },
         tabsPage: {},
-        tabsBody: function(e) {console.log("admin P.tabsBody");
+        tabsBody: function(e) {//console.log("admin P.tabsBody");
             return a(m).find("." + b).eq(e || 0)
         },
-        tabsBodyChange: function(e, a) {console.log("admin P.tabsBodyChange");
+        tabsBodyChange: function(e, a) {//console.log("admin P.tabsBodyChange");
             a = a || {},
             P.tabsBody(e).addClass(d).siblings().removeClass(d),
             F.rollPage("auto", e),
@@ -232,30 +232,30 @@ function(e) {console.log("admin");
                 text: a.text
             })
         },
-        resize: function(e) {console.log("admin P.resize");
+        resize: function(e) {//console.log("admin P.resize");
             var a = layui.router(),
             i = a.path.join("-");
             P.resizeFn[i] && (r.off("resize", P.resizeFn[i]), delete P.resizeFn[i]),
             "off" !== e && (e(), P.resizeFn[i] = e, r.on("resize", P.resizeFn[i]))
         },
         resizeFn: {},
-        runResize: function() {console.log("admin P.runResize");
+        runResize: function() {//console.log("admin P.runResize");
             var e = layui.router(),
             a = e.path.join("-");
             P.resizeFn[a] && P.resizeFn[a]()
         },
-        delResize: function() {console.log("admin P.delResize");
+        delResize: function() {//console.log("admin P.delResize");
             this.resize("off")
         },
-        closeThisTabs: function() {console.log("admin P.closeThisTabs");
+        closeThisTabs: function() {//console.log("admin P.closeThisTabs");
             P.tabsPage.index && a(z).eq(P.tabsPage.index).find(".layui-tab-close").trigger("click")
         },
-        fullScreen: function() {console.log("admin P.fullScreen");
+        fullScreen: function() {//console.log("admin P.fullScreen");
             var e = document.documentElement,
             a = e.requestFullScreen || e.webkitRequestFullScreen || e.mozRequestFullScreen || e.msRequestFullscreen;
             "undefined" != typeof a && a && a.call(e)
         },
-        exitScreen: function() {console.log("admin P.exitScreen");
+        exitScreen: function() {//console.log("admin P.exitScreen");
             document.documentElement;
             document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen()
         }
@@ -270,25 +270,25 @@ function(e) {console.log("admin");
             }) 
     	}
     	,pictureClick: function (e) {
-			console.log(e.src);
+			//console.log(e.src);
 			$(".myModalImg")[0].src = e.src;
 			$(".myModal .desc").eq(0).text($(e).next().children("div").children(".desc-con").text());
 			$(".myModal").eq(0).addClass("pit-open-scale");
 			$(".myModalImg").eq(0).addClass("pit-open-scale");
 		}
-        ,flexible: function(e) {console.log("admin F.flexible");
+        ,flexible: function(e) {//console.log("admin F.flexible");
             var a = e.find("#" + h),
             i = a.hasClass(x);
             P.sideFlexible(i ? "spread": null)
         },
-        refresh: function() {console.log("admin F.refresh");
+        refresh: function() {//console.log("admin F.refresh");
             var e = ".layadmin-iframe",
             i = a("." + b).length;
             P.tabsPage.index >= i && (P.tabsPage.index = i - 1);
             var es = P.tabsBody(P.tabsPage.index).find(e);
             es[0].contentWindow.location.reload(!0)
         },
-        serach: function(e) {console.log('admin F.serach');
+        serach: function(e) {//console.log('admin F.serach');
             e.off("keypress").on("keypress",
             function(a) {
                 if (this.value.replace(/\s/g, "") && 13 === a.keyCode) {
@@ -304,10 +304,10 @@ function(e) {console.log("admin");
                 }
             })
         },
-        message: function(e) {console.log('admin F.message');
+        message: function(e) {//console.log('admin F.message');
             e.find(".layui-badge-dot").remove()
         },
-        theme: function() {console.log('admin F.theme');
+        theme: function() {//console.log('admin F.theme');
             P.popupRight({
                 id: "LAY_adminPopupTheme",
                 success: function() {
@@ -315,7 +315,7 @@ function(e) {console.log("admin");
                 }
             })
         },
-        note: function(e) {console.log('admin F.note');
+        note: function(e) {//console.log('admin F.note');
             var a = P.screen() < 2,
             i = layui.data(n.tableName).note;
             F.note.index = P.popup({
@@ -340,13 +340,13 @@ function(e) {console.log("admin");
                 }
             })
         },
-        fullscreen: function(e) {console.log('admin F.fullscreen');
+        fullscreen: function(e) {//console.log('admin F.fullscreen');
             var a = "layui-icon-screen-full",
             i = "layui-icon-screen-restore",
             t = e.children("i");
             t.hasClass(a) ? (P.fullScreen(), t.addClass(i).removeClass(a)) : (P.exitScreen(), t.addClass(a).removeClass(i))
         },
-        about: function() {console.log('admin F.about');
+        about: function() {//console.log('admin F.about');
             P.popupRight({
                 id: "LAY_adminPopupAbout",
                 success: function() {
@@ -354,7 +354,7 @@ function(e) {console.log("admin");
                 }
             })
         },
-        more: function() {console.log('admin F.more');
+        more: function() {//console.log('admin F.more');
             P.popupRight({
                 id: "LAY_adminPopupMore",
                 success: function() {
@@ -362,15 +362,15 @@ function(e) {console.log("admin");
                 }
             })
         },
-        back: function() {console.log('admin F.back');
+        back: function() {//console.log('admin F.back');
             history.back()
         },
-        setTheme: function(e) {console.log('admin F.setTheme');
+        setTheme: function(e) {//console.log('admin F.setTheme');
             var a = e.data("index");
             e.siblings(".layui-this").data("index");
             e.hasClass(y) || (e.addClass(y).siblings(".layui-this").removeClass(y), P.initTheme(a))
         },
-        rollPage: function(e, i) {console.log('admin F.rollPage');
+        rollPage: function(e, i) {//console.log('admin F.rollPage');
             var t = a("#LAY_app_tabsheader"),
             n = t.children("li"),
             l = (t.prop("scrollWidth"), t.outerWidth()),
@@ -406,29 +406,29 @@ function(e) {console.log("admin");
                 !1
             })
         },
-        leftPage: function() {console.log('admin F.leftPage');
+        leftPage: function() {//console.log('admin F.leftPage');
             F.rollPage("left")
         },
-        rightPage: function() {console.log('admin F.rightPage');
+        rightPage: function() {//console.log('admin F.rightPage');
             F.rollPage()
         },
-        closeThisTabs: function() {console.log('admin F.closeThisTabs');
+        closeThisTabs: function() {//console.log('admin F.closeThisTabs');
             var e = parent === self ? P: parent.layui.admin;
             e.closeThisTabs()
         },
-        closeOtherTabs: function(e) {console.log('admin F.closeOtherTabs');
+        closeOtherTabs: function(e) {//console.log('admin F.closeOtherTabs');
             var i = "LAY-system-pagetabs-remove";
             "all" === e ? (a(z + ":gt(0)").remove(), a(m).find("." + b + ":gt(0)").remove(), a(z).eq(0).trigger("click")) : (a(z).each(function(e, t) {
                 e && e != P.tabsPage.index && (a(t).addClass(i), P.tabsBody(e).addClass(i))
             }), a("." + i).remove())
         },
-        closeAllTabs: function() {console.log('admin F.closeAllTabs');
+        closeAllTabs: function() {//console.log('admin F.closeAllTabs');
             F.closeOtherTabs("all")
         },
-        shade: function() {console.log('admin F.shade');
+        shade: function() {//console.log('admin F.shade');
             P.sideFlexible()
         },
-        im: function() {console.log('admin F.im');
+        im: function() {//console.log('admin F.im');
             P.popup({
                 id: "LAY-popup-layim-demo",
                 shade: 0,
@@ -443,7 +443,7 @@ function(e) {console.log("admin");
             })
         }
     }; !
-    function() {console.log('admin.function');
+    function() {//console.log('admin.function');
         setTimeout(function(){
 			var e = layui.data(n.tableName);
 			e.theme ? P.theme(e.theme) : n.theme && P.initTheme(n.theme.initColorIndex),
@@ -460,7 +460,7 @@ function(e) {console.log("admin");
         P.tabsPage.index = e.index
     }),
     P.on("tabsPage(setMenustatus)",
-    function(e) {console.log("on tabsPage(setMenustatus)");
+    function(e) {//console.log("on tabsPage(setMenustatus)");
         var i = e.url,
         t = function(e) {
             return {
