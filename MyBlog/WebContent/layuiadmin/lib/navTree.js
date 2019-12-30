@@ -33,6 +33,7 @@ function (e){console.log('navTree');
         //emptyText: "暂无数据"
     },
 	navTree.prototype.render = function(){ 
+		alert(that.config.base);
 		var that = this,
 		config = that.config,
 		data = config.data,
@@ -40,7 +41,7 @@ function (e){console.log('navTree');
 		root = jquery('<ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu"></ul>');
 		that.tree(root);
 		var outTarget = jquery(config.elem),
-		logo = jquery('<div class="layui-logo" lay-href="'+(data.href?data.href:'javascript:;')+'"><span>'+data.desc+'</span></div>');
+		logo = jquery('<div class="layui-logo" lay-href="'+(data.href?config.base+data.href:'javascript:;')+'"><span>'+data.desc+'</span></div>');
 		outTarget.append(logo),
 		outTarget.append(root)
 	},

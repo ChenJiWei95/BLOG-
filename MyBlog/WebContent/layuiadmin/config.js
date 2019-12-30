@@ -5,6 +5,7 @@
 layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){console.log("config");
   exports('setter', {
     container: 'LAY_app' //容器ID
+    ,version: false
     ,base: layui.cache.base //记录静态资源所在路径
     ,views: layui.cache.base + 'tpl/' //动态模板所在目录
     ,entry: 'index' //默认视图文件名

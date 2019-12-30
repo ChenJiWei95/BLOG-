@@ -103,12 +103,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </style>
 </head>
 <body>
-	<div class="code_box" style="margin-top: 0px;">
-					<!--显示基本的行数和文件大小以及一些基本的操作-->
+	<!-- <div class="code_box layui-hide" style="margin-top: 0px;">
+					显示基本的行数和文件大小以及一些基本的操作
 					<div class="iframe_div">
 						<span>源码</span>
 					</div>
-					<!--显示从后台读取的代码-->
+					显示从后台读取的代码
 					<div class="code_div">
 						<div class="code">
 							<table class="code_table">
@@ -116,7 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</table>
 						</div>
 					</div>
-	</div>
+	</div> -->
 	
 	<div class="myModal" click-event="myModalClick">
 		<span class="close" click-event="myModalClick">×</span>
@@ -271,9 +271,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $ = layui.$;
     
     //code-cnt
-    var dealCode = new DealCode();
+   /*  var dealCode = new DealCode();
     dealCode.setInit('<div class="comment_atta"><Label><!--表情评论--><img id="face" width="25px" height="25px" title="" src="images/face.png" alt="" onmousemove="this.src=\'images/face_hover.png\'" onmouseout="this.src=\'images/face.png\'"/><!--图片评论--><img id="picture" width="25px" height="25px" title="" src="images/pi.png" alt="" onmousemove="this.src=\'images/pi_hover.png\'" onmouseout="this.src=\'images/pi.png\'" onclick = "file_picture.click()"/><div style="clear:both;"></div></Label><Label><img id="send" width="25px" height="25px" title="" src="images/send.png" alt="" onmousemove="this.src=\'images/send_hover.png\'" onmouseout="this.src=\'images/send.png\'"/></Label><div class="float"></div></div>', 'code-css', 'code');
-    /* var getTpl = demo.innerHTML;
+    */ /* var getTpl = demo.innerHTML;
     laytpl(getTpl).render($(".content").eq(0).text(), function(html){
     	console.log("html");
     	console.log(html);
@@ -319,6 +319,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  		
 	  	}
 	  	,search: function(e){
+	  		console.log($(e));
+	  		//if(e.attr("class").indexof('layui-btn') != -1) return !0;
 	  		// 模糊查询
 	  		console.log('模糊查询');
 	  		//console.log();
@@ -332,7 +334,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  		
 	  		e.find(".li-cnt").addClass('active-div');
 	  		
-	  		return !1;
+	  		return !0;
 	  	}
 	  	,moreOprateClose: function(e){
 	  		console.log('关闭');
