@@ -6,8 +6,9 @@ public class Note extends Base{
 	private String update_date;
 	private String content;
 	private String admin_id;
-
-
+	private String status;
+	private String tags;
+	
 	public String getId() {
 		return id;
 	}
@@ -44,4 +45,17 @@ public class Note extends Base{
 	public void setAdmin_id(String admin_id) {
 		this.admin_id = admin_id;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
 }

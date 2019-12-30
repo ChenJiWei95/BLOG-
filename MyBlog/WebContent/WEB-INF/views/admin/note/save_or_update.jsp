@@ -21,7 +21,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-hide">
 		<label class="layui-form-label">ID</label>
 		<div class="layui-input-inline">
-			<input type="text" name="id" disabled autocomplete="off" value="{note.id}" class="layui-input layui-disabled">
+			<input type="text" name="id" disabled autocomplete="off" value="${note.id}" class="layui-input layui-disabled">
+			<input type="text" name="tags" disabled autocomplete="off" value="${note.tags}" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -43,6 +44,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="layui-input-inline">
 			<input type="text" name="update_date" disabled placeholder="请输入修改时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
+      	<label class="layui-form-label">启用状态</label>
+      	<div class="layui-input-inline">
+        	<select name="status">
+        		<option value="01">私有</option>
+				<option value="00">公开</option>
+        	</select>
+      	</div> 
 	</div>
 	
 	<div class="layui-form-item">

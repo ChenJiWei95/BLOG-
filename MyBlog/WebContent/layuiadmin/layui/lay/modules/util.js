@@ -3,6 +3,11 @@
 layui.define("jquery",
 function(t) {
     "use strict";
+    // trim 方法 没有则创建
+    if (!String.prototype.trim) {
+    (function() {
+    	String.prototype.trim = function() {return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'')}
+    })()}
     var e = layui.$,
     i = {
     		/*
