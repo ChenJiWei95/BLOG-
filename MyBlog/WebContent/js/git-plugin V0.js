@@ -1042,34 +1042,63 @@
 	}
 	
 	//list保存的对象 用于圆点列表 生成li标签
-	function ItemData(oddOrEven, context, c){
+	// 当前会传oddOrEven来判断是前缀点样式
+	function ItemData(oddOrEven, context, c, isNoListType){
 		//console.log(context.currentLine);
 		if(c === undefined) c = null;
 		this.text = context.currentLine;		//项值
 		this.childs = c;	//子集
 		this.html = function(){
 			var li = $$.cre("li");
-			li.addClass(oddOrEven % 2 != 0 ? "li-odd" : "li-even")
+			li.addClass(isNoListType ? "li-common" : (oddOrEven % 2 != 0 ? "li-odd" : "li-even"))
 			gTokener.done(context).appendTo(li);
-			//$$.cre("pre").text().appendTo(li)
 			if(this.childs !== null && this.childs.size() > 0){
-				//html += '<ul class="ul-point">';
 				var ul = $$.cre("ul").addClass("ul-point");
 				this.childs.forEach(item => {
-					//html += item.html();
 					item.html().appendTo(ul);
 				});
 				ul.appendTo(li);
-				//html += '</ul>';
 			}
 			return li;
-			//return '<li>'+'<pre>'+this.text+'</pre>'+html+'</li>'
 		}
 	}
 	
 	var gitUtil = {
+		//圆点列表判断断点
+		// 是下面test1的升级版，不过返回方式得改进成对象返回而不是数组返回
+		test2:function(str){ 
+			if (str.charAt(0) === "\t"){ 
+				var i = 1;
+				while(true){
+					var c = str.charAt(i++);
+					if(c === "\t")
+						continue;
+					else if(c === "*"){
+						if(str.charAt(i++) === " ")
+							return [true, i - 2, str.substring(i), '0'];
+						else {
+							console.log("圆点列表*："+str);
+							return [true, i - 3, str.substring(i-3), '1'];}
+					}
+					else return [true, i - 1, str.substring(i-1), '1'];
+				}
+			}
+			else if (str.charAt(0) === "*"){
+				if(str.charAt(1) === " ")
+					return [true, 0, str.substring(2), '0'];
+			}  
+			else if (str.charAt(0) === ""){
+				return [false];	// 停止
+			} 
+			else {
+				console.log("圆点列表其他："+str)
+				return [true, 0, str, '1'];
+			}
+			console.log("圆点列表判断断点-特别关注-非正常停止："+str)
+			return [false];	// 停止
+		}
 		//检测圆点列表
-		test1:function(str){
+		,test1:function(str){
 			if(str.charAt(0) === "\t"){ 
 				var i = 1;
 				while(true){
@@ -1088,6 +1117,35 @@
 					return [true, 0, str.substring(2)];
 			} 
 			return [false];	
+		}
+		,isSimpleDir2:function(str){ 
+			if (str.charAt(0) === "\t"){ 
+				var i = 1;
+				while(true){
+					var c = str.charAt(i++);
+					if(c === "\t")
+						continue;
+					else if(c === "-"){
+						if(str.charAt(i++) === " ")
+							return [true, i - 2, str.substring(i), '0'];
+						else {
+							console.log("dir-："+str);
+							return [true, i - 3, str.substring(i-3), '1'];}
+					}
+					else return [true, i - 1, str.substring(i-1), '1'];
+				}
+			}
+			else if (str.charAt(0) === "-"){
+				if(str.charAt(1) === " ")
+					return [true, 0, str.substring(2), '0'];
+			}  
+			else if (str.charAt(0) === ""){
+				return [false];	// 停止
+			} 
+			else {
+				console.log("dir其他："+str)
+				return [true, 0, str, '1'];
+			} 
 		}
 		,isSimpleDir: function(str){
 			if(str.charAt(0) === "\t"){ 
@@ -1111,13 +1169,14 @@
 		}
 		,firstSep	: "  ├─"
 		,fullSep	: "  │"
-		,lastSep	: "  └─"
+		,lastSep	: "  └─"/*─*/
 		,fullSep2	: "    "
 		,isLastOfFull: []
 		,getFullSep: function(count){
 			var str = '';
 			
 			for(var i = 0; i < count; i++){ 
+				// 如果当前层（i）是末尾元素则选择fullSep2作为填充符号，反之
 				str += gitUtil.isLastOfFull[i] ? gitUtil.fullSep2 : gitUtil.fullSep; 
 			}
 			return str;
@@ -1378,9 +1437,10 @@
 		this.currentLine = str;
 	}
 	
-	function SimpleDirItem(text){
+	function SimpleDirItem(text, testS){
 		this.text = text;
 		this.childs = []; 
+		this.textSign = testS;
 	}
 	
 	// 简易目录
@@ -1420,13 +1480,15 @@
 		function analy(context){
 			return analy1(0, context);
 		}
+		// analy1递归收集元素
 		function analy1(preIndex_, context){
 			var dirContainer = []
 			,preIndex = preIndex_
-			,t = gitUtil.isSimpleDir(context.currentLine);
+			,t = gitUtil.isSimpleDir2(context.currentLine);
 			while(t[0]) {
+				console.log(t);
 				if(t[1] == preIndex){
-					dirContainer.push(new SimpleDirItem(t[2]))
+					dirContainer.push(new SimpleDirItem(t[2], t[3]))
 				} else if (t[1] > preIndex) {
 					dirContainer[dirContainer.length - 1].childs = analy1(t[1], context);
 				} else { 
@@ -1435,28 +1497,35 @@
 				} 	
 				context.next();
 				if (context.currentLine !== undefined)
-					t = gitUtil.isSimpleDir(context.currentLine);
+					t = gitUtil.isSimpleDir2(context.currentLine);
 				else break;
 			}   
 			if (context.currentLine !== undefined) context.pre();//当前行不符合则回退
 			return dirContainer;
 		}
+		// done2 递归处理元素
 		function done2(c, childs, ul){ 
-			var count = c+1; 
+			var count = c+1; // 每次递归都自加1 代表着层次
 			for(var i in childs){
 				if(i == childs.length-1){ 
+					// 最后一个子元素
 					model(true, gitUtil.lastSep);
-				} else {
+				} else {	
+					console.log(childs[i].text+";textSign-"+childs[i].textSign);
+//					model(false, childs[i].textSign === '1' ? gitUtil.fullSep : gitUtil.firstSep);
 					model(false, gitUtil.firstSep);
+					// gitUtil.fullSep2
 				}
-				//console.log(childs[i]);
 				if(childs[i].childs.length > 0)
-					done2(count, childs[i].childs, ul);
-			} 
+					done2(count, childs[i].childs, ul);// 子元素长度大于0，开始递归收集子元素
+			}
 			function model(bool, sep) {
+				// 最后一个子元素吗，最后一个的子元素前缀样式是有区别的
 				gitUtil.isLastOfFull[count] = bool; 
 				var li = $$.cre("li").addClass("simple-dir-li"); //li.attr("style", "text-align: center;");
+				// 前缀元素的创建
 				$$.cre("pre").text(gitUtil.getFullSep(count)+sep).addClass("simple-dir-text-odd").appendTo(li); 
+				// 文本元素的创建
 				$$.cre("pre").text(childs[i].text).addClass("simple-dir-text-even").appendTo(li);
 				li.appendTo(ul);
 			}
@@ -1474,18 +1543,14 @@
 		}
 		this.done = function(context){
 			var result = analy(context);
-			//var html = '<ul class="ul-point">';
 			var ul = $$.cre("ul").addClass("ul-point");
 			result.forEach(item => {
-				//html += item.html();
-				
 				item.html().appendTo(ul);
 			});
 
 			return ul;
-			//return html + "</ul>";
 		}
-		//解析圆点列表 返回list
+		//解析圆点列表 返回list test2
 		function analy(context){
 			//var stack = new ArrayStack();//每一个深度的list栈
 			var stack = [];//每一个深度的list栈
@@ -1493,7 +1558,7 @@
 			stack.push(new DataStack(list, 0));
 			var preItem;
 			var i = 0;
-			var t = gitUtil.test1(context.currentLine);
+			var t = gitUtil.test2(context.currentLine);
 			while(t[0]){
 				//console.log("进行 "+t[1]);
 				//是圆点列表项
@@ -1502,7 +1567,10 @@
 				
 				if(stack[stack.length-1].h === t[1]){
 					//console.log("存在深度 " + t[2]);
-					preItem = new ItemData(t[1], new TempContext(t[2]));
+					preItem = new ItemData(t[1], 
+							new TempContext(t[2]), 
+							null, 
+							t[3] === '1' ? !0 : !1);
 					stack[stack.length-1].list.add(preItem);
 				}
 				//栈顶深度h 大于 此时深度，则需回退
@@ -1512,7 +1580,7 @@
 					while(stack[stack.length-1].h !== t[1])
 						stack.pop();
 					//创建数据项 ItemData对象
-					preItem = new ItemData(t[1], new TempContext(t[2]));
+					preItem = new ItemData(t[1], new TempContext(t[2]), null, true);
 					stack[stack.length-1].list.add(preItem);
 				}
 				//栈顶深度h 小于 此时深度，则需创建list ；list值注入到上一个项的childs中并压入栈
@@ -1522,12 +1590,15 @@
 					_list = new ArrayList();
 					preItem.childs = _list;
 					stack.push(new DataStack(preItem.childs, t[1]));
-					preItem = new ItemData(t[1], new TempContext(t[2]));
+					preItem = new ItemData(t[1], 
+							new TempContext(t[2]), 
+							null, 
+							t[3] === '1' ? !0 : !1);
 					stack[stack.length-1].list.add(preItem);
 				}
 				context.next();
 				if (context.currentLine !== undefined)
-					t = gitUtil.test1(context.currentLine);
+					t = gitUtil.test2(context.currentLine);
 				else break;
 			}
 			if (context.currentLine !== undefined) context.pre();//当前行不符合则回退
@@ -1781,13 +1852,17 @@
 							$$.cre("img").attr("alt", alt).attr("src", src).attr("width", "80%").attr("click-event", "pictureDetail").appendTo(pre);
 						}else $$.cre("span").text('!'+c).appendTo(pre);
 					} else if (c === "*"){
+						var cTemp = c;
 						c = str.charAt(i++);
 						if(c === "*"){
 							var sepLastIndex = str.indexOf("*", i+1);
 							$$.cre("font").addClass("font-strong")
 							.text(str.substring(i, sepLastIndex)).appendTo(pre);
 							i = sepLastIndex + 1;
-						} else $$.cre("span").text(c).appendTo(pre);
+						} else {
+							$$.cre("span").text(cTemp).appendTo(pre);
+							$$.cre("span").text(c).appendTo(pre);
+						}
 						// 加粗 **content**
 					}else 
 						$$.cre("span").text(c).appendTo(pre);
