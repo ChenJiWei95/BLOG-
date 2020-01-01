@@ -51,9 +51,4 @@
 		<mapper resource="com/blog/mapper/NoteTabBrigeMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
-</configuration>   
-
-
-
-
-
+</configuration>    

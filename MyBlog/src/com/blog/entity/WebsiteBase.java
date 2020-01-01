@@ -13,6 +13,7 @@ public class WebsiteBase extends Base{
 	private String keywords;
 	private String meta_desc;
 	private String copyright;
+	private String upload;
 
 	public String getId() {
 		return id;
@@ -91,5 +92,11 @@ public class WebsiteBase extends Base{
 	}
 	public void setCopyright(String copyright) {
 		this.copyright = copyright;
+	}
+	public String getUpload() {
+		return upload;
+	}
+	public void setUpload(String upload) {
+		this.upload = upload;
 	}
 }

@@ -14,92 +14,10 @@ function(e) {
     
 	// 定义点击事件
 	util.clickEvent({
-		pictureDetail: function(e){// 图片放大
-			$(".myModalImg")[0].src = e.attr("src");
-			$(".myModal .desc").eq(0).text(e.attr("alt"));
-			$(".myModal:first").addClass("pit-open-scale");
-			$(".myModalImg:first").addClass("pit-open-scale");
-  		}
-  		,myModalClick: function (e) {// 点击关闭模态框
-			if(e.attr("class").indexOf("myModalImg") == -1){
-				$(".myModal:first").addClass("pit-close-scale");
-				$(".myModal:first").removeClass("pit-open-scale");
-				setTimeout(function(){
-					$(".myModal:first").removeClass("pit-close-scale");
-				}, 700);
-			}
-		}
-  		,remove: function(target){// 删除note
-			layer.confirm('确定删除吗？', function(data) {
-		  		layer.close(layer.index);
-		  		var data = {}
-		  		, arr = [];
-			  	data["id"] = target.parents(".note-item").eq(0).data("id");
-			  	//console.log(target);
-			  	//console.log(target.parents(".note-item"));
-			  	arr[0] = data;
-			  	//console.log("正在进行删除，输出data:");
-			  	//console.log(data);
-			  	admin.cajax({
-				  	method: 'remove'
-				  	,contentType: 'text/plain'
-				  	,data: JSON.stringify(arr) 
-				  	,success: function(){
-				  		target.parents(".note-item").eq(0).remove();
-				  		//self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
-				  	}
-			  	}); 	  
-		  	});	
-		}
-		,add: function(){// 添加note
-			layer.open({
-				type: 2
-				,title: '添加'
-				,content: 'save_or_update.chtml?type=0'
-				,area: ['80%', '80%']
-				,btn: ['确定', '取消']
-				,yes: function(index, layero){
-					layero.find(f).contents().find("#"+a).click();
-					setTimeout(function(){
-						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
-					}, 500);
-				}
-				,success: function(e, index) {
-					var iframe = e.find(f).contents().find("#"+t);
-					//iframe.find('input[name="id"]').val(admin.randomId());
-				}
-			});
-		}
-		,update: function(target){// 修改note
-			var note_item = target.parents(".note-item").eq(0);
-			layer.open({
-	            type: 2
-	            ,title: "编辑"
-	            ,content: "save_or_update.chtml?type=2&id="+note_item.data("id")
-	           	,area: ["80%", "80%"]
-	            ,btn: ["确定", "取消"]
-	            ,yes: function(index, layero) {
-	                layero.find(f).contents().find("#"+b).click();
-	                setTimeout(function(){
-						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
-					}, 500);
-	            }
-	            ,success: function(e, index) {
-					//这是渲染完之后调用 可以用于初始化
-					var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]')[0].value = note_item.data("id")
-					,iframe.find('input[name="name"]')[0].value = note_item.find(".name").text()
-					,iframe.find('input[name="create_date"]')[0].value = note_item.find(".create_date").text()
-					,iframe.find('input[name="tags"]')[0].value = note_item.find(".tags-value").text()
-					,iframe.find('select[name="status"]')[0].value = note_item.find(".status").text()
-					,iframe.find('input[name="update_date"]')[0].value = note_item.find(".update_date").text()
-				}
-	        })
-		}
-		,noteMore: function(e){// 加载更多
+		more: function(e){// 加载更多
 	  		var data = {};
 	  		data['page'] = e.data('page')+1;
-	  		data['limit'] = 10;
+	  		data['limit'] = 6;
 	  		
 	  		var queryArr = queryStr.split("&");
 	  		for(var i = 0; i < queryArr.length; i++){
@@ -115,26 +33,9 @@ function(e) {
 			  		try{
 				  		// cartlist-cnt 插入到这个容器
 				  		for(var i in resultData){
-				  			//var tabCode = '';// 对标签进行确认 并生成html代码 最后定义为tabCode	
-				  			//for(var j in noteTabs){
-				  			//	if(noteTabs[j].note_id == resultData[i].id){
-					  				//console.log("输出note_id id");
-							  		//console.log(noteTabs[j].note_id + " " + resultData[i].id);
-				  			//		tabCode += '<label class="item-tag-block">'+noteTabs[j].name+'</label>';
-				  			//	}
-				  			//}
-				  			//console.log("tabCode ");
-					  		//console.log(tabCode);
-					  		
-				  			//resultData[i]['tabCode'] = tabCode;
-				  			//console.log("输出处理后的resultData["+i+"] ");
-				  			//eval("obj.p" + key + "='" + value + "'");
-					  		//console.log(resultData[i]);
 					  		// 调用模板并插入
 					  		laytpl(noteTpl.innerHTML).render(resultData[i], 
 					  		function(html){
-					  	    	//console.log("模板处理后输出html ");
-					  	    	//console.log(html);
 					  	    	$(".cartlist-cnt").eq(0).append(html);
 					  	    });
 				  		} /**/
@@ -255,5 +156,5 @@ function(e) {
     
    	currentCount = codeCount;// 定位此时代码修饰框位置 等待更多加载时使用
 	
-    e("noteList", {})
+    e("articleList", {})
 });

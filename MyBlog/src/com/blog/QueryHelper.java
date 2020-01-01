@@ -104,7 +104,7 @@ public class QueryHelper {
 				filter.setValue(this.getValue(params[3],value));
 				this.page.addFilter(filter);
 			} else {
-				System.err.println(name+"属性非法！");
+				System.err.println(name+"其他属性");
 			}
 		} else if(name.startsWith(SysConstant.UPDATE_PRE) && StringUtils.isNotEmpty(value)){
 			String[] params = name.split(SysConstant.QUERY_SPIT);
@@ -114,10 +114,10 @@ public class QueryHelper {
 				updateItem.setValue(this.getValue(params[2],value));
 				this.page.addUpdateItem(updateItem);
 			} else {
-				System.err.println(name+"属性非法！");
+				System.err.println(name+"其他属性");
 			}
 		} else {
-			System.err.println(name+"属性非法！");
+			System.err.println(name+"其他属性");
 		}
 	}
 	/**

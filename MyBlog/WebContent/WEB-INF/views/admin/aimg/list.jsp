@@ -37,6 +37,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script type="text/html" id="toTPL">
 	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
   </script>
+  <script type="text/html" id="showImg">
+	<img alt="{{ d.name }}" src="{{d.path+'/'+d.name}}" width="40px" click-event="pictureDetail">
+  </script>
   <script>
   var table;
   layui.config({
@@ -136,11 +139,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
-        	,{field:'id', title:'ID'}
 			,{field:'name', title:'名称'}
+			,{field:'path', title:'图示', templet:'#showImg'}
 			,{field:'create_time', title:'创建时间'}
 			,{field:'update_time', title:'修改时间'}
-			,{field:'path', title:'路径'}
 			,{field:'desc', title:'备注'}
 
         ]],
@@ -155,7 +157,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//普通图片上传
     var uploadInst = upload.render({
 	    elem: '#upload'
-	    ,url: 'editMovieInfo.do'
+	    ,url: 'upload.do'
 	    ,before: function(obj){
 	      //预读本地文件示例，不支持ie8
 	      obj.preview(function(index, file, result){

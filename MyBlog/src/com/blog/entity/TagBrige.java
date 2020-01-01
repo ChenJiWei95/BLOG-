@@ -2,7 +2,7 @@ package com.blog.entity;
 public class TagBrige extends Base{
 	private String t_id;
 	private String a_id;
-
+	/*private String id;*/
 
 	public String getT_id() {
 		return t_id;
@@ -16,4 +16,10 @@ public class TagBrige extends Base{
 	public void setA_id(String a_id) {
 		this.a_id = a_id;
 	}
+	/*public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}*/
 }

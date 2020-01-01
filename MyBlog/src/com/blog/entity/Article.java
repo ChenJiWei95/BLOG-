@@ -5,8 +5,9 @@ public class Article extends Base{
 	private String create_time;
 	private String update_time;
 	private String pit_url;
-	private String mark_url;
 	private String simp_desc;
+	private String status;
+	private String tags;
 
 
 	public String getId() {
@@ -39,16 +40,22 @@ public class Article extends Base{
 	public void setPit_url(String pit_url) {
 		this.pit_url = pit_url;
 	}
-	public String getMark_url() {
-		return mark_url;
-	}
-	public void setMark_url(String mark_url) {
-		this.mark_url = mark_url;
-	}
 	public String getSimp_desc() {
 		return simp_desc;
 	}
 	public void setSimp_desc(String simp_desc) {
 		this.simp_desc = simp_desc;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 }

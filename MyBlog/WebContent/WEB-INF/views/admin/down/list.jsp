@@ -55,6 +55,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		width: 16px;
 		height: 16px;
 		display: none;
+		position:absolute;
+		margin:4px 5px;
 	}
 	.updateFileName:hover{
 		color: #707070 !important;
@@ -77,6 +79,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	/* a:hover span, a:hover i {color: #555;} */
   </style>
  </head>
+
  <body layadmin-themealias="default">
  	<div class="myModal" click-event="myModalClick">
 		<span class="close" click-event="myModalClick">×</span>
@@ -96,10 +99,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<div class="layui-inline">
 				            <label class="layui-form-label">上传文件名</label>
 				            <div class="layui-input-inline">
-				              <input type="text" id="fileName" placeholder="例如：test；该名称对外显示，不需要后缀名" autocomplete="off" class="layui-input">
+				              <input type="text" style="width: 288px; border-radius: 5px;" id="fileName" placeholder="命名上传文件；例如：test；" autocomplete="off" class="layui-input">
 				            </div>
 				        </div>
-						<button type="button" class="layui-btn c-button" id="test1">上传</button>
+						<button type="button" style="margin-left:10px;" class="layui-btn c-button" id="test1">上传</button>
 					</div>
 					<div class="layui-card-body" style="overflow: hidden;">
 						<%-- <c:forEach begin="0" items="${fileUpAndDowns}" step="1" var="FileUpAndDown" varStatus="varsta"> 
@@ -115,8 +118,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					            <i class="righttop-close" click-event="remove" style="background-image:url(<%=basePath%>resource/uploadImgIcon/rit-top-close.svg);" data-id="${FileUpAndDown.id}"></i>
 								<div class="item-img" style="background-image:url(<%=basePath%>upload/${FileUpAndDown.actual_name});" click-event="pictureDetail">
 								</div>
-								<div class="default-color item-text c-item-text" id="fileName">
-									<font>${FileUpAndDown.file_name}</font> 
+								<div class="default-color item-text c-item-text">
+									<font class="fileNameText">${FileUpAndDown.file_name}</font> 
 									<!-- <i class="updateFileName layui-icon layui-icon-edit" title="修改文件名称" style=""></i> -->
 									<i class="down-icon" click-event="download" title="点击下载图片" style="background-image:url(<%=basePath%>resource/uploadImgIcon/download.svg);" data-filename="${FileUpAndDown.actual_name}"></i>
 								</div>
@@ -181,10 +184,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		// 点击事件
 		util.clickEvent({
 			remove: function(e){
+				
 				// 删除图片
 				admin.cajax({
 				  	method: 'remove'
-				  	,data: {id: e.data("id")}
+				  	,data: {actual_name: e.parents(".layui-col-md3").eq(0).find('.fileNameText').text()}
 				  	,success: function(){
 				  		e.parents(".layui-col-md3").eq(0).remove();
 				  	}

@@ -122,7 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="con-web-tip-done simple-content-done">
 				<div class="cle-f con-web-tip-page" style="padding: 4px 47px;">
 					<i style="background: url(<%=basePath%>img/main/broad.png); width: 25px; height: 20px; float: left;"></i>&nbsp;<font class="breath_light" style="color: skyblue;">站点正在开发中请耐心等候。。。</font>
-				</div>	
+				</div>
 			</div>
 		</div>
 		
@@ -168,9 +168,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				else if(e.data("type") == 2){
 					$("#"+e.data("page")).siblings().addClass("layui-hide");
 					$("#"+e.data("page")).removeClass("layui-hide");
-					//<div class="cle-f con-article-page con-1">
-				} else if(e.data("type") == 4){
+				} else if(e.data("type") == 4){// 留言
 					self.location = "<%=basePath%>blog/email.chtml";
+				} else if(e.data("type") == 5){// 生活
+					self.location = "<%=basePath%>blog/life/show.chtml";
+				} else if(e.data("type") == 6){// 随笔
+					self.location = "<%=basePath%>blog/article/show.chtml";
 				}
 				else
 					alert("正在码出来，轻耐心等待！");

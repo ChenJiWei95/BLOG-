@@ -82,6 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType:'text/html'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -153,8 +154,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
 					,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
 					,iframe.find('input[name="pit_url"]')[0].value = data[0].pit_url
-					,iframe.find('input[name="mark_url"]')[0].value = data[0].mark_url
-					,iframe.find('input[name="simp_desc"]')[0].value = data[0].simp_desc
+					,iframe.find('input[name="tags"]')[0].value = data[0].tags
+					,iframe.find('textarea[name="simp_desc"]')[0].value = data[0].simp_desc
 
 				}
             })
@@ -170,7 +171,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'create_time', title:'创建时间'}
 			,{field:'update_time', title:'修改时间'}
 			,{field:'pit_url', title:'图片'}
-			,{field:'mark_url', title:'资源地址'}
 			,{field:'simp_desc', title:'描述'}
 
         ]],

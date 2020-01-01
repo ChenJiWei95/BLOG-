@@ -79,11 +79,11 @@ public class AimgControl extends BaseControl{
 	 * @throws IOException 
 	 * @throws ClientProtocolException 
 	*/
-	@RequestMapping("/editMovieInfo.do")
+	@RequestMapping("/upload.do")
 	@ResponseBody
 	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {
 		String path = UUID.randomUUID().toString().replace("-", "");
-		
+		 
 		Aimg img = new Aimg();
 		img.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 		img.setCreate_time(getNowTime());

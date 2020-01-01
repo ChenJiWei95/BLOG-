@@ -6,7 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,7 @@ import com.blog.util.SnowFlakeGenerator;
 // 数据字典
 @RequestMapping("/admin/article")
 public class ArticleControl extends BaseControl{
+	private static Logger log = Logger.getLogger(ArticleControl.class); // 日志对象
 	
 	@Autowired
 	private ArticleService articleServiceImpl;
@@ -87,31 +90,38 @@ public class ArticleControl extends BaseControl{
 		System.out.println("添加接收参数："+t);
 		try{
 			t.setCreate_time(getNowTime());
-//			String path = String.valueOf(new SnowFlakeGenerator(2, 2).nextId());
-			//D:\wokespace1\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\MyBlog\WEB-INF\classes\config\mark 
-			/*File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+path+".txt");
-			file.createNewFile();
-			t.setMark_url(path);*/
-			// 添加文章表 添加内容表数据
-			articleServiceImpl.insert(t);
+			t.setUpdate_time(t.getCreate_time());
+			
 			ArticleContent c = new ArticleContent();
 			c.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
 			c.setA_id(t.getId());
 			articleContentServiceImpl.insert(c);
 			
-			// 删除多余字段 获取标签id并创建关联标签数据
+			// 获取check表单值
+			StringBuilder tags = new StringBuilder();
 			Map<String, String> params = getRequestParameterMap(request); System.out.println(params);
-			params.remove("id");
-			params.remove("name");	params.remove("create_time");	params.remove("pit_url");
-			params.remove("mark_url");	params.remove("update_time");	params.remove("simp_desc");
-			
 			TagBrige tagBrige;
-			for(String item : params.keySet()) {
-				tagBrige = new TagBrige();
-				tagBrige.setA_id(t.getId());
-				tagBrige.setT_id(item.substring(0, item.indexOf("|")));
-				tagBrigeServiceImpl.insert(tagBrige);
-			}
+			for(Map.Entry<String, String> item : params.entrySet()){	// 处理关联标签
+				if("on".equals(item.getValue())) {// 符合check格式的 value = on
+					String key = item.getKey();
+					
+					// 创建标签关联项
+					tagBrige = new TagBrige();
+					tagBrige.setA_id(t.getId());
+					tagBrige.setT_id(key.substring(0, key.indexOf("|")));
+					
+					tags.append(key.substring(key.indexOf("|")+1)).append(",");
+					try{
+						tagBrigeServiceImpl.insert(tagBrige);
+					}catch(SpelEvaluationException e){
+						log.info(e.getMessage());
+					}
+					// 以字符串和逗号为分隔符保存关联标签名
+				}
+			}			
+			// 添加文章表 添加内容表数据
+			t.setTags(tags.toString());
+			articleServiceImpl.insert(t);
 			return com.blog.util.Message.success("请求成功", null);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -144,7 +154,7 @@ public class ArticleControl extends BaseControl{
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
-				sb1.delete(sb.length()-4, sb.length());
+				sb1.delete(sb1.length()-4, sb1.length());
 				articleServiceImpl.delete(sb.toString());
 				articleContentServiceImpl.delete(sb1.toString());
 			}
@@ -192,42 +202,56 @@ public class ArticleControl extends BaseControl{
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			articleServiceImpl.update(t, singleOfEqString("id", t.getId()));
+			StringBuilder tags = new StringBuilder(t.getTags());
+			
 			
 			Map<String, String> params = getRequestParameterMap(request);
-			params.remove("id");
-			params.remove("name");	params.remove("create_time");	params.remove("pit_url");
-			params.remove("mark_url");	params.remove("update_time");	params.remove("simp_desc");
-
 			List<TagBrige> list_ = tagBrigeServiceImpl.gets(singleOfEqString("a_id", t.getId()));
 			boolean isContain;
-			for(String item : params.keySet()) {
-				isContain = false;
-				for(TagBrige tag : list_){
-					if(tag.getT_id().equals(item.substring(0, item.indexOf("|")))){
-						isContain = true;
-						break;
+			for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
+				if("on".equals(item.getValue())) {
+					isContain = false;
+					String key = item.getKey();
+					for(TagBrige tag : list_){
+						if(tag.getT_id().equals(key.substring(0, key.indexOf("|")))){
+							isContain = true;
+							break;
+						}
 					}
-				}
-				if(!isContain){
-					TagBrige tagBrige = new TagBrige();
-					tagBrige.setA_id(t.getId());
-					tagBrige.setT_id(item.substring(0, item.indexOf("|")));
-					tagBrigeServiceImpl.insert(tagBrige);
+					if(!isContain){
+						TagBrige tagBrige = new TagBrige();
+						tagBrige.setA_id(t.getId());
+						tagBrige.setT_id(key.substring(0, key.indexOf("|")));
+						
+						tags.append(key.substring(key.indexOf("|")+1)).append(",");
+						try{
+							tagBrigeServiceImpl.insert(tagBrige);
+						}catch(SpelEvaluationException e){
+							log.info(e.getMessage());
+						}
+					}
 				}
 			}
 			for(TagBrige tag : list_){
 				isContain = false;
-				for(String item : params.keySet()) {
-					if(tag.getT_id().equals(item.substring(0, item.indexOf("|")))){
+				String key = "";
+				for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
+					key = item.getKey();
+					if("on".equals(item.getValue()) 
+							&& tag.getT_id().equals(key.substring(0, key.indexOf("|")))) {
 						isContain = true;
 						break;
 					}
 				}
-				if(!isContain){
+				if(!isContain){ 
+					ATag atag = aTagServiceImpl.get(singleOfEqString("id", tag.getT_id()));
+					int index = tags.indexOf(atag.getName());
+					if(index != -1) tags.delete(index, index+atag.getName().length()+1);
 					tagBrigeServiceImpl.delete(singleOfEqString("t_id", tag.getT_id()));
 				}
 			}	
+			t.setTags(tags.toString());
+			articleServiceImpl.update(t, singleOfEqString("id", t.getId()));
 			
 			return Message.success("请求成功");
 		}catch(Exception e) {

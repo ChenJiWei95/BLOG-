@@ -20,7 +20,6 @@ import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 
 @Controller
-// 数据字典
 @RequestMapping("/admin/articleContent")
 public class ArticleContentControl extends BaseControl{
 	
@@ -97,12 +96,7 @@ public class ArticleContentControl extends BaseControl{
 		try {
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
-<<<<<<< HEAD
-			articleContentServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
-=======
-			t.setUpdate_time(getNowTime());
 			articleContentServiceImpl.update(t, singleOfEqString("id", t.getId())); 
->>>>>>> branch 'master' of https://github.com/ChenJiWei95/BLOG-.git
 			return Message.success("请求成功", null);
 		}catch(Exception e) {
 			return Message.success("请求失败，"+e.getMessage(), null);

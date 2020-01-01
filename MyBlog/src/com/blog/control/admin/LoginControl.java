@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Many;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,6 +30,8 @@ import com.blog.util.sql.ManyTable;
 @Controller
 @RequestMapping("/admin")
 public class LoginControl extends BaseControl{
+	
+	private static Logger log = Logger.getLogger(LoginControl.class); // 日志对象
 	
 	@Autowired
 	private AdminService adminServiceImpl;
@@ -114,7 +116,7 @@ public class LoginControl extends BaseControl{
 	@ResponseBody
 	public Object logout(HttpServletRequest re) throws IOException{ 
 		try{
-			System.out.println("退出");
+			log.info("退出");
 			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){
@@ -165,7 +167,7 @@ public class LoginControl extends BaseControl{
 	@ResponseBody
 	public Object update(Admin t) throws IOException{ 
 		try {
-			System.out.println("修改接收参数："+t); 
+			log.info("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			adminServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			return Message.success("请求成功", null);
@@ -219,8 +221,8 @@ public class LoginControl extends BaseControl{
      
         String requestUrlIP = request.getServerName();
         String userIpAddr = request.getRemoteAddr();
-        System.out.println("***访问的Url中的服务器IP："+requestUrlIP);
-        System.out.println("***用户客户端的IP地址："+userIpAddr); 
+        log.info("***访问的Url中的服务器IP："+requestUrlIP);
+        log.info("***用户客户端的IP地址："+userIpAddr); 
         
         return ipString;
     }

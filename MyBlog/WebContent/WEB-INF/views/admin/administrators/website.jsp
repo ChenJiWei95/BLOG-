@@ -67,6 +67,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <div class="layui-form-mid layui-word-aux">提示：1 M = 1024 KB</div>
               </div>
               <div class="layui-form-item">
+                <label class="layui-form-label">上传资源位置</label>
+                <div class="layui-input-block">
+                  <input type="text" name="upload" placeholder="例如：d:/upload/" value="${website.upload}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
                 <label class="layui-form-label">上传文件类型</label>
                 <div class="layui-input-block">
                   <input type="text" name="cache_type" value="${website.cache_type}" class="layui-input">

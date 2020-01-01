@@ -6,6 +6,7 @@
 	.ul-point, .ul-point > li {margin-top: 2px;}
 	.li-odd {list-style-type: disc;}
 	.li-even {list-style-type: circle;}
+	.li-common {list-style-type:none}
 	/*有序*/
 	.ul-ol {margin: 0 4px;}
 	.ul-ol, .ul-ol > li {margin-top: 2px;}

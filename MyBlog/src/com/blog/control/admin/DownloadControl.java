@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,31 +16,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.blog.control.BaseControl;
 import com.blog.entity.FileUpAndDown;
+import com.blog.entity.WebsiteBase;
 import com.blog.service.FileUpAndDownService;
-import com.blog.util.ActionUtil;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 import com.blog.util.UploadAndDownload;
 
 @Controller
-// 数据字典
+// 上传下载
 @RequestMapping("/admin/down")
 public class DownloadControl extends BaseControl{
+	private static Logger log = Logger.getLogger(DownloadControl.class); // 日志对象
 	
-	 @Autowired
-	 private FileUpAndDownService fileUpAndDownServiceImpl;
+	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
+	
+	@Autowired
+	private FileUpAndDownService fileUpAndDownServiceImpl;
 	
 	@RequestMapping("download.do")
 	@ResponseBody
-	public void down(HttpServletRequest request, HttpServletResponse response, String fileName) throws IOException{ 
+	public void down(HttpServletRequest request, 
+			HttpServletResponse response, 
+			String fileName) throws IOException{ 
 		
 		try{
-			String filePath = request.getSession().getServletContext().getRealPath("/upload")+"/"+fileName;
-			System.out.println("filePath:"+filePath);
+			WebsiteBase w = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+			if(w == null 
+				|| w.getUpload() == null 
+				|| "".equals(w.getUpload().trim())) 
+				throw new NullPointerException("配置未找到");
+			
+//			String filePath = request.getSession().getServletContext().getRealPath("/upload")+"/"+fileName;
+			String filePath = w.getUpload()+fileName;
 			 
 			UploadAndDownload.downloadFile(request, response, fileName, filePath);
 		}catch(Exception e){
@@ -50,24 +62,9 @@ public class DownloadControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
-		/*String filePath = request.getSession().getServletContext().getRealPath("")+"resource/upload/";
-		File file  = new File(filePath);
-		List<FileInfo> lf = new ArrayList<FileInfo>();
-		for(File f : file.listFiles()) {
-			// f.toString().indexOf("/")
-			System.out.println(f.getName()+" ");
-			FileInfo info = new FileInfo();
-			if(f.getName().indexOf(".") != -1) {
-				info.setName(f.getName().substring(0, f.getName().indexOf(".")));
-				info.setEnds(f.getName().substring(f.getName().indexOf(".")+1));
-			}else info.setName(f.getName());
-			lf.add(info);
-		}*/
 		
 		List<FileUpAndDown> fileUpAndDowns = fileUpAndDownServiceImpl.getAll();
 		request.getSession().setAttribute("fileUpAndDowns", fileUpAndDowns);
-		request.getSession().setAttribute("rootPath", 
-				request.getSession().getServletContext().getRealPath("/upload")+"/");
 		return "admin/down/list";
 	}
 	// 返回 页面 
@@ -99,10 +96,8 @@ public class DownloadControl extends BaseControl{
 		try {
 			// fileUpAndDownServiceImpl
 			if(fileName == null || "".equals(fileName)) {
-				return Message.error("上传文件名称不能为空！");
+				fileName = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."));
 			}
-			
-			
 			
 //			String name = UUID.randomUUID().toString().replace("-", "");
 			// 实际名称中获取后缀
@@ -112,7 +107,7 @@ public class DownloadControl extends BaseControl{
 			if(fileUpAndDownServiceImpl.get(singleOfEqString("file_name", fileName+ends)) != null)
 				return Message.error(fileName+"，该名称已经存在！");
 			
-			//System.out.println("basePath:"+basePath(request)+"; filename:"+fileName+","+file.getName()+" ContentType:"+file.getContentType()+" OriginalFilename:"+file.getOriginalFilename());
+			//log.info("basePath:"+basePath(request)+"; filename:"+fileName+","+file.getName()+" ContentType:"+file.getContentType()+" OriginalFilename:"+file.getOriginalFilename());
 			
 			FileUpAndDown fileUpAndDown = new FileUpAndDown();
 			fileUpAndDown.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
@@ -122,7 +117,13 @@ public class DownloadControl extends BaseControl{
 			fileUpAndDown.setStatus("00");
 			fileUpAndDownServiceImpl.insert(fileUpAndDown);
 			
-			String realPath = request.getSession().getServletContext().getRealPath("/upload")+"/"+fileName+ends;
+			WebsiteBase w = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+			if(w == null 
+				|| w.getUpload() == null 
+				|| "".equals(w.getUpload().trim())) 
+				return Message.error("配置未找到！");
+//			String realPath = request.getSession().getServletContext().getRealPath("/upload/")+fileName+ends;
+			String realPath = w.getUpload()+fileName+ends;
 			File dest = new File(realPath);
 			if (!dest.getParentFile().exists()) // 判断文件父目录是否存在
 				dest.getParentFile().mkdir(); 
@@ -156,10 +157,24 @@ public class DownloadControl extends BaseControl{
 	 */
 	@RequestMapping("remove.do")
 	@ResponseBody
-	public Object remove(FileUpAndDown t) throws IOException{
+	public Object remove(FileUpAndDown t, HttpServletRequest request) throws IOException{
 		
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
+			WebsiteBase w = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+			if(w == null 
+				|| w.getUpload() == null 
+				|| "".equals(w.getUpload().trim())) 
+				return Message.error("配置未找到！");
+			
+			String realPath = w.getUpload()+t.getActual_name();
+			File dest = new File(realPath);
+			log.info(dest.toString());
+			if(dest.exists()){
+				dest.delete();
+			} else {
+				return Message.error("删除时，文件不存在，操作失败！", null);
+			}
 			fileUpAndDownServiceImpl.delete(t);
 			return Message.success("删除成功", null);
 		}catch(Exception e) {
@@ -179,7 +194,7 @@ public class DownloadControl extends BaseControl{
 	@ResponseBody
 	public Object update(Aimg t) throws IOException{ 
 		try {
-			System.out.println("修改接收参数："+t); 
+			log.info("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
 			aimgServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 

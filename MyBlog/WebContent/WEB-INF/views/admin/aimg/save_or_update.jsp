@@ -41,13 +41,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="layui-input-inline">
 			<input type="text" name="update_time" disabled placeholder="请输入修改时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
-	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label">路径</label>
-		<div class="layui-input-inline">
-			<input type="text" name="path" placeholder="请输入路径" autocomplete="off" class="layui-input">
-		</div>
-	</div>
+	</div> 
+	<!-- 修改的时候上传图片 -->
+	
 	<div class="layui-form-item">
 		<label class="layui-form-label">备注</label>
 		<div class="layui-input-inline">

@@ -22,6 +22,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<label class="layui-form-label">ID</label>
 		<div class="layui-input-inline">
 			<input type="text" name="id" disabled autocomplete="off" class="layui-input layui-disabled">
+			<input type="text" name="tags" autocomplete="off" class="layui-input layui-disabled"/>
 		</div>
 	</div>
 	<div class="layui-form-item">

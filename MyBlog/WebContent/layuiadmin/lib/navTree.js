@@ -33,7 +33,6 @@ function (e){//console.log('navTree');
         //emptyText: "暂无数据"
     },
 	navTree.prototype.render = function(){ 
-		alert(that.config.base);
 		var that = this,
 		config = that.config,
 		data = config.data,
