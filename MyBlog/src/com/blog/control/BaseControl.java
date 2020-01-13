@@ -20,6 +20,9 @@ public class BaseControl {
 	
 	public static Logger logger = LogManager.getLogger(BaseControl.class);
 	
+	public static String eq(String col, String fields) {
+		return "`"+col+"` = '"+fields+"' ";
+	}
 	/**
 	 * 例如：`id` = '1234'
 	 * <p>	 

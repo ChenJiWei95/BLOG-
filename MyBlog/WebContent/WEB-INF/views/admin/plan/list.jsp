@@ -22,7 +22,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body> 
   <div class="head" style="background: #393D49; text-align: center; color: #fff; line-height: 66px;">
-  	<h1>今日计划</h1>
+  	<h1>计划</h1>
+  	<ul class="layui-nav" style="position: absolute; right: 5px;top: 5px; background: none; line-height: 0px;"> 
+	  <li class="layui-nav-item">
+	    <i class="layui-icon layui-icon-more-vertical"></i>
+	    <dl class="layui-nav-child" style="right: 0; left: unset;">
+	      <dd><a href="javascript:;" click-event="statistics">计划统计</a></dd>
+	      <dd><a href="javascript:;" click-event="nextPlan">明日计划</a></dd>
+	      <dd><a href="javascript:;" click-event="set">设置</a></dd>
+	    </dl>
+	  </li>
+	</ul>
+  </div>
+  <div class="layui-fluid">   
+    <div class="layui-card" style="position: relative; overflow: hidden;">
+    	<div class="layui-card-body">
+		  <ul>
+	        <li style="list-style-type: circle; margin-left: 32px;">
+			   最好的年纪，不要活得太随意。
+			</li>
+	      </ul>
+		</div>
+    </div>
   </div>
   <div class="layui-fluid">   
     <div class="layui-card" style="position: relative; padding-bottom: 10px; overflow: hidden;">
@@ -62,6 +83,60 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	      </c:if>
 	      </c:forEach>
 	      </ul>
+	    </div>
+	  </div>
+    </div>
+  </div>
+  <div class="layui-fluid">   
+    <div class="layui-card" style="position: relative; padding-bottom: 10px; overflow: hidden;">
+      <div class="layui-form" lay-filter="admin-form-plan" id="admin-form-plan">
+		<div style="cursor: pointer; position:absolute; text-align: center; z-index: 99; over-flow: hidden; right: 45px; top: 7px; width: 30px; height: 30px; border-radius: 15px; background: #555; font-size: 23px; color: #fff; ">
+		  <i class="layui-icon layui-icon-ok" click-event="week_complete" data-id="${planBase.id}"></i>
+		</div>
+		<div style="cursor: pointer; position:absolute; text-align: center; z-index: 99; over-flow: hidden; right: 10px; top: 7px; width: 30px; height: 30px; border-radius: 15px; background: #555; font-size: 23px; color: #fff; ">
+		  <i class="layui-icon layui-icon-edit" click-event="week_edit" data-id="${planBase.id}"></i>
+		</div>
+		<div class="layui-card-header">周目标</div>
+		<div class="layui-card-body">
+		  <%-- <ul>
+	      <c:forEach begin="0" items="${planDo}" step="1" var="PlanDo" varStatus="varsta">
+	      <c:if test="${PlanDo.status eq '00'}">
+	        <li style="list-style-type: circle; margin-left: 32px;">
+			  <label>${PlanDo.name}</label>
+			  <label style="color:rgb(32, 183, 89);">
+				<i class="layui-icon layui-icon-ok-circle"></i>
+			  </label>
+			</li>
+	      </c:if>
+	      </c:forEach>
+	      </ul> --%>
+	    </div>
+	  </div>
+    </div>
+  </div>
+  <div class="layui-fluid">   
+    <div class="layui-card" style="position: relative; padding-bottom: 10px; overflow: hidden;">
+      <div class="layui-form" lay-filter="admin-form-plan" id="admin-form-plan">
+		<div style="cursor: pointer; position:absolute; text-align: center; z-index: 99; over-flow: hidden; right: 45px; top: 7px; width: 30px; height: 30px; border-radius: 15px; background: #555; font-size: 23px; color: #fff; ">
+		  <i class="layui-icon layui-icon-ok" click-event="mounth_complete" data-id="${planBase.id}"></i>
+		</div>
+		<div style="cursor: pointer; position:absolute; text-align: center; z-index: 99; over-flow: hidden; right: 10px; top: 7px; width: 30px; height: 30px; border-radius: 15px; background: #555; font-size: 23px; color: #fff; ">
+		  <i class="layui-icon layui-icon-edit" click-event="mounth_edit" data-id="${planBase.id}"></i>
+		</div>
+		<div class="layui-card-header">月目标</div>
+		<div class="layui-card-body">
+		  <%-- <ul>
+	      <c:forEach begin="0" items="${planDo}" step="1" var="PlanDo" varStatus="varsta">
+	      <c:if test="${PlanDo.status eq '00'}">
+	        <li style="list-style-type: circle; margin-left: 32px;">
+			  <label>${PlanDo.name}</label>
+			  <label style="color:rgb(32, 183, 89);">
+				<i class="layui-icon layui-icon-ok-circle"></i>
+			  </label>
+			</li>
+	      </c:if>
+	      </c:forEach>
+	      </ul> --%>
 	    </div>
 	  </div>
     </div>
@@ -108,6 +183,48 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }
             })
 		} 
+	    ,set: function(){
+			// 打开设置页面
+			layer.open({
+		        type: 2 
+		        ,title: '设置'
+		        ,area: ['auto']
+		        ,shade: 0
+		        ,content: '<%=basePath%>admin/plan/set.chtml?secret_key=${secret_key}'
+		        ,success: function(layero, index){
+		          layer.setTop(layero); 
+		          layer.full(index);
+		        }
+		   });
+		}
+		,nextPlan: function(){
+			// 打开明日计划页面
+			layer.open({
+		        type: 2 
+		        ,title: '明日计划'
+		        ,area: ['auto']
+		        ,shade: 0
+		        ,content: '<%=basePath%>admin/plan/nextPlan.chtml?secret_key=${secret_key}'
+		        ,success: function(layero, index){
+		          layer.setTop(layero); 
+		          layer.full(index);
+		        }
+		   });
+		}
+		,statistics: function(){
+			// 打开统计页面
+			layer.open({
+		        type: 2 
+		        ,title: '计划统计'
+		        ,area: ['auto']
+		        ,shade: 0
+		        ,content: '<%=basePath%>admin/plan/statistics.chtml?secret_key=${secret_key}'
+		        ,success: function(layero, index){
+		          layer.setTop(layero); 
+		          layer.full(index);
+		        }
+		   });
+		}
     });
     // checkbox 点击事件
     // isTips 是否有激励语提示框
@@ -119,7 +236,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			method: 'update'
 			,data: {status: status, id: id, type: "1"}  
 	 		,success: function(){
-	 			self.location.href='<%=basePath%>admin/plan/show.chtml?secret_key=${planBase.secret_key}&isTips=0'
+	 			self.location.href='<%=basePath%>admin/plan/show.chtml?secret_key=${secret_key}&isTips=0'
 	 		}
 		});
 	 	return false;

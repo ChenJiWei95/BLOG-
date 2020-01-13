@@ -86,13 +86,13 @@ layui.define(function(e) {
             series: [{
                 type: "line",
                 name: '最近一周每日完成量',
-                stack: '总量',
+                stack: '最近一周每日完成量',
                 data: planCount
             },
             {
                 type: "line",
                 name: '最近一周每日总量',
-                stack: '总量',
+                stack: '最近一周每日总量',
                 data: planAllCount
             }]
         }],

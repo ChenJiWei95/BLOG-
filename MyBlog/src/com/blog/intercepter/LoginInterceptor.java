@@ -45,7 +45,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 		log.info(arg0.getServerPort()+arg0.getContextPath());
 		
 		WebsiteBase websiteBase = websiteBaseServiceImpl.get("`id` = '1' ");
-		log.info("白名单："+websiteBase.getWhite_list());
 		String[] list = websiteBase.getWhite_list().split(",");	
 		// 白名单请求 允许（登录页面、登录请求、博客请求、基本请求）
 		for(String url : list)

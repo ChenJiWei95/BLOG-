@@ -1,12 +1,10 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +22,11 @@ import com.blog.control.BaseControl;
 import com.blog.entity.Data;
 import com.blog.entity.PlanBase;
 import com.blog.entity.PlanDo;
+import com.blog.entity.WebsiteBase;
 import com.blog.service.DataService;
 import com.blog.service.PlanBaseService;
 import com.blog.service.PlanDoService;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 import com.blog.util.TimeUtil;
@@ -46,26 +46,40 @@ public class PlanControl extends BaseControl{
 	private PlanBaseService planBaseServiceImpl;
 	
 	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
+	
+	@Autowired
 	private DataService dataServiceImpl;
 	
 	// 返回 页面 
 	@RequestMapping("/show.chtml") 
-	public String listview1(ModelMap model, String isTips, HttpServletRequest request){
+	public String listview1(ModelMap model, String secret_key, String isTips, HttpServletRequest request){
+		if(!secretKeyCheck(secret_key))
+			return "admin/error";
+		
 		PlanBase planBase = planBaseServiceImpl.get(singleOfEqString("create_date", 
 				TimeUtil.getDate(TimeUtil.DATE_FORMAT)));
 		log.info(planBase);
-		Map<String, String> parame = getRequestParameterMap(request);
-		if(planBase == null || !parame.get("secret_key").equals(planBase.getSecret_key()))
-			return "admin/error";
 		List<PlanDo> planDo = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
 		
 		model.addAttribute("planBase", planBase);
 		model.addAttribute("planDo", planDo);
+		model.addAttribute("secret_key", websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key());
 		model.addAttribute("isTips", isTips);
 		return "admin/plan/list";
 	}
+	
 	@RequestMapping("/night.chtml") 
-	public String listview2(ModelMap model, HttpServletRequest request){
+	public String listview2(ModelMap model, String secret_key, HttpServletRequest request){
+		if(!secretKeyCheck(secret_key))
+			return "admin/error";
+		
+		statistics(model); 
+		nextPlan(model);
+		return "admin/plan/night";
+	}
+
+	protected void statistics(ModelMap model) {
 		String currentDate = TimeUtil.getDate(TimeUtil.DATE_FORMAT)
 		,dayText1 = "今日完成情况"
 		,dayText2 = "昨日完成情况";
@@ -87,7 +101,6 @@ public class PlanControl extends BaseControl{
 				foreDate));
 		List<PlanDo> planDo2 = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
 		
-		model.addAttribute("planBase", planBase);
 		model.addAttribute("todayPlanDos", planDo);
 		model.addAttribute("yesterdayPlanDos", planDo2);
 		model.addAttribute("dayText1", dayText1);
@@ -98,9 +111,98 @@ public class PlanControl extends BaseControl{
 		model.addAttribute("weekDate", data[0]);
 		model.addAttribute("planCount", data[1]);
 		model.addAttribute("planPercent", data[2]); 
-		model.addAttribute("planAllCount", data[3]); 
-		return "admin/plan/night";
+		model.addAttribute("planAllCount", data[3]);
 	}
+
+	@RequestMapping("/statistics.chtml") 
+	public String listview3(ModelMap model, String secret_key){
+		if(!secretKeyCheck(secret_key))
+			return "admin/error";
+		statistics(model);
+		return "admin/plan/statistics";
+	}
+	
+	@RequestMapping("/nextPlan.chtml") 
+	public String listview4(ModelMap model, String secret_key){
+		if(!secretKeyCheck(secret_key))
+			return "admin/error";
+		
+		nextPlan(model);
+		
+		return "admin/plan/nextPlan";
+	}
+
+	protected void nextPlan(ModelMap model) {
+		String nextDay = "";
+		PlanBase planBase = null;
+		try {
+			nextDay = TimeUtil.getDay(
+					TimeUtil.getDatetime(TimeUtil.DATE_FORMAT), 
+					TimeUtil.DATE_FORMAT, 
+					1);
+		
+			planBase = planBaseServiceImpl.get(singleOfEqString("create_date", nextDay));
+			if(planBase == null){
+				model.addAttribute("nextPlanStatus", "00");
+				// 创建新的计划base
+				planBase = new PlanBase();
+				planBase.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+				planBase.setCreate_date(nextDay);
+				planBase.setExcitation_text("看着自己走过的计划，不浪费每一天");
+				planBase.setPlan_name("每日计划");
+				planBase.setSecret_key(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+				
+				planBaseServiceImpl.insert(planBase);
+				
+				// 获取上一天的日期
+				String foreDate = TimeUtil.getDay(planBase.getCreate_date(), TimeUtil.DATE_FORMAT, -1);
+				// 根据日期找计划base 最后查找符合的计划PlanDo
+				PlanBase foreP = planBaseServiceImpl.get("`create_date` = '"+foreDate+"' ");
+				List<PlanDo> list = planDoServiceImpl.gets("`plan_base_id` = '"+foreP.getId()+"' ");
+				
+				PlanDo planDo = null;
+				// 创建和昨天相同的计划PlanDo
+				for(PlanDo p : list){
+					planDo = new PlanDo();
+					planDo.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+					planDo.setTime(TimeUtil.getDate());
+					planDo.setName(p.getName());
+					planDo.setStatus("02");
+					planDo.setPlan_base_id(planBase.getId());
+					planDo.setPlan_tag_id(p.getPlan_tag_id());
+					planDoServiceImpl.insert(planDo);
+				}
+			}
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		List<Data> allTags = dataServiceImpl.gets(singleOfEqString("type", DATA_SIGN));
+		List<PlanDo> tags = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
+		String secretKey = websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key();
+		
+		model.addAttribute("secret_key", secretKey);
+		model.addAttribute("planBase", planBase);
+		model.addAttribute("allTags", allTags);
+		model.addAttribute("otherTags", tags);
+	}
+	
+	@RequestMapping("/set.chtml") 
+	public String listview5(ModelMap model, String secret_key){ 
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+		if(!secret_key.equals(websiteBase.getSecret_key()))
+			return "admin/error";	
+		model.addAttribute("website", websiteBase);
+		return "admin/plan/set";
+	}
+	
+	protected boolean secretKeyCheck(String secret_key) {
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+		log.info("-"+secret_key+"-"+websiteBase.getSecret_key()+"-");
+		return secret_key.equals(websiteBase.getSecret_key());
+	}
+	
 	
 	protected String[] planDate(String currentDate){
 		DecimalFormat df = new DecimalFormat("#.00");
@@ -173,13 +275,43 @@ public class PlanControl extends BaseControl{
 				parame.get("id")));
 		List<Data> allTags = dataServiceImpl.gets(singleOfEqString("type", DATA_SIGN));
 		List<PlanDo> tags = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
+		String secretKey = websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key();
 		
-		
+		model.addAttribute("secret_key", secretKey);
 		model.addAttribute("planBase", planBase);
 		model.addAttribute("allTags", allTags);
 		model.addAttribute("otherTags", tags);
 		return "admin/plan/save_or_update";
 	} 
+	
+	/**
+	 * 修改
+	 * @param menu
+	 * @param spread
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping("set.do")
+	@ResponseBody
+	public Object set(WebsiteBase t) throws IOException{ 
+		try {
+			websiteBaseServiceImpl.update(t, singleOfEqString("id", "1"));
+			return Message.success("修改成功。 ");
+		}catch(Exception e){
+			return Message.error("请求失败，运行异常； "+e.getMessage());
+		}
+	}
+	 
+	@RequestMapping("targetUpdate.do")
+	@ResponseBody
+	public Object targetUpdate(WebsiteBase t) throws IOException{ 
+		try {
+			websiteBaseServiceImpl.update(t, singleOfEqString("id", "1"));
+			return Message.success("修改成功。 ");
+		}catch(Exception e){
+			return Message.error("请求失败，运行异常； "+e.getMessage());
+		}
+	}
 	
 	/**
 	 * 修改

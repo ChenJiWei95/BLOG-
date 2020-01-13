@@ -15,6 +15,7 @@ public class WebsiteBase extends Base{
 	private String copyright;
 	private String upload;
 	private String white_list;
+	private String secret_key;
 
 	public String getId() {
 		return id;
@@ -105,5 +106,11 @@ public class WebsiteBase extends Base{
 	}
 	public void setWhite_list(String white_list) {
 		this.white_list = white_list;
+	}
+	public String getSecret_key() {
+		return secret_key;
+	}
+	public void setSecret_key(String secret_key) {
+		this.secret_key = secret_key;
 	}
 }

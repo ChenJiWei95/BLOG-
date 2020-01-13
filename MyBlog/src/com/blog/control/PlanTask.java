@@ -17,6 +17,7 @@ import com.blog.entity.PlanBase;
 import com.blog.entity.PlanDo;
 import com.blog.service.PlanBaseService;
 import com.blog.service.PlanDoService;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.SnowFlakeGenerator;
 import com.blog.util.TimeUtil;
 /**
@@ -40,6 +41,9 @@ public class PlanTask {
 	@Autowired
 	private PlanBaseService planBaseServiceImpl;
 	
+	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
+	
 	@Scheduled(cron="0 0/1 20 * * ?")
 	public void test2(){
 		log.info("开始任务");
@@ -51,73 +55,27 @@ public class PlanTask {
 		log.info("test");
 	}
 	
-	@Scheduled(cron="0 0 6 * * ?")
+	@Scheduled(cron="0 0 6 */1 * ?")
 	public void startPlan(){
 		log.info("今日计划定时任务");
-		try {
-			String today = TimeUtil.getDatetime(TimeUtil.DATE_FORMAT);
-			// 防止重复调用
-			if(planBaseServiceImpl.get("`create_date` = '"+today+"' ") != null)
-				return ;
-			// 创建新的计划base
-			PlanBase planBase = new PlanBase();
-			planBase.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-			planBase.setCreate_date(today);
-			planBase.setExcitation_text("看着自己走过的计划，不浪费每一天");
-			planBase.setPlan_name("每日计划");
-			planBase.setSecret_key(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-			
-			planBaseServiceImpl.insert(planBase);
-			
-			// 获取上一天的日期
-			String foreDate = TimeUtil.getDay(planBase.getCreate_date(), TimeUtil.DATE_FORMAT, -1);
-			// 根据日期找计划base 最后查找符合的计划PlanDo
-			PlanBase foreP = planBaseServiceImpl.get("`create_date` = '"+foreDate+"' ");
-			List<PlanDo> list = planDoServiceImpl.gets("`plan_base_id` = '"+foreP.getId()+"' ");
-			
-			PlanDo planDo = null;
-			// 创建和昨天相同的计划PlanDo
-			for(PlanDo p : list){
-				planDo = new PlanDo();
-				planDo.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-				planDo.setTime(TimeUtil.getDate());
-				planDo.setName(p.getName());
-				planDo.setStatus("02");
-				planDo.setPlan_base_id(planBase.getId());
-				planDo.setPlan_tag_id(p.getPlan_tag_id());
-				planDoServiceImpl.insert(planDo);
-			}
-			
-			//发送邮件
-			NotifyControl.sendMail("1281384046@qq.com", 
-					null, 
-					"今日计划", 
-					"<html><body><h1>今日计划</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/show.chtml?secret_key="+planBase.getSecret_key()+"\">点击前往</a></body></html>", 
-					null);
-		}catch(DataIntegrityViolationException e) {
-			log.info("修改失败，数据可能过长；"+e.getMessage());
-			e.printStackTrace();
-		}catch(RuntimeException e){
-			log.info(e.getMessage());
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		//发送邮件
+		NotifyControl.sendMail("1281384046@qq.com", 
+				null, 
+				"今日计划", 
+				"<html><body><h1>今日计划</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/show.chtml?secret_key="+websiteBaseServiceImpl.get(BaseControl.eq("id", "1")).getSecret_key()+"\">点击前往</a></body></html>", 
+				null);
 	}
 	
 	@Scheduled(cron="0 40 21 */1 * ?")
 	public void goodNight(){
 		// 提示晚安
-		PlanBase planBase = planBaseServiceImpl.get("`create_date` = '"+ 
-				TimeUtil.getDate(TimeUtil.DATE_FORMAT)+"'");
-		planBase.setSecret_key("");
-		planBaseServiceImpl.update(planBase, "`id` = '"+planBase.getId()+"'");
 		//发送邮件
 		NotifyControl.sendMail("1281384046@qq.com", 
 				null, 
-				"晚安提示", 
-				"<html><body><h1>晚安</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/night.chtml\">点击前往</a></body></html>", 
+				"今日计划统计", 
+				"<html><body><h1>是时候睡觉了</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/night.chtml\">点击查看今日统计</a></body></html>", 
 				null);
+		
 	}
 	public static void main(String[] args){
 		String str = "0.83";

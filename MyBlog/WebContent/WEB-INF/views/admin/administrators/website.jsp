@@ -47,7 +47,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <div class="layui-form-item">
                 <label class="layui-form-label">白名单</label>
                 <div class="layui-input-block">
-                  <input type="text" name="white_list" placeholder="无需权限即可访问的地址，多个以逗号‘,’隔开" value="${website.white_list}" class="layui-input">
+                  <textarea name="white_list" class="layui-textarea">${website.white_list}</textarea>
+                  <%-- <input type="text" name="white_list" placeholder="无需权限即可访问的地址，多个以逗号‘,’隔开" value="${website.white_list}" class="layui-input"> --%>
                 </div>
               </div>
               <div class="layui-form-item">
@@ -76,6 +77,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <label class="layui-form-label">上传资源位置</label>
                 <div class="layui-input-block">
                   <input type="text" name="upload" placeholder="例如：d:/upload/" value="${website.upload}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">秘钥</label>
+                <div class="layui-input-block">
+                  <input type="text" name="secret_key" placeholder="长度50" value="${website.secret_key}" class="layui-input">
                 </div>
               </div>
               <div class="layui-form-item">
