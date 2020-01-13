@@ -14,15 +14,14 @@
   			<!-- 内容中转 -->
   			<xmp class="content layui-hide">${Article.simp_desc}</xmp>
   			<!-- 编译之后的内容 --> 
-  			<div class="layui-row" style="margin-bottom: 10px;">
-  				<div class="layui-col-md3">
-  					<img class="upload-piture" src="${Article.pit_url}" width="" height="" alt="" />
-  				</div>
-  				<div class="layui-col-md7">
-  					<div class="mark_code" style="margin-bottom: 8px; height: 156px; "></div>
-  				</div>
+  			<div class="mark_code" style="margin-bottom: 8px;"></div>
+  			<div class="">
+  				<img class="upload-piture" src="${Article.pit_url}" width="260" height="300" alt="" />
+  				<img class="upload-piture" src="${Article.pit_url}" width="260" height="300" alt="" />
+  				<img class="upload-piture" src="${Article.pit_url}" width="260" height="300" alt="" />
+  				<img class="upload-piture" src="${Article.pit_url}" width="260" height="300" alt="" />
+  				<img class="upload-piture" src="${Article.pit_url}" width="260" height="300" alt="" />
   			</div>
-  			
   			<label class="tags-value layui-hide">${Article.tags}</label>
   			<!-- 私有还是公开 暂存 -->
   			<%-- <label class="status layui-hide">${Article.status}</label> --%>

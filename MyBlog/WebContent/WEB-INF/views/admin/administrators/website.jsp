@@ -45,6 +45,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </div>
               </div>
               <div class="layui-form-item">
+                <label class="layui-form-label">白名单</label>
+                <div class="layui-input-block">
+                  <input type="text" name="white_list" placeholder="无需权限即可访问的地址，多个以逗号‘,’隔开" value="${website.white_list}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
                 <label class="layui-form-label">菜单展开项</label>
                 <div class="layui-input-block">
                   <input type="text" name="spread" value="${website.spread}" class="layui-input">

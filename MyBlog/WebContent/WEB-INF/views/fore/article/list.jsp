@@ -68,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     margin: 4px;
   }
   
-  	/* 代码修饰 样式 */
+  	/* 代码修饰 样式 start */
   	.iframe_box{width:800px; height:480px; border:1px solid #ddd; border-radius:5px; overflow:hidden; padding:5px;}
 	.iframe_box_title{height:30px; background:rgba(85, 85, 85, 0.15)}
 	.iframe_box_title i {cursor:pointer; width:16px; height:16px;}
@@ -102,7 +102,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.code_box .code table tbody tr .Serial:hover{color:rgba(27,31,35,0.5); cursor:pointer;}
 	.code_box .code table tbody tr .row_code{}
 	
-	/* 代码修饰 样式 */
+	/* 代码修饰 样式 end */
+	
+	/* {height: 17px; background: #f6f6f6; border-top: 1px solid #e7e7e7; color: #8B8B8C; position: relative; padding: 6px;} */
+	/* label:first-child {margin-left:0!important;} */
+	.interactive {float: right; margin-left: 18px;}
+	.interactive i{width: 19px; height: 19px; float: left; margin-right: 8px; margin-top: 2px; }
+	.interactive .fa-browse {background: url(<%=basePath%>img/main/fa-browse.png); }
+	.interactive .fa-chat {background: url(<%=basePath%>img/main/fa-chat.png); }
+	.interactive .fa-heart {background: url(<%=basePath%>img/main/fa-heart.png); }
+	
 	
 	.note-more {padding-top: 20px; padding-bottom: 20px;}
 	.note-more:hover {cursor: pointer; color: #000;}
@@ -164,11 +173,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   			<!-- 内容中转 -->
   			<xmp class="content layui-hide">{{d.simp_desc}}</xmp>
   			<!-- 编译之后的内容 --> 
-  			<div class="mark_code" style="margin-bottom: 8px; height: 156px;"></div>
+  			<div class="layui-row" style="margin-bottom: 10px;">
+  				<div class="layui-col-md3">
+  					<img class="upload-piture" src="{{d.pit_url}}" width="" height="" alt="" />
+  				</div>
+  				<div class="layui-col-md7">
+  					<div class="mark_code" style="margin-bottom: 8px; height: 156px; "></div>
+  				</div>
+  			</div>
+  			
   			<label class="tags-value layui-hide">{{d.tags}}</label>
   			<!-- 私有还是公开 暂存 -->
-  			<label class="status layui-hide">{{d.status}}</label>
+  			<%-- <label class="status layui-hide">{{d.status}}</label> --%>
   			<label class="item-tag"></label>
+			<label class="interactive">
+				<i class="fa-browse"></i>
+				<span>{{d.browse_num}}</span>
+			</label>
+			<label class="interactive">
+				<i class="fa-heart"></i>
+				<span>{{d.like_num}}</span>
+			</label>
+			<label class="interactive">
+				<i class="fa-chat"></i>
+				<span>{{d.chat_num}}</span>
+			</label>
   		</div> 
 	</div>
   </script>
@@ -194,7 +223,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var form = layui.form
     ,admin = layui.admin 
     ,$ = layui.$
+    ,util = layui.util
     ;
+    util.clickEvent({
+    	home: function (e){
+    		self.location = "<%=basePath%>";
+    	}
+    });
   });
   </script>
 </body>

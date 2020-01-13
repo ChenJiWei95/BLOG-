@@ -11,6 +11,7 @@ import com.blog.Constant;
 import com.blog.control.BaseControl;
 import com.blog.control.NotifyControl;
 import com.blog.service.ArticleService;
+import com.blog.service.LifeShareService;
 
 @RequestMapping("/blog")
 @Controller
@@ -18,6 +19,9 @@ public class IndexControl extends BaseControl{
 	
 	@Autowired
 	private ArticleService articleServiceImpl;
+	
+	@Autowired
+	private LifeShareService lifeShareServiceImpl;
 
 	// 返回 页面 
 	@RequestMapping("/index.chtml")
@@ -28,6 +32,12 @@ public class IndexControl extends BaseControl{
 				articleServiceImpl.getBySortAndLimit(null, 
 						Constant.ORDERBY_ASC, 
 						"create_time", 
+						0, 
+						3));
+		model.addAttribute("lifes", 
+				lifeShareServiceImpl.getBySortAndLimit(null, 
+						Constant.ORDERBY_ASC, 
+						"time", 
 						0, 
 						3));
 		return "fore/index";

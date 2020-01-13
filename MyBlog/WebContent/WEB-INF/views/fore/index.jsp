@@ -70,41 +70,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.load-css > i {background: url(<%=basePath%>img/ref2.png); background-repeat: no-reperat; width: 32px; margin-left: 10px; float: left; }
 	.load-css > span {display: block; margin-left: 50px;}
 	
-	/* S Model */
-	.myModal > .myModalImg {border-radius: 5px; cursor: pointer; transition: 0.3s; }
-	
-	.myModal {display: none; position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
-	.myModal > .myModalImg { margin: auto; display: block; }
-	.myModal > .desc { margin: auto; display: block; text-align: center; color: #ccc; padding: 10px 0; }
-	.pit-open-scale {display: block !important; animation-name: picture_open_zoom; animation-duration: 0.8s; }
-	.pit-close-scale { display: block !important; animation-name: picture_close_zoom; animation-duration: 0.8s; }
-	@keyframes picture_open_zoom {
-		from {transform: scale(0.1); opacity: 0.5;} 
-		to {transform: scale(1); opacity: 1;}
-	}
-	@keyframes picture_close_zoom {
-		from {transform: scale(1); opacity: 1;} 
-		to {transform: scale(0.1); opacity: 0;}
-	}
-	/* The Close Button */
-	.close { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; }
-	.close:hover,
-	.close:focus { color: #bbb; text-decoration: none; cursor: pointer; }
-	@media only screen and (max-width: 500px){
-		.myModal {
-			width: 100%;
-		}
-	}
-	/* E Model */
   </style>
  </head>
  <body>
- 	<!-- The Modal -->
-	<div class="myModal" blog-event="myModalClick">
-		<span class="close"  blog-event="myModalClick">×</span>
-		<img class="myModalImg" alt="" />
-		<div class="desc"></div>
-	</div>
 	<div class="progress-bar">
 		<div class="progress-bar-con"></div>
 	</div>
@@ -121,7 +89,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div class="con-web-tip-done simple-content-done">
 				<div class="cle-f con-web-tip-page" style="padding: 4px 47px;">
-					<i style="background: url(<%=basePath%>img/main/broad.png); width: 25px; height: 20px; float: left;"></i>&nbsp;<font class="breath_light" style="color: skyblue;">站点正在开发中请耐心等候。。。</font>
+					<i style="background: url(<%=basePath%>img/main/broad.png); width: 25px; height: 20px; float: left;"></i>&nbsp;
+					<font class="breath_light" style="color: skyblue;">一切事物都在朝着正确的方向发展</font>
 				</div>
 			</div>
 		</div>
@@ -135,23 +104,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 	<script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
 	<script>
+	var base = '<%=basePath%>';
 	layui.config({
 		base: '<%=basePath%>layuiadmin/' //静态资源所在路径
 	}).extend({
 		index: 'lib/index' //主入口模块
 		,partcle: 'lib/partcle'
-	}).use(['partcle'], 
+	}).use(['partcle', 'util'], 
 	function () { 
 		var $ = layui.$
+		,util = layui.util
 		,F = {
-			pictureClick: function (e) {
-				console.log(e.attr("src"));
-				$(".myModalImg")[0].src = e.attr("src");
-				$(".myModal .desc").eq(0).text(e.next().children("div").children(".desc-con").text());
-				$(".myModal:first").addClass("pit-open-scale");
-				$(".myModalImg:first").addClass("pit-open-scale");
-			}
-			,myModalClick: function (e) {
+			myModalClick: function (e) {
 				if(e.attr("class").indexOf("myModalImg") == -1){
 					$(".myModal:first").addClass("pit-close-scale");
 					$(".myModal:first").removeClass("pit-open-scale");
@@ -180,7 +144,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		};
 		layui.partcle.render();  
-	
+		
+		util.parseImgPath($(".upload-piture"), 0);
+		
+		util.clickEvent({
+			toDetails: function (e) {
+				// e.data("id")
+				// 根据id跳转
+			}
+			,toLife: function (e){
+				// 根据id跳转 e.data("id")
+			}
+		});
+		
 		var i = 4;
 		var timer = setInterval(function(){
 			i += parseInt(Math.random() * (1000 - 2 + 1) + 2);

@@ -10,7 +10,7 @@
 				<div class="layui-form-item" style="margin-top: 20px;">
 					<label class="layui-form-label">名称</label>
 					<div class="layui-input-inline" style="width: 250px;">
-						<input type="text" name="Qu_name_lk_s" placeholder="请日志名称" autocomplete="off" class="layui-input">
+						<input type="text" name="Qu_a#name_lk_s" placeholder="请日志名称" autocomplete="off" class="layui-input">
 					</div> 
 				</div>
 				<div class="layui-form-item">
@@ -18,7 +18,7 @@
 					<div class="layui-input-inline" style="width: 120px;">
 						<input 
 							type="text" 
-							name="Qu_createDate_ge_s" 
+							name="Qu_a#createDate_ge_s" 
 							placeholder="请输入开始时间" 
 							id="date" 
 							autocomplete="off" 
@@ -28,7 +28,7 @@
 					<div class="layui-input-inline" style="width: 120px;">
 						<input 
 							type="text" 
-							name="Qu_createDate_le_s" 
+							name="Qu_a#createDate_le_s" 
 							placeholder="请输入结束时间" 
 							id="date1" 
 							autocomplete="off" 

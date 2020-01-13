@@ -70,7 +70,7 @@ public class QueryHelper {
 			Enumeration<String> names = request.getParameterNames();
 			while (names.hasMoreElements()) {
 				String name = names.nextElement();
-				String value = request.getParameter(name);
+				String value = java.net.URLDecoder.decode(request.getParameter(name));
 				//System.out.println(name+"---"+value);
 				this.addFilter(name,value);
 			}
@@ -219,7 +219,8 @@ public class QueryHelper {
 		hql.append(" where 1=1 ");
 		for(Filter filter : filters){
 			hql.append(" and ");
-			String trueCloumn = this.cloumnAlias.get(filter.getProperty());
+			String name = "filter.getProperty()";
+			String trueCloumn = this.cloumnAlias.get(name.indexOf(".") != -1 ? name.substring(name.indexOf(".")+1) : name);
 			log.info(filter.getProperty() + " " + trueCloumn);
 			hql.append(trueCloumn == null ? filter.getProperty() : trueCloumn);
 			hql.append(filter.getQueryOperator());

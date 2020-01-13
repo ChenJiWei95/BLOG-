@@ -24,9 +24,9 @@ public class TempJava {
 	public final static String GENERAL_STRATEGY			= "1";// 普通
 	public final static String HIBER_ANNOTATION_STRATEGY= "2";// hibernate 注解
 	// 判断是否用textarea标签
-	private static String[] descField = new String[] {"desc", "noticeContent", "remark"}; 
+	private static String[] descField = new String[] {"desc", "noticeContent", "remark", "content"}; 
 	// 不可操作字段
-	private static String[] disableField = new String[] {"create_time", "update_time", "update_date", "createDate", "modifyDate"};
+	private static String[] disableField = new String[] {"create_time", "update_time", "update_date", "createDate", "modifyDate", "time"};
 	// 隐藏字段
 	private static String[] layuihideField = new String[] {"id"};
 	//前缀 顺序不可修改--需要改动命令值 文目录前缀 在copyPrevpath尾部拼接
@@ -36,7 +36,7 @@ public class TempJava {
 			"entity/", 
 			"mapper/", 
 			"service/impl/", 
-			"control/fore/",
+			"control/admin/",
 			"", 
 			"WEB-INF/views/admin/", 
 			"dao/impl/", 
@@ -95,8 +95,8 @@ public class TempJava {
 	// 7  	自动生成前端代码 /save_or_update.jsp 文件
 	// 8  	自动生成dao实现层代码 接口模式
 	// 9  	生成前端代码 /list.jsp 文件
-	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
-//	private static Integer[] commond = {};
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
+	private static Integer[] commond = {5};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
 //	private static Integer[] commond = {2, 1, 0, 3, 4, 6};
 //	private static Integer[] commond = {2, 1, 0, 4, 8};
@@ -106,20 +106,20 @@ public class TempJava {
 //	private static String entityStrategy = HIBER_ANNOTATION_STRATEGY;
 	
 	public static void main(String[] args) throws IOException {
-		String fileds 	= "id name note_id note_tab_id admin_id";
-		String columns	= "id name note_id note_tab_id admin_id";	// 其中的值对应 fileds 用于数据库表字段的对应
-		String types  	= "String String String String String"; // BigDecimal String Integer
-		String texts 	= "ID 名称 创建时间 修改时间 内容";
+		String fileds 	= "id plan_base_id plan_tag_id name time status";
+		String columns	= fileds;	// 其中的值对应 fileds 用于数据库表字段的对应
+		String types  	= "String String String String String String"; // BigDecimal String Integer
+		String texts 	= "ID 时间 内容 评论数 浏览数 喜欢数";
 		
 		ContextConfig c = new ContextConfig();
-		c.setTable("note_tab_brige");
-		c.setName_("noteTabBrige");
+		c.setTable("plan_do");
+		c.setName_("plan");
 		c.setFileds(fileds);
 		c.setColumns(columns);
 		c.setTypes(types);
 		c.setTexts(texts);
-		c.setClassify("note");
-		c.setTitle("NoteEryDay");
+		c.setClassify("plan");
+		c.setTitle("LifeShare");
 		doStart(c);
 		
 		// 下面为测试

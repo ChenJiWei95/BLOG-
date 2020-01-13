@@ -86,11 +86,7 @@ function(e) {
 				  	    }    
 				  	    currentCount = codeCount;
 				  	    
-				  	    
-				  	    for(var i = imgCount; i < $('.git-piture').length; i++){
-				  	    	parseImgPath(i)
-				  	    }
-				  	    imgCount = $('.git-piture').length;
+				  	    imgCount = util.parseImgPath($('.upload-piture'), imgCount); // 简易路径转换成有效路径
 			  		} catch(err){
 			  			console.log(err);
 			  		}
@@ -138,21 +134,7 @@ function(e) {
     }
     
     // 加载图片
-    var imgCount = $('.git-piture').length;
-    for(var i = 0; i < imgCount; i++){
-    	parseImgPath(i)
-    }
-    
-    // 给图片转换src
-    function parseImgPath(i){
-    	var img = $('.git-piture').eq(i);
-    	console.log(img);
-    	console.log(img.attr('src'));
-    	var path = img.attr('src');
-    	if(path != void 0 && path.indexOf("http") == -1){
-        	img.attr("src", base+'upload/'+path);
-    	}
-    }
+    var imgCount = util.parseImgPath($('.upload-piture'), 0);
     
    	currentCount = codeCount;// 定位此时代码修饰框位置 等待更多加载时使用
 	

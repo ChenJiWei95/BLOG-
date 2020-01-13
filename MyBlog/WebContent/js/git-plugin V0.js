@@ -1,4 +1,4 @@
-	console.log('version:2.2');	
+	console.log('version:2.3');	
 	/* ## S-GIT ## */
 	/*
 	草稿内容
@@ -1067,7 +1067,8 @@
 			//return '<li>'+'<pre>'+this.text+'</pre>'+html+'</li>'
 		}
 	}
-	
+	// 基础工具方法的定义
+	// 基础字段
 	var gitUtil = {
 		//检测圆点列表
 		test1:function(str){
@@ -1110,6 +1111,7 @@
 			} 
 			return [false]; 
 		}
+		// 下面字段是简易目录的填充符号
 		,firstSep	: "  ├─"
 		,fullSep	: "  │"
 		,lastSep	: "  └─"
@@ -1123,6 +1125,7 @@
 			}
 			return str;
 		}
+		,isTable:false// ture 属于table表格中的图片 图片自定义； false 默认80%
 	}
 	
 	//解析上下文context类  参数是未编译的文本
@@ -1697,6 +1700,7 @@
 			thead.appendTo(table);
 			var tbody = $$.cre("tbody");
 			//console.log(alignArr);
+			gitUtil.isTable=true;// ture 属于table表格中的图片 图片自定义
 			for(var i = 1; i < data.length; i++){
 				var arr = data[i];
 				var tr = $$.cre("tr").appendTo(tbody);
@@ -1711,6 +1715,7 @@
 				}
 			}
 			tbody.appendTo(table)
+			gitUtil.isTable=false;// false 不属于table表格中的图片 图片默认80%
 			return table;
 		}
 	}	
@@ -1780,7 +1785,9 @@
 							sepLastIndex = str.indexOf(")", sepLastIndex+1);
 							src = str.substring(tempIndex+2, sepLastIndex);
 							i = sepLastIndex + 1;
-							$$.cre("img").attr("alt", alt).attr("src", src).attr("class", "git-piture").attr("width", "80%").attr("click-event", "pictureDetail").appendTo(pre);
+							var img_c = $$.cre("img");
+							img_c.attr("width", gitUtil.isTable ? "35%" : "80%");// 属于table表格中的图片 图片自定义
+							img_c.attr("alt", alt).attr("src", src).attr("class", "git-piture").attr("click-event", "pictureDetail").appendTo(pre);
 						}else $$.cre("span").text('!'+c).appendTo(pre);
 					} else if (c === "*"){
 						c = str.charAt(i++);

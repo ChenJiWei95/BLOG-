@@ -89,8 +89,12 @@ public class ArticleControl extends BaseControl{
 	public Object add(Article t, HttpServletRequest request) throws IOException{
 		System.out.println("添加接收参数："+t);
 		try{
+			t.setBrowse_num("0");
+			t.setChat_num("0");
+			t.setLike_num("0");
 			t.setCreate_time(getNowTime());
 			t.setUpdate_time(t.getCreate_time());
+			t.setPit_url("pho.jpg");
 			
 			ArticleContent c = new ArticleContent();
 			c.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));

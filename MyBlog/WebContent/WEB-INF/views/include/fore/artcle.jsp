@@ -11,22 +11,20 @@
 					<ul class="nolist"> 
 						<c:forEach begin="0" items="${articles}" step="1" var="Article" varStatus="varsta">
 						<li>
-							<img src="
-								<c:if test="${empty Article.pit_url}"><%=basePath%>upload/exa-thread.jpg</c:if>
-								<c:if test="${not empty Article.pit_url}">${Article.pit_url}</c:if>" alt="" width="302" height="207" blog-event="pictureClick"/>
+							<img title="点击跳转至${Article.name}" data-id="${Article.id}" class="upload-piture" src="${Article.pit_url}" alt="" width="302" height="207" click-event="toDetails"/>
 							<div class="desc"><div><div class="desc-title">${Article.name}</div><div class="desc-con">${Article.simp_desc}</div></div></div>
 							<div class="interacte">
 								<label>
 									<i class="fa-browse"></i>
-									<span>666</span>
+									<span>${Article.browse_num}</span>
 								</label>
 								<label>
 									<i class="fa-heart"></i>
-									<span>666</span>
+									<span>${Article.like_num}</span>
 								</label>
 								<label>
 									<i class="fa-chat"></i>
-									<span>666</span>
+									<span>${Article.chat_num}</span>
 								</label>
 							</div>
 						</li>

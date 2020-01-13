@@ -4,19 +4,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.blog.Constant; 
+import com.blog.Constant;
+import com.blog.entity.WebsiteBase;
+import com.blog.service.WebsiteBaseService; 
 /**
  * @version: V 1.0 
  * @Description: 管理界面登录权限拦截
  * @author: cjw 
  * @date: 2019年11月27日 上午11:19:56
  */
+@Component
 public class LoginInterceptor implements HandlerInterceptor {
 	
 	private static Logger log = Logger.getLogger(LoginInterceptor.class);
+	
+	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
 	
 	@Override
 	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
@@ -36,13 +44,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 		log.info(arg0.getRequestURI());
 		log.info(arg0.getServerPort()+arg0.getContextPath());
 		
-		if(		arg0.getRequestURI().indexOf("login.chtml") > 0 
-				|| arg0.getRequestURI().indexOf("login.do") > 0 
-				|| arg0.getRequestURI().indexOf("/MyBlog/blog") == 0
-				|| "/MyBlog/".equals(arg0.getRequestURI())) { 
-			// 登录页面、登录请求、博客请求、基本请求 跳过
-			return true;
-		}
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get("`id` = '1' ");
+		log.info("白名单："+websiteBase.getWhite_list());
+		String[] list = websiteBase.getWhite_list().split(",");	
+		// 白名单请求 允许（登录页面、登录请求、博客请求、基本请求）
+		for(String url : list)
+			if(arg0.getRequestURI().indexOf(url.trim()) != -1) return true;
+		// 根目录请求 允许
+		if("/MyBlog/".equals(arg0.getRequestURI())) return true;
 		
 		log.info("拦截登录");
 		

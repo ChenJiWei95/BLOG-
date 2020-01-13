@@ -1,7 +1,11 @@
 package com.blog.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import com.blog.entity.PlanBase;
 /**
  * 
  * <b>时间类<b>
@@ -28,6 +32,7 @@ import java.util.Date;
  *
  */
 public class TimeUtil {
+	public final static String DATE_FORMAT = "yyyy-MM-dd";  
 	// 返回16位随机id
 	public static String randomId (){
 		return TimeUtil.getDatetime("yyyyMMddHHmmss")+String.valueOf(System.currentTimeMillis()).substring(11);
@@ -65,6 +70,19 @@ public class TimeUtil {
 	}
 	/**
 	 * 
+	 * 只获取日期
+	 * @see
+	 * @return
+	 * String
+	 *
+	 */
+	public static String getDate(String Format){
+		Date datetime=new Date();
+		SimpleDateFormat st=new SimpleDateFormat(Format);
+		return st.format(datetime);
+	}
+	/**
+	 * 
 	 * 只获取时间
 	 * @see
 	 * @return
@@ -78,5 +96,25 @@ public class TimeUtil {
 	}
 	public static void main(String[] args){
 		System.out.println(randomId()) ;
+	}
+	/**
+	 * 这里用一句话描述这个方法的作用
+	 * <p>	 
+	 * @param date 日期字符串格式
+	 * @param format TimeUtil.DATE_FORMAT
+	 * @param num -1负数 获取前天日期；  正数 获取未来天数
+	 * @return
+	 * @throws ParseException
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String getDay(String date, String format, int num) throws ParseException {
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat spdf = new SimpleDateFormat(format);
+		c.setTime(spdf.parse(date));
+		c.add(Calendar.DATE, num);
+		String foreDate = spdf.format(c.getTime());
+		return foreDate;
 	}
 }

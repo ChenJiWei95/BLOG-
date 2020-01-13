@@ -52,6 +52,23 @@ function(t) {
 				}
 			});
     	} 
+    	// pitureE: $('.pit-piture') ;  count: 0
+    	// 将不完整的路径替换成有效路径 ，资源位置默认在上传位置
+    	// 注意，使用时要定义一个全局的变量base
+    	,parseImgPath: function(pitureE, count){
+    		console.log(pitureE);
+        	var imgCount = pitureE.length;
+        	for(var i = count; i < imgCount; i++){
+        		var img = pitureE.eq(i);
+            	console.log(img);
+            	console.log(img.attr('src'));
+            	var path = img.attr('src');
+            	if(path != void 0 && path.indexOf("http") == -1){
+                	img.attr("src", base+'upload/'+path);
+            	}
+            }
+        	return imgCount;
+        }
         ,parseFloat: function(str){
         	var index = 0;
         	if((index = str.indexOf(".")) != -1){

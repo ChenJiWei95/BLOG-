@@ -14,6 +14,7 @@ public class WebsiteBase extends Base{
 	private String meta_desc;
 	private String copyright;
 	private String upload;
+	private String white_list;
 
 	public String getId() {
 		return id;
@@ -98,5 +99,11 @@ public class WebsiteBase extends Base{
 	}
 	public void setUpload(String upload) {
 		this.upload = upload;
+	}
+	public String getWhite_list() {
+		return white_list;
+	}
+	public void setWhite_list(String white_list) {
+		this.white_list = white_list;
 	}
 }

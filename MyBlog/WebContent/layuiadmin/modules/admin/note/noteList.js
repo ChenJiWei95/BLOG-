@@ -35,11 +35,7 @@ function(e) {
 		  		var data = {}
 		  		, arr = [];
 			  	data["id"] = target.parents(".note-item").eq(0).data("id");
-			  	//console.log(target);
-			  	//console.log(target.parents(".note-item"));
 			  	arr[0] = data;
-			  	//console.log("正在进行删除，输出data:");
-			  	//console.log(data);
 			  	admin.cajax({
 				  	method: 'remove'
 				  	,contentType: 'text/plain'
@@ -81,7 +77,7 @@ function(e) {
 	            ,yes: function(index, layero) {
 	                layero.find(f).contents().find("#"+b).click();
 	                setTimeout(function(){
-						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
+						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr.replace(/#/g, '%23');// 替换# %23;
 					}, 500);
 	            }
 	            ,success: function(e, index) {
@@ -118,41 +114,29 @@ function(e) {
 				  			//var tabCode = '';// 对标签进行确认 并生成html代码 最后定义为tabCode	
 				  			//for(var j in noteTabs){
 				  			//	if(noteTabs[j].note_id == resultData[i].id){
-					  				//console.log("输出note_id id");
-							  		//console.log(noteTabs[j].note_id + " " + resultData[i].id);
 				  			//		tabCode += '<label class="item-tag-block">'+noteTabs[j].name+'</label>';
 				  			//	}
 				  			//}
-				  			//console.log("tabCode ");
-					  		//console.log(tabCode);
 					  		
 				  			//resultData[i]['tabCode'] = tabCode;
-				  			//console.log("输出处理后的resultData["+i+"] ");
 				  			//eval("obj.p" + key + "='" + value + "'");
-					  		//console.log(resultData[i]);
 					  		// 调用模板并插入
 					  		laytpl(noteTpl.innerHTML).render(resultData[i], 
 					  		function(html){
-					  	    	//console.log("模板处理后输出html ");
-					  	    	//console.log(html);
 					  	    	$(".cartlist-cnt").eq(0).append(html);
 					  	    });
 				  		} /**/
 				  		// 插入之后 进行编译 
 				  		var startIndex = (data.page-1)*data.limit-1;
 				  		var endIndex = startIndex + data.limit;
-				  		console.log(startIndex + " " + endIndex);
 				  		for(var n = startIndex+1; n <= endIndex; n++){
-				  			console.log(n);
 				  			var contentText = $(".content").eq(n).text();
-				  			//console.log('创建 GitManage 定义渲染完后调用的');
 			  		    	// 创建 GitManage 定义渲染完后调用的
 			  		    	var gitManage_ = new GitManage(contentText);
 			  		    	// 获取git组件渲染元素 并添加进对应的位置
 			  		    	gitManage_.getElements().forEach(
 			  		    	function(item) {
 			  		        	var e = $(item);
-			  		        	console.log(e);
 			  		        	// 得到的item元素无法输出自身,此时是重组标签,这个标签会与item相同,完全是复制
 			  		        	$(".mark_code").eq(n).append(e); 
 			  		        });	
@@ -172,7 +156,6 @@ function(e) {
 				  		for(var i = tempCount; i < codeCount; i++){
 				  	    	var codeStr = codeArr[i];
 				  	    	if(codeStr != void 0 && codeStr.trim() != ''){
-				  	    		//console.log('codeStr:'+codeStr);
 				  	    		$('.code_box').eq(i).addClass("code-box"+i);
 				  	    		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
 				  	    		var dealCode = new DealCode(); // 创建代码处理类
@@ -224,7 +207,6 @@ function(e) {
     for(var i = 0; i < codeCount; i++){
     	var codeStr = codeArr[i];
     	if(codeStr != void 0 && codeStr.trim() != ''){
-    		//console.log('codeStr:'+codeStr);
     		//$('.code_box').eq(i).addClass("code-box"+i);
     		$("<style id='code-css"+i+"'></style>").appendTo($("head")); // 创建样式标签
     		var dealCode = new DealCode(); // 创建代码处理类
@@ -245,8 +227,6 @@ function(e) {
     // 给图片转换src
     function parseImgPath(i){
     	var img = $('.git-piture').eq(i);
-    	console.log(img);
-    	console.log(img.attr('src'));
     	var path = img.attr('src');
     	if(path != void 0 && path.indexOf("http") == -1){
         	img.attr("src", base+'upload/'+path);

@@ -49,6 +49,14 @@
 		<mapper resource="com/blog/mapper/FileUpAndDownMapper.xml" />
 		<mapper resource="com/blog/mapper/NoteMapper.xml" />
 		<mapper resource="com/blog/mapper/NoteTabBrigeMapper.xml" />
+		<mapper resource="com/blog/mapper/LifeShareMapper.xml" />
+		<mapper resource="com/blog/mapper/LifePictureMapper.xml" />
+		<mapper resource="com/blog/mapper/PlanBaseMapper.xml" />
+		<mapper resource="com/blog/mapper/PlanDoMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>    
+
+
+
+

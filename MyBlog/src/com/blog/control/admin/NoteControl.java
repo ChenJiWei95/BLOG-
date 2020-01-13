@@ -78,6 +78,7 @@ public class NoteControl extends BaseControl{
 		for(Map.Entry<String, String> item : parame.entrySet()) 
 			query.append(item.getKey() + "=" + item.getValue()).append("&");
 		if(parame.size() > 0) query.delete(query.length()-1, query.length());// 删除多余符号
+		log.info("queryStr "+query.toString());
 		model.addAttribute("query", query.toString()); // 拼接 上一次请求的 条件
 		
 		model.addAttribute("notes", getNoteOfCommon(type, parame, request, page, admin));
@@ -186,9 +187,9 @@ public class NoteControl extends BaseControl{
 			if(tabs != null && !"".equals(tabs)) {// 根据tabs创建新标签
 				String[] arr = tabs.split(",");
 				for(String item : arr) {
-					log.info("',' arr:"+item);
+					//log.info("',' arr:"+item);
 					Data dataTable = dataServiceImpl.get(singleOfEqString("name", item));
-					log.info("==============data:"+dataTable);
+					//log.info("==============data:"+dataTable);
 					if(dataTable == null) {
 						dataTable = new Data();
 						dataTable.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));

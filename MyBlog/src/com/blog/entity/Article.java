@@ -8,6 +8,9 @@ public class Article extends Base{
 	private String simp_desc;
 	private String status;
 	private String tags;
+	private String browse_num;
+	private String like_num;
+	private String chat_num;
 
 
 	public String getId() {
@@ -57,5 +60,23 @@ public class Article extends Base{
 	}
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+	public String getBrowse_num() {
+		return browse_num;
+	}
+	public void setBrowse_num(String browse_num) {
+		this.browse_num = browse_num;
+	}
+	public String getLike_num() {
+		return like_num;
+	}
+	public void setLike_num(String like_num) {
+		this.like_num = like_num;
+	}
+	public String getChat_num() {
+		return chat_num;
+	}
+	public void setChat_num(String chat_num) {
+		this.chat_num = chat_num;
 	}
 }

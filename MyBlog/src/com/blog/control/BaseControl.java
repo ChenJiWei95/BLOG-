@@ -13,7 +13,8 @@ import org.apache.logging.log4j.Logger;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.entity.Menu;
-import com.blog.util.GsonUtil; 
+import com.blog.util.GsonUtil;
+import com.blog.util.TimeUtil; 
 
 public class BaseControl {
 	
@@ -46,7 +47,11 @@ public class BaseControl {
 	}
 	
 	protected String getNowTime() {
-		return com.blog.util.TimeUtil.getDatetime();
+		return TimeUtil.getDatetime();
+	}
+	
+	protected String getNowDate() {
+		return TimeUtil.getDate(TimeUtil.DATE_FORMAT);
 	}
 	
 	protected <T> JSONArray listToJSONArray(List<T> list){ 
