@@ -21,4 +21,14 @@ public class Constant {
 	public static String COMMON_TRUE 		= "00";
 	public static String COMMON_FALSE 		= "01";
 	
+	public static String STATE_SUCCESS 		= "00";
+	public static String STATE_HANDLE 		= "01";
+	public static String STATE_FAIL 		= "02";
+	
+	public static String PAY_TYPE_WECHAT 	= "01";
+	public static String PAY_TYPE_ZHIFUBAO 	= "02";
+	
+	public static String PLAY_01 = "01";
+	public static String PLAY_02 = "02";
+	public static String PLAY_03 = "03";
 }

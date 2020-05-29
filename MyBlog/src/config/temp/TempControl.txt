@@ -18,10 +18,21 @@ import com.blog.entity.#name#;
 import com.blog.service.#name#Service;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.blog.Filter;
+import com.blog.Order;
+import com.blog.Page;
+import com.blog.QueryHelper;
+import com.blog.util.sql.EqAdapter;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.apache.log4j.Logger;
 
 @Controller
+@Transactional
 @RequestMapping("/admin/#classify#")
 public class #name#Control extends BaseControl{
+	private static Logger log = Logger.getLogger(#name#Control.class);
 	
 	@Autowired
 	private #name#Service #name_#ServiceImpl;
@@ -42,16 +53,16 @@ public class #name#Control extends BaseControl{
 	@RequestMapping("add.do")
 	@ResponseBody
 	public Object add(#name# t) throws IOException{ 
-		System.out.println("添加接收参数："+t); 
+		System.out.println("添加接收参数："); 
 		
 		try{
 			t.setCreate_time(getNowTime());
 			#name_#ServiceImpl.insert(t);
 			
-			return com.blog.util.Message.success("请求成功", null);
+			return com.blog.util.Message.success("添加成功", null);
 		}catch(Exception e){
 			e.printStackTrace();
-			return com.blog.util.Message.error("请求失败，"+e.getMessage(), null);
+			return com.blog.util.Message.error("添加失败，", null);
 		}
 	}
 	
@@ -72,16 +83,16 @@ public class #name#Control extends BaseControl{
 			
 			for(int i = 0; i < json.size(); i++) {
 				JSONObject object = json.getJSONObject(i);
-				sb.append(singleMarkOfEq("id", object.getString("id"))).append(" OR ");
+				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
 			}
 			if(json.size() > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				#name_#ServiceImpl.delete(sb.toString());
 			}
-			return Message.success("请求成功", null);
+			return Message.success("删除成功", null);
 		}catch(Exception e) {
 			e.printStackTrace();
-			return Message.success("请求失败，"+e.getMessage(), null);
+			return Message.success("删除失败，", null);
 		}
 		
 	}
@@ -100,32 +111,103 @@ public class #name#Control extends BaseControl{
 			System.out.println("修改接收参数："+t); 
 			// 根据admin ID 对账号和进行修改 根据id 对adminInfor信息进行修改
 			t.setUpdate_time(getNowTime());
-			#name_#ServiceImpl.update(t, singleMarkOfEq("id", t.getId())); 
-			return Message.success("请求成功", null);
+			#name_#ServiceImpl.update(t, singleOfEqString("id", t.getId())); 
+			return Message.success("修改成功", null);
 		}catch(DataIntegrityViolationException e) {
+			e.printStackTrace();
 			return Message.success("修改失败，数据可能过长；"+e.getMessage(), null);
 		} catch(RuntimeException e) {
-			return Message.success("请求失败，运行异常； "+e.getMessage(), null);
+			e.printStackTrace();
+			return Message.success("请求失败", null);
 		}
 	} 
 	
 	/**
-	 * 初始化
+	 * 获取所有 不分页
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("list.do")
+	@RequestMapping("listAll.do")
 	@ResponseBody
-	public Object init() throws IOException{
+	public Object listAll() throws IOException{
 		try {
 			List<#name#> list = #name_#ServiceImpl.getAll();
-			return Message.success("请求成功", listToJSONArray(list));
+			return Message.success("获取成功", listToJSONArray(list));
 		}catch(Exception e) {
 			e.printStackTrace();
-			return Message.success("请求失败，"+e.getMessage(), null);
+			return Message.success("请求失败", null);
 		}
 	}
 	
+	/**
+	 * 根据条件分页获取数据
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping("list.do")
+	@ResponseBody
+	public Object list(Page page, HttpServletRequest request) throws IOException{
+		try { 
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			Integer count = 0;
+//			page.addFilter(new Filter("a.id", com.blog.Filter.Operator.eq, "b.admin_id", Filter.IGNORE_TYPE)); // Qu_type_eq_s
+			// log.info(limit+ ","+pageNum);
+			QueryHelper queryHelper = new QueryHelper(); 
+			queryHelper.paramBind(request, page);	// 获取前台参数
+//			queryHelper.addCloumnAlias("roleId", "role_id");
+//			queryHelper.addDisableSelect("roleId", "-1");// 该字段所传的值无效
+			page.addOrder(Order.desc("create_time"));// 排序 
+			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+			// 进行分页
+			String buildQueryStr = queryHelper.buildQuery(page.getFilters());
+			String sql = 
+					queryHelper.buildSelect()+
+					queryHelper.buildForm(***)+
+					(buildQueryStr = queryHelper.buildQuery(page.getFilters()))+ 
+					queryHelper.buildOrder(page.getOrders(), page.getAlias())+
+					queryHelper.buildLimit(pageNum, limit);
+			List<#name#> list = #name_#ServiceImpl.find(sql);
+			
+			if(page.getFilters().size() > 0) {
+				// 拼接查询数量的条件
+				StringBuilder eq = new StringBuilder();
+				List<Filter> fs = page.getFilters();
+				for(Filter item : fs) {
+					String prefix = "'",subfix = "'";
+					if(item.getQueryOperator().indexOf("like") >= 0){
+						prefix = "'%";
+						subfix = "%'";
+					}
+					eq.append(item.getProperty())
+					.append(item.getQueryOperator())
+					.append(prefix+item.getValue()+subfix);
+					eq.append(" AND ");
+				}
+				if(fs.size()>0)eq.delete(eq.length()-4, eq.length());// 删除多余
+				count = #name_#ServiceImpl.count(eq.toString());
+			}
+			/*if(queryHelper.sizeOfFilter() > 0) {
+				if(buildQueryStr.indexOf("and") != -1)
+					count = adminServiceImpl.count("admin a, admin_infor b, role c "
+						, buildQueryStr.substring(buildQueryStr.indexOf("and")+3));
+				else count = adminServiceImpl.count();
+			}*/
+			else
+				count = #name_#ServiceImpl.count();
+			
+			// 构建返回数据
+			page.setData(list);
+			page.setMsg("ok");
+			page.setCount(count);
+			page.setCode("0"); 
+			return page;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return com.blog.util.Message.success("请求失败", null);
+		}
 	
+	}
 	
 }

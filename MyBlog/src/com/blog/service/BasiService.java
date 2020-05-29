@@ -9,6 +9,18 @@ import com.blog.util.sql.ManyTable;
 
 public interface BasiService<T, V> {
 	
+	/**
+	 * 查询数量
+	 * <p>	 
+	 * @param tableStatement 自定义表
+	 * @param eq 预置了‘where 1 = 1 and ’  ，eq的值，例如：‘id = 123456’
+	 * @return
+	 * Integer
+	 * @see
+	 * @since 1.0
+	 */
+	Integer count(String tableStatement, String eq);
+	
 	Integer count();
 	
 	Integer count(String eq);
@@ -29,7 +41,16 @@ public interface BasiService<T, V> {
 	T get(T t);
 	
 	T get(T t, Object column);
-	
+	/**
+	 * 这里用一句话描述这个方法的作用
+	 * <p>	 
+	 * @param eq
+	 * 	例如：‘id = 132456’ 或者 ‘id = 123456 and name = '小明'’ 
+	 * @return
+	 * T
+	 * @see
+	 * @since 1.0
+	 */
 	T get(String eq); 
 	
 	T getForColum(String eq, Object column); 

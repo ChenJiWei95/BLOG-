@@ -9,6 +9,8 @@ public class Admin extends Base{
 	private String password; 
 	private String state;
 	private String login_count;
+	private AdminInfor admin_infor;
+	private Role role;
 	
 	public String getId() {
 		return id;
@@ -40,5 +42,16 @@ public class Admin extends Base{
 	public void setLogin_count(String login_count) {
 		this.login_count = login_count;
 	}
-	
+	public AdminInfor getAdmin_infor() {
+		return admin_infor;
+	}
+	public void setAdmin_infor(AdminInfor admin_infor) {
+		this.admin_infor = admin_infor;
+	}
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
+	}
 }

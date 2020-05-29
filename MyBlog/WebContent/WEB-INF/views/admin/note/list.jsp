@@ -133,9 +133,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
     };
     table.render({//加载
-        elem: "#"+l,
-        url: 'list.do',
-        cols: [[
+        elem: "#"+l
+        ,url: 'list.do'
+        ,method: 'post'
+        ,limit: 20
+		,page: !0
+		,height: 'full-200'
+        ,cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID'}
 			,{field:'name', title:'名称'}

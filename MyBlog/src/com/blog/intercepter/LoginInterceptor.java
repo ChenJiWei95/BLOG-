@@ -24,7 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 	private static Logger log = Logger.getLogger(LoginInterceptor.class);
 	
 	@Autowired
-	private WebsiteBaseService websiteBaseServiceImpl;
+	private WebsiteBaseService websiteBaseServiceImpl; 
 	
 	@Override
 	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
@@ -33,13 +33,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
-			throws Exception {
-	}
+			throws Exception { 
+	} 
 	
 	@Override
 	public boolean preHandle(HttpServletRequest arg0, 
 			HttpServletResponse arg1, 
-			Object arg2) throws Exception {
+			Object arg2) throws Exception { 
 		
 		log.info(arg0.getRequestURI());
 		log.info(arg0.getServerPort()+arg0.getContextPath());
@@ -61,7 +61,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 				arg0.getContextPath()+
 				"/";
 		
-		/*if(arg0.getRequestURI().indexOf(".chtml") != -1){
+		/*if(arg0.getRequestURI().indexOf(".chtml") != -1){ 
 			log.info(arg0.getRequestURI());
 			// ‘.chtml’ 页面专属结尾 
 			// 对页面链接进行匹配是否在授权范围
@@ -73,7 +73,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			}
 		}*/
 		
-		log.info((arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null)+" <<<<<<<< 权限");
+		log.info((arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null)+" <<<<<<<< 登录失效");
 		if(arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null) {
 			return true;
 		}
@@ -82,7 +82,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if(arg0.getRequestURI().indexOf("admin/main/listview.chtml") != -1)
 			arg1.sendRedirect(basePath+"admin/login.chtml");
 		else 
-			arg1.sendRedirect(basePath+"admin/error.jsp"); 
+			arg1.sendRedirect(basePath+"admin/main/relogin.chtml"); 
 		return false;
 //		return true;
 	} 

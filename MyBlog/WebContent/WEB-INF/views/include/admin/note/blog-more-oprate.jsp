@@ -5,7 +5,8 @@
 		<li title="查找" click-event="search"> 
 			<i class="layui-icon layui-icon-search"></i>
 			<form action="show.chtml?type=1" id="selectByName" method="post" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style="height: 200px;">
+			<div class="li-cnt layui-form" action="show.chtml">
+				<div style="width: 400px;">
 				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
 				<div class="layui-form-item" style="margin-top: 20px;">
 					<label class="layui-form-label">名称</label>
@@ -45,13 +46,15 @@
 						click-event="selectByName"
 						style="float: right; margin-right: 60px;">确认</button>
 				</div>
+				</div>
 			</div>
 			</form>
 		</li> 
 		<li title="标签查找" click-event="search">
 			<i class="layui-icon layui-icon-note"></i>
 			<form action="show.chtml?type=2" method="post" id="selectByTab" enctype="application/x-www-form-urlencoded">
-			<div class="li-cnt layui-form" action="show.chtml" style="height: 300px;">
+			<div class="li-cnt layui-form" action="show.chtml" style="">
+				<div style="width: 400px;">
 				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
 				<div class="layui-form-item">
 					<label class="layui-form-label">筛选标签</label>
@@ -71,8 +74,12 @@
 						style="float: right; margin-right: 60px;">确认</button>
 					<input type="submit" id="submit2" class="layui-hide"/>
 				</div>
+				</div>
 			</div>
 			</form>
+		</li>
+		<li title="添加" click-event="add">
+			<i class="layui-icon layui-icon-add-circle-fine"></i>
 		</li>
 		<li title="TOP" class="li-top" click-event="top" style="/* display: none; */">
 			<i class="layui-icon layui-icon-upload-circle"></i>

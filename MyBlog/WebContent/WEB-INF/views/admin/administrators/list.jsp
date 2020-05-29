@@ -26,31 +26,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <div class="layui-inline">
             <label class="layui-form-label">账号</label>
             <div class="layui-input-inline">
-              <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
+              <input type="text" name="Qu_a#username_eq_s" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">用户名</label>
             <div class="layui-input-inline">
-              <input type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input">
+              <input type="text" name="Qu_b#name_lk_s" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">手机</label>
             <div class="layui-input-inline">
-              <input type="text" name="phone" placeholder="请输入" autocomplete="off" class="layui-input">
+              <input type="text" name="Qu_b#phone_eq_s" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">
             <label class="layui-form-label">邮箱</label>
             <div class="layui-input-inline">
-              <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
+              <input type="text" name="Qu_b#email_eq_s" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
           </div>
           <div class="layui-inline">	
             <label class="layui-form-label">角色</label>
             <div class="layui-input-inline">
-              <select name="role_id">
+              <select name="Qu_b#roleId_eq_s">
               	<option value="-1">请选择权限角色</option>
               	<c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
 					<option value="${Role.id}">${Role.name}</option>
@@ -96,13 +96,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   {{#  } }}
  </script>
  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
-  <script>
+  <script> 
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'util'], function(){
 	
 	var $ = layui.$
     ,form = layui.form
@@ -144,6 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	layer.confirm('确定删除吗？', function(data) {
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType: 'text/plan'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -179,39 +180,50 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     layero.find(i).contents().find("#"+b).click();
                 }
 				,success: function(e, index) {
-					var iframe = e.find(i).contents().find("#"+f);
-					iframe.find('input[name="id"]').val(data[0].id)
-					,iframe.find('input[name="name"]').val(data[0].name)
-					,iframe.find('input[name="username"]').val(data[0].username)
-					,iframe.find('input[name="phone"]').val(data[0].phone)
-					,iframe.find('input[name="email"]').val(data[0].email)
-					,iframe.find('select[name="role_id"]').val(data[0].role_id)
-					,iframe.find('input[name="create_time"]').val(data[0].create_time)
-					,iframe.find('input[name="update_time"]').val(data[0].update_time)
-					,iframe.find('select[name="state"]').val(data[0].state)
-					,iframe.find('textarea[name="desc"]').val(data[0].desc) 
+					// 对编辑窗口的表单赋值
+					layui.util.formVal ({
+						el: e.find(i).contents().find("#"+f)
+						,list:[
+							{id: data[0].id}
+							,{name: data[0].name}
+							,{username: data[0].username}
+							,{phone: data[0].phone}
+							,{email: data[0].email}
+							,{role_id: data[0].role_id, type: 'select'}
+							,{create_time: data[0].create_time}
+							,{update_time: data[0].update_time}
+							,{state: data[0].state, type: 'select'}
+							,{desc: data[0].desc, type: 'textarea'}
+						] 
+					});
 				} 
             })
 		}
     }  
+    
+    
+    
     $('.layui-btn.layuiadmin-btn-admin').on('click', function(){
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
     });
 	table.render({//管理员的加载
-        elem: "#"+l,
-        url: 'list.do',
-        cols: [[{type:"checkbox",fixed:"left"},
-        	{field:"id",width:80,title:"ID",sort:!0}
-       	 	,{field:"username",title:"账号"}
-        	,{field:"name",title:"用户名"}
-        	,{field:"phone",title:"手机"}
-        	,{field:"email",title:"邮箱"}
-        	,{field:"role_name", title:"角色"}
-        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
-        	,{field:"create_time",title:"创建时间",sort:!0}
-			,{field:"update_time",title:"修改时间",sort:!0}
-			,{field:"desc",title:"描述",}
+        elem: "#"+l
+        ,url: 'list.do'
+        ,limit: 20
+		,page: !0
+		,height: 'full-200'
+		,method: 'post'
+        ,cols: [[{type:"checkbox",fixed:"left"},
+       	 	{field:"username",title:"账号", width:"160"}
+        	,{field:"name",title:"用户名", width:"160"}
+        	,{field:"phone",title:"手机", width:"160"}
+        	,{field:"email",title:"邮箱", width:"160"}
+        	,{field:"role_name", title:"角色", width:"160"}
+        	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center', width:"60"}
+        	,{field:"create_time",title:"创建时间",sort:!0, width:"160"}
+			,{field:"update_time",title:"修改时间",sort:!0, width:"160"}
+			,{field:"desc",title:"描述", width:"160"}
 		]],
         text: "对不起，加载出现异常！"
     }); 

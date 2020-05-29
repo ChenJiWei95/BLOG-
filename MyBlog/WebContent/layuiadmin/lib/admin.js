@@ -1,7 +1,7 @@
 /** layuiAdmin.std-v1.2.1 LPPL License By http://www.layui.com/admin/ */
 ;
 layui.define("view",
-function(e) {//console.log("admin");
+function(e) {console.log("admin");
     var a = layui.jquery,
     i = layui.laytpl,
     t = layui.element,
@@ -362,7 +362,7 @@ function(e) {//console.log("admin");
                 }
             })
         },
-        back: function() {//console.log('admin F.back');
+        back: function() {console.log('admin F.back');
             history.back()
         },
         setTheme: function(e) {//console.log('admin F.setTheme');

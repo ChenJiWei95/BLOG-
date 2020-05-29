@@ -50,7 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             ${message.content}
           </div>
           <div style="padding-top: 30px;">
-            <a href="javascript:;" layadmin-event="back" class="layui-btn layui-btn-primary layui-btn-sm">返回上级</a>
+            <a href="javascript:;" click-event="back" class="layui-btn layui-btn-primary layui-btn-sm">返回上级</a>
           </div>
         </div>
     </div>
@@ -62,8 +62,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index'], function(){ 
-  	
+  }).use(['index', 'util', 'admin'], function(){ 
+  	var util = layui.util
+  	,admin = layui.admin
+  	,id = admin.getParameter("id")
+	,arr = []
+	,b = {};
+	b["id"] = id;
+	arr[0] = b
+	//打开之后标记为已读
+	layui.$.ajax({
+		url: 'ready.do'
+		,type: 'post'	
+		,contentType: 'text/plan'
+		,data: JSON.stringify(arr) 
+	}); 
+	util.clickEvent({
+		back: function(){
+			history.back()
+		}
+	});
   });
   </script>
 </body>

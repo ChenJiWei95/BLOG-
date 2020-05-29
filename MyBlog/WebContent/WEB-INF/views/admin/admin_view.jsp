@@ -130,6 +130,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
+  function refresh() {
+  	window.location.reload();
+  }
+  function test(){
+	  alert("0");
+  }
   var index;
   layui.config({
 	base: '<%=basePath%>layuiadmin/' //静态资源所在路径

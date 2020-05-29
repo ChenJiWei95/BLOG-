@@ -11,7 +11,8 @@
 	  		<label style="display: block; float: right; ">
 	  			<i class="layui-icon layui-icon-close" click-event="remove" style="font-size: 24px; cursor: pointer;"></i>
 	  			<i class="layui-icon layui-icon-edit" click-event="update" style="cursor: pointer; margin-right: 30px; font-size: 24px"></i>
-	  			<i class="layui-icon layui-icon-add-circle-fine" click-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i>
+	  			<!-- <i class="layui-icon layui-icon-key" style="margin-right: 30px; font-size: 24px"></i> -->
+	  			<!-- <i class="layui-icon layui-icon-add-circle-fine" click-event="add" style="cursor: pointer; margin-right: 60px; font-size: 24px"></i> -->
 	  		</label>
 	  		</c:if>
 		</div>
@@ -29,6 +30,12 @@
 	  		</label>
 	  		<label style="display: block; float: right; margin-right: 30px;">
 	  			创建时间：<font class="create_date">${Note.create_date}</font>
+	  		</label>
+	  		<label style="display: block; float: right; margin-right: 30px;">
+	  			作者：<font class="author">${Note.author}</font>
+	  		</label>
+	  		<label style="display: block; float: right; margin-right: 30px;">
+	  			状态：<font class="status"><c:if test='${Note.status eq "01"}'>私有</c:if><c:if test='${Note.status eq "00"}'>公开</c:if></font>
 	  		</label>
   		</div> 
 	</div>

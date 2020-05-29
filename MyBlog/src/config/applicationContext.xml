@@ -19,9 +19,10 @@
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://120.79.149.233:3306/C_BLOG"/>
-		<property name="username" value="chenjiwei"/>
-		<property name="password" value="cjw168999"/>
+		<!-- <property name="url" value="jdbc:mysql://localhost:3306/C_BLOG"/> -->
+		<property name="url" value="jdbc:mysql://localhost:3306/C_BLOG"/>
+		<property name="username" value="root"/>
+		<property name="password" value="Aa123456"/>
 		<property name="initialSize" value="3" /> 
 		<property name="maxActive" value="30" />
 		<property name="proxyFilters">

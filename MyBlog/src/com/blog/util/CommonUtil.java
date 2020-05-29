@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +13,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
+import com.blog.test.TempJava;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -34,6 +37,33 @@ public class CommonUtil {
 	private static Integer orderCount = 0;
 	private static Integer orderTransCount = 0;
 
+	public static String srcPath(String path){
+		return CommonUtil.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+path;
+	}
+	
+	/**
+	 * 首字母大写 name -- Name
+	 * <p>	 
+	 * @param str
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String upFirst(String str) {
+		return str.substring(0,1).toUpperCase() + str.substring(1);
+	}
+	/**
+	 * 生成一个随机id yyyyMMddHHmmss+11位时间戳
+	 * <p>	 
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String randomId (){
+		return TimeUtil.getDatetime("yyyyMMddHHmmss")+String.valueOf(System.currentTimeMillis()).substring(11);
+	}
 	/**
 	 * 获取32位的uuid
 	 * 
@@ -408,6 +438,279 @@ public class CommonUtil {
 			deviceID = getRandomString(8)+"-"+getRandomString(4)+"-"+getRandomString(4)+"-"+getRandomString(4)+"-"+getRandomString(12);
 		}
 		return deviceID;
+	}
+	
+	/**
+	 * 返回格式 0.00 带小数点
+	 * <p>	 
+	 * @param money
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String coverMoney(BigDecimal money){
+		return money.setScale(2,BigDecimal.ROUND_HALF_DOWN).toString();
+	}
+	
+	/**
+	 * 返回格式 0.00 带小数点
+	 * <p>	 
+	 * @param money
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String coverMoney(String money){
+		return coverMoney(new BigDecimal(money));
+	}
+	
+	/**
+	 * 返回 0 - r 范围内的小数点
+	 * <p>	 
+	 * @param r
+	 * @return
+	 * int
+	 * @see
+	 * @since 1.0
+	 */
+	public static int random(int r){
+		return new Random().nextInt(r);
+	}
+	
+	/**
+	 * 获取一个雪花id 《SnowFlakeGenerator》 -- 曾经好像发生过重复 下次记录异常
+	 * <p>	 
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String getId(){
+		return String.valueOf(new SnowFlakeGenerator(2, 2).nextId());
+	}
+	
+	public static BigDecimal mul(String arg1, String arg2){
+		return mul(new BigDecimal(arg1), new BigDecimal(arg2));
+	}
+	
+	/**
+	 * 乘法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal mul(String arg1, BigDecimal arg2){
+		return mul(new BigDecimal(arg1), arg2);
+	}
+
+	/**
+	 * 乘法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal mul(BigDecimal arg1, String arg2){
+		return mul(arg1, new BigDecimal(arg2));
+	}
+	
+	/**
+	 * 乘法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal mul(BigDecimal arg1, BigDecimal arg2){
+		return arg1.multiply(arg2);
+	}
+	
+	/**
+	 * 加法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal add(String arg1, String arg2){
+		return add(new BigDecimal(arg1), new BigDecimal(arg2));
+	}
+	
+	/**
+	 * 加法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal add(String arg1, BigDecimal arg2){
+		return add(new BigDecimal(arg1), arg2);
+	}
+
+	/**
+	 * 加法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal add(BigDecimal arg1, String arg2){
+		return add(arg1, new BigDecimal(arg2));
+	}
+	
+	/**
+	 * 加法
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal add(BigDecimal arg1, BigDecimal arg2){
+		return arg1.add(arg2);
+	}
+	/**
+	 * 例如：`id` = '1234'
+	 * <p>	 
+	 * @param col
+	 * @param fields
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public static String singleOfEqString(String col, String fields) {
+		return "`"+col+"` = '"+fields+"' ";
+	}
+	
+	/**
+	 * 减法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal sub(String arg1, String arg2){
+		return sub(new BigDecimal(arg1), new BigDecimal(arg2));
+	}
+	/**
+	 * 减法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal sub(String arg1, BigDecimal arg2){
+		return sub(new BigDecimal(arg1), arg2);
+	}
+	/**
+	 * 减法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal sub(BigDecimal arg1, String arg2){
+		return sub(arg1, new BigDecimal(arg2));
+	}
+	/**
+	 * 减法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal sub(BigDecimal arg1, BigDecimal arg2){
+		return arg1.subtract(arg2);
+	}
+	
+	
+	/**
+	 * 除法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal div(String arg1, String arg2){
+		return div(new BigDecimal(arg1), new BigDecimal(arg2));
+	}
+	/**
+	 * 除法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal div(String arg1, BigDecimal arg2){
+		return div(new BigDecimal(arg1), arg2);
+	}
+	/**
+	 * 除法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal div(BigDecimal arg1, String arg2){
+		return div(arg1, new BigDecimal(arg2));
+	}
+	/**
+	 * 除法 	arg1-arg2
+	 * <p>	 
+	 * @param arg1
+	 * @param arg2
+	 * @return
+	 * BigDecimal
+	 * @see
+	 * @since 1.0
+	 */
+	public static BigDecimal div(BigDecimal arg1, BigDecimal arg2){
+		return arg1.divide(arg2);
 	}
 	
     public static void main(String[] args) {

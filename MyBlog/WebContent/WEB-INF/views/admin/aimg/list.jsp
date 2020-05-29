@@ -16,8 +16,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 
+  <link rel="stylesheet" href="<%=basePath%>css/basi.css" media="all"> 	
 </head>
 <body>
+  <div class="myModal" click-event="myModalClick">
+		<span class="close" click-event="myModalClick">×</span>
+		<img class="myModalImg" alt="">
+		<div class="desc"></div>
+  </div>
   <div class="layui-fluid">   
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
@@ -38,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
   </script>
   <script type="text/html" id="showImg">
-	<img alt="{{ d.name }}" src="{{d.path+'/'+d.name}}" width="40px" click-event="pictureDetail">
+	<img alt="{{ d.name }}" src="<%=basePath%>{{d.path}}" width="40px" click-event="pictureDetail">
   </script>
   <script>
   var table;
@@ -46,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin', 'upload'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'upload', 'util'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-aimg-add"
@@ -56,6 +62,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	,l = 'C-admin-aimg-table'
 	,t = 'C-admin-aimg-form'
 	,s = 'C-btn-search'
+	,util = layui.util
+	,upload = layui.upload
     ,admin = layui.admin;
     table = layui.table;
     
@@ -67,7 +75,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	where: field
       	});
     });
-  
+  	
+    util.clickEvent({
+    	pictureDetail: function(e){
+			// 查看原图
+			$(".myModalImg")[0].src = e.context.currentSrc;
+			$(".myModal:first").addClass("pit-open-scale");
+			$(".myModalImg:first").addClass("pit-open-scale"); 
+		}
+	    ,myModalClick: function (e) {// 点击关闭模态框
+			if(e.attr("class").indexOf("myModalImg") == -1){
+				$(".myModal:first").addClass("pit-close-scale");
+				$(".myModal:first").removeClass("pit-open-scale");
+				setTimeout(function(){
+					$(".myModal:first").removeClass("pit-close-scale");
+				}, 700);
+			}
+		}
+	    });
     //事件
     var active = {
 		del: function(){
@@ -84,6 +109,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType: 'text/plan'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -122,21 +148,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
-					var iframe = e.find(f).contents().find("#"+t);
+					/* var iframe = e.find(f).contents().find("#"+t);
 					iframe.find('input[name="id"]')[0].value = data[0].id
 					,iframe.find('input[name="name"]')[0].value = data[0].name
 					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
 					,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
 					,iframe.find('input[name="path"]')[0].value = data[0].path
-					,iframe.find('textarea[name="desc"]')[0].value = data[0].desc
-
+					,iframe.find('textarea[name="desc"]')[0].value = data[0].desc */
+					layui.util.formVal ({
+						el: e.find(f).contents().find("#"+t)
+						,list:[
+							{id: data[0].id}
+							,{name: data[0].name}
+							,{create_time: data[0].create_time}
+							,{update_time: data[0].update_time}
+							,{path: data[0].path}
+							,{desc: data[0].desc, type: 'textarea'}
+						] 
+					});
 				}
             })
 		}
     };
     table.render({//加载
-        elem: "#"+l,
+    	elem: "#"+l,
         url: 'list.do',
+        limit: 20,
+        page: !0,
+        method: 'post',
+        height:'full-200',// 分页控制按钮固定在底部并且全屏
         cols: [[
         	{type:"checkbox", fixed:"left"}
 			,{field:'name', title:'名称'}
@@ -153,7 +193,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		active[type] ? active[type].call(this) : '';
     });
     
-    var upload = layui.upload; 
 	//普通图片上传
     var uploadInst = upload.render({
 	    elem: '#upload'

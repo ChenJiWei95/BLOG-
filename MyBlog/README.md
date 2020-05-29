@@ -5,6 +5,7 @@
 * [数据库分析](#数据库分析)
 * [使用自定义封装的JDBC注意](#使用自定义封装的JDBC)
 * [项目遇到的问题](#项目遇到的问题)
+* [日志](#日志)
 
 # 页面分析
 	首页：
@@ -27,6 +28,22 @@
 		个人简历
 
 # 数据库分析  
+
+管理员按钮权限表 admin_app
+
+	CREATE TABLE `admin_app` (
+	  `id` varchar(30) NOT NULL COMMENT 'ID', 
+	  `admin_id` varchar(30) NULL COMMENT '', 
+	  `app_id` varchar(30) NULL COMMENT '', 
+	  `up_power` char(2) NULL COMMENT '修改权限', 
+	  `del_power` char(2) NULL COMMENT '删除权限', 
+	  `ins_power` char(2) NULL COMMENT '插入权限', 
+	  PRIMARY KEY (`id`) USING BTREE
+	) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员按钮权限表' ROW_FORMAT = Compact;
+	根据角色 添加权限的批量插入语句
+		insert into `admin_app`(`id`, `admin_id`, `app_id`, `up_power`, `del_power`, `ins_power`)
+		selete unix_timestamp(now()), #{adminId}, `app_id`, 00, 00, 00 from `role` where `role_id` = #{roleId}
+
 文章概述表 article   
 
 		文章ID 文章标题 最新操作时间 图片地址 简要描述 评论数 点赞数 浏览数   
@@ -251,3 +268,90 @@
 	Closing non transactional SqlSession 	[org.apache.ibatis.session.defaults.DefaultSqlSession@5a466a07]
 	username:[id:1, username:root, password:123456]
 
+# 日志
+
+* 2020-mar-10  
+
+	* 新增完善    
+		1、标签管理页有点问题
+			org.apache.ibatis.binding.BindingException: Invalid bound statement (not found): 			com.blog.dao.ATagDao.count
+			解决 mapper文件中没有添加count查询
+			
+		2、AdministratorsControl.list方法中将admin的find查询方法将其改为多表查询并且Admin接收多个表
+			改善了多处，详情见代码
+		3、jdbcType String报错 查一下规范的写法
+			归纳jdbcType都有哪些
+			正确写法是什么
+			解决：已经总结到了batis学习文本中 
+			正确的写法是全大写
+		4、com.blog.service.BasiService.count(String tableStatement, String eq)
+			新增了此方法
+	 		查询数量  
+			tableStatement 自定义表
+			eq 预置了‘where 1 = 1 and ’ ，eq的值，例如：‘id = 123456’
+		5、娱乐城项目中的QueryHelper和MyBlog项目中的QueryHelper类同步和完善
+			进行同步
+			完善原有属性名替换新属性名方法（addCloumnAlias），修复bug 
+		6、完善分页查询
+			AdministratorsControl
+	* 看看模板有什么可以改进   
+	
+	* 没有接口文档 难办，曾经的研究成果白费，又得重新看一遍。    
+		比如QueryHelper：  
+		获取where语句   
+			_.buildAllQuery(page);
+		自动绑定request中的参数  
+			_.paramBind(request, page);
+		属性名替换
+			_.addCloumnAlias(key, value)
+			key 前端传过来的属性名
+			value 新的属性名，将会替换原有属性名
+			例：_.addCloumnAlias("createDate", "create_date");
+			防止前端的属性名和分隔符'_'冲突   
+		前台传来的无效值  
+			_.addDisableSelect（key, value）  
+			key 前台传过来的属性名  
+			value 属性名对应的值  
+			比如说select选框什么都没选会传过来-1 此时是无效的，不加以处理会以-1为条件去查询
+		条件运算符
+			/** 等于 */
+			eq, 
+			/** 不等于 */
+			ne, 
+			/** 大于 */
+			gt, 
+			/** 小于 */
+			lt, 
+			/** 大于等于 */
+			ge, 
+			/** 小于等于 */
+			le, 
+			/** 相似 */
+			lk,
+			/** 类似于aaaa% */
+			slk, 
+			/** 包含 */
+			in, 
+			/** 为Null */
+			is, 
+			/** 不为Null */
+			no;
+			在Operator类中
+		在前端传递查询条件  
+			Qu_type_eq_s = ''
+			每个语义以分割线隔开
+			Qu 前缀
+			tyep 属性
+			eq 语义：=
+			s 语义：字符串
+		后台添加查询条件 
+			page.addFilter(new Filter("a.id"
+				, com.blog.Filter.Operator.eq
+				, "b.admin_id"
+				, Filter.IGNORE_TYPE)); // Qu_type_eq_s
+			
+			
+			
+			
+			
+			

@@ -39,7 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	<div class="layui-card-body">
 		  <ul>
 	        <li style="list-style-type: circle; margin-left: 32px;">
-			   最好的年纪，不要活得太随意。
+			   ${planBase.excitation_text}
 			</li>
 	      </ul>
 		</div>

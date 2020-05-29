@@ -8,6 +8,17 @@ import com.blog.exception.UnconvertibleException;
 /**
  * 
  * <b>获取一个对象的类型工具类<b>
+ * <p>
+ * 		typeMap.put("java.lang.Byte", "byte");  <br>
+        typeMap.put("java.lang.Short", "short");  <br> 
+        typeMap.put("java.lang.Integer", "int");  <br> 
+        typeMap.put("java.lang.Long", "long");   <br>
+        typeMap.put("java.lang.Double", "double");   <br>
+        typeMap.put("java.lang.Float", "float");   <br>
+        typeMap.put("java.lang.Character", "char");   <br>
+        typeMap.put("java.lang.Boolean", "boolean");   <br>
+        typeMap.put("java.lang.String", "string"); <br>
+        typeMap.put("java.sql.Timestamp", "timestamp"); <br>
  * @author 威 
  * <br>2018年1月7日 下午7:43:07 
  *

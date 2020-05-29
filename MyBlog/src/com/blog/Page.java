@@ -48,11 +48,11 @@ public class Page<T> implements Serializable {
 	private String alias;//查询别名
 	
 	private List<Filter> filters = new ArrayList<Filter>();//过滤查询
+	private List<ORFilter> oRFilters = new ArrayList<ORFilter>();//过滤查询 'OR'
 	
 	private List<UpdateItem> updateItem = new ArrayList<>();//修改项
 	
 	private List<Order> orders = new ArrayList<Order>();//排序
-	
 	
 	/**
 	 * 初始化一个新创建的Page对象
@@ -73,6 +73,14 @@ public class Page<T> implements Serializable {
 		this.msg = msg;
 	}
 
+	/**
+	 * 默认为 10
+	 * <p>	 
+	 * @return
+	 * int
+	 * @see
+	 * @since 1.0
+	 */
 	public int getLimit() {
 		return limit;
 	}
@@ -143,7 +151,7 @@ public class Page<T> implements Serializable {
 	}
 
 	/**
-	 * 获取页码
+	 * 获取页码 默认为1
 	 * 
 	 * @return 页码
 	 */
@@ -187,6 +195,9 @@ public class Page<T> implements Serializable {
 	public List<Filter> getFilters() {
 		return filters;
 	}
+	public List<ORFilter> getORFilters() {
+		return this.oRFilters;
+	}
 
 	public void setFilters(List<Filter> filters) {
 		this.filters = filters;
@@ -212,10 +223,26 @@ public class Page<T> implements Serializable {
 		filters.add(filter);
 	}
 	
+	public void setORFilters(List<ORFilter> oRFilters) {
+		this.oRFilters = oRFilters;
+	}
+	public void addORFilters(ORFilter orf) {
+		this.oRFilters.add(orf);
+	}
+	
 	public void addUpdateItem(UpdateItem updateItem){
 		this.updateItem.add(updateItem);
 	}
 	
+	/**
+	 * 排序
+	 * <p>使用案例：<br>
+	 * page.addOrder(Order.desc("a.create_date"));	 
+	 * @param order
+	 * void
+	 * @see
+	 * @since 1.0
+	 */
 	public void addOrder(Order order){
 		this.orders.add(order);
 	}
@@ -227,7 +254,6 @@ public class Page<T> implements Serializable {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-	
 	
 	public boolean getHasPrevious() {
 		
@@ -257,4 +283,5 @@ public class Page<T> implements Serializable {
 		
 		return page + 1;
 	}
+
 }

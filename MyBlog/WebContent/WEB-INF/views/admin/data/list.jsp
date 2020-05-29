@@ -124,6 +124,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		table.render({
 			elem: '#' + l
 			,url: 'list.do'  
+			,limit: 20
+			,page: !0
+			,height: 'full-200'
+			,method: 'post'
 			,cols: [[
 				{type: 'checkbox', fixed: 'left'}
 				,{field:'name', title:'名称'}

@@ -1,5 +1,7 @@
 package com.blog.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +12,8 @@ import com.blog.dao.BaseDao;
 import com.blog.entity.Note;
 import com.blog.service.NoteService;
 import com.blog.util.sql.AssociaInterface;
+import com.blog.util.sql.EqAdapter;
+import com.blog.util.sql.SelectAdapter;
 
 @Service
 @Transactional
@@ -48,6 +52,24 @@ public class NoteServiceImpl extends BasiServiceImpl<Note, Object> implements No
 	@Override
 	public String getTable() {
 		return "note";
+	}
+
+	@Override
+	public String findNicknameById(String id) {
+		return noteDao.findNicknameById(id);
+	}
+
+	@Override
+	public List<Note> show(String sql) {
+		EqAdapter adapter = new SelectAdapter()
+				.setParame(this)
+				.setSql(sql);
+		try {
+			return ((NoteDao) getDao()).show(adapter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
 

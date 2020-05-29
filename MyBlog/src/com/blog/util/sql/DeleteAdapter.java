@@ -3,7 +3,7 @@ package com.blog.util.sql;
 
 public class DeleteAdapter extends EqAdapter {
 	
-	// 条件语句
+	@Override
 	public String getWhereSql() throws Exception {
 		Object target = this.getTarget();
 		if(target != null)  
@@ -11,7 +11,7 @@ public class DeleteAdapter extends EqAdapter {
 		
 		return super.getWhereSql();
 	}	
-	 
+	@Override
 	public EqAdapter like(String cloumn, String likeStr) {
 		setLike(cloumnUtil(cloumn)+" "+SQL_LIKE+quma2(likeStr));
 		return this;

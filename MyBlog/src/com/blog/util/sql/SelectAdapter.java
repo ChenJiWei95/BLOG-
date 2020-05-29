@@ -20,15 +20,41 @@ public class SelectAdapter extends EqAdapter {
 	private String brige_association_key	; // 桥接表 对应关联类字段 
 	private String association_table		; // 关联表 名 
 	private String association_table_id		; // 关联表 id字段	
-	 
+	
+	/**
+	 * 升序
+	 * @param columnName
+	 * @param sort 
+	 * 		EqAdapter.ORDERBY_DESC，EqAdapter.ORDERBY_ASC
+	 * @return
+	 */
+	public EqAdapter setOrderByDESC(String columnName, String sort) {
+		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
+		orderBySql = SQL_ORDERBY + quma(columnName)+" "+sort+" ";
+		return this;
+	} 
+	/**
+	 * 限制查询数量 例如 ‘LIMIT 0, 1000’
+	 * <p>	 
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
+	public String getLimitSql() {
+		return limitSql;
+	}
+	
+	@Override
 	public EqAdapter like(String cloumn, String likeStr) {
 		setLike(cloumnUtil(cloumn) + " LIKE '" + likeStr + "'");
 		return this;
 	}
+	@Override
 	public String getOrderBySql() {
 		return orderBySql;
 	}
-	// 条件语句
+	@Override
 	public String getWhereSql() throws Exception {
 		Object target = this.getTarget();
 		if(target != null)  
@@ -36,48 +62,32 @@ public class SelectAdapter extends EqAdapter {
 		
 		return super.getWhereSql();
 	}	
-	/**
-	 * 
-	 * @param columnName
-	 * @param sort EqAdapter.ORDERBY_DESC EqAdapter.ORDERBY_ASC
-	 * @return
-	 */
-	public EqAdapter setOrderByDESC(String columnName, String sort) {
-		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
-		orderBySql = SQL_ORDERBY + quma(columnName)+" "+sort+" ";
-		return this;
-	}
-	/**
-	 * 升序
-	 * @param columnName
-	 */
+	@Override
 	public EqAdapter setOrderByDESC(String columnName) {
 		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
 		orderBySql = SQL_ORDERBY + quma(columnName)+" "+EqAdapter.SQL_ORDERBY_DESC+" ";
 		return this;
-	}
-	/**
-	 * 降序
-	 * @param columnName 
-	 */
+	} 
+	@Override
 	public EqAdapter setOrderByASC(String columnName) {
 		if(columnName == null || "".equals(columnName)) throw new NullPointerException();
 		orderBySql = SQL_ORDERBY + quma(columnName)+" "+EqAdapter.SQL_ORDERBY_ASC+" ";
 		return this;
 	}
-	
-	public String getLimitSql() {
-		return limitSql;
-	}
-	
+	@Override
 	public String getColumnSql() {
 		String columns = this.getColumns();
 		if(columns != null && !"".equals(columns))
 			return columns; 
 		return "*";
 	}
-	
+	@Override
+	public EqAdapter setSql(String sql) {
+		this.sql = sql;
+		return this;
+	}
 	@SuppressWarnings("unchecked")
+	@Override
 	public EqAdapter setParame(BaseInterface associaInterface) {
 		super.setParame(associaInterface);
 		
@@ -99,16 +109,30 @@ public class SelectAdapter extends EqAdapter {
 		return this;
 	}
 	
+	
+	/**
+	 * 可以插入完整的任何sql语句 例如 ‘SELECT * FROM `admin`’
+	 * <p>	 
+	 * @return
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
 	public String getSql() {
 		return sql;
 	}
 	
-	public EqAdapter setSql(String sql) {
-		this.sql = sql;
-		return this;
-	}
 	
-	// 关联查询的条件
+	
+	/**
+	 * 关联查询的条件
+	 * <p>	 
+	 * @return
+	 * @throws Exception
+	 * String
+	 * @see
+	 * @since 1.0
+	 */
 	public String getWhereSqlOfAssociation() throws Exception {
 		
 		String table = this.getTable();
@@ -135,7 +159,6 @@ public class SelectAdapter extends EqAdapter {
 		return whereSql.toString();
 	}
 	
-	//limit start, size
 	/**
 	 * 分页
 	 * 0为第一个下标

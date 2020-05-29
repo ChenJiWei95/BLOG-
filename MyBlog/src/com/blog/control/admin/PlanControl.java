@@ -54,17 +54,16 @@ public class PlanControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/show.chtml") 
 	public String listview1(ModelMap model, String secret_key, String isTips, HttpServletRequest request){
-		if(!secretKeyCheck(secret_key))
+		if(!secretKeyCheck(secret_key)){
+			model.addAttribute("msg", "secret_key:"+secret_key+" 错误！");
 			return "admin/error";
+		}
 		
-		PlanBase planBase = planBaseServiceImpl.get(singleOfEqString("create_date", 
-				TimeUtil.getDate(TimeUtil.DATE_FORMAT)));
-		log.info(planBase);
-		List<PlanDo> planDo = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
-		
+		PlanBase planBase  = getPlanBase(model, TimeUtil.getDate(TimeUtil.DATE_FORMAT));
+		List<PlanDo> planDo = planDoServiceImpl.gets(eq("plan_base_id", planBase.getId()));
 		model.addAttribute("planBase", planBase);
 		model.addAttribute("planDo", planDo);
-		model.addAttribute("secret_key", websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key());
+		model.addAttribute("secret_key", websiteBaseServiceImpl.get(eq("id", "1")).getSecret_key());
 		model.addAttribute("isTips", isTips);
 		return "admin/plan/list";
 	}
@@ -83,23 +82,27 @@ public class PlanControl extends BaseControl{
 		String currentDate = TimeUtil.getDate(TimeUtil.DATE_FORMAT)
 		,dayText1 = "今日完成情况"
 		,dayText2 = "昨日完成情况";
-		PlanBase planBase = planBaseServiceImpl.get(singleOfEqString("create_date", 
+		PlanBase planBase = planBaseServiceImpl.get(eq("create_date", 
 				currentDate));
 		if(planBase == null){
 			// 获取上一天的日期  即当前天
 			String foreDate = (currentDate = getPreDay(TimeUtil.getDate(TimeUtil.DATE_FORMAT)));
-			planBase = planBaseServiceImpl.get(singleOfEqString("create_date", 
+			planBase = planBaseServiceImpl.get(eq("create_date", 
 					foreDate));
 			dayText1 = dayText2;
 			dayText2 = "前日完成情况";
 		}
-		List<PlanDo> planDo = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
+		List<PlanDo> planDo = planDoServiceImpl.gets(eq("plan_base_id", planBase.getId()));
 		
 		// 前一天
 		String foreDate = getPreDay(planBase.getCreate_date());
-		planBase = planBaseServiceImpl.get(singleOfEqString("create_date", 
+		planBase = planBaseServiceImpl.get(eq("create_date", 
 				foreDate));
-		List<PlanDo> planDo2 = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
+		
+		List<PlanDo> planDo2 = null;
+		if(planBase != null){
+			planDo2 = planDoServiceImpl.gets(eq("plan_base_id", planBase.getId()));
+		}
 		
 		model.addAttribute("todayPlanDos", planDo);
 		model.addAttribute("yesterdayPlanDos", planDo2);
@@ -132,22 +135,49 @@ public class PlanControl extends BaseControl{
 		return "admin/plan/nextPlan";
 	}
 
+	
 	protected void nextPlan(ModelMap model) {
-		String nextDay = "";
-		PlanBase planBase = null;
 		try {
-			nextDay = TimeUtil.getDay(
+			String nextDay = TimeUtil.getDay(
 					TimeUtil.getDatetime(TimeUtil.DATE_FORMAT), 
 					TimeUtil.DATE_FORMAT, 
 					1);
+			PlanBase planBase = getPlanBase(model, nextDay);
+			List<Data> allTags = dataServiceImpl.gets(eq("type", DATA_SIGN));
+			List<PlanDo> tags = planDoServiceImpl.gets(eq("plan_base_id", planBase.getId()));
+			String secretKey = websiteBaseServiceImpl.get(eq("id", "1")).getSecret_key();
+			
+			model.addAttribute("secret_key", secretKey);
+			model.addAttribute("planBase", planBase);
+			model.addAttribute("allTags", allTags);
+			model.addAttribute("otherTags", tags);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 根据日期获取PlanBase，没有则创建
+	 * <p>	 
+	 * @param model
+	 * @param date
+	 * @return
+	 * PlanBase
+	 * @see
+	 * @since 1.0
+	 */
+	protected PlanBase getPlanBase(ModelMap model, String date) {
 		
-			planBase = planBaseServiceImpl.get(singleOfEqString("create_date", nextDay));
+		PlanBase planBase = null;
+		try {
+			planBase = planBaseServiceImpl.get(eq("create_date", date));
 			if(planBase == null){
 				model.addAttribute("nextPlanStatus", "00");
 				// 创建新的计划base
 				planBase = new PlanBase();
+				
 				planBase.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-				planBase.setCreate_date(nextDay);
+				planBase.setCreate_date(date);
 				planBase.setExcitation_text("看着自己走过的计划，不浪费每一天");
 				planBase.setPlan_name("每日计划");
 				planBase.setSecret_key(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
@@ -155,50 +185,56 @@ public class PlanControl extends BaseControl{
 				planBaseServiceImpl.insert(planBase);
 				
 				// 获取上一天的日期
-				String foreDate = TimeUtil.getDay(planBase.getCreate_date(), TimeUtil.DATE_FORMAT, -1);
+				String preDate = TimeUtil.getDay(planBase.getCreate_date(), TimeUtil.DATE_FORMAT, -1);
 				// 根据日期找计划base 最后查找符合的计划PlanDo
-				PlanBase foreP = planBaseServiceImpl.get("`create_date` = '"+foreDate+"' ");
-				List<PlanDo> list = planDoServiceImpl.gets("`plan_base_id` = '"+foreP.getId()+"' ");
-				
-				PlanDo planDo = null;
-				// 创建和昨天相同的计划PlanDo
-				for(PlanDo p : list){
-					planDo = new PlanDo();
-					planDo.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-					planDo.setTime(TimeUtil.getDate());
-					planDo.setName(p.getName());
-					planDo.setStatus("02");
-					planDo.setPlan_base_id(planBase.getId());
-					planDo.setPlan_tag_id(p.getPlan_tag_id());
-					planDoServiceImpl.insert(planDo);
-				}
+				PlanBase prePlanBase = planBaseServiceImpl.get("`create_date` = '"+preDate+"' ");
+				if(prePlanBase == null)
+//					不存在上一天的计划，则随机获取一个以往的计划
+					prePlanBase = planBaseServiceImpl.getByASC("create_date").get(0);
+				if(prePlanBase != null){
+					List<PlanDo> list = planDoServiceImpl.gets("`plan_base_id` = '"+prePlanBase.getId()+"' ");
+					
+					PlanDo planDo = null;
+					// 创建和昨天相同的计划PlanDo
+					for(PlanDo p : list){
+						planDo = new PlanDo();
+						planDo.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+						planDo.setTime(TimeUtil.getDate());
+						planDo.setName(p.getName());
+						planDo.setStatus("02");
+						planDo.setPlan_base_id(planBase.getId());
+						planDo.setPlan_tag_id(p.getPlan_tag_id());
+						planDoServiceImpl.insert(planDo);
+					}
+				} 
 			}
 		
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		List<Data> allTags = dataServiceImpl.gets(singleOfEqString("type", DATA_SIGN));
-		List<PlanDo> tags = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
-		String secretKey = websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key();
-		
-		model.addAttribute("secret_key", secretKey);
-		model.addAttribute("planBase", planBase);
-		model.addAttribute("allTags", allTags);
-		model.addAttribute("otherTags", tags);
+		return planBase;
 	}
 	
 	@RequestMapping("/set.chtml") 
 	public String listview5(ModelMap model, String secret_key){ 
-		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(eq("id", "1"));
 		if(!secret_key.equals(websiteBase.getSecret_key()))
 			return "admin/error";	
 		model.addAttribute("website", websiteBase);
 		return "admin/plan/set";
 	}
 	
+	/**
+	 * 校验秘钥
+	 * <p>	 
+	 * @param secret_key
+	 * @return
+	 * boolean
+	 * @see
+	 * @since 1.0
+	 */
 	protected boolean secretKeyCheck(String secret_key) {
-		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+		WebsiteBase websiteBase = websiteBaseServiceImpl.get(eq("id", "1"));
 		log.info("-"+secret_key+"-"+websiteBase.getSecret_key()+"-");
 		return secret_key.equals(websiteBase.getSecret_key());
 	}
@@ -271,11 +307,11 @@ public class PlanControl extends BaseControl{
 	public String save_or_update(ModelMap model, HttpServletRequest request){
 		//  
 		Map<String, String> parame = getRequestParameterMap(request);
-		PlanBase planBase = planBaseServiceImpl.get(singleOfEqString("id", 
+		PlanBase planBase = planBaseServiceImpl.get(eq("id", 
 				parame.get("id")));
-		List<Data> allTags = dataServiceImpl.gets(singleOfEqString("type", DATA_SIGN));
-		List<PlanDo> tags = planDoServiceImpl.gets(singleOfEqString("plan_base_id", planBase.getId()));
-		String secretKey = websiteBaseServiceImpl.get(singleOfEqString("id", "1")).getSecret_key();
+		List<Data> allTags = dataServiceImpl.gets(eq("type", DATA_SIGN));
+		List<PlanDo> tags = planDoServiceImpl.gets(eq("plan_base_id", planBase.getId()));
+		String secretKey = websiteBaseServiceImpl.get(eq("id", "1")).getSecret_key();
 		
 		model.addAttribute("secret_key", secretKey);
 		model.addAttribute("planBase", planBase);
@@ -295,7 +331,7 @@ public class PlanControl extends BaseControl{
 	@ResponseBody
 	public Object set(WebsiteBase t) throws IOException{ 
 		try {
-			websiteBaseServiceImpl.update(t, singleOfEqString("id", "1"));
+			websiteBaseServiceImpl.update(t, eq("id", "1"));
 			return Message.success("修改成功。 ");
 		}catch(Exception e){
 			return Message.error("请求失败，运行异常； "+e.getMessage());
@@ -306,7 +342,7 @@ public class PlanControl extends BaseControl{
 	@ResponseBody
 	public Object targetUpdate(WebsiteBase t) throws IOException{ 
 		try {
-			websiteBaseServiceImpl.update(t, singleOfEqString("id", "1"));
+			websiteBaseServiceImpl.update(t, eq("id", "1"));
 			return Message.success("修改成功。 ");
 		}catch(Exception e){
 			return Message.error("请求失败，运行异常； "+e.getMessage());
@@ -327,9 +363,9 @@ public class PlanControl extends BaseControl{
 			
 			if("1".equals(type)){
 				Map<String, String> params = getRequestParameterMap(request);
-				PlanDo planDo = planDoServiceImpl.get(singleOfEqString("id", params.get("id")));
+				PlanDo planDo = planDoServiceImpl.get(eq("id", params.get("id")));
 				planDo.setStatus(params.get("status"));
-				planDoServiceImpl.update(planDo, singleOfEqString("id", planDo.getId()));
+				planDoServiceImpl.update(planDo, eq("id", planDo.getId()));
 				return Message.success("02".equals(params.get("status")) 
 						? "取消"+planDo.getName()+"计划" 
 						: "已完成"+planDo.getName()+"计划"
@@ -340,7 +376,7 @@ public class PlanControl extends BaseControl{
 			if(new_tags != null && !"".equals(new_tags)) {
 				String[] arr = new_tags.split(",");
 				for(String item : arr) {
-					Data dataTable = dataServiceImpl.get(singleOfEqString("name", item));
+					Data dataTable = dataServiceImpl.get(eq("name", item));
 					if(dataTable == null) {
 						dataTable = new Data();
 						dataTable.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
@@ -361,7 +397,7 @@ public class PlanControl extends BaseControl{
 			}
 			
 			Map<String, String> params = getRequestParameterMap(request); 
-			List<PlanDo> planDos = planDoServiceImpl.gets(singleOfEqString("plan_base_id", t.getId()));
+			List<PlanDo> planDos = planDoServiceImpl.gets(eq("plan_base_id", t.getId()));
 			boolean isContain;
 			
 			for(Map.Entry<String, String> item : params.entrySet()){	// 拼接标签id
@@ -397,7 +433,7 @@ public class PlanControl extends BaseControl{
 				}
 			}	
 			
-			planBaseServiceImpl.update(t, singleOfEqString("id", t.getId())); 
+			planBaseServiceImpl.update(t, eq("id", t.getId())); 
 			return Message.success("编辑成功", null);
 		}catch(DataIntegrityViolationException e) {
 			return Message.error("修改失败，数据可能过长；"+e.getMessage(), null);

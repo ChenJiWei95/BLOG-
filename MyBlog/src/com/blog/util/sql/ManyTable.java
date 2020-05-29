@@ -1,6 +1,7 @@
 package com.blog.util.sql;
 
 /**
+ * 这个类没什么用
  * 多表查询生成局部sql语句
  * @author Administrator
  */

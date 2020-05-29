@@ -62,7 +62,7 @@ public class PlanTask {
 		NotifyControl.sendMail("1281384046@qq.com", 
 				null, 
 				"今日计划", 
-				"<html><body><h1>今日计划</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/show.chtml?secret_key="+websiteBaseServiceImpl.get(BaseControl.eq("id", "1")).getSecret_key()+"\">点击前往</a></body></html>", 
+				"<html><body><h1>今日计划</h1><a href=\"http://www.chenjiwey.cn:8080/MyBlog/admin/plan/show.chtml?secret_key="+websiteBaseServiceImpl.get(" id = '1' ").getSecret_key()+"\">点击前往</a></body></html>", 
 				null);
 	}
 	

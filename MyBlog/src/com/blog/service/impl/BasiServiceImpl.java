@@ -420,10 +420,31 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	
+	
+	@Override
+	public Integer count(String tableStatement, String eq){
+		EqAdapter sql = new SelectAdapter()
+				.setColumns("count(\"1\")")
+				.setTableStatement(tableStatement)
+				.setEqSql(eq);
+		try {
+			return getDao().count(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * 收集查询条件   已经预置了 where 1 = 1 AND  
+	 * <p>	 
+	 * @param eq 例如：id = 132456 或者 id = 123456 and name = '小明' 
+	 * @see com.blog.service.BasiService#count(java.lang.String)
+	 */
 	@Override
 	public Integer count(String eq) {
 		EqAdapter sql = new SelectAdapter()
-				.setParame(this)
+				.setParame(this) 
 				.setColumns("count(\"1\")")
 				.setEqSql(eq);
 		try {
@@ -433,6 +454,12 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 		}
 		return null;
 	}
+	/**
+	 * 收集查询条件   已经预置了 where 1 = 1 AND  
+	 * <p>	 
+	 * @param eq
+	 * @see com.blog.service.BasiService#count(java.util.Map)
+	 */
 	@Override
 	public Integer count(Map<String, Object> eq) {
 		EqAdapter sql = new SelectAdapter()

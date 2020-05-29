@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>LifeShare</title>
+  <title>图片管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -25,11 +25,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
-          <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
+          <button class="layui-btn C-btn-saveorupdate c-button" id="upload" data-type="upload" style="margin-right:10px;">上传</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
 		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button>
         </div>
-        <table id="C-admin-life-table" lay-filter="C-admin-life-table" ></table>
+        <table id="C-admin-aimg-table" lay-filter="C-admin-aimg-table" ></table>
       </div>
     </div>
   </div>
@@ -37,21 +37,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script type="text/html" id="toTPL">
 	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
   </script>
+  <script type="text/html" id="showImg">
+	<img alt="{{ d.name }}" src="{{d.path+'/'+d.name}}" width="40px" click-event="pictureDetail">
+  </script>
   <script>
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'upload'], function(){
     var $ = layui.$
     ,form = layui.form
-    ,a = "C-admin-life-add"
-	,b = 'C-admin-life-update'
+    ,a = "C-admin-aimg-add"
+	,b = 'C-admin-aimg-update'
 	,e = 'C-btn-saveorupdate'
     ,f = 'iframe'
-	,l = 'C-admin-life-table'
-	,t = 'C-admin-life-form'
+	,l = 'C-admin-aimg-table'
+	,t = 'C-admin-aimg-form'
 	,s = 'C-btn-search'
     ,admin = layui.admin;
     table = layui.table;
@@ -81,7 +84,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  		,contentType: 'text/plan'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -121,13 +123,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
 					var iframe = e.find(f).contents().find("#"+t);
-					frame.find('input[name="id"]')[0].value = data[0].id
-					,iframe.find('input[name="time"]')[0].value = data[0].time
-					,iframe.find('input[name="pit_url"]')[0].value = data[0].pit_url
-					,iframe.find('input[name="chat_num"]')[0].value = data[0].chat_num
-					,iframe.find('input[name="brow_num"]')[0].value = data[0].brow_num
-					,iframe.find('input[name="like_num"]')[0].value = data[0].like_num
-					,iframe.find('textarea[name="content"]')[0].value = data[0].content
+					iframe.find('input[name="id"]')[0].value = data[0].id
+					,iframe.find('input[name="name"]')[0].value = data[0].name
+					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
+					,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
+					,iframe.find('input[name="path"]')[0].value = data[0].path
+					,iframe.find('textarea[name="desc"]')[0].value = data[0].desc
 
 				}
             })
@@ -138,12 +139,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         url: 'list.do',
         cols: [[
         	{type:"checkbox", fixed:"left"}
-			,{field:'time', title:'时间'}
-			,{field:'pit_url', title:'图片路径'}
-			,{field:'content', title:'内容'}
-			,{field:'chat_num', title:'评论数'}
-			,{field:'brow_num', title:'浏览数'}
-			,{field:'like_num', title:'喜欢数'}
+			,{field:'name', title:'名称'}
+			,{field:'path', title:'图示', templet:'#showImg'}
+			,{field:'create_time', title:'创建时间'}
+			,{field:'update_time', title:'修改时间'}
+			,{field:'desc', title:'备注'}
 
         ]],
         text: "对不起，加载出现异常！"
@@ -152,6 +152,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';
     });
+    
+    var upload = layui.upload; 
+	//普通图片上传
+    var uploadInst = upload.render({
+	    elem: '#upload'
+	    ,url: 'upload.do'
+	    ,before: function(obj){
+	      //预读本地文件示例，不支持ie8
+	      obj.preview(function(index, file, result){
+	    	  // 展示所上传的图片
+	        //$('#demo1').attr('src', result); //图片链接（base64）
+	      });
+	    }
+	    ,done: function(data){ 
+	    	var index = parent.layer.getFrameIndex(window.name); 
+	    	data.code == '0' && (parent.layer.msg("操作成功！"), parent.layer.close(index), table.reload(l)),
+			data.code == '2' && (parent.layer.msg("操作失败！"+data.msg), parent.layer.close(index));
+	    }
+	    ,error: function(){
+	      //演示失败状态，并实现重传
+	      var demoText = $('#demoText');
+	      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+	      demoText.find('.demo-reload').on('click', function(){
+	        uploadInst.upload();
+	      });
+	    }
+	});  
   });
   </script>
 </body>

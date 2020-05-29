@@ -81,6 +81,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType: 'text/plan'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -133,6 +134,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     table.render({//加载
         elem: "#"+l,
         url: 'list.do',
+        limit: 20,
+        page: !0,
+        height: 'height-200',
+        method: 'post',
         cols: [[
         	{type:"checkbox", fixed:"left"}
 			,{field:'name', title:'名称'}

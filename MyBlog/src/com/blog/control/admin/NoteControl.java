@@ -18,15 +18,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.Constant;
 import com.blog.Filter;
+import com.blog.ORFilter;
 import com.blog.Order;
 import com.blog.Page;
 import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
-import com.blog.entity.CMessage;
 import com.blog.entity.Data;
 import com.blog.entity.Note;
 import com.blog.entity.NoteTabBrige;
+import com.blog.enumer.Operator;
 import com.blog.service.DataService;
 import com.blog.service.NoteService;
 import com.blog.service.NoteTabBrigeService;
@@ -34,7 +35,16 @@ import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 import com.blog.util.sql.EqAdapter;
-
+/**
+ * <b>一句话描述该类</b>
+ * <p>
+ * 描述:<br>
+ * 
+ * @author 威 
+ * <br>2020年5月28日 下午4:16:01 
+ * @see
+ * @since 1.0
+ */
 @Controller
 @RequestMapping("/admin/note")
 public class NoteControl extends BaseControl{
@@ -56,8 +66,93 @@ public class NoteControl extends BaseControl{
 	
 	@RequestMapping("/show.chtml") 
 	public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
+		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		
+		// 拼接 上一次请求的 条件
+		StringBuilder query = new StringBuilder("");
+		Map<String, String> parame = getRequestParameterMap(request);
+//		query.append("type=" + type).append("&");
+		for(Map.Entry<String, String> item : parame.entrySet()) 
+			if(item.getValue() != null) query.append(item.getKey() + "=" + item.getValue()).append("&");
+		if(parame.size() > 0) query.delete(query.length()-1, query.length());// 删除多余符号
+		// 拼接 上一次请求的 条件
+		// 刷新的时候能够衔接上一次的条件
+		model.addAttribute("query", query.toString()); 
+		
+		List<Note> list = getNoteOfCommon(type, parame, request, page, admin);
+		JSONArray jsonArray = new JSONArray();
+		for(Note item : list){
+			JSONObject jsonObject = jsonToJSONObject(item); 
+			jsonObject.put("author", item.getAdmin_infor().getName_()); 
+			jsonArray.add(jsonObject);
+		} 
+		model.addAttribute("notes", jsonArray);
+		
+		// 标签集 用于标签查找
+		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
+		model.addAttribute("all", listData); 
+		
+		model.addAttribute("adminId", admin.getId());
+		model.addAttribute("author", noteServiceImpl.findNicknameById(admin.getId()));	
+		
+//		List<NoteTabBrige> list2 = noteTabBrigeServiceImpl.gets(singleOfEqString("admin_id", admin.getId()));
+		//model.addAttribute("noteTabs", list2);// 标签集 用于note获取对应的标签
+		//model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
+		return "admin/note/show";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/showByTab.chtml") 
+	public String showByTab(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
+		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		
+		int limit = page.getLimit();
+		int pageNum = page.getPage();
+		
+		// 定义 and 关联条件
+		page.addFilter(new Filter("a.id", Operator.eq, "b.note_id", 
+				Filter.IGNORE_TYPE)); // Qu_type_eq_s
+		page.addFilter(new Filter("c.id", Operator.eq, "b.note_tab_id", 
+				Filter.IGNORE_TYPE)); // Qu_type_eq_s
+		Map<String, String> parame = getRequestParameterMap(request);
+		for(Map.Entry<String, String> item : parame.entrySet()){	// 拼接标签id
+			if("on".equals(item.getValue()))
+				// 定义 or 关联条件
+				page.addORFilters(new ORFilter("c.id", Operator.eq, item.getKey(), 
+						ORFilter.IGNORE_TYPE)); 
+		}
+			
+		QueryHelper queryHelper = new QueryHelper();
+		// 别名，详细的说是前端设定为createDate 实际数据库为 create_date 
+		queryHelper.addCloumnAlias("createDate", "create_date"); 
+		// 绑定前台参数
+		queryHelper.paramBind(request, page);	
+		// 排序
+		page.addOrder(Order.desc("a.create_date"));
+		
+		StringBuilder sql = new StringBuilder();
+		sql
+		.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.status, a.tags, a.content, a.admin_id ")
+		.append(queryHelper.buildForm("note a, note_tab_brige b, data c"))
+		.append(queryHelper.buildQuery(page.getFilters(), page.getORFilters()))
+		.append(" AND !(a.`admin_id` <> '"+admin.getId()+"' AND a.`status` = '01') ")
+		.append(queryHelper.buildOrder(page.getOrders(), page.getAlias()))
+		.append(queryHelper.buildLimit(pageNum, limit));
+		//.append(queryHelper.buildAllQuery(page, pageNum, limit));
+		
+		model.addAttribute("notes", noteServiceImpl.find(sql.toString()));
+		
+		// 标签集 用于标签查找
+		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
+		model.addAttribute("all", listData); 
+		
+		model.addAttribute("adminId", admin.getId());
+		return "admin/note/show";
+	}
+	
+	/*public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
 		// 对标签进行更新
-		/*List<Note> temps = noteServiceImpl.getAll();   
+		List<Note> temps = noteServiceImpl.getAll();   
 		for(Note item : temps) {
 			List<NoteTabBrige> tempss = noteTabBrigeServiceImpl.gets(singleOfEqString("note_id", item.getId()));
 			StringBuilder tempsss = new StringBuilder("");
@@ -68,7 +163,7 @@ public class NoteControl extends BaseControl{
 			note.setTags(tempsss.toString());
 			noteServiceImpl.update(note, singleOfEqString("id", item.getId()));
 			log.info("特殊更新完毕====================="+item.getName());
-		} */
+		} 
 		
 		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 		
@@ -79,7 +174,9 @@ public class NoteControl extends BaseControl{
 			query.append(item.getKey() + "=" + item.getValue()).append("&");
 		if(parame.size() > 0) query.delete(query.length()-1, query.length());// 删除多余符号
 		log.info("queryStr "+query.toString());
-		model.addAttribute("query", query.toString()); // 拼接 上一次请求的 条件
+		// 拼接 上一次请求的 条件
+		// 刷新的时候能够衔接上一次的条件
+		model.addAttribute("query", query.toString()); 
 		
 		model.addAttribute("notes", getNoteOfCommon(type, parame, request, page, admin));
 		
@@ -93,8 +190,8 @@ public class NoteControl extends BaseControl{
 		//model.addAttribute("noteTabs", list2);// 标签集 用于note获取对应的标签
 		//model.addAttribute("noteTabsJSON", net.sf.json.JSONArray.fromObject(list2).toString());// 转换json字符串供前台更多加载时标签获取的使用 用于note获取对应的标签
 		return "admin/note/show";
-	}
-
+	}*/
+	
 	protected List<Note> getNoteByNameAndDate(HttpServletRequest request, Page page, Admin admin) {
 		QueryHelper queryHelper = new QueryHelper(); 
 		queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
@@ -115,36 +212,54 @@ public class NoteControl extends BaseControl{
 	}
 
 	//  根据名称模糊查找和标签查找的公共方法
+	@SuppressWarnings("unchecked")
 	protected List<Note> getNoteOfCommon(String type, Map<String, String> parame, 
 			HttpServletRequest request, Page page, Admin admin) {
-		// 清除多余的字段
+		
+		int limit = page.getLimit();
+		int pageNum = page.getPage();
 		
 		QueryHelper queryHelper = new QueryHelper();
-		queryHelper.addCloumnAlias("createDate", "create_date"); // 前端设定为createDate 实际数据库为 create_date 
-		queryHelper.paramBind(request, page);	// 获取前台参数
-		
-		StringBuilder tagQueryStr = new StringBuilder("");
-		for(Map.Entry<String, String> item : parame.entrySet()){	// 拼接标签id
-			if("on".equals(item.getValue()))
-				tagQueryStr.append(singleOfEq("c.id", "'"+item.getKey()+"'")).append(" OR ");
-		}
+		// 前端设定为createDate 实际数据库为 create_date 
+		queryHelper.addCloumnAlias("createDate", "create_date"); 
+		// 获取前台参数
+		queryHelper.paramBind(request, page);	
+		// 排序
+		page.addOrder(Order.desc("a.create_date"));
+				
 		StringBuilder sql = new StringBuilder();
-		if(tagQueryStr.length() > 0 || "2".equals(type)) // 如果有标签则进行标签查询 当type=‘2’时
-			sql.append("SELECT DISTINCT a.id, a.`name`, a.update_date, a.create_date, a.status, a.tags, a.content, a.admin_id ")
-			.append("FROM note a, note_tab_brige b, `data` c ");// 查询三个表确认notes
-		else // 一般查询
-			sql.append("SELECT * FROM note a ");
-		page.setAlias("a");
-		sql.append(queryHelper.buildAllQuery(page));
-		if(tagQueryStr.length() > 0) // 如果有标签则进行标签查询
-			sql.append(" AND a.id = b.note_id")
-			.append(" AND c.id = b.note_tab_id");
-			/*.append(" AND a.admin_id='"+admin.getId()+"'")*/
-		if(tagQueryStr.length() > 0)
-			sql.append(" AND ("+tagQueryStr.delete(tagQueryStr.length()-4, tagQueryStr.length()).toString()+")");// 
-		sql.append(" ORDER BY a.create_date DESC ")
-			.append(" "+EqAdapter.SQL_LIMIT + (page.getPage()-1)*page.getLimit() + "," + page.getLimit());
-		return noteServiceImpl.find(sql.toString());
+		page.addFilter(new Filter("a.admin_id", Operator.eq, "d.admin_id", 
+				Filter.IGNORE_TYPE)); 
+		// 如果有标签则进行标签查询 当type=‘2’时
+		if("2".equals(type)){
+			// 定义 and 关联条件 多表查询的关联
+			page.addFilter(new Filter("a.id", Operator.eq, "b.note_id", 
+					Filter.IGNORE_TYPE)); // Qu_type_eq_s
+			page.addFilter(new Filter("c.id", Operator.eq, "b.note_tab_id", 
+					Filter.IGNORE_TYPE));  	
+			for(Map.Entry<String, String> item : parame.entrySet()){	// 拼接标签id
+				if("on".equals(item.getValue()))
+					// 定义 or 关联条件
+					page.addORFilters(new ORFilter("c.id", Operator.eq, item.getKey(), 
+							ORFilter.IGNORE_TYPE)); 
+			}
+			// 查询三个表确认notes
+			sql.append("SELECT DISTINCT a.id, d.name_, a.`name`, a.update_date, a.create_date, a.status, a.tags, a.content, a.admin_id ")
+			.append(queryHelper.buildForm("note a, note_tab_brige b, data c, admin_infor d"))
+			.append(queryHelper.buildQuery(page.getFilters(), page.getORFilters()));
+			
+		}
+		// 一般查询
+		else {
+			sql.append("SELECT DISTINCT a.id, d.name_, a.`name`, a.update_date, a.create_date, a.status, a.tags, a.content, a.admin_id FROM note a, admin_infor d")
+			.append(queryHelper.buildQuery(page.getFilters()));
+		}
+		// 反向获取符合的条件
+		sql.append(" AND !(a.`admin_id` <> '"+admin.getId()+"' AND a.`status` = '01') ")
+		.append(queryHelper.buildOrder(page.getOrders(), page.getAlias()))
+		.append(queryHelper.buildLimit(pageNum, limit));
+		log.info(sql.toString());
+		return noteServiceImpl.show(sql.toString());
 		
 	}
 	
@@ -166,8 +281,8 @@ public class NoteControl extends BaseControl{
 			model.addAttribute("seleteds", list_);
 			model.addAttribute("type", false);
 			if("2".equals(type)) { // show.jsp 页面调用修改页面时 所传递的值；旨在获取note内容
-				model.addAttribute("content", 
-						noteServiceImpl.get(singleOfEqString("id", id)).getContent());
+				model.addAttribute("note", 
+						noteServiceImpl.get(singleOfEqString("id", id)));
 			}
 		}		
 		return "admin/note/save_or_update";
@@ -177,7 +292,7 @@ public class NoteControl extends BaseControl{
 	@RequestMapping("add.do")
 	@ResponseBody
 	public Object add(Note t, String tabs, HttpServletRequest request) throws IOException{ 
-		System.out.println("添加接收参数："+t); 
+		System.out.println("添加接收参数：name = "+t.getName()); 
 		
 		try{
 			StringBuilder tags = new StringBuilder("");

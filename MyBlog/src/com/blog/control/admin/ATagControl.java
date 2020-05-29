@@ -15,11 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.blog.Filter;
+import com.blog.Order;
+import com.blog.Page;
+import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
 import com.blog.entity.ATag;
+import com.blog.entity.ArticleContent;
 import com.blog.service.ATagService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
+import com.blog.util.sql.EqAdapter;
 
 @Controller
 // 数据字典
@@ -107,19 +113,61 @@ public class ATagControl extends BaseControl{
 	}
 	
 	/**
-	 * 初始化
+	 * 根据条件分页获取数据
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object init() throws IOException{
-		try {
-			List<ATag> list = aTagServiceImpl.getAll();
-			return Message.success("请求成功", listToJSONArray(list));
+	public Object list(Page page, HttpServletRequest request) throws IOException{
+		try { 
+			String table = "article_tag";// 表  
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			// log.info(limit+ ","+pageNum);
+			QueryHelper queryHelper = new QueryHelper(); 
+			queryHelper.paramBind(request, page);	// 获取前台参数
+			page.addOrder(Order.desc("create_time"));// 排序 
+			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+			// 进行分页
+			String sql = "SELECT * FROM "+table+" "+
+					queryHelper.buildAllQuery(page)+ 
+					" "+EqAdapter.SQL_LIMIT + (pageNum-1)*limit + "," + limit;
+			List<ATag> list = aTagServiceImpl.find(sql);
+			
+			Integer count = 0;
+			if(page.getFilters().size() > 0) {
+				// 拼接查询数量的条件
+				StringBuilder eq = new StringBuilder();
+				List<Filter> fs = page.getFilters();
+				for(Filter item : fs) {
+					String prefix = "'",subfix = "'";
+					if(item.getQueryOperator().indexOf("like") >= 0){
+						prefix = "'%";
+						subfix = "%'";
+					}
+					eq.append(item.getProperty())
+					.append(item.getQueryOperator())
+					.append(prefix+item.getValue()+subfix);
+					eq.append(" AND ");
+				}
+				if(fs.size()>0)eq.delete(eq.length()-4, eq.length());// 删除多余
+				count = aTagServiceImpl.count(eq.toString());
+			}
+			else
+				count = aTagServiceImpl.count();
+			
+			// 构建返回数据
+			page.setData(list);
+			page.setMsg("ok");
+			page.setCount(count);
+			page.setCode("0"); 
+			return page;
 		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
+			return com.blog.util.Message.error("请求失败");
 		}
+	
 	}
 	
 }

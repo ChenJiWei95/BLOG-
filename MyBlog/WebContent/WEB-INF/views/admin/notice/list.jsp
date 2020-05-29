@@ -243,6 +243,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
+					  		,contentType: 'text/plan'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);

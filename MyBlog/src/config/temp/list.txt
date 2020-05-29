@@ -21,7 +21,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-fluid">   
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-         
+         <div class="layui-form-item">
+        	 	<div class="layui-inline">
+					<label class="layui-form-label">编号</label>
+					<div class="layui-input-inline">
+						<input type="text" name="Qu_id_eq_s" placeholder="请输入" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			  <div class="layui-inline">
+	            <button class="layui-btn layuiadmin-btn-admin c-button C-btn-search" lay-submit lay-filter="C-btn-search">
+	              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+	            </button>
+	          </div>
+		  </div>
       </div>
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
@@ -43,7 +55,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'util'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-#classify#-add"
@@ -81,6 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
+					  	,contentType: 'text/plain'
 					  	,data: JSON.stringify(arr) 
 					  	,success: function(){
 					  		table.reload(l);
@@ -118,8 +131,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     layero.find(f).contents().find("#"+b).click();
                 }
                 ,success: function(e, index) {
-					//这是渲染完之后调用 可以用于初始化
-					var iframe = e.find(f).contents().find("#"+t);
+					// 对编辑窗口的表单赋值
 					#js-edit#
 				}
             })
@@ -128,6 +140,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     table.render({//加载
         elem: "#"+l,
         url: 'list.do',
+        limit: 20,
+        page: !0,
+        method: 'post',
+        height:'full-200',// 分页控制按钮固定在底部并且全屏
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	#table-head#

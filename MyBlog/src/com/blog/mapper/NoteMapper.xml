@@ -15,6 +15,11 @@
 		${sql}
 	</select>
 	
+	<!-- 没用上 -->
+	<select id="findNicknameById" parameterType="STRING" resultType="STRING" useCache="false">
+		SELECT b.name_ FROM `c_blog`.`admin_infor` b, admin a WHERE a.id = b.admin_id AND a.id = #{id}
+	</select>
+	
 	<!-- 测试 ${} $和#的区别 需要另外编写防sql注入处理 -->
 	<select id="get" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		SELECT ${columnSql} FROM ${table}
@@ -57,6 +62,7 @@
 		 
 	</resultMap>
 	
+	<!-- 不能到到多表查询的作用 不推荐使用 -->
 	<select id="associate" resultMap="selfList" useCache="false">
 		SELECT
 			${columnSql} 
@@ -127,6 +133,23 @@
 	<!-- user集合 -->
 	<resultMap id="userList" type="com.blog.entity.Note"> 
 	</resultMap>
-	 
 	
+	
+	<select id="show" parameterType="com.blog.util.sql.EqAdapter" resultMap="notes" useCache="false">
+		${sql}
+	</select> 
+	<resultMap id="notes" type="com.blog.entity.Note"> 
+		<result column="id" property="id" />  
+		<result column="name" property="name" />  
+		<result column="create_date" property="create_date" />  
+		<result column="update_date" property="update_date" />  
+		<result column="content" property="content" />  
+		<result column="admin_id" property="admin_id" />  
+		<result column="status" property="status" />  
+		<result column="tags" property="tags" />
+		<collection property="admin_infor" ofType="com.blog.entity.AdminInfor">
+			<id column="id"   property="id" /> 
+			<result column="name_"   property="name_" />   
+		</collection>
+	</resultMap>
 </mapper>

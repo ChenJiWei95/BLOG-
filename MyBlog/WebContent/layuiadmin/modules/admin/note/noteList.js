@@ -10,6 +10,7 @@ function(e) {
 	,admin = layui.admin
 	,$ = layui.$
 	,laytpl = layui.laytpl
+	,n = parent === self ? layui: top.layui
 	;
     
 	// 定义点击事件
@@ -48,7 +49,8 @@ function(e) {
 		  	});	
 		}
 		,add: function(){// 添加note
-			layer.open({
+			top.layui.index.openTabsPage("../note/save_or_update.chtml?type=0", "[添加]");
+			/*layer.open({
 				type: 2
 				,title: '添加'
 				,content: 'save_or_update.chtml?type=0'
@@ -57,17 +59,24 @@ function(e) {
 				,yes: function(index, layero){
 					layero.find(f).contents().find("#"+a).click();
 					setTimeout(function(){
-						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
+						//self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr;
+						util.redirectByForm({
+	                		action: 'show.chtml'
+	                		,query: queryStr
+	                	})
 					}, 500);
 				}
 				,success: function(e, index) {
 					var iframe = e.find(f).contents().find("#"+t);
 					//iframe.find('input[name="id"]').val(admin.randomId());
 				}
-			});
+			});*/
 		}
-		,update: function(target){// 修改note
+		// 修改note
+		,update: function(target){
 			var note_item = target.parents(".note-item").eq(0);
+			top.layui.index.openTabsPage("../note/save_or_update.chtml?type=2&id="+note_item.data("id"), "["+note_item.find(".name").text()+"]");
+			/*var note_item = target.parents(".note-item").eq(0);
 			layer.open({
 	            type: 2
 	            ,title: "编辑"
@@ -77,25 +86,32 @@ function(e) {
 	            ,yes: function(index, layero) {
 	                layero.find(f).contents().find("#"+b).click();
 	                setTimeout(function(){
-						self.location.href="show.chtml"+ queryStr == void 0 ? '' : '?' + queryStr.replace(/#/g, '%23');// 替换# %23;
+	                	util.redirectByForm({
+	                		action: 'show.chtml'
+	                		,query: queryStr
+	                	})
 					}, 500);
 	            }
 	            ,success: function(e, index) {
-					//这是渲染完之后调用 可以用于初始化
-					var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]')[0].value = note_item.data("id")
-					,iframe.find('input[name="name"]')[0].value = note_item.find(".name").text()
-					,iframe.find('input[name="create_date"]')[0].value = note_item.find(".create_date").text()
-					,iframe.find('input[name="tags"]')[0].value = note_item.find(".tags-value").text()
-					,iframe.find('select[name="status"]')[0].value = note_item.find(".status").text()
-					,iframe.find('input[name="update_date"]')[0].value = note_item.find(".update_date").text()
-				}
-	        })
+					//这是渲染完之后调用 可以用于初始化 
+					util.formVal ({
+						el: e.find(f).contents().find("#"+t)
+						,list:[
+							{id: note_item.data("id")}
+							,{name: note_item.find(".name").text()}
+							,{create_date: note_item.find(".create_date").text()}
+							,{tags: note_item.find(".tags-value").text()}
+							,{status: note_item.find(".status").text()}
+							,{update_date: note_item.find(".update_date").text()}
+						] 
+					});
+	            }
+	        })*/
 		}
 		,noteMore: function(e){// 加载更多
 	  		var data = {};
 	  		data['page'] = e.data('page')+1;
-	  		data['limit'] = 10;
+	  		data['limit'] = 10;	
 	  		
 	  		var queryArr = queryStr.split("&");
 	  		for(var i = 0; i < queryArr.length; i++){

@@ -160,9 +160,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
     };  
     table.render({//角色的加载
-        elem: "#"+l,
-        url: 'list.do',
-        cols: [[
+        elem: "#"+l
+        ,url: 'list.do'
+        ,limit: 20
+    	,page: !0
+    	,height: 'full-200'
+    	,method: 'post'
+       	,cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:"id", title:"ID", sort:!0, width:180}
         	,{field:"name", title:"角色名", width:150}

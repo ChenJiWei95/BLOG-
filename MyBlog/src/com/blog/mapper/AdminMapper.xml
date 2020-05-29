@@ -13,6 +13,16 @@
 		<if test="limitSql!=null"> ${limitSql}</if>
 	</select>
 	
+	
+	<select id="count" parameterType="com.blog.util.sql.EqAdapter" resultType="INTEGER" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where>  
+	</select>
+	
 	<select id="find" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		${sql}
 	</select>
@@ -128,6 +138,34 @@
 	
 	<!-- user集合 -->
 	<resultMap id="userList" type="com.blog.entity.Admin"> 
+	 	<id column="id" property="id" />  
+		<result column="username" property="username" />  
+		<result column="password" property="password" />  
+		<result column="state" property="state" />  
+		<result column="login_count" property="login_count" />  
+		<collection property="admin_infor" ofType="com.blog.entity.AdminInfor">
+			<id column="id"   property="id" />
+			<result column="username"   property="username" />  
+			<result column="name"   property="name" />  
+			<result column="name_"   property="name_" />  
+			<result column="create_time"   property="create_time" />  
+			<result column="update_time"   property="update_time" />  
+			<result column="phone"   property="phone" />  
+			<result column="email"   property="email" />  
+			<result column="admin_id"   property="admin_id" />  
+			<result column="role_id"   property="role_id" />  
+			<result column="desc"   property="desc" />  
+		</collection>
+		<collection property="role" ofType="com.blog.entity.Role">
+			<id column="id"   property="id" />
+			<result column="name" property="name" />  
+			<result column="create_time" property="create_time" />  
+			<result column="update_time" property="update_time" />  
+			<result column="desc" property="desc" />  
+			<result column="state" property="state" />  
+			<result column="app_id" property="app_id" />  
+			<result column="role_id" property="role_id" />  
+		</collection>
 	</resultMap>
 	 
 	<resultMap id="objList" type="java.lang.Object"> 

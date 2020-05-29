@@ -213,7 +213,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   // currentCount html代码处理保存某一阶段的下标位置     比如初始阶段，或者再获取更多的时候也是一个阶段
   var $, codeCount, codeArr, currentCount;
   codeCount = 0
-  ,codeArr = []
+  ,codeArr = [] 
   ,base  = '<%=basePath%>';
   
   layui.config({

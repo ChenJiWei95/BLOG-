@@ -63,7 +63,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-form-item">
       <label class="layui-form-label">角色</label>
       <div class="layui-input-block">
-	        <select name="role_id">
+	        <select name="role_id" lay-filter="seleteTest">
 			  <option value="-1">请选择权限角色</option>
 	          <c:forEach begin="0" items="${roles}" step="1" var="Role" varStatus="varsta">
 				<option value="${Role.id}">${Role.name}</option>
@@ -93,6 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -118,6 +119,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,data: data.field  
 		});
 		return false;
+	})
+	,form.on("select(seleteTest)", function(data){
+		console.log(data.elem); //得到select原始DOM对象
+		console.log(data.value); //得到被选中的值
+		console.log(data.othis); //得到美化后的DOM对象
 	})
 	// 适用于表格
 	function cajax(object){

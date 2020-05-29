@@ -7,11 +7,12 @@ import com.blog.util.TypeToolsGenerics;
 
 public class UpdateAdapter extends EqAdapter { 
 	
+	@Override
 	public EqAdapter like(String cloumn, String likeStr) {
 		setLike(cloumnUtil(cloumn) + " LIKE '" + likeStr + "'");
 		return this;
 	}
-	
+	@Override
 	public String getUpdateSql() throws Exception {
 		Map <String, Object> updateMap = this.getUpdateMap();
 		Object target = this.getTarget();

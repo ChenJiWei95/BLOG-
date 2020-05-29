@@ -2,6 +2,8 @@ package com.blog.control.admin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,17 +31,30 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.blog.Order;
+import com.blog.Page;
+import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
+import com.blog.entity.Admin;
 import com.blog.entity.Aimg;
+import com.blog.entity.WebsiteBase;
 import com.blog.service.AimgService;
+import com.blog.service.FileUpAndDownService;
+import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
-
+import org.apache.log4j.Logger;
 @Controller
 // 数据字典
 @RequestMapping("/admin/aimg")
 public class AimgControl extends BaseControl{
+	private static Logger log = Logger.getLogger(AimgControl.class);
+	@Autowired
+	private WebsiteBaseService websiteBaseServiceImpl;
+	
+	@Autowired
+	private FileUpAndDownService fileUpAndDownServiceImpl;
 	
 	@Autowired
 	private AimgService aimgServiceImpl;
@@ -84,21 +99,48 @@ public class AimgControl extends BaseControl{
 	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {
 		String path = UUID.randomUUID().toString().replace("-", "");
 		 
-		Aimg img = new Aimg();
-		img.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-		img.setCreate_time(getNowTime());
-		img.setName(path);
-		img.setPath(path);
+		
 		// 生成新的文件名
 		try {
-			String realPath = basePath(request)+ "img/" + path + ".jpg";
+			// fileUpAndDownServiceImpl
+			/*if(fileName == null || "".equals(fileName)) {
+				fileName = file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."));
+			}*/
+			
+//			String name = UUID.randomUUID().toString().replace("-", "");
+			// 实际名称中获取后缀
+			String ends = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+			
+			// 查询数据库是否存在当前名称
+			/*if(fileUpAndDownServiceImpl.get(singleOfEqString("file_name", fileName+ends)) != null)
+				return Message.error(fileName+"，该名称已经存在！");*/
+			
+			/*String realPath = basePath(request)+ "img/" + path + ".jpg";
 			System.out.println(realPath);
 			File dest = new File(realPath);
 			// 判断文件父目录是否存在
 			if (!dest.getParentFile().exists()) dest.getParentFile().mkdir();
 			// 保存文件
-			file.transferTo(dest);
+			file.transferTo(dest);*/
 			
+			WebsiteBase w = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
+			if(w == null 
+				|| w.getUpload() == null 
+				|| "".equals(w.getUpload().trim())) 
+				return Message.error("配置未找到！");
+//			String realPath = request.getSession().getServletContext().getRealPath("/upload/")+fileName+ends;
+			String endPath = new SimpleDateFormat("yyyy-MM-dd").format(new Date())+"/"+path+ends;
+			String realPath = w.getUpload()+endPath;
+			File dest = new File(realPath);
+			if (!dest.getParentFile().exists()) // 判断文件父目录是否存在
+				dest.getParentFile().mkdir(); 
+			file.transferTo(dest); // 保存文件
+			
+			Aimg img = new Aimg();
+			img.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+			img.setCreate_time(getNowTime());
+			img.setName(path); 
+			img.setPath("upload/"+endPath);
 			aimgServiceImpl.insert(img);
 	        return Message.success("操作成功！");
 		}catch(RuntimeException e) {
@@ -129,23 +171,21 @@ public class AimgControl extends BaseControl{
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(HttpServletRequest request) throws IOException{
-		
-		// 判断token是否正确  删除admin 和 adminInfor
+		log.info("==================");
 		try {
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
-			StringBuffer sb = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
+			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			log.info(json.toString());
+			StringBuffer sb = new StringBuffer();
+			sb.append(singleOfEqString("id", json.getJSONObject(0).getString("id")));
+			for(int i = 1; i < json.size(); i++) {
+				sb.append(" OR ")
+				.append(singleOfEqString("id", json.getJSONObject(i).getString("id")));
 			}
-			if(json.size() > 0) {
-				sb.delete(sb.length()-4, sb.length());
-				aimgServiceImpl.delete(sb.toString());
-			}
+			aimgServiceImpl.delete(sb.toString());	
 			return Message.success("请求成功", null);
-		}catch(Exception e) {
-			return Message.success("请求失败，"+e.getMessage(), null);
+		}catch(Exception e) { e.printStackTrace();
+			return Message.error("请求失败，"+e.getMessage(), null);
 		}
 		
 	}
@@ -166,7 +206,7 @@ public class AimgControl extends BaseControl{
 			t.setUpdate_time(getNowTime());
 			aimgServiceImpl.update(t, singleOfEqString("id", t.getId())); 
 			return Message.success("请求成功", null);
-		}catch(Exception e) {
+		}catch(Exception e) { e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
 	} 
@@ -176,17 +216,64 @@ public class AimgControl extends BaseControl{
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("list.do")
+	/*@RequestMapping("list.do")
 	@ResponseBody
 	public Object init() throws IOException{
 		try {
 			List<Aimg> list = aimgServiceImpl.getAll();
 			return Message.success("请求成功", listToJSONArray(list));
-		}catch(Exception e) {
+		}catch(Exception e) { e.printStackTrace();
 			return Message.success("请求失败，"+e.getMessage(), null);
 		}
-	}
+	}*/
 	
+	
+	/**
+	 * 根据条件分页获取数据
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping("list.do")
+	@ResponseBody
+	public Object list (Page page, HttpServletRequest request) throws IOException{
+		try {
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			Integer count = 0;
+			
+			QueryHelper queryHelper = new QueryHelper(); 
+			// 获取前台参数
+			queryHelper.paramBind(request, page);
+			
+			page.addOrder(Order.desc("create_time"));
+			
+			String buildQueryStr;
+			String sql = 
+					queryHelper.buildSelect()+
+					queryHelper.buildForm("aimg")+
+					(buildQueryStr = queryHelper.buildQuery(page.getFilters()))+ 
+					queryHelper.buildOrder(page.getOrders(), page.getAlias())+
+					queryHelper.buildLimit(pageNum, limit);
+			List<Aimg> list = aimgServiceImpl.find(sql);
+			if(queryHelper.sizeOfFilter() > 0) {
+				if(buildQueryStr.indexOf("and") != -1)
+					count = aimgServiceImpl.count("admin a, admin_infor b, role c "
+						, buildQueryStr.substring(buildQueryStr.indexOf("and")+3));
+				else count = aimgServiceImpl.count();
+			}
+			else
+				count = aimgServiceImpl.count();
+			// 构建返回数据
+			page.setData(list);
+			page.setMsg("ok");
+			page.setCount(count);
+			page.setCode("0"); 
+			return page;			
+		}catch(Exception e) { e.printStackTrace();
+			return com.blog.util.Message.error("请求失败");
+		}
+	}
 	
 	
 }

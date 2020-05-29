@@ -9,7 +9,86 @@ function(t) {
     	String.prototype.trim = function() {return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'')}
     })()}
     var e = layui.$,
-    i = {
+    i = { 
+    		/*
+        	描述：
+        		重定向 -- 重定向的方式有很多种可以用self.location.href="show.chtml"这种方式重定向
+        		此处方法使用的是表单重定向
+        	参数介绍：
+        		action
+    			method = data.method || 'post';
+    			enctype = data.enctype || 'application/x-www-form-urlencoded';
+    			query 预设条件 
+        	例子：
+        		redirectByForm({
+	                		action: 'show.chtml'
+	                		,query: queryStr
+	                	})
+        	*/ 
+    		redirectByForm: function (data){
+    			//data.action
+    			data.method = data.method || 'post';
+    			data.enctype = data.enctype || 'application/x-www-form-urlencoded';
+    			//data.query
+    			var form = e('<form>', {
+    				action:	data.action
+    				,method: data.method 
+    				,enctype: data.enctype
+    				,style:"display: none"
+    			});
+    			var strArr = data.query.split('&');
+    			for(var index in strArr){
+    				var strArr_ = strArr[index].split('=');
+    				e('<input>', {
+    					type:'input' ,value:strArr_[1] ,name:strArr_[0]
+    				}).appendTo(form);
+    			}
+    			form.appendTo('body');
+    			form.submit();
+    		}
+    		
+   	
+    	/*
+    	描述：
+    		表单赋值
+    	参数介绍：
+    		el
+    		
+    		list
+    			type	表单类型 可选值【input(默认) , select , textarea】
+    			另一个属性	例如表单项‘<input name = 'pass' value = '123456' >’ 这个属性的写法为：pass = ‘123456’
+    	注意：
+    		list属性中除了type和一个非固定属性外不能有其他属性否则异常
+    	例子：
+    		layui.util.formVal ({
+				el: e.find(i).contents().find("#"+f)
+				,list:[
+					{id: data[0].id}
+					,{desc: data[0].desc, type: 'textarea'}
+				] 
+			});
+    	*/ 
+    	,formVal:function (data){ 
+    	    	layui.each(data.list, function(index, item){ 
+    	    		var type = item.type || 'input';
+    	    		var temp = i.copy(item);
+    	    		delete temp.type;
+    	    		var keys = Object.keys(temp);
+    	    		if(keys.length != 1){ 
+    	    			console.err("内容异常"+JSON.stringify(item));
+    	    			return;
+    	    		} 
+    	    		data.el.find(type+'[name="'+keys[0]+'"]').val(item[keys[0]])
+    	    	}); 
+    	}    
+    	// 浅拷贝  和引用对象脱离引用关联 【对象的拷贝】
+	   	,copy:function(obj){
+			var newobj = {};
+			for ( var attr in obj) {
+				newobj[attr] = obj[attr];
+			}
+			return newobj;
+		}   
     		/*
      		描述：
      			ajax封装--适用于表单提交，提交过程有刷新提示、结果提示
@@ -25,7 +104,7 @@ function(t) {
     	 		serverError	:function	请求失败，服务器异常
      		*/
     	// 默认 application/x-www-form-urlencoded; charset=UTF-8
-    	formAjax: function(object){
+    	,formAjax: function(object){
     		object.isHints == void 0 && (object.isHints = !0);	// 	ture则提示 加载提示和结果提示
     		object.loadStyle = object.loadStyle || 2;			//	加载提示的样式 默认为2
     		object.contentType = object.contentType || 'application/x-www-form-urlencoded';
@@ -320,3 +399,26 @@ function(t) {
     } (e, window),
     t("util", i)
 });
+
+/*
+描述：
+ 	封装在String类型里的一个获取自定义时间串的方法
+参数介绍：
+	在特定串中可以夹杂其他字符，例如：{1}-{2} {3}:{4} 最后得到结果如案例
+ 	特定串所代表含义：{0} 年，{1} 月，{2} 日，{3} 时，{4} 分，{5} 秒
+例子：
+	var time = '2020-5-30 7:13:28';
+	time.formatTime() // 2020年05月30日 07时13分28秒
+	time.formatTime('{1}-{2} {3}:{4}')	// 05-30 07:13
+*/
+(proto => {
+	function formatTime(template = '{0}年{1}月{2}日 {3}时{4}分{5}秒'){ 
+		var arr = this.match(/\d+/g);
+		return template.replace(/\{(\d+)}/g, (_, n) => {  
+			var item = arr[n]; 
+			item.length < 2 ? item  = '0' + item : null;
+			return item;
+		})
+	}
+	proto.formatTime = formatTime;
+})(String.prototype);

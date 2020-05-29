@@ -8,6 +8,7 @@ public class Note extends Base{
 	private String admin_id;
 	private String status;
 	private String tags;
+	private AdminInfor admin_infor;
 	
 	public String getId() {
 		return id;
@@ -56,6 +57,12 @@ public class Note extends Base{
 	}
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+	public AdminInfor getAdmin_infor() {
+		return admin_infor;
+	}
+	public void setAdmin_infor(AdminInfor admin_infor) {
+		this.admin_infor = admin_infor;
 	}
 	
 }

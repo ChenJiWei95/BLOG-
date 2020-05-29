@@ -145,6 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	}
             	admin.cajax({
 					method: 'remove'
+						,contentType: 'text/plan'
 					,data: JSON.stringify(arr) 
 					,success: function(){
 					  	table.reload(l.id);
@@ -210,6 +211,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         method: 'post',
         page: !0,
         limit: 20,
+        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -227,6 +229,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         method: 'post',
         limit: 20,
         page: !0,
+        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -243,6 +246,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         method: 'post',
         limit: 20,
         page: !0,
+        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -259,6 +263,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         method: 'post',
         limit: 20,
         page: !0,
+        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}

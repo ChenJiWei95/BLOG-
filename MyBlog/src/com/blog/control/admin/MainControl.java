@@ -46,7 +46,7 @@ public class MainControl extends BaseControl{
 	MenuService menuServiceImpl;
 	
 	@Autowired
-	WebsiteBaseService websiteBaseServiceImpl;
+	WebsiteBaseService websiteBaseServiceImpl; 
 	
 	@Autowired
 	private AdminInforService adminInforServiceImpl;
@@ -59,6 +59,10 @@ public class MainControl extends BaseControl{
 	@Autowired
 	private RoleService roleServiceImpl;
 	
+	@RequestMapping("/relogin.chtml")
+	public String relogin(){
+		return "admin/relogin";
+	}
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
@@ -74,7 +78,7 @@ public class MainControl extends BaseControl{
 		
 		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
 		AdminInfor ai = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
-		model.addAttribute("name", ai.getName());
+		model.addAttribute("name", ai.getName_());
 		
 		try {
 			System.out.println(getIpAddr(request));

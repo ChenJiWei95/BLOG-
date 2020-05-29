@@ -26,7 +26,16 @@ import com.blog.util.SnowFlakeGenerator;
 import com.blog.util.UploadAndDownload;
 
 @Controller
-// 上传下载
+/**
+ * <b>图片上传下载</b>
+ * <p>
+ * 描述:<br>
+ * 
+ * @author 威 
+ * <br>2020年5月28日 上午5:55:49 
+ * @see
+ * @since 1.0
+ */
 @RequestMapping("/admin/down")
 public class DownloadControl extends BaseControl{
 	private static Logger log = Logger.getLogger(DownloadControl.class); // 日志对象
@@ -74,14 +83,19 @@ public class DownloadControl extends BaseControl{
 		return "admin/aimg/save_or_update";
 	}*/
 	 
-	
 	/**
-	* 有file文件时
-	* @param movieDto 封装了需要传递过来的参数
-	* @param file 图片file
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
-	*/
+	 * 这里用一句话描述这个方法的作用
+	 * <p>	 
+	 * @param file 图片file
+	 * @param fileName
+	 * @param request
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * Object
+	 * @see
+	 * @since 1.0
+	 */
 	@RequestMapping("/editMovieInfo.do")
 	@ResponseBody
 	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {

@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.Constant;
+import com.blog.Filter;
+import com.blog.Order;
+import com.blog.Page;
+import com.blog.QueryHelper;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
-import com.blog.entity.Role;
 import com.blog.entity.WebsiteBase;
+import com.blog.enumer.Operator;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
 import com.blog.service.RoleService;
@@ -206,11 +210,77 @@ public class AdministratorsControl extends BaseControl{
 	} 
 	
 	/**
+	 * 根据条件分页获取数据
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping("list.do")
+	@ResponseBody
+	public Object list (Page page, HttpServletRequest request) throws IOException{
+		try { 
+			int limit = page.getLimit();
+			int pageNum = page.getPage();
+			Integer count = 0;
+			page.addFilter(new Filter("a.id", Operator.eq, "b.admin_id", Filter.IGNORE_TYPE)); // Qu_type_eq_s
+			page.addFilter(new Filter("b.role_id", Operator.eq, "c.id", Filter.IGNORE_TYPE)); // Qu_type_eq_s
+			// log.info(limit+ ","+pageNum);
+			QueryHelper queryHelper = new QueryHelper(); 
+			// 获取前台参数
+			queryHelper.paramBind(request, page);	
+			queryHelper.addCloumnAlias("roleId", "role_id");
+			// 该字段所传的值无效
+			queryHelper.addDisableSelect("roleId", "-1");
+			// 排序 
+			page.addOrder(Order.desc("b.create_time"));
+			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
+			// 进行分页
+			String buildQueryStr;
+			String sql = 
+					queryHelper.buildSelect()+
+					queryHelper.buildForm("admin a, admin_infor b, role c")+
+					(buildQueryStr = queryHelper.buildQuery(page.getFilters()))+ 
+					queryHelper.buildOrder(page.getOrders(), page.getAlias())+
+					queryHelper.buildLimit(pageNum, limit);
+			List<Admin> list = adminServiceImpl.find(sql);
+			if(queryHelper.sizeOfFilter() > 0) {
+				if(buildQueryStr.indexOf("and") != -1)
+					count = adminServiceImpl.count("admin a, admin_infor b, role c "
+						, buildQueryStr.substring(buildQueryStr.indexOf("and")+3));
+				else count = adminServiceImpl.count();
+			}
+			else
+				count = adminServiceImpl.count();
+			
+			// 因为是多表查询，需要换成前端识别的对象JSONArray
+			JSONArray jsonArray = new JSONArray();
+			for(Admin item : list){
+				JSONObject jsonObject = jsonToJSONObject(item.getAdmin_infor()); 
+				jsonObject.put("id", item.getId());
+				jsonObject.put("username", item.getUsername());
+				jsonObject.put("state", item.getState());
+				jsonObject.put("role_id", item.getAdmin_infor().getRole_id());
+				jsonObject.put("role_name", item.getRole().getName());
+				jsonArray.add(jsonObject);
+			} 
+			// 构建返回数据
+			page.setData(jsonArray);
+			page.setMsg("ok");
+			page.setCount(count);
+			page.setCode("0"); 
+			return page;
+		}catch(Exception e) {
+			return com.blog.util.Message.error("请求失败");
+		}
+	
+	}
+	
+	/**
 	 * 初始化
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("list.do")
+	/*@RequestMapping("list.do")
 	@ResponseBody
 	public Object init() throws IOException{
 		JSONArray jsonArray = new JSONArray();
@@ -218,6 +288,7 @@ public class AdministratorsControl extends BaseControl{
 		for(Admin item : list){
 			AdminInfor aInfor = adminInforServiceImpl.get("admin_id = "+item.getId());
 			Role role = roleServiceImpl.getForColum("id = "+aInfor.getRole_id(), "name");
+			if(role == null) continue; 
 			JSONObject jsonObject = jsonToJSONObject(aInfor); 
 			jsonObject.put("id", item.getId());
 			jsonObject.put("username", item.getUsername());
@@ -228,7 +299,7 @@ public class AdministratorsControl extends BaseControl{
 		}
 		System.out.println("初始化数据："+jsonArray);
 		return Message.success("请求成功", jsonArray);
-	}
+	}*/
 	
 	
 	

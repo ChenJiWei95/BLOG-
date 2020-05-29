@@ -6,7 +6,7 @@ import com.blog.util.TypeToolsGenerics;
 
 public class InsertAdapter extends EqAdapter {
 	// 父类中是获取所有列 包括空字段的列
-	// 
+	@Override
 	public String getColumnSql() {
 		String columns = this.getColumns();
 		Object target = this.getTarget();
@@ -53,6 +53,15 @@ public class InsertAdapter extends EqAdapter {
 		return this;
 	}
 	
+	/**
+	 * 插入的值，一个或多个
+	 * <p>	 
+	 * @param vals
+	 * @return
+	 * EqAdapter
+	 * @see
+	 * @since 1.0
+	 */
 	public EqAdapter setValues(Object...vals) {
 		StringBuffer temp = new StringBuffer();
 		for(Object item : vals){
@@ -65,6 +74,7 @@ public class InsertAdapter extends EqAdapter {
 		return this;
 	}
 	
+	@Override
 	public String getValues() { 
 		setValues(this.getEqAndPutMap().values().toArray());
 		return super.getValues();

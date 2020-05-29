@@ -10,16 +10,16 @@ function(e) {
 	// 定义点击事件
 	util.clickEvent({
 		top: function(e){
-	  		// 回到顶部
-	  		timer=setInterval(function(){
-                var top=document.documentElement.scrollTop || document.body.scrollTop;
-                var speed=Math.floor(-top/6);
-                document.documentElement.scrollTop=document.body.scrollTop=top+speed;
-                returnTop=true;
-                if(top==0){
-                    clearInterval(timer);
-                }
-            },100) 
+			// 回到顶部
+			timer=setInterval(function(){
+	  			var top=document.documentElement.scrollTop || document.body.scrollTop;
+				var speed=Math.floor(-top/6);
+				document.documentElement.scrollTop=document.body.scrollTop=top+speed;
+				returnTop=true;
+				if(top==0){
+					clearInterval(timer);
+				}
+			},100) 
 	  	}
 	  	,search: function(e){// 打开模糊查询窗口
 	  		//console.log('模糊查询');
@@ -45,7 +45,7 @@ function(e) {
 	  		//console.log('selectByName');
 	  		$("#selectByName").submit();
 	  		return !0;
-	  	}
+	  	} 
 	})
     // 控制回到顶部按钮的显示与隐藏
  	setInterval(function(){
