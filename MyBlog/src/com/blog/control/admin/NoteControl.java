@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.Filter;
 import com.blog.ORFilter;
 import com.blog.Order;
@@ -66,7 +66,7 @@ public class NoteControl extends BaseControl{
 	
 	@RequestMapping("/show.chtml") 
 	public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
-		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		
 		// 拼接 上一次请求的 条件
 		StringBuilder query = new StringBuilder("");
@@ -104,7 +104,7 @@ public class NoteControl extends BaseControl{
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/showByTab.chtml") 
 	public String showByTab(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
-		Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		
 		int limit = page.getLimit();
 		int pageNum = page.getPage();
@@ -230,6 +230,16 @@ public class NoteControl extends BaseControl{
 		StringBuilder sql = new StringBuilder();
 		page.addFilter(new Filter("a.admin_id", Operator.eq, "d.admin_id", 
 				Filter.IGNORE_TYPE)); 
+		/*
+		id 
+		relate
+			[{name,cols,key,rekey}]
+			[{name='note',key='admin_id',rekey='id'},
+			{name='data',key='id',rekey='note.data_id'}]
+		order
+		limit
+		valvalid
+		*/
 		// 如果有标签则进行标签查询 当type=‘2’时
 		if("2".equals(type)){
 			// 定义 and 关联条件 多表查询的关联
@@ -265,7 +275,7 @@ public class NoteControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
-	public String save_or_update(String type, String id, HttpServletRequest request, ModelMap model){
+	public String save_or_update(String type, String id, HttpServletRequest request, ModelMap model) throws Exception{
 		
 		// 添加 查找所有页面传入 
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
@@ -275,7 +285,7 @@ public class NoteControl extends BaseControl{
 			model.addAttribute("type", true);
 		}else if ("1".equals(type)|| "2".equals(type)){
 			// 修改 查找已授权的页面传入 获取appid
-			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT); 
+			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT); 
 			List<NoteTabBrige> list_ = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", id));
 			model.addAttribute("seleteds", list_);
@@ -298,7 +308,7 @@ public class NoteControl extends BaseControl{
 			StringBuilder tags = new StringBuilder("");
 			t.setUpdate_date("xxxx-xx-xx xx:xx:xx");
 			t.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			if(tabs != null && !"".equals(tabs)) {// 根据tabs创建新标签
 				String[] arr = tabs.split(",");
 				for(String item : arr) {
@@ -411,7 +421,7 @@ public class NoteControl extends BaseControl{
 			t.setUpdate_date(getNowTime());
 			
 			Map<String, String> params = getRequestParameterMap(request); 
-			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			List<NoteTabBrige> list = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", t.getId()));
 			boolean isContain;
@@ -482,7 +492,7 @@ public class NoteControl extends BaseControl{
 	public Object list(String type, Page page, HttpServletRequest request) throws IOException{
 		
 		try { 
-			Admin admin = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			// 根据实际情况 更多加载需要保留原有查询状态 所以
 			// 构建返回数据
 			List<Note> resultList = getNoteOfCommon(type, 

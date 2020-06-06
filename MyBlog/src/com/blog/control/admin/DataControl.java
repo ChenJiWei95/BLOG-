@@ -1,9 +1,11 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,12 +37,14 @@ public class DataControl extends BaseControl{
 	// 返回 页面 
 	@RequestMapping("/listview.chtml") 
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+		request.setAttribute("datas", dataServiceImpl.gets(" `type` = 'data' "));
 		return "admin/data/list";
 	}
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
 	public String save_or_update(HttpServletRequest request, String agentno,ModelMap model){
 		// 角色集供选择
+		request.setAttribute("datas", dataServiceImpl.gets(" `type` = 'data' "));
 		return "admin/data/save_or_update";
 	} 
 	
@@ -51,6 +55,7 @@ public class DataControl extends BaseControl{
 		System.out.println("添加接收参数："+t); 
 		
 		try{
+//			new Date().getTime()
 			t.setCreate_time(getNowTime());
 			dataServiceImpl.insert(t);
 			
@@ -128,6 +133,7 @@ public class DataControl extends BaseControl{
 			QueryHelper queryHelper = new QueryHelper(); 
 			queryHelper.paramBind(request, page);	// 获取前台参数
 			page.addOrder(Order.desc("create_time"));// 排序 
+			queryHelper.addDisableSelect("type", "-1");
 			// 自定义查询语句拼接 前台可以任意传递参数 并且参数自带条件语义
 			// 进行分页
 			String sql = "SELECT * FROM "+table+" "+
@@ -168,6 +174,5 @@ public class DataControl extends BaseControl{
 		}
 	
 	}
-	
 	
 }

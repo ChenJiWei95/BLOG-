@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
@@ -29,6 +29,7 @@ import com.blog.service.MenuService;
 import com.blog.service.RoleService;
 import com.blog.service.UsertestService;
 import com.blog.service.WebsiteBaseService;
+import com.blog.service.impl.TUserServiceImpl;
 import com.blog.util.SnowFlakeGenerator;
 
 /**
@@ -39,7 +40,7 @@ import com.blog.util.SnowFlakeGenerator;
 @RequestMapping("/admin/main")
 @Controller
 public class MainControl extends BaseControl{
-	
+	//import org.apache.log4j.Logger;
 	private static Logger log = Logger.getLogger(MainControl.class); // 日志对象
 	
 	@Autowired
@@ -54,7 +55,8 @@ public class MainControl extends BaseControl{
 	@Autowired
 	private UsertestService usertestServiceImpl;
 	
-	
+	@Autowired
+	private TUserServiceImpl tUserServiceImpl;
 	
 	@Autowired
 	private RoleService roleServiceImpl;
@@ -65,7 +67,7 @@ public class MainControl extends BaseControl{
 	}
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
-	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
+	public String listview1(HttpServletRequest request, String agentno, ModelMap model) throws Exception{
 		log.info("listview.chtml");
 		
 		// 测试缓存
@@ -73,18 +75,27 @@ public class MainControl extends BaseControl{
 		u.setId(String.valueOf(new SnowFlakeGenerator(1,1).nextId()));
 		u.setName("xiaoming");
 		usertestServiceImpl.save(u);
-//		System.out.println("获取："+usertestServiceImpl.getByID("384778304613388281"));
-		System.out.println("获取："+usertestServiceImpl.getByID(u.getId()));
+//		log.info("获取："+usertestServiceImpl.getByID("384778304613388281"));
+		log.info("获取："+usertestServiceImpl.getByID(u.getId()));
 		
-		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		
+		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		AdminInfor ai = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("name", ai.getName_());
 		
 		try {
-			System.out.println(getIpAddr(request));
+			log.info(getIpAddr(request));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		/*
+		异常测试 
+		request.setAttribute(Constant.MESSAGE_ERROR_CODE, "0001");
+		int num = 5/0;
+		*/
+		
+		log.info(tUserServiceImpl.getUserAndRole("123456").getRole().getName());
 		return "admin/admin_view";
 	}	 
 	
@@ -132,14 +143,14 @@ public class MainControl extends BaseControl{
 	/**
 	 * 初始化
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@RequestMapping("init.do")
 	@ResponseBody
-	public JSONObject init(HttpServletRequest request, ModelMap model) throws IOException{
+	public JSONObject init(HttpServletRequest request, ModelMap model) throws Exception{
 		
 		// 用户根据权限获取 appid集合
-		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		List<Role> roles = roleServiceImpl.gets(singleOfEqString("role_id", adminInfor.getRole_id()));
 		List<String> app_ids = new ArrayList<>();
@@ -187,7 +198,7 @@ public class MainControl extends BaseControl{
 		resultObj.put("spread", base.getSpread());
 		resultObj.put("desc", base.getSitename());
 		resultObj.put("href", base.getIndex_url());
-//		System.out.println("初始化返回数据："+resultObj.toString());
+//		log.info("初始化返回数据："+resultObj.toString());
 		return resultObj;
 	}
 	
@@ -218,8 +229,8 @@ public class MainControl extends BaseControl{
      
         String requestUrlIP = request.getServerName();
         String userIpAddr = request.getRemoteAddr();
-        System.out.println("***访问的Url中的服务器IP："+requestUrlIP);
-        System.out.println("***用户客户端的IP地址："+userIpAddr); 
+        log.info("***访问的Url中的服务器IP："+requestUrlIP);
+        log.info("***用户客户端的IP地址："+userIpAddr); 
         
         return ipString;
     }

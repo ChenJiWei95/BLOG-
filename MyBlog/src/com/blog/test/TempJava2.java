@@ -65,7 +65,7 @@ public class TempJava2 {
 	private static String entityStrategy = GENERAL_STRATEGY;
 	// 要执行的命令下标  对应 前缀和后缀
 	// 0 	生成dao层代码 接口模式
-	// 8  	生成dao实现层代码 接口模式
+	// 8  	生成dao实现层代码 接口模式 hibernate的时候调用
 	// 1 	生成service层代码
 	// 2 	生成实体层代码
 	// 3 	生成mapper配置代码
@@ -76,8 +76,8 @@ public class TempJava2 {
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6, 7};
 //	private static Integer[] commond = {};
 //	private static Integer[] commond = {0, 1, 2, 3, 4, 5, 6};
-//	private static Integer[] commond = {7};
 	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
+//	private static Integer[] commond = {0, 1, 2, 3, 4, 6};
 //	private static Integer[] commond = {2, 1, 0, 4, 8};
 //	private static Integer[] commond = {5};
 	
@@ -102,17 +102,20 @@ public class TempJava2 {
 	}
 	// 会员管理
 	public static void test1(){
-		String fileds 	= "id p1 p2 p3 b1 b2 b3 z1 z2 z3 x1 x2 x3 sp jg zdjg xdjg zjg";
-		String columns	= fileds;	// 其中的值对应 fileds 用于数据库表字段的对应
-		String types  	= getTypes(fileds); // BigDecimal String Integer
-		String texts 	= "ID 用户编号 创建时间 修改时间 二维码";// 前端 列表头名
+		String fileds 	= "id code cn_zh en_us";
+		// 其中的值对应 fileds 用于数据库表字段的对应
+		String columns	= fileds;			
+		// BigDecimal String Integer
+		String types  	= getTypes(fileds); 
+		// 前端 列表头名
+		String texts 	= fileds;
 		
 		
 		//mapIndex.put("", ""); // 编辑窗口表单赋值根据name属性映射表单类型
 		
 		ContextConfig2 c = new ContextConfig2();
-		c.setTable("dd_bjlsj");// 表名
-		c.setName_("ddBjlsj");// 实体类名
+		c.setTable("language");// 表名
+		c.setName_("language");// 实体类名
 		c.setClassify("qrcode"); // 前端文件分类
 		c.setTitle("二维码管理");// 页面名称
 		c.setTexts(texts);	// 页面列表名称集 对应 columns
@@ -159,7 +162,7 @@ public class TempJava2 {
 			System.out.println("当前执行："+commomdText[index]);
 			if(index == 6) {
 				// 清除 mybatis-config.xml 配置mapper项
-				delete2(name);
+				clearMybatisConf(name);
 			} else {
 				String copyPath = copyFilepathPrev+prefix[index]+"/"+name+suffix[index];
 				File file = new File(copyPath);
@@ -171,12 +174,12 @@ public class TempJava2 {
 		}
 	}
 	static boolean fristLine = true;
-	private static void delete2(String name) {
+	private static void clearMybatisConf(String name) {
 		fristLine  =true;
 		// mybatis-config.xml 配置mapper项
 		CharStreamImpl c = new CharStreamImpl(mybatisConfig);
 		StringBuilder sb = new StringBuilder();
-		String configFileName = name+"Mapper.xml";
+		String configFileName = name+prefix[3];
 		
 		c.read(line -> {
 			String str = (String) line;
@@ -211,13 +214,42 @@ public class TempJava2 {
 			System.err.println("prefix[len:"+prefix.length+"]，suffix[len:"+suffix.length+"]， temp[len:"+temp.length+"] 配置异常：长度不一致");
 			return ;}
 		
-		core(c);	
+		try {
+			core(c);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 
-	@SuppressWarnings("resource")
-	public static void core(ContextConfig2 c) {
+	public static void core(ContextConfig2 c) throws IOException {
 		
-		Scanner	sc = new Scanner(System.in);
+		// 输出 提示
+		console(c);
+		
+		for (Integer index : commond) {
+			Configure2 conf = setParame(c, index);
+			if(index == 2) {		// 生成实体类
+				createEntity(conf);
+			} else if(index == 6) { // 配置文件
+				setMybatisConf(upFirst(c.getName_()));
+			} else if(index == 7){
+				//args 根据字段生成表头
+				createJSP(conf);
+			} else {
+				do6(conf);	
+			}
+		} 
+	}
+	protected static void createEntity(Configure2 conf) {
+		if(GENERAL_STRATEGY.equals(entityStrategy))
+			createEntityForGeneral(conf);
+		else if (HIBER_ANNOTATION_STRATEGY.equals(entityStrategy))
+			createEntityForHibernate(conf);
+		else 
+			System.err.println("策略设置有误！");
+	}
+	@SuppressWarnings("resource")
+	protected static void console(ContextConfig2 c) {
 		System.out.println("###################################################");
 		System.out.println("####################代码自动生成工具####################");
 		System.out.println("###################################################");
@@ -227,33 +259,10 @@ public class TempJava2 {
 		for(Integer index : commond)
 			System.err.println("\t"+commomdText[index]);
 		System.err.print("输入y继续，其他结束。请输入命令:");
+		Scanner	sc = new Scanner(System.in);
 		if(!"y".equals(sc.nextLine()))
-		{ System.err.println("已结束。");return ;}
-		sc.close();
+		{sc.close(); System.err.println("已结束。"); return ;}
 		System.err.println("运行中...");
-		for (Integer index : commond) {
-			Configure2 conf = setParame(c, index);
-			if(index == 2) {		// 生成实体类
-				if(GENERAL_STRATEGY.equals(entityStrategy))
-					do3(conf);
-				else if (HIBER_ANNOTATION_STRATEGY.equals(entityStrategy))
-					do3_2(conf);
-				else 
-					System.err.println("策略设置有误！");
-			} else if(index == 6) { // 配置文件
-				do5(upFirst(c.getName_()));
-			} else if(index == 7){
-				//args 根据字段生成表头js文
-				try {
-					
-					do7(conf);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				do6(conf);	
-			}
-		} 
 	}
 
 	protected static Configure2 setParame(ContextConfig2 c, Integer index) {
@@ -276,7 +285,7 @@ public class TempJava2 {
 	}
 	
 	// 生成前端模板文件
-	public static void do7 (Configure2 conf) throws IOException{
+	public static void createJSP (Configure2 conf) throws IOException{
 		String[] temps = conf.getTemp().split(",");
 		String[] pres = conf.getPrefix().split(",");
 		String[] sufs = conf.getSuffix().split(",");
@@ -425,7 +434,7 @@ public class TempJava2 {
 		}
 	}
 	
-	public static void do5(String name) {
+	public static void setMybatisConf(String name) {
 		System.out.println("添加mapper配置信息...");
 		// mybatis-config.xml 配置mapper项
 		CharStreamImpl c = new CharStreamImpl(srcPath("config/mybatis-config.xml"));
@@ -452,7 +461,7 @@ public class TempJava2 {
 	 * @see
 	 * @since 1.0
 	 */
-	public static void do3(Configure2 conf) {
+	public static void createEntityForGeneral(Configure2 conf) {
 		printPre(conf);
 		// name 作为实体类的名称 生成实体类 
 		// 收集实体类属性 属性包含 修饰符，属性名，属性类型
@@ -492,45 +501,59 @@ public class TempJava2 {
 	 * @see
 	 * @since 1.0
 	 */
-	public static void do3_2(Configure2 conf) {
+	public static void createEntityForHibernate(Configure2 conf) {
 		printPre(conf);
 		CharStreamImpl c = new CharStreamImpl(copyFilepathPrev+conf.getPrefix()+conf.getName()+conf.getSuffix());
 		
-		c.write("package com.shop.entity;");
+		StringBuilder mainCode = new StringBuilder();
+		mainCode.append("package com.shop.entity;");
 		
-		c.write(System.lineSeparator(), true);
-		c.write("import javax.persistence.Column;", true);
-		c.write("import javax.persistence.Entity;", true);
-		c.write("import javax.persistence.Id;", true);
-		c.write("import javax.persistence.Table;", true);
-		c.write(System.lineSeparator(), true);
+		mainCode.append("\n");
+		mainCode.append("import javax.persistence.Column;"+"\n");
+		mainCode.append("import javax.persistence.Entity;"+"\n");
+		mainCode.append("import javax.persistence.Id;"+"\n");
+		mainCode.append("import javax.persistence.Table;"+"\n");
+		mainCode.append("\n");
 		
-		c.write("@Entity", true);
-		c.write("@Table(name = \""+ conf.getTable() +"\")", true);
-		c.write("public class "+conf.getName()+" {", true);
+		mainCode.append("@Entity"+"\n");
+		mainCode.append("@Table(name = \""+ conf.getTable() +"\")"+"\n");
+		mainCode.append("public class "+conf.getName()+" {"+"\n");
 		
 		String[] fileds = conf.getFileds();
 		String[] columns = conf.getColumns();
 		String[] types = conf.getTypes();
 		boolean onceFlag = true;
 		for(int i = 0, len = fileds.length; i < len; i++) {
-			if(onceFlag) {c.write("\t@Id", true); onceFlag = false;}
-			c.write("\t@Column(name = \""+columns[i]+"\")", true);
-			c.write("\tprivate "+types[i]+" "+fileds[i]+";", true);
+			if(onceFlag) {mainCode.append("\t@Id"+"\n"); onceFlag = false;}
+			else mainCode.append("\t@Column(name = \""+columns[i]+"\")"+"\n");
+			mainCode.append("\tprivate "+types[i]+" "+fileds[i]+";"+"\n");
 		}
 		
-		c.write(System.lineSeparator(), true);
+		mainCode.append("\n");
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("\tpublic String toString(){\n");
+		sb.append("\t\treturn "+conf.getName()+".class + \"[\"\n");
 		
 		for(int i = 0, len = fileds.length; i < len; i++) {
-			c.write("\tpublic "+types[i]+" get"+upFirst(fileds[i])+"() {", true);
-			c.write("\t\treturn "+fileds[i]+";", true);
-			c.write("\t}", true);
-			c.write("\tpublic void set"+upFirst(fileds[i])+"("+types[i]+" "+fileds[i]+") {", true);
-			c.write("\t\tthis."+fileds[i]+" = "+fileds[i]+";", true);
-			c.write("\t}", true);
+			mainCode.append("\tpublic "+types[i]+" get"+upFirst(fileds[i])+"() {"+"\n");
+			mainCode.append("\t\treturn "+fileds[i]+";"+"\n");
+			mainCode.append("\t}"+"\n");
+			mainCode.append("\tpublic void set"+upFirst(fileds[i])+"("+types[i]+" "+fileds[i]+") {"+"\n");
+			mainCode.append("\t\tthis."+fileds[i]+" = "+fileds[i]+";"+"\n");
+			mainCode.append("\t}"+"\n");
+			
+			sb.append("\t\t+ \" "+fileds[i]+" = \" + " + fileds[i]+" + \",\"\n");
 		}
 		
-		c.write("}", true);
+		sb.delete(sb.length()-6, sb.length()-1);
+		sb.append( "\t\t+\"]\";\n");
+		sb.append("\t}");
+		
+		mainCode.append(sb+"\n");
+		mainCode.append("}"+"\n");
+		System.out.println(mainCode.toString());
+		c.write(mainCode.toString());
 		c.close();
 		
 		print(conf);
@@ -641,19 +664,25 @@ class ContextConfig2 {
 		this.name_ = name_;
 	}
 	public String[] getColumns() {
+		if(columns != null)
 		return columns.split(" ");
+		return null;
 	}
 	public void setColumns(String columns) {
 		this.columns = columns;
 	}
 	public String[] getFileds() {
+		if(fileds != null)
 		return fileds.split(" ");
+		return null;
 	}
 	public void setFileds(String fileds) {
 		this.fileds = fileds;
 	}
 	public String[] getTypes() {
+		if(types != null)
 		return types.split(" ");
+		return null;
 	}
 	public void setTypes(String types) {
 		this.types = types;
@@ -665,7 +694,9 @@ class ContextConfig2 {
 		this.classify = classify;
 	}
 	public String[] getTexts() {
-		return texts.split(" ");
+		if(texts !=  null)
+			return texts.split(" ");
+		return null;
 	}
 	public void setTexts(String texts) {
 		this.texts = texts;
@@ -683,17 +714,17 @@ class Configure2 {
 	private String name;
 	private String name_;
 	private String title;
-	private Integer index;	// 下标 根据下标获取指定配置
-	private String prefix; 	// com/shop/dao   				该值为dao
-	private String suffix;  // com/shop/dao/UserDao.java  	该值为Dao.java
-	private String temp;	// 模板文件 用于生成指定文件的模板文件
+	private Integer index;		// 下标 根据下标获取指定配置
+	private String prefix; 		// com/shop/dao   				该值为dao
+	private String suffix;  	// com/shop/dao/UserDao.java  	该值为Dao.java
+	private String temp;		// 模板文件 用于生成指定文件的模板文件
 	private String commomdText;// 命令描述
-	private String table;	// 
+	private String table;		// 
 	private String[] columns;	// 数据库字段名 {"userId":"user_id"} 键值对的数据模式 
-	private String[] fileds;// 属性集
-	private String[] types;// 属性集
-	private String[] texts;// 列名称
-	private String classify;// 在博客项目中的控制类使用的分类参数
+	private String[] fileds;	// 属性集
+	private String[] types;		// 属性集
+	private String[] texts;		// 列名称
+	private String classify;	// 在博客项目中的控制类使用的分类参数
 	
 	public String getName() {
 		return name;

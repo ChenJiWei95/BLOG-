@@ -3,7 +3,7 @@ package com.blog.control;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.util.ActionUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,7 +54,7 @@ public class MoreApiControl {
 	    	Map<String, String> mapData = mapper.readValue(data, Map.class);
 	    	
 	    	if("cjw168999".equals(mapData.get("pwd"))){
-	    		res.put("resCode", Constant.RESCODE_0001);
+	    		res.put("resCode", Constants.RESCODE_0001);
 				res.put("resDesc", "发送失败，密码错误！");
 				ActionUtil.returnRes(response, JSONObject.fromObject(response).toString());
 				return ;
@@ -77,10 +77,10 @@ public class MoreApiControl {
 			transport.close();
 		} catch (MessagingException | IOException e) {
 			e.printStackTrace();
-			res.put("resCode", Constant.RESCODE_0001);
+			res.put("resCode", Constants.RESCODE_0001);
 			res.put("resDesc", "发送失败，"+e.getMessage());
 		} 
-	    res.put("resCode", Constant.RESCODE_0000);
+	    res.put("resCode", Constants.RESCODE_0000);
 		res.put("resDesc", "发送成功");
 	    try {
 			ActionUtil.returnRes(response, JSONObject.fromObject(response).toString());

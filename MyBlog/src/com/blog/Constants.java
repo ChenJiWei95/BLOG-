@@ -1,12 +1,14 @@
 package com.blog;
 
-public class Constant {
+public class Constants {
 	public static String RESCODE_0000 = "0000";//成功
 	public static String RESCODE_0001 = "0001";//失败
 	public static String RESCODE_0002 = "0002";//异常    
 	
 	// 登录标识
 	public static String USER_CONTEXT = "LOGIN"; 
+	// 异常编码标识
+	public static String MESSAGE_ERROR_CODE = "MESSAGE_ERROR_CODE"; 
 	// 权限链接标识
 	public static String PERMISSION_LIST 	= "permission";//
 	
@@ -31,4 +33,8 @@ public class Constant {
 	public static String PLAY_01 = "01";
 	public static String PLAY_02 = "02";
 	public static String PLAY_03 = "03";
+	
+	public final static String LANGUAGE_EN_US		= "en_US";
+	public final static String LANGUAGE_ZH_CN		= "zh_CN";
+	public final static String LANGUAGE_SIGN		= "LANGUAGE_SIGN";
 }

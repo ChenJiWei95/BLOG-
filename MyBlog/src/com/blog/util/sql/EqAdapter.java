@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blog.test.PrivateClass;
+import org.apache.log4j.Logger;
+
 import com.blog.util.TypeToolsGenerics;
 /**
  * <b>适配类 -- 实体类和mybatis配置的文件的中间类，达到更高的复用效果</b>
@@ -30,6 +31,7 @@ import com.blog.util.TypeToolsGenerics;
  */
 public abstract class EqAdapter{
 	
+	private final Logger log = Logger.getLogger(EqAdapter.class);
 	public static final String SQL_WHERE 		= "WHERE"		;
 	public static final String SQL_INSERT 		= "INSERT INTO ";
 	public static final String SQL_AND 			= " AND "		;
@@ -41,6 +43,12 @@ public abstract class EqAdapter{
 	public static final String SQL_TABLE 		= "table "		;
 	public static final String SQL_LIKE 		= "LIKE "		;
 	
+	private String columns					; // 结果		集字符 
+	private String values;
+	private String eqSql;
+	private String like						;
+	private BaseInterface parame			;
+	
 	/**
 	 * 主键 
 	 */
@@ -49,12 +57,9 @@ public abstract class EqAdapter{
 	 * 表名 
 	 */
 	private String table					; // 表名 
-	private String values;
-	private String eqSql;
 	/**
 	 * 结果		集字符 
 	 */
-	private String columns					; // 结果		集字符 
 	private Object target;
 	/**
 	 * 条件&插入	集 
@@ -65,9 +70,6 @@ public abstract class EqAdapter{
 	 */
 	private Map<String, Object> updateMap	; // 修改     	集 
 	
-	private String like;
-	
-	private BaseInterface parame;
 
 	public EqAdapter(){
 	}
@@ -374,6 +376,7 @@ public abstract class EqAdapter{
 	public EqAdapter setBrige_association_key(String brige_association_key) { return this;}
 	public EqAdapter setAssociation_table(String association_table) { return this;}
 	public EqAdapter setAssociation_table_id(String association_table_id) { return this;} 
+	
 	/**
 	 * 模糊查询的设置
 	 * <p>	 
@@ -444,6 +447,7 @@ public abstract class EqAdapter{
 	 * @since 1.0
 	 */
 	protected Object [] parseColumnOfObjectAll(Object target) throws InstantiationException, IllegalAccessException {
+		log.info("重要标记点");
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
 		List<String> fields = null;
@@ -459,7 +463,7 @@ public abstract class EqAdapter{
 	/**
 	 * 只获取private修饰的字段
 	 * <p>
-	 * 获取字段值非空的 值数组集	 
+	 * 获取属性名称		非空的	 
 	 * @param target
 	 * @return
 	 * @throws InstantiationException
@@ -468,7 +472,8 @@ public abstract class EqAdapter{
 	 * @see
 	 * @since 1.0
 	 */
-	protected String [] parseColumnOfObject(Object target) throws InstantiationException, IllegalAccessException {
+	protected String [] parseColumnByEntity(Object target) throws InstantiationException, IllegalAccessException {
+		log.info("重要标记点");
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
 		List<String> fields = null;
@@ -484,7 +489,8 @@ public abstract class EqAdapter{
 	/**
 	 * 只获取private修饰的字段
 	 * <p>	 
-	 * 获取字段值非空的 键值
+	 * 获取字段值非空的 键值 <br>
+	 * 在修改和插入的时候会调用到
 	 * @param target
 	 * @return
 	 * @throws InstantiationException
@@ -493,23 +499,25 @@ public abstract class EqAdapter{
 	 * @see
 	 * @since 1.0
 	 */
-	protected Map<String, Object> parseMapOfObject(Object target) throws InstantiationException, IllegalAccessException {
+	protected Map<String, Object> parseMapByEntity(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
 		
-		Field[] fs = clazz.getDeclaredFields();// 获取PrivateClass所有属性
-		Map<String, Object> map = new HashMap<>();
+		Field[] fs = clazz.getDeclaredFields();// 获得某个类的所有声明的字段，即包括public、private和proteced，但是不包括父类的申明字段。
+		Field field;Object value;
+		Map<String, Object> map = new HashMap<>(); 
 		for (int i = 0; i < fs.length; i++) {
-			fs[i].setAccessible(true);// 将目标属性设置为可以访问
-			if(fs[i].get(target) != null && fs[i].getModifiers() == 2)
-				map.put(fs[i].getName(), fs[i].get(target));
+			(field = fs[i]).setAccessible(true);// 将目标属性设置为可以访问
+			if((value = field.get(target)) != null 
+					&& field.getModifiers() == 2) // PRIVATE: 2
+				map.put(field.getName(), value);
 		} 
 		return map;
 	}
 	/**
 	 * 只获取private修饰的字段
 	 * <p>	 
-	 * 获取字段值非空的 值
+	 * 获取属性的值 		非空的
 	 * @param target
 	 * @return
 	 * @throws InstantiationException
@@ -518,7 +526,7 @@ public abstract class EqAdapter{
 	 * @see
 	 * @since 1.0
 	 */
-	protected Object [] parseValuesOfObject(Object target) throws InstantiationException, IllegalAccessException {
+	protected Object [] parseValuesByEntity(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
 		List<Object> fields = null;

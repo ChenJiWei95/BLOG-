@@ -58,7 +58,7 @@ public class SelectAdapter extends EqAdapter {
 	public String getWhereSql() throws Exception {
 		Object target = this.getTarget();
 		if(target != null)  
-			eq(parseMapOfObject(target));
+			eq(parseMapByEntity(target));
 		
 		return super.getWhereSql();
 	}	
@@ -138,7 +138,7 @@ public class SelectAdapter extends EqAdapter {
 		String table = this.getTable();
 		Object target = this.getTarget();
 		if(target != null)  
-			eq(parseMapOfObject(target));
+			eq(parseMapByEntity(target));
 		if(table == null || "".equals(table))
 			throw new NullPointerException("table不能为空 :" + table);
 		

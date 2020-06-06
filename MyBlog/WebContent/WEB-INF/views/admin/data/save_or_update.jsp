@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -45,19 +46,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-form-item">
 		<label class="layui-form-label">类型</label>
 		<div class="layui-input-inline">
-			<input type="text" name="type" placeholder="请输入类型" autocomplete="off" class="layui-input">
+			<select name="type">
+				<option value="-1">请选择类型</option>
+				<c:forEach begin="0" items="${datas}" step="1" var="Data" varStatus="varsta">
+					<option value="${Data.value}">${Data.name}</option>
+				</c:forEach>
+			</select>
 		</div>
 	</div>
 	<div class="layui-form-item">
 		<label class="layui-form-label">创建时间</label>
 		<div class="layui-input-inline">
-			<input type="text" name="create_time" placeholder="请输入创建时间" autocomplete="off" class="layui-input">
+			<input type="text" name="create_time" disabled placeholder="请输入创建时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
 		<label class="layui-form-label">修改时间</label>
 		<div class="layui-input-inline">
-			<input type="text" name="update_time" placeholder="请输入修改时间" autocomplete="off" class="layui-input">
+			<input type="text" name="update_time" disabled placeholder="请输入修改时间" autocomplete="off" class="layui-input layui-disabled">
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -77,7 +83,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'form', 'admin'], function(){
+    ,cutil: '../lib/cutil' 
+  }).use(['index', 'form', 'admin', 'cutil'], function(){
 		var table = layui.table
 		,$ = layui.$
 		,a = 'set-data-form-add'
@@ -85,6 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		,l = 'LAY-app-set-data'
 		,form = layui.form
 		,admin = layui.admin;
+		
 		//添加
 		form.on("submit("+a+")", function(data){
 			//执行 Ajax 后重载 

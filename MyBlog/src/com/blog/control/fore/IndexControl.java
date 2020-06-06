@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.control.BaseControl;
 import com.blog.control.NotifyControl;
 import com.blog.service.ArticleService;
@@ -30,13 +30,13 @@ public class IndexControl extends BaseControl{
 			ModelMap model){
 		model.addAttribute("articles", 
 				articleServiceImpl.getBySortAndLimit(null, 
-						Constant.ORDERBY_ASC, 
+						Constants.ORDERBY_ASC, 
 						"create_time", 
 						0, 
 						3));
 		model.addAttribute("lifes", 
 				lifeShareServiceImpl.getBySortAndLimit(null, 
-						Constant.ORDERBY_ASC, 
+						Constants.ORDERBY_ASC, 
 						"time", 
 						0, 
 						3));

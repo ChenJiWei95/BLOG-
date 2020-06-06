@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.blog.Constant;
+import com.blog.Constants;
+import com.blog.anno.TParamer;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.CMessage;
@@ -51,17 +52,10 @@ public class LoginControl extends BaseControl{
 	  
 	@RequestMapping("login.do")
 	@ResponseBody  
-	public Object login(Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
-		CMessage cm = new CMessage();
-		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-		cm.setExe_name(t.getUsername());
-		cm.setDesc("登录提示--后台管理系统");
-		cm.setIsRead(Constant.COMMON_FALSE);
-		cm.setType(Constant.MESSAGE_TYPE_SYS);
-		cm.setTime(getNowTime());
-		cm.setTitle("登录提示");
-		cm.setContent(t.getUsername()+" 于 "+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
-		messageServiceImpl.insert(cm);
+	public Object login(@TParamer Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
+		// 此处不需要sql注入检测，因为此处并没有通过查直接决定登录权限，而是查到结果再判断
+		log.info("login start");
+		log(t, re);
 		try{
 			Admin a = adminServiceImpl.get(singleOfEqString("username", t.getUsername()));
 			if(a != null && a.getPassword().equals(t.getPassword())) {
@@ -88,7 +82,7 @@ public class LoginControl extends BaseControl{
 			String token = String.valueOf(new SnowFlakeGenerator(2, 2).nextId());
 					
 			data.put("token", token);
-			re.getSession().setAttribute(Constant.USER_CONTEXT, a);
+			re.getSession().setAttribute(Constants.USER_CONTEXT, a);
 			
 			// 权限链接集
 			List<Map<String, Object>> permissionMap =  adminServiceImpl.getByManyTable(new ManyTable()
@@ -103,13 +97,36 @@ public class LoginControl extends BaseControl{
 			for(int i = 0, len = permissionMap.size(); i < len; i++)
 				permissionList.add(re.getContextPath()+"/"+permissionMap.get(i).get("url"));
 			permissionList.add(re.getContextPath()+"/"+"admin/main/listview.chtml");
-			re.getSession().setAttribute(Constant.PERMISSION_LIST, permissionList);
+			re.getSession().setAttribute(Constants.PERMISSION_LIST, permissionList);
 			
 			return com.blog.util.Message.success("登录成功", data);
 		}catch(Exception e){
 			e.printStackTrace();
 			return com.blog.util.Message.error("服务器异常，"+e.getMessage());
 		}
+	}
+	
+	/**
+	 * 这里用一句话描述这个方法的作用
+	 * <p>	 
+	 * @param t
+	 * @param re
+	 * @throws Exception
+	 * void
+	 * @see
+	 * @since 1.0
+	 */
+	protected void log(Admin t, HttpServletRequest re) throws Exception {
+		CMessage cm = new CMessage();
+		cm.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
+		cm.setExe_name(t.getUsername());
+		cm.setDesc("登录提示--后台管理系统");
+		cm.setIsRead(Constants.COMMON_FALSE);
+		cm.setType(Constants.MESSAGE_TYPE_SYS);
+		cm.setTime(getNowTime());
+		cm.setTitle("登录提示");
+		cm.setContent(t.getUsername()+" 于 "+cm.getTime()+" 进行登录, IP:"+getIpAddr(re));
+		messageServiceImpl.insert(cm);
 	} 
  
 	@RequestMapping("logout.do")
@@ -117,7 +134,7 @@ public class LoginControl extends BaseControl{
 	public Object logout(HttpServletRequest re) throws IOException{ 
 		try{
 			log.info("退出");
-			re.getSession().setAttribute(Constant.USER_CONTEXT, null);
+			re.getSession().setAttribute(Constants.USER_CONTEXT, null);
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){
 			e.printStackTrace();

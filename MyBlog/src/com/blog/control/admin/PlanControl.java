@@ -53,7 +53,7 @@ public class PlanControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/show.chtml") 
-	public String listview1(ModelMap model, String secret_key, String isTips, HttpServletRequest request){
+	public String listview1(ModelMap model, String secret_key, String isTips, HttpServletRequest request) throws Exception{
 		if(!secretKeyCheck(secret_key)){
 			model.addAttribute("msg", "secret_key:"+secret_key+" 错误！");
 			return "admin/error";
@@ -69,7 +69,7 @@ public class PlanControl extends BaseControl{
 	}
 	
 	@RequestMapping("/night.chtml") 
-	public String listview2(ModelMap model, String secret_key, HttpServletRequest request){
+	public String listview2(ModelMap model, String secret_key, HttpServletRequest request) throws Exception{
 		if(!secretKeyCheck(secret_key))
 			return "admin/error";
 		
@@ -78,7 +78,7 @@ public class PlanControl extends BaseControl{
 		return "admin/plan/night";
 	}
 
-	protected void statistics(ModelMap model) {
+	protected void statistics(ModelMap model) throws Exception {
 		String currentDate = TimeUtil.getDate(TimeUtil.DATE_FORMAT)
 		,dayText1 = "今日完成情况"
 		,dayText2 = "昨日完成情况";
@@ -118,7 +118,7 @@ public class PlanControl extends BaseControl{
 	}
 
 	@RequestMapping("/statistics.chtml") 
-	public String listview3(ModelMap model, String secret_key){
+	public String listview3(ModelMap model, String secret_key) throws Exception{
 		if(!secretKeyCheck(secret_key))
 			return "admin/error";
 		statistics(model);
@@ -126,7 +126,7 @@ public class PlanControl extends BaseControl{
 	}
 	
 	@RequestMapping("/nextPlan.chtml") 
-	public String listview4(ModelMap model, String secret_key){
+	public String listview4(ModelMap model, String secret_key) throws Exception{
 		if(!secretKeyCheck(secret_key))
 			return "admin/error";
 		
@@ -136,7 +136,7 @@ public class PlanControl extends BaseControl{
 	}
 
 	
-	protected void nextPlan(ModelMap model) {
+	protected void nextPlan(ModelMap model) throws Exception {
 		try {
 			String nextDay = TimeUtil.getDay(
 					TimeUtil.getDatetime(TimeUtil.DATE_FORMAT), 
@@ -163,10 +163,11 @@ public class PlanControl extends BaseControl{
 	 * @param date
 	 * @return
 	 * PlanBase
+	 * @throws Exception 
 	 * @see
 	 * @since 1.0
 	 */
-	protected PlanBase getPlanBase(ModelMap model, String date) {
+	protected PlanBase getPlanBase(ModelMap model, String date) throws Exception {
 		
 		PlanBase planBase = null;
 		try {
@@ -216,7 +217,7 @@ public class PlanControl extends BaseControl{
 	}
 	
 	@RequestMapping("/set.chtml") 
-	public String listview5(ModelMap model, String secret_key){ 
+	public String listview5(ModelMap model, String secret_key) throws Exception{ 
 		WebsiteBase websiteBase = websiteBaseServiceImpl.get(eq("id", "1"));
 		if(!secret_key.equals(websiteBase.getSecret_key()))
 			return "admin/error";	
@@ -230,10 +231,11 @@ public class PlanControl extends BaseControl{
 	 * @param secret_key
 	 * @return
 	 * boolean
+	 * @throws Exception 
 	 * @see
 	 * @since 1.0
 	 */
-	protected boolean secretKeyCheck(String secret_key) {
+	protected boolean secretKeyCheck(String secret_key) throws Exception {
 		WebsiteBase websiteBase = websiteBaseServiceImpl.get(eq("id", "1"));
 		log.info("-"+secret_key+"-"+websiteBase.getSecret_key()+"-");
 		return secret_key.equals(websiteBase.getSecret_key());
@@ -304,7 +306,7 @@ public class PlanControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
-	public String save_or_update(ModelMap model, HttpServletRequest request){
+	public String save_or_update(ModelMap model, HttpServletRequest request) throws Exception{
 		//  
 		Map<String, String> parame = getRequestParameterMap(request);
 		PlanBase planBase = planBaseServiceImpl.get(eq("id", 
@@ -354,11 +356,11 @@ public class PlanControl extends BaseControl{
 	 * @param menu
 	 * @param spread
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(PlanBase t, String new_tags, String type, HttpServletRequest request) throws IOException{ 
+	public Object update(PlanBase t, String new_tags, String type, HttpServletRequest request) throws Exception{ 
 		try {
 			
 			if("1".equals(type)){

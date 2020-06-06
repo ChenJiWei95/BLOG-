@@ -6,7 +6,6 @@
 	<resultMap id="selfList" type="com.blog.entity.Target__">
 		 
 	</resultMap>
-	
 	<select id="relateTest" parameterType="com.blog.entity.Relate" resultMap="selfList" useCache="false">
 		select a.id_Target_, a.name_Target_, b.id_Target__, b.name_Target__
 			from target_ a, target__ b, relate ab

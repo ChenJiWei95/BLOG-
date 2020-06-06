@@ -7,7 +7,7 @@ public class DeleteAdapter extends EqAdapter {
 	public String getWhereSql() throws Exception {
 		Object target = this.getTarget();
 		if(target != null)  
-			eq(parseMapOfObject(target));
+			eq(parseMapByEntity(target));
 		
 		return super.getWhereSql();
 	}	

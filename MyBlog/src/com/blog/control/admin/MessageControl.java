@@ -50,7 +50,7 @@ public class MessageControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/detail.chtml") 
-	public String save_or_update(String id, ModelMap model){
+	public String save_or_update(String id, ModelMap model) throws Exception{
 		CMessage m = new CMessage();
 		m.setIsRead("00");
 		messageServiceImpl.update(m, singleOfEqString("id", id));

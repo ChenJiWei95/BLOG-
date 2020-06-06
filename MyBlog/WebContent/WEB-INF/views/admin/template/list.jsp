@@ -1,159 +1,119 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>模板扩展</title>
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
-  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 
+	<!--time: 2018年11月21日 15:25:32-->
+	<!--author: dbag-->
+	<!--blog: https://github.com/9499574/layui-form-create-->
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>layui表单生成器-懒人专用</title>
+	<link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
+	<style>
+	html,body{background-color: #f2f2f2}
+	.layui-fluid{margin-top: 15px;}
+	.content{min-height: 796px;}
+	.nav{text-align: center;}
+	.nav button{margin-bottom: 3px;width: 80px;}
+	.layui-card-body .layui-btn+.layui-btn{margin-left: 0px;}
+	.code-show{min-height: 454px;}
+	.js-show{min-height: 200px;}
+	.del-form{line-height: initial;position: absolute;right: 15px;top: 50%;margin-top: -15px;}
+	</style>
 </head>
 <body>
-  <div class="layui-fluid">   
-    <div class="layui-card">
-      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-         
-      </div>
-      <div class="layui-card-body">
-        <div style="padding-bottom: 10px;">
-          <button class="layui-btn C-btn-saveorupdate c-button" data-type="add">添加</button>
-		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="edit">编辑</button>
-		  <button class="layui-btn C-btn-saveorupdate c-button" data-type="del">删除</button>
-        </div>
-        <table id="C-admin-temp-table" lay-filter="C-admin-temp-table" ></table>
-      </div>
-    </div>
-  </div>
-  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script> 
-  <script type="text/html" id="toTPL">
-	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
-  </script>
-  <script>
-  var table;
-  layui.config({
-    base: '<%=basePath%>layuiadmin/' //静态资源所在路径
-  }).extend({
-    index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
-    var $ = layui.$
-    ,form = layui.form
-    ,a = "C-admin-temp-add"
-	,b = 'C-admin-temp-update'
-	,e = 'C-btn-saveorupdate'
-    ,f = 'iframe'
-	,l = 'C-admin-temp-table'
-	,t = 'C-admin-temp-form'
-	,s = 'C-btn-search'
-    ,admin = layui.admin;
-    table = layui.table;
-    
-  	//监听搜索
-    form.on('submit('+s+')', function(data){
-      	var field = data.field;
-      	//执行重载
-      	table.reload(l, {
-        	where: field
-      	});
-    });
-  
-    //事件
-    var active = {
-		del: function(){
-			var arr = []; 
-			var checkStatus = table.checkStatus(l)
-			,checkData = checkStatus.data; //得到选中的数据
-			checkData.length == 0 ? layer.msg("请选中") :
-				layer.confirm('确定删除吗？', function(data) {
-			  		layer.close(layer.index);
-			  		for(var index in checkData){
-					  	var data = {};
-					  	data["id"] = checkData[index].id;
-					  	arr[index] = data;
-				  	}
-				  	admin.cajax({
-					  	method: 'remove'
-					  		,contentType: 'text/plan'
-					  	,data: JSON.stringify(arr) 
-					  	,success: function(){
-					  		table.reload(l);
-					  	}
-				  	}); 	  
-			  	});	
-		}
-		,add: function(){
-			layer.open({
-				type: 2
-				,title: '添加'
-				,content: 'save_or_update.chtml?'
-				,area: ['420px', '480px']
-				,btn: ['确定', '取消']
-				,yes: function(index, layero){
-					layero.find(f).contents().find("#"+a).click();
-				}
-				,success: function(e, index) {
-					var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]').val(admin.randomId());
-				}
-			});
-		}
-		,edit: function(){
-			var checkStatus = table.checkStatus(l)
-			,data = checkStatus.data; //得到选中的数据
-			data.length == 0 ? layer.msg("请选中一项") : data.length > 1 ? layer.msg("只能选中一项") :
-			layer.open({
-                type: 2,
-                title: "编辑",
-                content: "save_or_update.chtml?"
-               	,area: ["420px", "480px"]
-                ,btn: ["确定", "取消"]
-                ,yes: function(index, layero) {
-                    layero.find(f).contents().find("#"+b).click();
-                }
-                ,success: function(e, index) {
-					//这是渲染完之后调用 可以用于初始化
-					var form = e.find(f).contents().find("#"+t);
-					form.find('input[name="id"]').val(data[0].id)
-					,form.find('input[name="sign"]').val(data[0].sign)
-					,form.find('input[name="title"]').val(data[0].title)
-					,form.find('input[name="key"]').val(data[0].key)
-					,form.find('input[name="create_time"]').val(data[0].create_time)
-					,form.find('input[name="update_time"]').val(data[0].update_time) 
-					,form.find('textarea[name="desc"]').val(data[0].desc) 
-				}
-            })
-		}
-    };  
-    table.render({//加载
-        elem: "#"+l,
-        url: 'list.do',
-        cols: [[
-        	{type:"checkbox", fixed:"left"}
-        	,{field:"id", title:"ID", width:180}
-        	,{field:"sign", title:"模块名称"}
-        	,{field:"title", title:"标题"}
-        	,{field:"key", title:"key"}
-        	,{field:'create_time', title:'创建时间', width:170, sort: !0}
-			,{field:'update_time', title:'修改时间', width:170, sort: !0}
-        	,{field:"desc", title:"具体描述"}
-        	,{field:"id", title:"操作", templet:"#toTPL", align: 'center'}
-        ]],
-        text: "对不起，加载出现异常！"
-    }); 
-    $('.layui-btn.'+e).on('click', function(){
-		var type = $(this).data('type');
-		active[type] ? active[type].call(this) : '';
-    });
-  });
-  </script>
-</body>
-</html>
+<div class="layui-fluid" >
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md1">
+			<div class="layui-card nav click-but">
+				<div class="layui-card-header">长</div>
+				<div class="layui-card-body">
+					<button class="layui-btn" data-size="block" data-type="text">输入框</button>
+					<button class="layui-btn" data-size="block" data-type="password">密码框</button>
+					<button class="layui-btn" data-size="block" data-type="select">选择框</button>
+					<button class="layui-btn" data-size="block" data-type="checkbox_a">复选框</button>
+					<button class="layui-btn" data-size="block" data-type="checkbox_b">开关</button>
+					<button class="layui-btn" data-size="block" data-type="radio">单选框</button>
+					<button class="layui-btn" data-size="block" data-type="textarea">文本域</button>
+					<button class="layui-btn" data-size="block" data-type="submit">提交</button>
+				</div>
+			</div>
+			<div class="layui-card nav">
+				<div class="layui-card-header">短</div>
+				<div class="layui-card-body">
+					<button class="layui-btn" data-size="inline" data-type="text">输入框</button>
+					<button class="layui-btn" data-size="inline" data-type="password">密码框</button>
+					<button class="layui-btn" data-size="inline" data-type="select">选择框</button>
+					<button class="layui-btn" data-size="inline" data-type="checkbox_a">复选框</button>
+					<button class="layui-btn" data-size="inline" data-type="checkbox_b">开关</button>
+					<button class="layui-btn" data-size="inline" data-type="radio">单选框</button>
+					<button class="layui-btn" data-size="inline" data-type="textarea">文本域</button>
+					<button class="layui-btn" data-size="block" data-type="submit">提交</button>
+				</div>
+			</div>
 
+		</div>
+		<div class="layui-col-md5">
+			<div class="layui-card content">
+				<div class="layui-card-header">表单-问题反馈QQ群: 925487043
+					<button class="layui-btn layui-btn-sm layui-btn-danger del-form" data-type="del"> <i class="layui-icon">&#xe640;</i></button>
+				</div>
+				<div class="layui-card-body code"><form class="layui-form" action="" onsubmit="return false">
+</form></div>
+			</div>
+		</div>
+		<div class="layui-col-md6">
+			<div class="layui-card r-code-html">
+				<div class="layui-card-header">html</div>
+				<div class="layui-card-body">
+					<textarea name=""  class="layui-textarea code-show"></textarea>
+				</div>
+			</div>
+			<div class="layui-card r-code-js">
+				<div class="layui-card-header">JS</div>
+				<div class="layui-card-body">
+					<textarea name=""  class="layui-textarea js-show"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+</body>
+<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
+<script>
+    layui.config({
+        base: '<%=basePath%>layuiadmin/' //静态资源所在路径
+    }).extend({
+    	index: 'lib/index' //主入口模块 
+        ,temp: 'admin/template/temp'
+    }).use(['index', 'temp'],function(){
+    	layui.layer.open({
+    		type: 1
+    		,title: 'xx'
+    		/* ,area: ['420px', '400px'] */
+    		,btn: ['确定', '取消']
+    		,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;"><i class="layui-icon layui-icon-logout"></i></div>'
+    		,yes: function(index, layero){ 
+				layui.layer.closeAll();
+			}
+    	});
+    });
+</script>
+<!-- <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?74fccec1ffa027e00b82ec47a5b9f8f5";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script> -->
+</html>

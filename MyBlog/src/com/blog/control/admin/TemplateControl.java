@@ -43,6 +43,10 @@ public class TemplateControl extends BaseControl{
 	public String listview1(HttpServletRequest request, String agentno, ModelMap model){
 		return "admin/template/list";
 	}
+	@RequestMapping("/searchTemp.chtml") 
+	public String search_temp(HttpServletRequest request, String agentno, ModelMap model){
+		return "admin/template/search-temp";
+	}
 	// 打开详细页
 	@RequestMapping("/detail.chtml") 
 	public String detail(HttpServletRequest request, String id, ModelMap model){

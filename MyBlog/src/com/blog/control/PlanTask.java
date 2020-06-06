@@ -56,7 +56,7 @@ public class PlanTask {
 	}
 	
 	@Scheduled(cron="0 0 6 */1 * ?")
-	public void startPlan(){
+	public void startPlan() throws Exception{
 		log.info("今日计划定时任务");
 		//发送邮件
 		NotifyControl.sendMail("1281384046@qq.com", 

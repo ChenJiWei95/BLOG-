@@ -14,7 +14,14 @@
 			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
 		</where>  
 	</select>
-	
+	<select id="getOne" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where> 
+	</select>
 	<!-- 测试 ${} $和#的区别 需要另外编写防sql注入处理 -->
 	<select id="get" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		SELECT ${columnSql} FROM ${table}

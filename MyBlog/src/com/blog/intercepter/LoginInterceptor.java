@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.entity.WebsiteBase;
 import com.blog.service.WebsiteBaseService; 
 /**
@@ -73,8 +73,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 			}
 		}*/
 		
-		log.info((arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null)+" <<<<<<<< 登录失效");
-		if(arg0.getSession().getAttribute(Constant.USER_CONTEXT) != null) {
+		log.info((arg0.getSession().getAttribute(Constants.USER_CONTEXT) != null)+" <<<<<<<< 登录许可");
+		if(arg0.getSession().getAttribute(Constants.USER_CONTEXT) != null) {
 			return true;
 		}
 		

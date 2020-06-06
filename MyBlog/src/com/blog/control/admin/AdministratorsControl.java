@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.blog.Constant;
+import com.blog.Constants;
 import com.blog.Filter;
 import com.blog.Order;
 import com.blog.Page;
@@ -64,8 +64,8 @@ public class AdministratorsControl extends BaseControl{
 	} 
 	
 	@RequestMapping("/info.chtml") 
-	public String info(HttpServletRequest request, String agentno,ModelMap model){
-		Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+	public String info(HttpServletRequest request, String agentno,ModelMap model) throws Exception{
+		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("admin", adminInfor);
 		Object o = new Object();
@@ -83,7 +83,7 @@ public class AdministratorsControl extends BaseControl{
 	}
 
 	@RequestMapping("/website.chtml") 
-	public String website(HttpServletRequest request, ModelMap model){
+	public String website(HttpServletRequest request, ModelMap model) throws Exception{
 		WebsiteBase websiteBase = websiteBaseServiceImpl.get(singleOfEqString("id", "1"));
 		model.addAttribute("website", websiteBase);
 		return "admin/administrators/website";
@@ -106,7 +106,7 @@ public class AdministratorsControl extends BaseControl{
 	@ResponseBody
 	public Object setPassword(String oldPassword, String repassword, HttpServletRequest request) {
 		try {
-			Admin a = (Admin) request.getSession().getAttribute(Constant.USER_CONTEXT);
+			Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			if(a.getPassword().equals(oldPassword)) {
 				a.setPassword(repassword);
 				adminServiceImpl.update(a, singleOfEqString("id", a.getId()));

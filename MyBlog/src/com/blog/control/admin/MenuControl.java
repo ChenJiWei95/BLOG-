@@ -346,11 +346,11 @@ public class MenuControl extends BaseControl{
 	/**
 	 * 初始化
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@RequestMapping("init.do")
 	@ResponseBody
-	public JSONObject init() throws IOException{
+	public JSONObject init() throws Exception{
 		
 		Menu m = new Menu();
 		m.setRelate_id("");

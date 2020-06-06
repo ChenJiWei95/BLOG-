@@ -38,9 +38,9 @@ public interface BasiService<T, V> {
 	 * @param t 条件实体 
 	 * @return
 	 */
-	T get(T t);
+	T get(T t) throws Exception;
 	
-	T get(T t, Object column);
+	T get(T t, Object column) throws Exception;
 	/**
 	 * 这里用一句话描述这个方法的作用
 	 * <p>	 
@@ -48,14 +48,15 @@ public interface BasiService<T, V> {
 	 * 	例如：‘id = 132456’ 或者 ‘id = 123456 and name = '小明'’ 
 	 * @return
 	 * T
+	 * @throws Exception 
 	 * @see
 	 * @since 1.0
 	 */
-	T get(String eq); 
+	T get(String eq) throws Exception; 
 	
 	T getForColum(String eq, Object column); 
 
-	T getByID(String id); 
+	T getByID(String id) throws Exception; 
 	
 	List<T> getAll(); 
 	

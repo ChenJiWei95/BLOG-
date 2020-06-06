@@ -60,7 +60,7 @@ public class ArticleControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/edit_content.chtml") 
-	public String edit_content(HttpServletRequest request, String id, ModelMap model){
+	public String edit_content(HttpServletRequest request, String id, ModelMap model) throws Exception{
 		fristLine = false;
 		Article a = articleServiceImpl.get(singleOfEqString("id", id)); 
 		ArticleContent cnt = articleContentServiceImpl.get(singleOfEqString("a_id", id));
@@ -179,11 +179,11 @@ public class ArticleControl extends BaseControl{
 	 * @param menu
 	 * @param spread
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	@RequestMapping("editcontent.do")
 	@ResponseBody
-	public Object editcontent(String id, String mark_code, HttpServletRequest request) throws IOException{
+	public Object editcontent(String id, String mark_code, HttpServletRequest request) throws Exception{
 		try {
 			System.out.println("editcontent "+ id);
 			

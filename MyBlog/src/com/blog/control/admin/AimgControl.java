@@ -91,12 +91,11 @@ public class AimgControl extends BaseControl{
 	* 有file文件时
 	* @param movieDto 封装了需要传递过来的参数
 	* @param file 图片file
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
+	 * @throws Exception 
 	*/
 	@RequestMapping("/upload.do")
 	@ResponseBody
-	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {
+	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws Exception {
 		String path = UUID.randomUUID().toString().replace("-", "");
 		 
 		

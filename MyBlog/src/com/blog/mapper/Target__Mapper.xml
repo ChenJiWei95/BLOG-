@@ -6,7 +6,6 @@
 	<resultMap id="selfList" type="com.blog.entity.Target__">
 		 
 	</resultMap>
-	
 	<select id="associate" resultMap="selfList" useCache="false">
 		SELECT
 			${columnSql} 

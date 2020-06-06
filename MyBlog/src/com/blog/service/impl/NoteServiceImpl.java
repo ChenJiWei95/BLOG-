@@ -71,5 +71,17 @@ public class NoteServiceImpl extends BasiServiceImpl<Note, Object> implements No
 		}
 		return null;
 	}
+
+	@Override
+	public List<Note> find_(String sql) {
+		try {
+			return ((NoteDao) getDao()).show(
+					new SelectAdapter()
+					.setSql(sql));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 

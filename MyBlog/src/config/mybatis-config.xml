@@ -53,9 +53,11 @@
 		<mapper resource="com/blog/mapper/LifePictureMapper.xml" />
 		<mapper resource="com/blog/mapper/PlanBaseMapper.xml" />
 		<mapper resource="com/blog/mapper/PlanDoMapper.xml" />
+		<mapper resource="com/blog/mapper/LanguageMapper.xml" />
 		<!--#MAPPER#-->
     </mappers>
 </configuration>    
+
 
 
 

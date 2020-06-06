@@ -14,7 +14,14 @@
 	<select id="find" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		${sql}
 	</select>
-	
+	<select id="getOne" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where> 
+	</select>
 	<!-- 没用上 -->
 	<select id="findNicknameById" parameterType="STRING" resultType="STRING" useCache="false">
 		SELECT b.name_ FROM `c_blog`.`admin_infor` b, admin a WHERE a.id = b.admin_id AND a.id = #{id}

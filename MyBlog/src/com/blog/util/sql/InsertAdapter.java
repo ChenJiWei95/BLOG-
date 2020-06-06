@@ -16,7 +16,7 @@ public class InsertAdapter extends EqAdapter {
 			
 		if(target != null) {
 			try {
-				put(this.parseMapOfObject(target));
+				put(this.parseMapByEntity(target));
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}

@@ -46,7 +46,8 @@
 			type	表单类型 可选值【input(默认) , select , textarea】
 			另一个属性	例如表单项‘<input name = 'pass' value = '123456' >’ 这个属性的写法为：pass = ‘123456’
 	注意：
-		list属性中除了type和一个非固定属性外不能有其他属性否则异常
+		1、当另一个属性的键和type相同时可以添加前缀$符号表示 如 ‘{$type: data[0].type, type: 'select'}’
+		2、list属性中除了type和一个非固定属性外不能有其他属性否则异常
 	例子：
 		layui.util.formVal ({
 			el: layui.$.find(i).contents().find("#"+f)
@@ -63,10 +64,10 @@
 	    		delete temp.type;
 	    		var keys = Object.keys(temp);
 	    		if(keys.length != 1){ 
-	    			console.err("内容异常"+JSON.stringify(item));
+	    			alert("内容异常"+JSON.stringify(item)+"，长度必须大于1");
 	    			return;
 	    		} 
-	    		data.el.find(type+'[name="'+keys[0]+'"]').val(item[keys[0]])
+	    		data.el.find(type+'[name="'+keys[0].replace("$", "")+'"]').val(item[keys[0]])
 	    	}); 
 	}    
 	// 浅拷贝  和引用对象脱离引用关联 【对象的拷贝】

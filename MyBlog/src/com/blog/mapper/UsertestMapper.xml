@@ -10,7 +10,14 @@
 			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
 		</where>  
 	</select>
-	
+	<select id="getOne" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where> 
+	</select>
 	<select id="find" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
 		${sql}
 	</select>

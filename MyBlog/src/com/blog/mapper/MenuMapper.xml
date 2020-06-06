@@ -17,7 +17,14 @@
 		<if test="orderBySql!=null"> ${orderBySql}</if>
 		<if test="limitSql!=null"> ${limitSql}</if>
 	</select>
-	
+	<select id="getOne" parameterType="com.blog.util.sql.EqAdapter" resultMap="userList" useCache="false">
+		SELECT ${columnSql} FROM ${table}
+		<where>
+			1=1 
+			<if test="whereSql!=null and whereSql!=''"> ${whereSql}</if>
+			<if test="likeSql!=null and likeSql!=''"> AND ${likeSql}</if>
+		</where> 
+	</select>
 	<!-- 测试模板 -->
 	<update id="update" parameterType="com.blog.util.sql.EqAdapter">
 		update ${table} set ${updateSql}

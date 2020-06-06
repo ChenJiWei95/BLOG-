@@ -12,19 +12,27 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 		
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath*:/config.properties"
-		ignore-resource-not-found="true" ignore-unresolvable="true" />
+	<context:property-placeholder location="classpath*:config/config.properties"
+		ignore-resource-not-found="true" ignore-unresolvable="true" /> 
+	 
+	<!-- <bean id="propertyConfigurer"	
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath*:config.properties</value>
+		</property>
+	</bean>  -->
+	<!-- 使用Annotation自动注册Bean，解决事务失效问题：在主容器中不扫描@Controller注解，在SpringMvc中只扫描@Controller注解。 -->
+	<context:component-scan base-package="com.*" /> 
 	
 	<!-- 数据源：DriverManagerDataSource -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<!-- <property name="url" value="jdbc:mysql://localhost:3306/C_BLOG"/> -->
-		<property name="url" value="jdbc:mysql://localhost:3306/C_BLOG"/>
-		<property name="username" value="root"/>
-		<property name="password" value="Aa123456"/>
-		<property name="initialSize" value="3" /> 
-		<property name="maxActive" value="30" />
+		<property name="driverClassName" value="${pool.jdbc.driver}" />
+		<property name="url" value="${pool.jdbc.url}"/>
+		<property name="username" value="${pool.jdbc.username}"/>
+		<property name="password" value="${pool.jdbc.password}"/>
+		<property name="initialSize" value="${pool.initial.size}" /> 
+		<property name="maxActive" value="${pool.max.active}" />
 		<property name="proxyFilters">
 			<list>
 				<ref bean="stat-filter" />
@@ -32,6 +40,52 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!-- redis数据源 -->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!-- 最大空闲数 -->
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <!-- 最大空连接数 -->
+        <property name="maxTotal" value="${redis.maxTotal}" />
+        <!-- 最大等待时间 -->
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+        <!-- 返回连接时，检测连接是否成功 -->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean> 
+    
+    <!-- Spring-redis连接池管理工厂 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <!-- IP地址 -->
+        <property name="hostName" value="${redis.host}" />
+        <!-- 端口号 -->
+        <property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.password}" />
+        <!-- 超时时间 默认2000-->
+        <property name="timeout" value="${redis.timeout}" />
+        <!-- 连接池配置引用 -->
+        <property name="poolConfig" ref="poolConfig" />
+        <!-- usePool：是否使用连接池 -->
+        <property name="usePool" value="true"/>
+    </bean> 
+    
+    <!-- redis template definition -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory" />
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+        </property>
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+        </property>
+        <property name="hashKeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+        </property>
+        <property name="hashValueSerializer">
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+        </property>
+        <!--开启事务  -->  
+        <property name="enableTransactionSupport" value="true"></property>  
+    </bean>
 	
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
 		<property name="slowSqlMillis" value="1000" />
@@ -62,10 +116,10 @@
 		<!-- 此时大小为500MB -->
 		<!-- kb 为1024 -->
 		<!-- mb 为1024*1024 -->
-		<property name="maxUploadSize" value="524288000"></property>
+		<property name="maxUploadSize" value="${max.upload.size}"></property>
 		<!-- 上传文件大小若小于此参数，则不会生成临时文件 -->
 		<property name="maxInMemorySize">  
-                <value>4096</value>
+                <value>${max.inmemory.size}</value>
         </property>
         <property name="defaultEncoding" value="UTF-8" />
 	</bean> 
@@ -76,7 +130,11 @@
 	<!-- 将mybatis实现的接口注入到spring容器中 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.blog.dao" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<!-- 
+		这个配置注释得很关键，因为他与引入的properties文件冲突
+		导致${xxx}根本读不到properties内的属性
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" /> -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
 	
 	<!-- 4.事务管理：DataSourceTransactionManager dataSource： 引用上面定义的 数据源 -->
@@ -106,11 +164,15 @@
     <!-- <aop:config>
         <aop:pointcut id="allManagerMethod" expression="execution (* com.blog.service.*.impl.*.*(..))" />
     <aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" /> -->
+	<!-- 切面编程 -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<!-- //使用AOP注解 -->
+	<!-- <aop:aspectj-autoproxy /> -->
 	
 	<!-- 支持国际化 解析器 -->
 	<!-- 默认语言 -->
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
-		<property name="defaultLocale" value="zh_CN" />
+		<property name="defaultLocale" value="${locale}" />
 	</bean>
 	
 </beans>

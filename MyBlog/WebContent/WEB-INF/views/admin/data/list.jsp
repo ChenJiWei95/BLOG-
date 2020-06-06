@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -21,11 +22,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="layui-col-md12"> 
 				<div class="layui-card layui-circle">
 					<div class="layui-card-header layuiadmin-card-header-auto">
-						<button class="layui-btn layuiadmin-btn-data c-button" data-type="add">添加</button>
-						<button class="layui-btn layuiadmin-btn-data c-button" data-type="edit">编辑</button>
-						<button class="layui-btn layuiadmin-btn-data c-button" data-type="del">删除</button>
+		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">名称</label>
+					<div class="layui-input-inline">
+						<input type="text" name="Qu_name_lk_s" placeholder="请输入" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-inline">	
+					<label class="layui-form-label">类型</label>
+					<div class="layui-input-inline">
+						<select name="Qu_type_eq_s">
+							<option value="-1">请选择类型</option>
+							<c:forEach begin="0" items="${datas}" step="1" var="Data" varStatus="varsta">
+								<option value="${Data.value}">${Data.name}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+				<div class="layui-inline">
+		            <button class="layui-btn layuiadmin-btn-admin c-button" lay-submit lay-filter="LAY-user-back-search">
+		              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+		            </button>
+		     	</div>
+			</div>
+		</div>
 					</div>
 					<div class="layui-card-body">
+						<div style="padding-bottom: 10px;">
+							<button class="layui-btn layuiadmin-btn-data c-button" data-type="add">添加</button>
+							<button class="layui-btn layuiadmin-btn-data c-button" data-type="edit">编辑</button>
+							<button class="layui-btn layuiadmin-btn-data c-button" data-type="del">删除</button>
+						</div>
 						<table class="layui-hide" id="LAY-app-set-data" lay-filter="LAY-app-set-data">
 							
 						</table> 	 
@@ -34,7 +63,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		</div>
 	</div>
-	
+  <script type="text/html" id="descTPL">
+  {{#  if(d.type == 'icon'){ }}
+    <i class="layui-icon {{ d.value }}"></i>
+  {{#  } else { }}
+    {{ d.desc }} 
+  {{#  } }}
+  </script> 
 	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
 	<script>
 	var table;
@@ -47,6 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var $ = layui.jquery
 		,form = layui.form, addPage, editPage 
 		,admin = layui.admin
+		,s = 'LAY-user-back-search'
 		,a = 'set-data-form-add'
 		,b = 'set-data-form-edit'
 		,f = 'iframe'
@@ -84,16 +120,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							layero.find(f).contents().find("#"+b).click(); 
 						},
 						success: function(layo, e) {
-							var iframe = layo.find(f).contents().find("#"+t);
+							console.log(data[0]);
+							layui.util.formVal ({
+								el: layo.find(f).contents().find("#"+t)
+								,list:[
+									{id: data[0].id}
+									,{name: data[0].name}
+									,{id: data[0].id}
+									,{value: data[0].value}
+									,{code: data[0].code}
+									,{$type: data[0].type, type: 'select'}
+									,{create_time: data[0].create_time}
+									,{update_time: data[0].update_time}
+									,{desc: data[0].desc, type: 'textarea'}
+								] 
+							});
+							/* var iframe = layo.find(f).contents().find("#"+t);
 							iframe.find('input[name="name"]')[0].value = data[0].name
 							,iframe.find('input[name="id"]')[0].value = data[0].id
 							,iframe.find('input[name="name"]')[0].value = data[0].name
 							,iframe.find('input[name="value"]')[0].value = data[0].value
 							,iframe.find('input[name="code"]')[0].value = data[0].code
-							,iframe.find('input[name="type"]')[0].value = data[0].type
+							,iframe.find('select[name="type"]')[0].value = data[0].type
 							,iframe.find('textarea[name="desc"]')[0].value = data[0].desc
 							,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
-							,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
+							,iframe.find('input[name="update_time"]')[0].value = data[0].update_time */
 						}
 				})
 			}
@@ -121,6 +172,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	});
 			}
 		};
+		//监听搜索
+	    form.on('submit('+s+')', function(data){
+	      var field = data.field;
+	      
+	      //执行重载
+	      table.reload(l, {
+	        where: field
+	      });
+	    });
 		table.render({
 			elem: '#' + l
 			,url: 'list.do'  
@@ -134,7 +194,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				,{field:'value', title:'值'}
 				,{field:'code', title:'代码'}
 				,{field:'type', title:'类型'}
-				,{field:'desc', title:'描述'}
+				,{field:'desc', title:'描述', templet: '#descTPL'}
 				,{field:'create_time', title:'创建时间'}
 				,{field:'update_time', title:'修改时间'} 
 			]]

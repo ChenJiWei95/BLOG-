@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.blog.Constant;
+import com.blog.Constants;
 
 public class PrivilegeInterceptor implements HandlerInterceptor {
 	
@@ -47,8 +47,8 @@ public class PrivilegeInterceptor implements HandlerInterceptor {
 			}
 		}*/
 		
-		log.info(arg0.getSession().getAttribute(Constant.USER_CONTEXT)+"<<<<<<<<");
-		if(arg0.getSession().getAttribute(Constant.USER_CONTEXT)!=null) {
+		log.info(arg0.getSession().getAttribute(Constants.USER_CONTEXT)+"<<<<<<<<");
+		if(arg0.getSession().getAttribute(Constants.USER_CONTEXT)!=null) {
 			return true;
 		}
 		

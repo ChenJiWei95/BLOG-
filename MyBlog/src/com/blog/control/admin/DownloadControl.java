@@ -90,15 +90,13 @@ public class DownloadControl extends BaseControl{
 	 * @param fileName
 	 * @param request
 	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 * Object
+	 * @throws Exception 
 	 * @see
 	 * @since 1.0
 	 */
 	@RequestMapping("/editMovieInfo.do")
 	@ResponseBody
-	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws ClientProtocolException, IOException {
+	public Object editMovieInfo1(MultipartFile file, String fileName, HttpServletRequest request) throws Exception {
 		
 		/*Aimg img = new Aimg();
 		img.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
