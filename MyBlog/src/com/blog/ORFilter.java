@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.blog.enumer.Operator;
+import com.blog.util.enums.Operator;
 
 /**
  * 筛选

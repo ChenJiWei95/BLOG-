@@ -15,7 +15,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="<%=basePath%>layuiadmin/layui/css/layui.css" media="all">
-  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="<%=basePath%>layuiadmin/style/admin.css" media="all"> 
 </head>
 <body class="layui-layout-body">
   
@@ -149,7 +149,99 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <div class="layadmin-body-shade" admin-event="shade"></div>
     </div>
   </div>
-  
-  
+  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
+  <script>
+  var token = "";
+  function refresh() {
+	console.log("重新登录 刷新");
+  	window.location.reload();
+  }
+  function test(){
+	  alert("0");
+  }
+  var index;
+  layui.config({
+	base: '<%=basePath%>layuiadmin/' //静态资源所在路径
+  }).extend({
+	index: 'lib/index' //主入口模块
+	,navTree: 'lib/navTree'  /* */ 
+	/*  */
+	/* ,partcle: 'lib/partcle' */ 
+  }).use(['navTree', 'layer'/* , 'cutil' */], function () {   
+	// ********************************************
+	// ***********index需在navTree渲染完后调用**********
+	// ***********否则navTree将会点击无反应**************
+	// ********************************************
+	var navTree = layui.navTree
+	,layer = layui.layer
+	,$ = layui.$;
+	function getParameter(key){
+		var query = window.location.search.substring(1);
+		var vars = query.split("&");
+		for (var i=0;i<vars.length;i++) {
+			var pair = vars[i].split("=");
+			if(pair[0] == key){return pair[1];}
+		}
+		return '';
+	}
+	console.log(getParameter('token'));
+	initAjax = function(){
+		//console.log(layer);
+		$.ajax(
+			{ 
+				url: 'init.do?token='+(token=getParameter('token'))
+				,type: 'post'
+				,dataType: "json"
+				,success: function(data){
+					if(data.code != "0") {
+						layer.msg(data.responseMsg);
+						return ;
+					}   
+					navTree.render({
+						elem: '#nav-tree-cnt'
+						,base: '<%=basePath%>'
+						,data: {
+							href: data.data.href
+							,desc: data.data.desc
+							,data: data.data.data
+						}
+					});
+					
+					//
+					index = layui.index;
+					layui.use('index',  function(){
+						console.log("id: "+layui.setter.token)
+					}) //必须在后面加载
+				} 
+				,error: function(data){
+					layer.msg("服务器异常！")
+				}
+			}
+		);	
+		
+		<%-- layui.cutil.cajax({
+			method:'init',
+			success:function(data){
+				console.log(data);
+				navTree.render({
+					elem: '#nav-tree-cnt'
+					,base: '<%=basePath%>'
+					,data: {
+						href: data.href
+						,desc: data.desc
+						,data: data.data 
+					}
+				});
+				index = layui.index
+				layui.use('index') //必须在后面加载
+			}
+		}); --%>
+	}
+	initAjax();
+	
+	
+  });
+  </script>
+
 </body>
 </html>

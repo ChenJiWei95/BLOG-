@@ -26,7 +26,7 @@ public class PropertiesUtil {
 		InputStream in = null;
 		BufferedReader bf = null;
 		try {
-			in = PropertiesUtil.class.getResourceAsStream("/common.properties");
+			in = PropertiesUtil.class.getResourceAsStream("/config/config.properties");
 			bf = new BufferedReader(new InputStreamReader(in, "utf-8"));
 			properties = new Properties();
 			properties.load(bf);
@@ -66,7 +66,7 @@ public class PropertiesUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(PropertiesUtil.getProperty("orderApplicationNo"));
+		System.out.println(PropertiesUtil.getProperty("pool.jdbc.password"));
 	}
 
 }

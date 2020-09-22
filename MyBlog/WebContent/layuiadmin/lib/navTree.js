@@ -15,7 +15,7 @@ function (e){//console.log('navTree');
 	navTree = function(e) { 
 		var that = this;
 		that.config = jquery.extend({}, that.config, self.config, e),
-        that.render()
+		that.render()
 	};
 	navTree.prototype.config = {//基本参数 默认配置
         data: {}
@@ -40,7 +40,7 @@ function (e){//console.log('navTree');
 		root = jquery('<ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu"></ul>');
 		that.tree(root);
 		var outTarget = jquery(config.elem),
-		logo = jquery('<div class="layui-logo" lay-href="'+(data.href?config.base+data.href:'javascript:;')+'"><span>'+data.desc+'</span></div>');
+		logo = jquery('<div class="layui-logo" lay-href="'+(data.href?config.base+data.href+"?token="+token:'javascript:;')+'"><span>'+data.desc+'</span></div>');
 		outTarget.append(logo),
 		outTarget.append(root)
 	},

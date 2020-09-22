@@ -38,12 +38,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
   </script>
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-note-add"
@@ -61,7 +62,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       	var field = data.field;
       	//执行重载
       	table.reload(l, {
-        	where: field
+        	where: $.extend(field, {token: token})
       	});
     });
   
@@ -73,21 +74,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
 				layer.confirm('确定删除吗？', function(data) {
-			  		layer.close(layer.index);
-			  		for(var index in checkData){
-					  	var data = {};
-					  	data["id"] = checkData[index].id;
-					  	arr[index] = data;
+			  		var fields='';
+				  	for(var index in checkData){
+				  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,contentType: 'text/plain'
-					  	,data: JSON.stringify(arr) 
+					  	,data: {ids: fields, token: token} 
 					  	,success: function(){
 					  		table.reload(l);
+					  		layer.close(layer.index);
 					  	}
 				  	}); 	  
-			  	});	
+			  	});
 		}
 		,add: function(){
 			layer.open({
@@ -132,13 +131,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };
-    table.render({//加载
+    layui.cutil.tableReq({//加载
         elem: "#"+l
-        ,url: 'list.do'
-        ,method: 'post'
-        ,limit: 20
-		,page: !0
-		,height: 'full-200'
         ,cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID'}
@@ -147,8 +141,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'update_date', title:'修改时间'}
 			,{field:'content', title:'内容'}
 
-        ]],
-        text: "对不起，加载出现异常！"
+        ]],table: table,data: {token: token}
     });
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');

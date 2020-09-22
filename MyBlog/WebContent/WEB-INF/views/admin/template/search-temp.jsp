@@ -85,6 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </body>
 <script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
 <script>
+var token = top.token;
     layui.config({
         base: '<%=basePath%>layuiadmin/' //静态资源所在路径
     }).extend({

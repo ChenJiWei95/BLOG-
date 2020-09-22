@@ -2,10 +2,10 @@ package com.blog.control.admin;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -18,7 +18,6 @@ import com.blog.control.BaseControl;
 import com.blog.entity.TempComponent;
 import com.blog.entity.TempContext;
 import com.blog.entity.TempRow;
-import com.blog.service.RoleService;
 import com.blog.service.TempComponentService;
 import com.blog.service.TempContextService;
 import com.blog.service.TempRowService;
@@ -30,6 +29,9 @@ import com.blog.util.TimeUtil;
 // 数据字典
 @RequestMapping("/admin/tmeplate")
 public class TemplateControl extends BaseControl{
+	
+	private Logger log = Logger.getLogger(TemplateControl.class);
+	
 	@Autowired
 	private TempContextService tempContextServiceImpl;
 	@Autowired
@@ -46,6 +48,10 @@ public class TemplateControl extends BaseControl{
 	@RequestMapping("/searchTemp.chtml") 
 	public String search_temp(HttpServletRequest request, String agentno, ModelMap model){
 		return "admin/template/search-temp";
+	}
+	@RequestMapping("/test.chtml") 
+	public String test(HttpServletRequest request, String agentno, ModelMap model){
+		return "admin/template/test";
 	}
 	// 打开详细页
 	@RequestMapping("/detail.chtml") 
@@ -81,10 +87,11 @@ public class TemplateControl extends BaseControl{
 	 */
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object init() throws IOException{
+	public Object init(Integer page, Integer limit) throws IOException{
 		try {
+			System.out.println(page+" " + limit);
 			List<TempContext> list = tempContextServiceImpl.getAll();
-			return Message.success("请求成功", listToJSONArray(list));
+			return Message.success("	成功", listToJSONArray(list));
 		} catch(Exception e) {
 			return Message.error("请求失败，"+e.getMessage(), null);
 		}
@@ -206,16 +213,14 @@ public class TemplateControl extends BaseControl{
 	public Object remove(HttpServletRequest request) {
 		try {
 			// 判断token是否正确  删除admin 和 adminInfor
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			String[] ids = request.getParameter("ids").split(",");
 			StringBuffer sb = new StringBuffer();
 			StringBuffer sb1 = new StringBuffer();
-			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-				sb1.append("c_id = ").append("'"+object.getString("id")+"'").append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
+				sb1.append("c_id = ").append("'"+id+"'").append(" OR ");
 			}
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				sb1.delete(sb1.length()-4, sb1.length());
 				tempContextServiceImpl.delete(sb.toString());
@@ -348,5 +353,7 @@ public class TemplateControl extends BaseControl{
 	public Object init3(String id) throws IOException{
 		return Message.success("请求成功", listToJSONArray(tempComponentServiceImpl.gets(singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "01")+"OR "+singleOfEqString("c_id", id)+"AND "+singleOfEqString("type", "03"))));
 	}
+	
+	
 	
 }

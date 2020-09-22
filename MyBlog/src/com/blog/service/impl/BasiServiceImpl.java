@@ -152,13 +152,13 @@ public class BasiServiceImpl<T, V> implements BasiService<T, V>, AssociaInterfac
 	}
 
 	@Override
-	@CachePut(value = "users", key = "#t.id")
+	//@CachePut(value = "users", key = "#t.id")
 	public void insert(T t) {
-		EqAdapter sql = new InsertAdapter()
+		EqAdapter eq = new InsertAdapter()
 				.setParame(this)
 				.setTarget(t); 
 		try {
-			getDao().insert(sql);
+			getDao().insert(eq);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

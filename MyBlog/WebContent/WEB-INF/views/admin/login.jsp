@@ -71,6 +71,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'user'], function(){
+	var token;
     var $ = layui.$
     ,setter = layui.setter
     ,admin = layui.admin
@@ -92,8 +93,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           //请求成功后，写入 access_token
           layui.data("admin", {
             key: "token"
-            ,value: res.token
+            ,value: ''
           });
+          setter.token = res.token;
           
           //登入成功的提示与跳转
           layer.msg('登入成功', {
@@ -101,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             ,icon: 1
             ,time: 5000
           }, function(){
-            location.href = '<%=basePath%>admin/main/listview.chtml'; //后台主页
+            location.href = '<%=basePath%>admin/main/listview.chtml?token='+res.token; //后台主页
           });
         }
       });

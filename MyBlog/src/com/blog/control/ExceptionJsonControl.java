@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-@ControllerAdvice
+/*@ControllerAdvice*/
 public class ExceptionJsonControl {
 	private Logger log = Logger.getLogger(ExceptionJsonControl.class);
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
-	public Object exceptionJsonHandler(HttpServletRequest request, Exception e) {
+	public Object exceptionJsonHandler(HttpServletRequest request, HttpServletResponse response, Exception e) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String code = (String) request.getAttribute(com.blog.Constants.MESSAGE_ERROR_CODE);
 		map.put("code", code == null ? "666" : code);
@@ -28,13 +29,16 @@ public class ExceptionJsonControl {
 			map.put("code", "0404");
 		}
 		else map.put("data", "请求失败");
-		System.out.println(getStatus(request));
+		getStatus(request);
+		log.info("status:"+response.getStatus());
+		e.printStackTrace();
 		return map;
 		
 	}
 	
 	private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        log.info("getStatus:"+statusCode);
         if (statusCode == null) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }

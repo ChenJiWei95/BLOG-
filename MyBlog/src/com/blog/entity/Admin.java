@@ -1,9 +1,12 @@
 package com.blog.entity;
+
+import java.io.Serializable;
+
 /**
  * 管理员登录表
  * @author cjw
  */
-public class Admin extends Base{
+public class Admin extends Base implements Serializable{
 	private String id;
 	private String username;
 	private String password; 

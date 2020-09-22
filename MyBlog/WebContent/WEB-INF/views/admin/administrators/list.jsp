@@ -23,7 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-card">
       <div class="layui-form layui-card-header layuiadmin-card-header-auto">
         <div class="layui-form-item">
-          <div class="layui-inline">
+           <div class="layui-inline">
             <label class="layui-form-label">账号</label>
             <div class="layui-input-inline">
               <input type="text" name="Qu_a#username_eq_s" placeholder="请输入" autocomplete="off" class="layui-input">
@@ -63,8 +63,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
             </button>
           </div>
+          
         </div>
+        
       </div>
+      w
       
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
@@ -102,8 +105,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin', 'util'], function(){
-	
+  }).use(['index', 'useradmin', 'table', 'admin', 'util', 'cutil'], function(){
+	var token = top.token;
 	var $ = layui.$
     ,form = layui.form
     ,s = 'LAY-user-back-search'
@@ -120,7 +123,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       
       //执行重载
       table.reload(l, {
-        where: field
+        where: $.extend(field, {token: token})
       });
     });
     //事件
@@ -134,18 +137,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	,title: '敏感操作，请验证口令'
 			}, function(value, index){
 				layer.close(index); // 必须放在靠前的位置，否则无法关闭
-			  	var arr = []; 
-			  	for(var index in checkData){
-				  	var data = {};
-				  	data["token"] = value
-				  	,data["id"] = checkData[index].id;
-				  	arr[index] = data;
-			  	}
 			  	layer.confirm('确定删除吗？', function(data) {
+			  		var fields='';
+				  	for(var index in checkData){
+				  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
+				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,contentType: 'text/plan'
-					  	,data: JSON.stringify(arr) 
+					  	,data: {ids: fields, token: token} 
 					  	,success: function(){
 					  		table.reload(l);
 					  		layer.close(layer.index);
@@ -207,13 +206,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       var type = $(this).data('type');
       active[type] ? active[type].call(this) : '';
     });
-	table.render({//管理员的加载
+    layui.cutil.tableReq({//管理员的加载
         elem: "#"+l
-        ,url: 'list.do'
-        ,limit: 20
-		,page: !0
-		,height: 'full-200'
-		,method: 'post'
+        ,table: table
+        ,data: {token: token}
         ,cols: [[{type:"checkbox",fixed:"left"},
        	 	{field:"username",title:"账号", width:"160"}
         	,{field:"name",title:"用户名", width:"160"}
@@ -224,8 +220,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	,{field:"create_time",title:"创建时间",sort:!0, width:"160"}
 			,{field:"update_time",title:"修改时间",sort:!0, width:"160"}
 			,{field:"desc",title:"描述", width:"160"}
-		]],
-        text: "对不起，加载出现异常！"
+		]]
     }); 
   });
   </script>

@@ -39,12 +39,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="layui-table-cell laytable-cell-1-0-1"><a href="detail.chtml?id={{ d.id }}" style="pointer: cursor; color: #5FB878;">点击前往</a></div>
   </script>
   <script>
-  var table;
+  var table,token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
-    index: 'lib/index' //主入口模块
-  }).use(['index', 'table', 'admin'], function(){
+    index: 'lib/index', //主入口模块
+  }).use(['index', 'table', 'admin', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-article-add"
@@ -57,12 +57,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     ,admin = layui.admin;
     table = layui.table;
     
+    console.log(token);
+    
   	//监听搜索
     form.on('submit('+s+')', function(data){
       	var field = data.field;
       	//执行重载
       	table.reload(l, {
-        	where: field
+      		where: $.extend(field, {token: token})
       	});
     });
   
@@ -74,21 +76,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
 				layer.confirm('确定删除吗？', function(data) {
-			  		layer.close(layer.index);
-			  		for(var index in checkData){
-					  	var data = {};
-					  	data["id"] = checkData[index].id;
-					  	arr[index] = data;
+			  		var fields='';
+				  	for(var index in checkData){
+				  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,contentType:'text/html'
-					  	,data: JSON.stringify(arr) 
+					  	,data: {ids: fields, token: token} 
 					  	,success: function(){
 					  		table.reload(l);
+					  		layer.close(layer.index);
 					  	}
 				  	}); 	  
-			  	});	
+			  	});
 		}
 		,add: function(){
 			layer.open({
@@ -161,14 +161,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };
-    table.render({//加载
-        elem: "#"+l,
-        url: 'list.do',
-        limit: 20,
-        page: !0,
-        method: 'post',
-        height: 'full-200', 
-        cols: [[
+    layui.cutil.tableReq({
+    	elem: "#"+l
+    	,table: table
+    	,data: {token: token}
+    	,cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID'}
 			,{field:'name', title:'文章名称'}
@@ -177,9 +174,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'pit_url', title:'图片'}
 			,{field:'simp_desc', title:'描述'}
 
-        ]],
-        text: "对不起，加载出现异常！"
-    });
+        ]]
+    }); 
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');
 		active[type] ? active[type].call(this) : '';

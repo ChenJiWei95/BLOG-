@@ -90,6 +90,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
   }).extend({
@@ -121,6 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var index = parent.layer.getFrameIndex(window.name)
 				,dataTemp = data.field;
 				dataTemp["relate_id"] = relateId;
+				dataTemp["token"] = token;
 				$.ajax({
 					url: 'add.do'
 					,type: 'post'	
@@ -153,6 +155,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var spread = index.util.getParameter("spread")
 			,dataTemp = data.field;
 			dataTemp["spread"] = spread;
+			dataTemp["token"] = token;
 			if(clickOne){
 				clickOne = !1;
 				layer.msg("修改中...", {time: 16000}); 

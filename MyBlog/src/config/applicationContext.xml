@@ -59,7 +59,7 @@
         <property name="hostName" value="${redis.host}" />
         <!-- 端口号 -->
         <property name="port" value="${redis.port}" />
-		<property name="password" value="${redis.password}" />
+		<!-- <property name="password" value="${redis.password}" /> -->
         <!-- 超时时间 默认2000-->
         <property name="timeout" value="${redis.timeout}" />
         <!-- 连接池配置引用 -->
@@ -97,6 +97,8 @@
 		<property name="dbType" value="mysql" />
 		<property name="config" ref="wall-filter-config" />
 	</bean>
+	
+	<!-- <bean id="ci18nMybatis" class="com.blog.util.i18n.Ci18nMybatis" /> -->
 	
 	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig">
 		<property name="multiStatementAllow" value="true" />

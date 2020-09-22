@@ -1,5 +1,8 @@
 package com.blog.entity;
-public class AdminInfor extends Base{
+
+import java.io.Serializable;
+
+public class AdminInfor extends Base implements Serializable{
 	private String id;
 	private String username;
 	private String name;

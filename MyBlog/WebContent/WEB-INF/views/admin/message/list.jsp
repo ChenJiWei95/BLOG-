@@ -88,12 +88,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   {{#  } }}
   </script>
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index','table', 'admin'], function(){
+  }).use(['index','table', 'admin', 'cutil'], function(){
 	var t_a = 'C-admin-message-article'
 	,t_b = 'C-admin-message-direct'
 	,t_c = 'C-admin-message-sys'
@@ -136,22 +137,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             ,checkData = table.checkStatus(l.id).data
             ,arr = []; 
             return 0 === checkData.length ? layer.msg("未选中行") : 
-            layer.confirm("确定删除选中的数据吗？",
-            function() {
-            	for(var index in checkData){
-				  	var data = {};
-				  	data["id"] = checkData[index].id;
-				  	arr[index] = data;
+            layer.confirm('确定删除吗？', function(data) {
+		  		var fields='';
+			  	for(var index in checkData){
+			  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
 			  	}
-            	admin.cajax({
-					method: 'remove'
-						,contentType: 'text/plan'
-					,data: JSON.stringify(arr) 
-					,success: function(){
-					  	table.reload(l.id);
-					}
-				});
-            })
+			  	admin.cajax({
+				  	method: 'remove'
+				  	,data: {ids: fields, token: token} 
+				  	,success: function(){
+				  		table.reload(l);
+				  		layer.close(layer.index);
+				  	}
+			  	}); 	  
+		  	});
         },
         ready: function(e, t) {
             var l = adapter[t],
@@ -205,13 +204,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	data1['Qu_type_eq_s'] = '03';
 	var data3 = {};
 	data1['Qu_type_eq_s'] = '04';
-	table.render({//全部
+	layui.cutil.tableReq({//全部
         elem: "#"+t_d,
-        url: 'list.do',
-        method: 'post',
-        page: !0,
-        limit: 20,
-        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -219,17 +213,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'time', title:'时间', align: 'center'}
 			,{field:'isRead', title:'状态', templet:'#stateTPL', align: 'center'}
 
-        ]]
+        ]],table: table,data: {token: token}
     }),
     
-    table.render({//文章
+    layui.cutil.tableReq({//文章
         elem: "#"+t_a,
-        url: 'list.do?Qu_type_eq_s=02',
         data: data1,
-        method: 'post',
-        limit: 20,
-        page: !0,
-        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -237,16 +226,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'time', title:'时间', align: 'center'}
 			,{field:'isRead', title:'状态', templet:'#stateTPL', align: 'center'}
 
-        ]]
+        ]],table: table,data: {token: token}
     }),
-    table.render({//留言
+    layui.cutil.tableReq({//留言
         elem: "#"+t_b,
-        url: 'list.do?Qu_type_eq_s=03',
         data: data2,
-        method: 'post',
-        limit: 20,
-        page: !0,
-        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -254,16 +238,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'time', title:'时间', align: 'center'}
 			,{field:'isRead', title:'状态', templet:'#stateTPL', align: 'center'}
 
-        ]]
+        ]],table: table,data: {token: token}
     }),
-	table.render({//系统
+	layui.cutil.tableReq({//系统
         elem: "#"+t_c,
-        url: 'list.do?Qu_type_eq_s=04',
         data: data3,
-        method: 'post',
-        limit: 20,
-        page: !0,
-        height:'full-200',
         cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:'id', title:'ID', align: 'center'}
@@ -271,7 +250,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'time', title:'时间', align: 'center'}
 			,{field:'isRead', title:'状态', templet:'#stateTPL', align: 'center'}
 
-        ]] 
+        ]],table: table,data: {token: token}
     }), 
 	$(".C-admin-message-btns .layui-btn").on("click",
 	function() {

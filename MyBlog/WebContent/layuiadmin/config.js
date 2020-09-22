@@ -11,7 +11,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){console.l
     ,entry: 'index' //默认视图文件名
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: true //是否开启页面选项卡功能。iframe版推荐开启
-    
+    ,token: ''
     ,name: 'layuiAdmin'
     ,tableName: 'layuiAdmin' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名

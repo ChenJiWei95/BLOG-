@@ -1,7 +1,9 @@
 package com.blog.util;
 
 import com.blog.test.TempJava;
-
+// *******************************
+// **********废弃，不要再使用**********
+// *******************************
 public class CommomUtil {
 	public static String srcPath(String path){
 		return TempJava.class.getResource("/").getPath().substring(1).replace("build/classes", "src")+path;

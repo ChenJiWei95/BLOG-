@@ -1,13 +1,94 @@
 ;
 layui.define(
 function(e) { 
-	var a = layui.$ 
+	var a = layui.$
 	;
 	i = { 
+			token:function(){
+				return i.getParameter('token');
+			}
+			,getParameter: function(key){
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+				for (var i=0;i<vars.length;i++) {
+					var pair = vars[i].split("=");
+					if(pair[0] == key){return pair[1];}
+				}
+				return '';
+			}
+			,
+			// 随机id
+			randomId: function(){
+				var date = new Date();
+				function full(num){// 填充
+					if(num>9)
+						return num;
+					return "0"+num;
+				}
+				var _date = {
+					year : date.getFullYear(),
+					month : full(date.getMonth() + 1),
+					date : full(date.getDate())
+				};
+				return _date.year+_date.month+_date.date+(date.getTime().toString().substring(5));
+			},
+			// layui表格请求， 可以写得更少，主要作用是统一配置token
+			tableReq: function(data){
+	//			data.table
+	//			data.cols
+				data.url = data.url || 'list.do',
+				//data.url = data.url+(data.url.indexOf('?')!=-1?'&'+tokenStr:'?'+tokenStr)
+				data.limit = data.limit || 20,
+				data.page = data.page || !0,
+				data.method = data.method || 'post',
+				data.height = data.height || 'full-200',
+				data.text = data.text || "对不起，加载出现异常！";
+				data.table.render({//加载
+			        elem: data.elem,
+			        url: data.url,
+			        limit: data.limit,
+			        page: data.page,
+			        where: data.data,
+			        method: data.method,
+			        height: data.height, 
+			        cols: data.cols,
+			        text: data.text
+			    })
+			},
+			// action index pageSize 标签属性 
+			// method data success 其他传入参数
+			// 一个简单的分页控件
+			simpleAsyncPageBtn: function(object){
+				if(object == void 0) throw new Error("参数不能为："+object);
+				this.clickEvent({
+		    		asyncCallback: function(e){ 
+		    			i.cajax({
+		    				method: (object.method = object.method || e.data("action")),
+		    				data: a.extend(object.data=object.data||{},{page: e.data("index"), limit: e.data("pageSize"), token: token,}),
+		    				success: function(data){
+		    					object.success && 'function' == typeof object.success && object.success(data);
+		    				}
+		    			});/*  */
+		    		}
+		    	});
+			},
+			simplePageBtn: function(){
+				this.clickEvent({
+		    		callback: function(e){ 
+						i.redirectByForm({
+							action: e.data("action")
+				        	,query: 'page='+e.data("index")+'&limit='+e.data("pageSize")+'&token='+token
+						})
+		    		}
+		    	});
+			},
+			
 		/*
 		描述：
 			重定向 -- 重定向的方式有很多种可以用self.location.href="show.chtml"这种方式重定向
 			此处方法使用的是表单重定向
+			就是完成跳转，又采用post请求的方式 传递参数
+			运用的地方暂时没记录
 		参数介绍：
 			action
 			method = data.method || 'post';
@@ -30,7 +111,8 @@ function(e) {
 				,enctype: data.enctype
 				,style:"display: none"
 			});
-			var strArr = data.query.split('&');
+			
+			var strArr = (data.query+'&token='+token).split('&');
 			for(var index in strArr){
 				var strArr_ = strArr[index].split('=');
 				layui.$('<input>', {
@@ -49,8 +131,7 @@ function(e) {
 			list
 				type	表单类型 可选值【input(默认) , select , textarea】
 				另一个属性	例如表单项‘<input name = 'pass' value = '123456' >’ 这个属性的写法为：pass = ‘123456’
-		注意：
-			1、当另一个属性的键和type相同时可以添加前缀$符号表示 如 ‘{$type: data[0].type, type: 'select'}’
+		注意：type相同时可以添加前缀$符号表示 如 ‘{$type: data[0].type, type: 'select'}’
 			2、list属性中除了type和一个非固定属性外不能有其他属性否则异常
 		例子：
 			layui.util.formVal ({
@@ -103,7 +184,7 @@ function(e) {
 			object.contentType = object.contentType || 'application/x-www-form-urlencoded';
 			object.dataType = object.dataType || 'json';					// 返回 数据默认json
 			object.type = object.type || 'post';							// 默认请求方式post
-			
+			object.data["token"] = token;
 			//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
 			var c = object.isHints && layer.load(object.loadStyle);
 			//执行 Ajax 后重载
@@ -153,7 +234,8 @@ function(e) {
 	        	object.dataType = object.dataType || 'json';
 	        	object.type = object.type || 'post';
 	        	object.contentType = object.contentType || 'application/x-www-form-urlencoded';
-				if(parent.layer == void 0) throw 'parent页面中的layer对象为undefied';
+	        	object.data["token"] = token;
+	        	if(parent.layer == void 0) throw 'parent页面中的layer对象为undefied';
 	        	var index = parent.layer.getFrameIndex(window.name); 
 				//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
 				var c = parent.layer.load(2);
@@ -205,6 +287,32 @@ function(e) {
 			});*/
 			
 		} 
+		// admin也有一个，主要是为了在首页的冲突而设计
+		// 不适合有iframe窗口的调用
+		,cajax: function (object) {
+			object.contentType = object.contentType || 'application/x-www-form-urlencoded';
+			var index = parent.layer.getFrameIndex(window.name);
+			//object.method != 'update' || object.method != 'add' || (parent.layer.msg("method参数有误："+object.method), parent.layer.close(index))
+			var c = parent.layer.load(2);
+			//执行 Ajax 后重载
+			a.ajax({
+				url: object.method + '.do'
+				,type: 'post'	
+				,contentType: object.contentType//'application/json'
+				,data: a.extend(object.data=object.data||{}, {token: token})
+				,dataType: "json"
+				,success: function(data){
+					data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg(data.msg), parent.layer.close(index), object.id && parent.table.reload(object.id)),
+					data.code == '2' && ('function' == typeof object.error && object.error(data.data, data.msg), parent.layer.close(c), parent.layer.msg(data.msg), parent.layer.close(index));
+				} 
+				,error: function(data){
+					parent.layer.close(c),
+					parent.layer.msg("服务器异常，操作失败！"+data.msg),
+					'function' == typeof object.serverError && object.serverError(data, data.msg);
+					parent.layer.close(index)/**/
+				}
+			});	
+		}
 		,addSubCtrlbtn: function(callback){
 			// 加减控件
 			// 回调方法

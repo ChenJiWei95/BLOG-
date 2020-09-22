@@ -1,5 +1,8 @@
 package com.blog.entity;
-public class WebsiteBase extends Base{
+
+import java.io.Serializable;
+
+public class WebsiteBase extends Base implements Serializable{
 	private String id;
 	private String sitename;
 	private String update_time;
@@ -16,6 +19,7 @@ public class WebsiteBase extends Base{
 	private String upload;
 	private String white_list;
 	private String secret_key;
+	private String languages;
 
 	public String getId() {
 		return id;
@@ -113,4 +117,10 @@ public class WebsiteBase extends Base{
 	public void setSecret_key(String secret_key) {
 		this.secret_key = secret_key;
 	}
+	public String getLanguages() {
+		return languages;
+	}
+	public void setLanguages(String languages) {
+		this.languages = languages;
+	} 
 }

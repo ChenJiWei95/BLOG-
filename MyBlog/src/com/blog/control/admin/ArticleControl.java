@@ -149,19 +149,15 @@ public class ArticleControl extends BaseControl{
 	public Object remove(HttpServletRequest request) throws IOException{
 		// 
 		try {
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			String[] ids = request.getParameter("ids").split(",");
 			StringBuffer sb = new StringBuffer();
 			StringBuffer sb1 = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-//				Article a = articleServiceImpl.get(singleMarkOfEq("id", object.getString("id")));
-//				File file = new File(ArticleControl.class.getResource("/").getPath().substring(1)+"config/mark/"+a.getMark_url()+".txt");
-//				file.delete();
-				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
-				sb1.append(singleOfEqString("a_id", object.getString("id"))).append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
+				sb.append("a_id = ").append("'"+id+"'").append(" OR ");
 			}
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				sb1.delete(sb1.length()-4, sb1.length());
 				articleServiceImpl.delete(sb.toString());

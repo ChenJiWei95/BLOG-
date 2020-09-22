@@ -68,14 +68,13 @@ public class LifePictureControl extends BaseControl{
 		
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			String[] ids = request.getParameter("ids").split(",");
 			StringBuffer sb = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
 			}
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				lifePictureServiceImpl.delete(sb.toString());
 			}

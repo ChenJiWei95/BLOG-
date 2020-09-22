@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @contact qq 676342073
  * @date 2014-10-27 下午12:04:01
  */
-public class Message { 
+public class Message implements java.io.Serializable{ 
 	
 	private String code;
 

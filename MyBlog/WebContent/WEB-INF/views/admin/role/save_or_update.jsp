@@ -75,8 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         			</c:forEach>  
         			<c:if test="${iscontain}"><input type="checkbox" checked  name="${Menu.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
         			<c:if test="${!iscontain}"><input type="checkbox" name="${Menu.id}|${Menu.name}" lay-skin="primary" title="${Menu.name}"/></c:if> 
-				</c:forEach>
-				
+				</c:forEach> 
         	</c:otherwise>
         </c:choose>  
       </div>
@@ -95,6 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径	
   }).extend({
@@ -111,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'add'
 			,id: l
-			,data: data.field   
+			,data: $.extend(data.field, {token : token})   
 		});	  		  
 		
 		return false;
@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'update'
 			,id: l
-			,data: data.field   
+			,data: $.extend(data.field, {token : token})   
 		});	  
 		return false;
 	});

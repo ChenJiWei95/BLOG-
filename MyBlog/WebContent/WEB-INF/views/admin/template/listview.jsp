@@ -88,12 +88,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   {{#  } }}
   </script> 
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-temp-add"
@@ -343,7 +344,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	,{field:"event", title:"事件关联"}
     	,{field:"desc", title:"描述"}
     ]];
-    table.render({//角色的加载
+    layui.cutil.tableReq({//角色的加载
         elem: "#"+l_b,
         url: 'table_list.do?id='+${id}, 
         cols: [[
@@ -354,20 +355,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	,{field:"templet", title:"templet"}
         	,{field:"width", title:"width"}
         	,{field:"sort", title:"sort", templet: '#boolTPL', align: 'center'}
-        ]], 
-        text: "对不起，加载出现异常！"
+        ]],table: table
     }) 
-    ,table.render({//角色的加载
+    ,layui.cutil.tableReq({//角色的加载
         elem: "#"+l_a,
         url: 'search_list.do?id='+${id},
-        cols: componentArrHead,
-        text: "对不起，加载出现异常！"
+        cols: componentArrHead,table: table
     })
-    ,table.render({//角色的加载
+    ,layui.cutil.tableReq({//角色的加载
         elem: "#"+l_c,
         url: 'form_list.do?id='+${id},
-        cols: componentArrHead,
-        text: "对不起，加载出现异常！"
+        cols: componentArrHead,table: table
     }); 
      
     $('.layui-btn.'+e).on('click', function(){

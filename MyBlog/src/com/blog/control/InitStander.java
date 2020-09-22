@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blog.Constants;
-import com.blog.util.RedisService;
+import com.blog.entity.WebsiteBase;
+import com.blog.service.RedisService;
+import com.blog.service.WebsiteBaseService;
+import com.blog.util.SpringUtils;
 /**
  * <b>初始化语种在redis的缓存 默认中文</b>
  * <p>
@@ -20,14 +23,24 @@ import com.blog.util.RedisService;
 @Component
 public class InitStander implements InitializingBean{
 	private static Logger log = Logger.getLogger(InitStander.class);
+	/** WebApplicationContext、springMVC 这两种情况都会调用到这个类，所以要控制一下 */
+	private static boolean firstInit = true; 
 	
 	@Autowired
 	private RedisService redisService;
-	 
+	@Autowired
+	WebsiteBaseService websiteBaseServiceImpl; 
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		redisService.set(Constants.LANGUAGE_SIGN, Constants.LANGUAGE_ZH_CN);
-		log.info(redisService.get(Constants.LANGUAGE_SIGN));
+		if(firstInit){
+			redisService.set(Constants.LANGUAGE_CURRENT, Constants.LANGUAGE_ZH_CN);
+			log.info("初始化语言环境："+redisService.get(Constants.LANGUAGE_CURRENT));
+			WebsiteBase base = websiteBaseServiceImpl.get("id="+Constants.MANAGER_SYS_BASE_ID);
+			redisService.set(Constants.MANAGER_SYS_BASE, base, 120);
+			log.info("初始化网站基本配置:"+redisService.get(Constants.MANAGER_SYS_BASE));
+			firstInit = false;
+		}
 	}
 
 }

@@ -23,6 +23,7 @@ import com.blog.entity.Admin;
 import com.blog.entity.CMessage;
 import com.blog.service.AdminService;
 import com.blog.service.MessageService;
+import com.blog.service.RedisService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
@@ -40,6 +41,9 @@ public class LoginControl extends BaseControl{
 	@Autowired
 	private MessageService messageServiceImpl;
 	
+	@Autowired
+	private RedisService redisService;
+	
 	// 返回 页面 
 	@RequestMapping("/login.chtml") 
 	public String listview1(ModelMap model){
@@ -52,26 +56,26 @@ public class LoginControl extends BaseControl{
 	  
 	@RequestMapping("login.do")
 	@ResponseBody  
-	public Object login(@TParamer Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
+	public Object login(/*@TParamer*/Admin t, HttpServletRequest re, ModelMap model) throws Exception{ 
 		// 此处不需要sql注入检测，因为此处并没有通过查直接决定登录权限，而是查到结果再判断
 		log.info("login start");
 		log(t, re);
 		try{
-			Admin a = adminServiceImpl.get(singleOfEqString("username", t.getUsername()));
-			if(a != null && a.getPassword().equals(t.getPassword())) {
-				if("01".equals(a.getState())) {
+			Admin admin = adminServiceImpl.get(singleOfEqString("username", t.getUsername()));
+			if(admin != null && admin.getPassword().equals(t.getPassword())) {
+				if("01".equals(admin.getState())) {
 					return com.blog.util.Message.error("账号已禁用！");
-				} else if(Integer.parseInt(a.getLogin_count()) < 5) {
+				} else if(Integer.parseInt(admin.getLogin_count()) < 5) {
 					t.setLogin_count("0");
 					adminServiceImpl.update(t, singleOfEqString("username", t.getUsername()));
 				} else 
 					return com.blog.util.Message.error("账号已锁定！");
 			} else {
 				// 密码错误或账号不存在
-				if(a != null) {
-					if(Integer.parseInt(a.getLogin_count()) >= 5) 
+				if(admin != null) {
+					if(Integer.parseInt(admin.getLogin_count()) >= 5) 
 						return com.blog.util.Message.error("账号已锁定！");
-					t.setLogin_count((Integer.parseInt(a.getLogin_count())+1)+"");
+					t.setLogin_count((Integer.parseInt(admin.getLogin_count())+1)+"");
 					t.setPassword(null);
 					adminServiceImpl.update(t, singleOfEqString("username", t.getUsername()));
 					return com.blog.util.Message.error("密码错误，第"+t.getLogin_count()+"次！连续五次输错将会锁定账户！");
@@ -79,10 +83,13 @@ public class LoginControl extends BaseControl{
 				return com.blog.util.Message.error("账号不存在！");
 			}
 			JSONObject data = new JSONObject();
-			String token = String.valueOf(new SnowFlakeGenerator(2, 2).nextId());
+			String token = String.valueOf(com.blog.util.CommonUtil.getUUID());
 					
 			data.put("token", token);
-			re.getSession().setAttribute(Constants.USER_CONTEXT, a);
+			redisService.set(token, admin, 3600);
+			log.info("token:"+token);
+			log.info(redisService.get(token));
+//			re.getSession().setAttribute(Constants.USER_CONTEXT, admin);
 			
 			// 权限链接集
 			List<Map<String, Object>> permissionMap =  adminServiceImpl.getByManyTable(new ManyTable()
@@ -90,7 +97,7 @@ public class LoginControl extends BaseControl{
 					.form("`admin_infor`").as("a")
 						.and("`role`").as("b")
 						.and("`menu`").as("c")
-					.where("a.`admin_id` = "+quma2(a.getId()))
+					.where("a.`admin_id` = "+quma2(admin.getId()))
 						.and("a.`role_id` = b.`role_id`")
 						.and("b.`app_id` = c.`id`"));
 			List<String> permissionList = new java.util.ArrayList<>(permissionMap.size());
@@ -131,10 +138,11 @@ public class LoginControl extends BaseControl{
  
 	@RequestMapping("logout.do")
 	@ResponseBody
-	public Object logout(HttpServletRequest re) throws IOException{ 
+	public Object logout(HttpServletRequest re, String token) throws IOException{ 
 		try{
 			log.info("退出");
-			re.getSession().setAttribute(Constants.USER_CONTEXT, null);
+//			re.getSession().setAttribute(Constants.USER_CONTEXT, null);
+			if(token != null) redisService.del(token);
 			return com.blog.util.Message.success("已登出");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -154,14 +162,13 @@ public class LoginControl extends BaseControl{
 		
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			String[] ids = request.getParameter("ids").split(",");
 			StringBuffer sb = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
 			}
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				adminServiceImpl.delete(sb.toString());
 			}

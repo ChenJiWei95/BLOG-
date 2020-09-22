@@ -51,6 +51,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   <%-- <input type="text" name="white_list" placeholder="无需权限即可访问的地址，多个以逗号‘,’隔开" value="${website.white_list}" class="layui-input"> --%>
                 </div>
               </div>
+               <div class="layui-form-item">
+                <label class="layui-form-label">国际化设置</label>
+                <div class="layui-input-block">
+                  <textarea name="languages" class="layui-textarea">${website.languages}</textarea>
+                </div>
+              </div>
               <div class="layui-form-item">
                 <label class="layui-form-label">菜单展开项</label>
                 <div class="layui-input-block">
@@ -130,17 +136,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'set', 'form', 'admin'],function(){
+	  var $ = layui.$;
 	// 站点的设置
 	layui.form.on("submit(set_website)",
 	function(t) {
 		layui.admin.cajax({
-			method: 'setwebsite',
-			data: t.field
+			method: 'setwebsite'
+			,data: $.extend(t.field, {token : token})
 		});
 		return !1
 	})

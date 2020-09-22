@@ -2,10 +2,11 @@ package com.blog.entity;
 public class Language extends Base{
 	private String id;
 	private String code;
-	private String cn_zh;
-	private String en_us;
+	private String zh_CN;
+	private String en_US;
 
-
+	public Language(){}
+	
 	public String getId() {
 		return id;
 	}
@@ -18,16 +19,21 @@ public class Language extends Base{
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public String getCn_zh() {
-		return cn_zh;
+
+	public String getZh_CN() {
+		return zh_CN;
 	}
-	public void setCn_zh(String cn_zh) {
-		this.cn_zh = cn_zh;
+
+	public void setZh_CN(String zh_CN) {
+		this.zh_CN = zh_CN;
 	}
-	public String getEn_us() {
-		return en_us;
+
+	public String getEn_US() {
+		return en_US;
 	}
-	public void setEn_us(String en_us) {
-		this.en_us = en_us;
+
+	public void setEn_US(String en_US) {
+		this.en_US = en_US;
 	}
+
 }

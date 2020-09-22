@@ -1,0 +1,26 @@
+[INFO ] 04:13:51:920 [InitStander.afterPropertiesSet:38] 初始化语言环境：zh_CN 
+[INFO ] 04:13:51:931 [AudienceAround.watchPerformance:54] 后置通知 
+[INFO ] 04:13:51:932 [AudienceAround.watchPerformance:72] 代理对象：com.blog.service.impl.WebsiteBaseServiceImpl 
+[INFO ] 04:13:51:934 [AudienceAround.watchPerformance:78] 方法名：get 
+[INFO ] 04:13:51:934 [AudienceAround.watchPerformance:79] 返回值类型：Object 
+[INFO ] 04:13:52:243 [InitStander.afterPropertiesSet:41] 初始化网站基本配置:com.blog.entity.WebsiteBase [id = 1, sitename = 博客后台管理, update_time = 2019-09-20 11:51:24.0, index_url = admin/main/aly_control.chtml, spread = 2019091908459891, domain = http://www.chenjiwey.cn:8080, cache_time = 0, max_cache_size = 0, cache_type = png|gif|jpg|jpeg|zip|rar, title = , keywords = , meta_desc = , copyright = Copyright ©2018 chenjiwey@163.com | 粤ICP备 19034391, upload = D:/upload/, white_list = /MyBlog/admin/login.chtml
+,/MyBlog/admin/login.do
+,/MyBlog/admin/plan/show.chtml
+,/MyBlog/admin/plan/save_or_update.chtml
+,/MyBlog/admin/plan/update.do
+,/MyBlog/blog
+,/MyBlog/admin/plan/night.chtml
+,/MyBlog/admin/plan/set.chtml
+,/MyBlog/admin/plan/statistics.chtml
+,/MyBlog/admin/plan/nextPlan.chtml
+,/MyBlog/admin/plan/set.do
+,/MyBlog/fore/test/share.chtml
+,/MyBlog/fore/test/pcenter.chtml
+,/MyBlog/fore/test/index.chtml
+,/MyBlog/wechat,/MyBlog/wechat/token
+,/MyBlog/wechat/token.chtml
+,/MyBlog/wx/wxLogin
+,/MyBlog/fore/test/well.chtml
+,/MyBlog/fore/test/well.chtml
+,/MyBlog/code_error
+,/MyBlog/, secret_key = 413615141666693120, languages = zh_CN-blog.lang.chinese,en_US-blog.lang.english] 

@@ -502,7 +502,6 @@ public abstract class EqAdapter{
 	protected Map<String, Object> parseMapByEntity(Object target) throws InstantiationException, IllegalAccessException {
 		Class<?> clazz = target.getClass();// 获取PrivateClass整个类
 //		Object pc = clazz.newInstance();// 创建一个实例
-		
 		Field[] fs = clazz.getDeclaredFields();// 获得某个类的所有声明的字段，即包括public、private和proteced，但是不包括父类的申明字段。
 		Field field;Object value;
 		Map<String, Object> map = new HashMap<>(); 

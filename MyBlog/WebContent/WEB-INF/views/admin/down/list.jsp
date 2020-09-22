@@ -145,6 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>  
 	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
 	<script>  
+	var token = top.token;
 	layui.config({
 		base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
 	}).extend({
@@ -188,7 +189,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				// 删除图片
 				admin.cajax({
 				  	method: 'remove'
-				  	,data: {actual_name: e.parents(".layui-col-md3").eq(0).find('.fileNameText').text()}
+				  	,data: {actual_name: e.parents(".layui-col-md3").eq(0).find('.fileNameText').text(),token:token}
 				  	,success: function(){
 				  		e.parents(".layui-col-md3").eq(0).remove();
 				  	}

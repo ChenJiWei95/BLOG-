@@ -105,7 +105,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'add'
 			,id: l
-			,data: data.field  
+			,data: $.extend(data.field, {token : token}) 
 		});
 		return false;
 	})
@@ -113,7 +113,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'update'
 			,id: l
-			,data: data.field  
+			,data: $.extend(data.field, {token : token})  
 		});
 		return false;
 	}) 

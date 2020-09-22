@@ -58,6 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script src="<%=basePath%>js/git-plugin V0.js"></script>
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -71,7 +72,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	form.on("submit("+b+")", function(data){
 		admin.cajax({
 			method: 'editcontent'
-			,data: data.field
+			,data: $.extend(data.field, {token : token})
 		});
 		return !1;
 	});

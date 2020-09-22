@@ -4,7 +4,6 @@
   	<ul class="nolist">
 		<li title="查找" click-event="search"> 
 			<i class="layui-icon layui-icon-search"></i>
-			<form action="show.chtml?type=1" id="selectByName" method="post" enctype="application/x-www-form-urlencoded">
 			<div class="li-cnt layui-form" action="show.chtml">
 				<div style="width: 400px;">
 				<span class="more-oprate-close" click-event="moreOprateClose">×</span>
@@ -48,7 +47,6 @@
 				</div>
 				</div>
 			</div>
-			</form>
 		</li> 
 		<li title="标签查找" click-event="search">
 			<i class="layui-icon layui-icon-note"></i>

@@ -1,4 +1,4 @@
-package com.blog.enumer;
+package com.blog.util.enums;
 
 public enum Connector {
 	and,

@@ -27,13 +27,14 @@ import com.blog.entity.Admin;
 import com.blog.entity.Data;
 import com.blog.entity.Note;
 import com.blog.entity.NoteTabBrige;
-import com.blog.enumer.Operator;
 import com.blog.service.DataService;
 import com.blog.service.NoteService;
 import com.blog.service.NoteTabBrigeService;
+import com.blog.service.RedisService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
+import com.blog.util.enums.Operator;
 import com.blog.util.sql.EqAdapter;
 /**
  * <b>一句话描述该类</b>
@@ -56,6 +57,8 @@ public class NoteControl extends BaseControl{
 	@Autowired
 	private DataService dataServiceImpl;
 	@Autowired
+	private RedisService redisService;
+	@Autowired
 	private NoteTabBrigeService noteTabBrigeServiceImpl;
 	
 	// 返回 页面 
@@ -65,8 +68,9 @@ public class NoteControl extends BaseControl{
 	}
 	
 	@RequestMapping("/show.chtml") 
-	public String show(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
-		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+	public String show(String token, HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
+		Admin admin = (Admin) redisService.get(token);
+//		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		
 		// 拼接 上一次请求的 条件
 		StringBuilder query = new StringBuilder("");
@@ -103,8 +107,9 @@ public class NoteControl extends BaseControl{
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/showByTab.chtml") 
-	public String showByTab(HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
-		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+	public String showByTab(String token, HttpServletRequest request, ModelMap model, String type, Page page) throws IOException{
+		Admin admin = (Admin) redisService.get(token);
+//		Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		
 		int limit = page.getLimit();
 		int pageNum = page.getPage();
@@ -275,7 +280,7 @@ public class NoteControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/save_or_update.chtml") 
-	public String save_or_update(String type, String id, HttpServletRequest request, ModelMap model) throws Exception{
+	public String save_or_update(String token, String type, String id, HttpServletRequest request, ModelMap model) throws Exception{
 		
 		// 添加 查找所有页面传入 
 		List<Data> listData = dataServiceImpl.gets(singleOfEqString("type", "note_tab"));
@@ -285,7 +290,8 @@ public class NoteControl extends BaseControl{
 			model.addAttribute("type", true);
 		}else if ("1".equals(type)|| "2".equals(type)){
 			// 修改 查找已授权的页面传入 获取appid
-			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT); 
+			Admin admin = (Admin) redisService.get(token); 
+//			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT); 
 			List<NoteTabBrige> list_ = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", id));
 			model.addAttribute("seleteds", list_);
@@ -301,14 +307,15 @@ public class NoteControl extends BaseControl{
 	// 添加
 	@RequestMapping("add.do")
 	@ResponseBody
-	public Object add(Note t, String tabs, HttpServletRequest request) throws IOException{ 
+	public Object add(String token, Note t, String tabs, HttpServletRequest request) throws IOException{ 
 		System.out.println("添加接收参数：name = "+t.getName()); 
 		
 		try{
 			StringBuilder tags = new StringBuilder("");
 			t.setUpdate_date("xxxx-xx-xx xx:xx:xx");
 			t.setId(String.valueOf(new SnowFlakeGenerator(2, 2).nextId()));
-			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+			Admin admin = (Admin) redisService.get(token);
+//			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			if(tabs != null && !"".equals(tabs)) {// 根据tabs创建新标签
 				String[] arr = tabs.split(",");
 				for(String item : arr) {
@@ -379,20 +386,13 @@ public class NoteControl extends BaseControl{
 		
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
-			String str = ActionUtil.read(request);
-			log.info(str);
-			JSONArray json = JSONObject.parseArray(str);
-			log.info(json);
+			String[] ids = request.getParameter("ids").split(",");
 			StringBuffer sb = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append(singleOfEqString("id", object.getString("id"))).append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
 			}
-			
-			log.info(sb.toString());
-			
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				noteServiceImpl.delete(sb.toString());
 			}
@@ -412,7 +412,7 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("update.do")
 	@ResponseBody
-	public Object update(Note t, HttpServletRequest request){ 
+	public Object update(String token, Note t, HttpServletRequest request){ 
 		try {
 			System.out.println("修改接收参数："+t); 
 			
@@ -421,7 +421,8 @@ public class NoteControl extends BaseControl{
 			t.setUpdate_date(getNowTime());
 			
 			Map<String, String> params = getRequestParameterMap(request); 
-			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+			Admin admin = (Admin) redisService.get(token);
+//			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			List<NoteTabBrige> list = noteTabBrigeServiceImpl.gets(
 					singleOfEqString("admin_id", admin.getId())+" AND "+singleOfEqString("note_id", t.getId()));
 			boolean isContain;
@@ -489,10 +490,11 @@ public class NoteControl extends BaseControl{
 	 */
 	@RequestMapping("list.do")
 	@ResponseBody
-	public Object list(String type, Page page, HttpServletRequest request) throws IOException{
+	public Object list(String token, String type, Page page, HttpServletRequest request) throws IOException{
 		
 		try { 
-			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+			Admin admin = (Admin) redisService.get(token);
+//			Admin admin = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			// 根据实际情况 更多加载需要保留原有查询状态 所以
 			// 构建返回数据
 			List<Note> resultList = getNoteOfCommon(type, 

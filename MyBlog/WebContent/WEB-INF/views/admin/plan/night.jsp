@@ -133,6 +133,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
+  var token = top.token;
   var table;
   var weekDate = '${weekDate}'.split(",")
   ,planCount = '${planCount}'.split(",")
@@ -192,7 +193,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	form.on("submit("+b+")", function(data){
 		admin.cajax({
 			method: 'update'
-			,data: data.field
+			,data: $.extend(data.field, {token : token})
 			,success: function(){
 				layui.layer.msg("明日计划已生成，晚安！");
 			}

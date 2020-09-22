@@ -46,6 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -55,8 +56,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	layui.form.on("submit(set_website)",
 	function(t) {
 		layui.admin.cajax({
-			method: 'set',
-			data: t.field
+			method: 'set'
+			,data: $.extend(data.field, {token : token})
 		});
 		return !1
 	})

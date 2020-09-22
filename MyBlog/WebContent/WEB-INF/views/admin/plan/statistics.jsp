@@ -76,6 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
+  var token = top.token;
   var table;
   var weekDate = '${weekDate}'.split(",")
   ,planCount = '${planCount}'.split(",")
@@ -116,7 +117,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 		   ,id = $(obj.elem).data("id");
 	 	admin.cajax({
 			method: 'update'
-			,data: {status: status, id: id, type: "1"}   
+			,data: {status: status, id: id, type: "1", token: token}   
 		});
 	 	return false;
 	})

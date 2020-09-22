@@ -1,5 +1,8 @@
-package com.blog.util;
+package com.blog.service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,30 +11,54 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-@org.springframework.stereotype.Component
+@Component
 public class RedisService {
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	
     private final RedisTemplate<String, Object> redisTemplate;
     
-    public static void main(String[] args) {
-    	ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-    	RedisService s = (RedisService) context.getBean("redisService");
-    	s.set("name", "cjw");
-    	System.out.println(s.hasKey("name"));
-    }
-    
     public RedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-
+    
+    /**
+     * 模糊查找<br>
+     * 通过scan命令来代替keys命令
+     * <p>	 
+     * *：通配任意多个字符<br>
+     * ?：通配单个字符<br>
+     * []：通配括号内的某一个字符<br>
+     * <br>
+     * 使用：<br>
+     * *ge ==> "vge" "sge"<br>
+     * ?ge ==> "vge" "sge"<br>
+     * ??? ==> "vge" "sge"<br>
+     * 
+     * @param pattern
+     * @return
+     * Set<String>
+     * @see
+     * @since 1.0
+     */
+    public Set<String> keys(String pattern){
+    	return RedisKeysPatternUtils.getKeys(redisTemplate, pattern);
+    }
+    
     /**
      * 指定缓存失效时间
      * @param key  键
@@ -118,7 +145,6 @@ public class RedisService {
             log.error("redis error: ", e);
             return false;
         }
-
     }
 
     /**
@@ -307,7 +333,7 @@ public class RedisService {
 
     /**
      * hash递减
-     *
+     * 
      * @param key  键
      * @param item 项
      * @param by   要减少记(小于0)
@@ -321,7 +347,7 @@ public class RedisService {
 
     /**
      * 根据key获取Set中的所有值
-     *
+     * 
      * @param key 键
      * @return
      */
@@ -653,4 +679,63 @@ public class RedisService {
     		return null;
     	}
     }
+    
+    public void test(){
+    	System.out.println(redisTemplate);
+    	/*redisTemplate.execute(new RedisCallback<Set<String>> (){
+
+			@Override
+			public Set<String> doInRedis(RedisConnection arg0) throws DataAccessException {
+				return null;
+			}
+    		
+    	});*/
+    	Set<String> set = RedisKeysPatternUtils.getKeys(redisTemplate, "n*");
+    	for(String key : set){
+    		System.out.println("----"+key);
+    	}
+    }
+    
+    public static void main(String[] args) {
+    	ApplicationContext context = new ClassPathXmlApplicationContext("classpath:config/applicationContext.xml");
+    	RedisService s = (RedisService) context.getBean("redisService");
+    	s.set("name", "cjw");
+    	s.set("name1", "cjw1");
+    	s.set("name2", "cjw2");
+    	s.set("name3", "cjw3");
+    	System.out.println(s.hasKey("name"));
+    	s.test();
+    	 
+    }
 }  
+
+class RedisKeysPatternUtils {
+    private RedisKeysPatternUtils() {
+    	
+    }
+
+    public static final Set<String> getKeys(final RedisOperations<String, ?> redisOperations, final String keysPattern) {
+    	System.out.println(redisOperations);
+    	Set<String> keys = redisOperations.execute(new RedisCallback<Set<String>>() {
+        	@Override
+        	public Set<String> doInRedis(RedisConnection connection) throws DataAccessException {
+        		Set<String> binaryKeys = new HashSet<>();
+        		Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(keysPattern).count(5000).build());
+                while (cursor.hasNext()) {
+                	byte[] key = cursor.next();
+                	System.out.println(new String(key, StandardCharsets.UTF_8));
+                	binaryKeys.add(new String(key, StandardCharsets.UTF_8));
+                }
+                
+                try {
+                	cursor.close();
+                } catch (IOException e) {
+                	e.printStackTrace();
+                }
+
+                return binaryKeys;
+            }
+        });
+        return keys;
+    }
+}

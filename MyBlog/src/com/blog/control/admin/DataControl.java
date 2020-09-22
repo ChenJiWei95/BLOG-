@@ -1,12 +1,11 @@
 package com.blog.control.admin;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,7 +29,7 @@ import com.blog.util.sql.EqAdapter;
 // 数据字典
 @RequestMapping("/admin/data")
 public class DataControl extends BaseControl{
-	
+	private Logger log = Logger.getLogger(DataControl.class);
 	@Autowired
 	private DataService dataServiceImpl;
 	
@@ -74,17 +73,18 @@ public class DataControl extends BaseControl{
 	@RequestMapping("remove.do")
 	@ResponseBody
 	public Object remove(HttpServletRequest request) throws IOException{
-		
+//		log.info(request.getParameterValues("ids"));	
 		// 判断token是否正确  删除admin 和 adminInfor
 		try {
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+			String[] ids = request.getParameter("ids").split(",");
+			log.info(ids);
+			
 			StringBuffer sb = new StringBuffer();
 			
-			for(int i = 0; i < json.size(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
 			}
-			if(json.size() > 0) {
+			if(ids.length > 0) {
 				sb.delete(sb.length()-4, sb.length());
 				dataServiceImpl.delete(sb.toString());
 			}

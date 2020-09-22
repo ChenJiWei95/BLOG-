@@ -47,12 +47,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<img alt="{{ d.name }}" src="<%=basePath%>{{d.path}}" width="40px" click-event="pictureDetail">
   </script>
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin', 'upload', 'util'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'upload', 'util', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-aimg-add"
@@ -72,7 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       	var field = data.field;
       	//执行重载
       	table.reload(l, {
-        	where: field
+      		where: $.extend(field, {token: token})
       	});
     });
   	
@@ -101,21 +102,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,checkData = checkStatus.data; //得到选中的数据
 			checkData.length == 0 ? layer.msg("请选中") :
 				layer.confirm('确定删除吗？', function(data) {
-			  		layer.close(layer.index);
-			  		for(var index in checkData){
-					  	var data = {};
-					  	data["id"] = checkData[index].id;
-					  	arr[index] = data;
+			  		var fields='';
+				  	for(var index in checkData){
+				  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
 				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,contentType: 'text/plan'
-					  	,data: JSON.stringify(arr) 
+					  	,data: {ids: fields, token: token} 
 					  	,success: function(){
 					  		table.reload(l);
+					  		layer.close(layer.index);
 					  	}
 				  	}); 	  
-			  	});	
+			  	});
 		}
 		,add: function(){
 			layer.open({
@@ -148,13 +147,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }
                 ,success: function(e, index) {
 					//这是渲染完之后调用 可以用于初始化
-					/* var iframe = e.find(f).contents().find("#"+t);
-					iframe.find('input[name="id"]')[0].value = data[0].id
-					,iframe.find('input[name="name"]')[0].value = data[0].name
-					,iframe.find('input[name="create_time"]')[0].value = data[0].create_time
-					,iframe.find('input[name="update_time"]')[0].value = data[0].update_time
-					,iframe.find('input[name="path"]')[0].value = data[0].path
-					,iframe.find('textarea[name="desc"]')[0].value = data[0].desc */
 					layui.util.formVal ({
 						el: e.find(f).contents().find("#"+t)
 						,list:[
@@ -170,14 +162,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };
-    table.render({//加载
+    layui.cutil.tableReq({//加载
     	elem: "#"+l,
-        url: 'list.do',
-        limit: 20,
-        page: !0,
-        method: 'post',
-        height:'full-200',// 分页控制按钮固定在底部并且全屏
-        cols: [[
+    	data: {token: token}
+        ,cols: [[
         	{type:"checkbox", fixed:"left"}
 			,{field:'name', title:'名称'}
 			,{field:'path', title:'图示', templet:'#showImg'}
@@ -185,8 +173,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'update_time', title:'修改时间'}
 			,{field:'desc', title:'备注'}
 
-        ]],
-        text: "对不起，加载出现异常！"
+        ]],table: table
     });
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');
@@ -196,7 +183,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//普通图片上传
     var uploadInst = upload.render({
 	    elem: '#upload'
-	    ,url: 'upload.do'
+	    ,url: 'upload.do?token='+token
 	    ,before: function(obj){
 	      //预读本地文件示例，不支持ie8
 	      obj.preview(function(index, file, result){

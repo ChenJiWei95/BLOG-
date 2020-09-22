@@ -1,12 +1,9 @@
 package com.blog.util;
 
-import org.apache.ibatis.exceptions.TooManyResultsException;
-import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.blog.entity.Language;
-import com.blog.service.LanguageService;
+import com.blog.service.RedisService;
 
 
 public class BeanUtil {
@@ -64,8 +61,27 @@ public class BeanUtil {
 		}*/
 		
 		/*LanguageService service = (LanguageService) getBean("languageServiceImpl");
-		Language lang;
-		try {
+		Language lang = new Language();
+		lang.setId(CommonUtil.randomId());
+		lang.setCode("blog.index.closeCurrent");
+		lang.setZh_CN("中文");
+		lang.setEn_US("Close current tab");
+		service.insert(lang); 
+		System.out.println(lang.getId()+" ok");
+		lang.setId(CommonUtil.randomId());
+		lang.setCode("blog.index.closeCurrent");
+		lang.setZh_CN("关闭当前标签");
+		lang.setEn_US("Close current tab");
+		service.insert(lang);
+		System.out.println(lang.getId()+" ok");*/
+		/*lang.setId(CommonUtil.randomId());
+		lang.setCode("blog.index.managesys");
+		lang.setZh_CN("博客后台管理");
+		lang.setEn_US("Blog manage sys");
+		service.insert(lang);
+		System.out.println(lang.getId()+" ok");*/
+		
+		/*try {
 			lang = service.get("code='shop.common.goodsdetails'");
 			System.out.println(lang);
 		} catch(MyBatisSystemException e){
@@ -74,6 +90,7 @@ public class BeanUtil {
 			
 			e.printStackTrace();
 		}*/
-//		RedisService redis = (RedisService) SpringUtils.getBean("redisService");
+		RedisService redis = (RedisService) getBean("redisService");
+		System.out.println(redis.get("9ab06372429a409995c7200fad66fb3d"));
 	}
 }

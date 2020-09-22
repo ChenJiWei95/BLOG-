@@ -12,13 +12,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.util.GsonUtil;
-import com.blog.util.TimeUtil; 
+import com.blog.util.SpringUtils;
+import com.blog.util.TimeUtil;
+import com.blog.util.i18n.AbstractCi18nCore; 
 
 public class BaseControl {
+	
+	
+	@Autowired
+	private AbstractCi18nCore ci18nMybatis;
 	
 	public static Logger logger = LogManager.getLogger(BaseControl.class);
 	
@@ -194,6 +201,14 @@ public class BaseControl {
 		// http://localhost:8080/MyBlog/
 		return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 
+	}
+	
+	protected String getText(String code){
+		return ci18nMybatis.execute(code);
+	}
+	
+	protected Object getBean(String name){
+		return SpringUtils.getBean(name);
 	}
 } 
 

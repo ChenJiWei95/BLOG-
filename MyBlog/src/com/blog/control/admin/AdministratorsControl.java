@@ -19,18 +19,20 @@ import com.blog.Filter;
 import com.blog.Order;
 import com.blog.Page;
 import com.blog.QueryHelper;
+import com.blog.anno.RCachePut;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
 import com.blog.entity.WebsiteBase;
-import com.blog.enumer.Operator;
 import com.blog.service.AdminInforService;
 import com.blog.service.AdminService;
+import com.blog.service.RedisService;
 import com.blog.service.RoleService;
 import com.blog.service.WebsiteBaseService;
 import com.blog.util.ActionUtil;
 import com.blog.util.Message;
 import com.blog.util.TimeUtil;
+import com.blog.util.enums.Operator;
 
 @Controller
 @RequestMapping("/admin/administrators")
@@ -38,6 +40,9 @@ public class AdministratorsControl extends BaseControl{
 	
 	@Autowired
 	private RoleService roleServiceImpl;
+	
+	@Autowired
+	private RedisService redisService;
 	
 	@Autowired
 	private AdminService adminServiceImpl;
@@ -64,8 +69,9 @@ public class AdministratorsControl extends BaseControl{
 	} 
 	
 	@RequestMapping("/info.chtml") 
-	public String info(HttpServletRequest request, String agentno,ModelMap model) throws Exception{
-		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+	public String info(String token, HttpServletRequest request, String agentno,ModelMap model) throws Exception{
+		Admin a = (Admin) redisService.get(token);
+//		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("admin", adminInfor);
 		Object o = new Object();
@@ -104,9 +110,10 @@ public class AdministratorsControl extends BaseControl{
 	
 	@RequestMapping("/setpassword.do")
 	@ResponseBody
-	public Object setPassword(String oldPassword, String repassword, HttpServletRequest request) {
+	public Object setPassword(String token, String oldPassword, String repassword, HttpServletRequest request) {
 		try {
-			Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+			Admin a = (Admin) redisService.get(token);
+//			Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
 			if(a.getPassword().equals(oldPassword)) {
 				a.setPassword(repassword);
 				adminServiceImpl.update(a, singleOfEqString("id", a.getId()));
@@ -120,6 +127,7 @@ public class AdministratorsControl extends BaseControl{
 	}
 	@RequestMapping("/setwebsite.do")
 	@ResponseBody
+	@RCachePut(key=Constants.MANAGER_SYS_BASE, time=120, result="#websiteBase")
 	public Object setWebsite(WebsiteBase websiteBase) {
 		try {
 			websiteBaseServiceImpl.update(websiteBase, singleOfEqString("id", "1"));
@@ -169,21 +177,20 @@ public class AdministratorsControl extends BaseControl{
 	public Object remove(HttpServletRequest request) throws IOException{
 		
 		// 判断token是否正确  删除admin 和 adminInfor
-		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+		String[] ids = request.getParameter("ids").split(",");
+		
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sb1 = new StringBuffer();
 		
-		for(int i = 0; i < json.size(); i++) {
-			JSONObject object = json.getJSONObject(i);
-			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-			sb1.append("admin_id = ").append("'"+object.getString("id")+"'").append(" OR ");
+		for(String id : ids) {
+			sb.append("id = ").append("'"+id+"'").append(" OR ");
+			sb1.append("admin_id = ").append("'"+id+"'").append(" OR ");
 		}
-		if(json.size() > 0) {
+		if(ids.length > 0) {
 			sb.delete(sb.length()-4, sb.length());
 			sb1.delete(sb1.length()-4, sb1.length());
 			adminServiceImpl.delete(sb.toString());
 			adminInforServiceImpl.delete(sb1.toString());
-			System.out.println("删除："+json.toString());
 		}
 		
 		return Message.success("请求成功", null);

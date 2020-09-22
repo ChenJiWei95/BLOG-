@@ -56,12 +56,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   {{#  } }}
   </script> 
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "LAY-user-role-add"
@@ -79,6 +80,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		table.reload(l, {
 			where: {
 				role: data.value
+				,token: token
 			}
 		});
     });
@@ -96,20 +98,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}, function(value, index){
 				layer.close(index); // 必须放在靠前的位置，否则无法关闭
 			  	
-			  	for(var index in checkData){
-				  	var data = {};
-				  	data["token"] = value
-				  	,data["id"] = checkData[index].id;
-				  	arr[index] = data;
-			  	}
-			  	layer.confirm('确定删除吗？', function(data) {
-			  		layer.close(layer.index);
+				layer.confirm('确定删除吗？', function(data) {
+			  		var fields='';
+				  	for(var index in checkData){
+				  		if(checkData[index].id != void 0) fields+=checkData[index].id+",";
+				  	}
 				  	admin.cajax({
 					  	method: 'remove'
-					  	,contentType: 'text/plain'
-					  	,data: JSON.stringify(arr) 
+					  	,data: {ids: fields, token: token} 
 					  	,success: function(){
 					  		table.reload(l);
+					  		layer.close(layer.index);
 					  	}
 				  	}); 	  
 			  	});
@@ -159,13 +158,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };  
-    table.render({//角色的加载
+    layui.cutil.tableReq({//角色的加载
         elem: "#"+l
-        ,url: 'list.do'
-        ,limit: 20
-    	,page: !0
-    	,height: 'full-200'
-    	,method: 'post'
        	,cols: [[
         	{type:"checkbox", fixed:"left"}
         	,{field:"id", title:"ID", sort:!0, width:180}
@@ -174,8 +168,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'update_time', title:'修改时间', width:170, sort: true}
         	,{field:"state", title:"状态", templet: '#stateTPL', align: 'center'}
         	,{field:"desc", title:"具体描述"}
-        ]],
-        text: "对不起，加载出现异常！"
+        ]],table: table,data: {token: token}
     }); 
     $('.layui-btn.layuiadmin-btn-role').on('click', function(){
 		var type = $(this).data('type');

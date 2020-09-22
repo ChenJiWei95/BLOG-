@@ -14,46 +14,44 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Page<T> implements Serializable {
 
 	private static final long serialVersionUID = -2053800594583879853L;
-	
 	/** 默认页码 */
 	private static final int DEFAULT_PAGE_NUMBER = 1;
-
 	/** 默认每页记录数 */
 	private static final int DEFAULT_PAGE_SIZE = 10;
-
 	/** 最大每页记录数 */
 	private static final int MAX_PAGE_SIZE = 1000;
-
-	/** 内容 */
-	private List<T> content = new ArrayList<T>();
-
-	/** 总记录数 */
-//	private long total;
-	private long count ;
-	private Object data;
-
 	/** 页码 */
 	private int page = DEFAULT_PAGE_NUMBER;// 当前页
+	/** 内容 */
+	private List<T> content = new ArrayList<T>();
+	/** 总记录数 */
+//	private long total;
+	/** 总记录数 */
+	private long count;
+	/** 返回数据 */
+	private Object data;
 	/** 每页记录数 */
 //	private int rows = DEFAULT_PAGE_SIZE;// 每页显示记录数
-	
-	private String sort;// 排序字段
-	private String msg;// 
-	private String order;// asc/desc
-	private String code;// 0/1
-	
-	/** 每页记录数 */
+	/** 排序字段 */
+	private String sort;
+	/** 请求状态提示 */
+	private String msg;
+	/** asc/desc */
+	private String order;
+	/** 请求状态0 成功/1 异常 */
+	private String code;
+	/** 每页记录数 pageSize */
 	private int limit = DEFAULT_PAGE_SIZE;// 每页显示记录数
-	
-	private String alias;//查询别名
-	
-	private List<Filter> filters = new ArrayList<Filter>();//过滤查询
-	private List<ORFilter> oRFilters = new ArrayList<ORFilter>();//过滤查询 'OR'
-	
-	private List<UpdateItem> updateItem = new ArrayList<>();//修改项
-	
-	private List<Order> orders = new ArrayList<Order>();//排序
-	
+	/** 查询别名 用处不大 */
+	private String alias;
+	/** 过滤查询 and */
+	private List<Filter> filters = new ArrayList<Filter>();
+	/** 过滤查询 'OR' */
+	private List<ORFilter> oRFilters = new ArrayList<ORFilter>();
+	/** 修改项 暂时不建议用 */
+	private List<UpdateItem> updateItem = new ArrayList<>();
+	/** 排序 */
+	private List<Order> orders = new ArrayList<Order>();
 	/**
 	 * 初始化一个新创建的Page对象
 	 */
@@ -72,7 +70,6 @@ public class Page<T> implements Serializable {
 		this.count = total;
 		this.msg = msg;
 	}
-
 	/**
 	 * 默认为 10
 	 * <p>	 
@@ -84,35 +81,27 @@ public class Page<T> implements Serializable {
 	public int getLimit() {
 		return limit;
 	}
-
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
-
 	public long getCount() {
 		return count;
 	}
-
 	public void setCount(long count) {
 		this.count = count;
 	}
-
 	public Object getData() {
 		return data;
 	}
-
 	public void setData(Object data) {
 		this.data = data;
 	}
-
 	public String getCode() {
 		return code;
 	}
-
 	public void setCode(String code) {
 		this.code = code;
 	}
-
 	/**
 	 * 获取总页数
 	 * 
@@ -121,17 +110,12 @@ public class Page<T> implements Serializable {
 	public int getTotalPages() {
 		return (int) Math.ceil((double) getCount() / (double) this.limit);
 	}
-
-	
-
 	public String getMsg() {
 		return msg;
 	}
-
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
 	/**
 	 * 获取内容
 	 * 
@@ -141,7 +125,6 @@ public class Page<T> implements Serializable {
 	public List<T> getContent() {
 		return content;
 	}
-	
 	/**
 	 * 设置集合
 	 * @param content
@@ -149,7 +132,6 @@ public class Page<T> implements Serializable {
 	public void setContent(List<T> content) {
 		this.content = content;
 	}
-
 	/**
 	 * 获取页码 默认为1
 	 * 
@@ -158,7 +140,6 @@ public class Page<T> implements Serializable {
 	public int getPage() {
 		return page;
 	}
-
 	/**
 	 * 设置页码
 	 * 
@@ -171,7 +152,6 @@ public class Page<T> implements Serializable {
 		}
 		this.page = page;
 	}
-	
 	public int getPageSize(){
 		return this.limit;
 	}
@@ -179,30 +159,24 @@ public class Page<T> implements Serializable {
 	public String getSort() {
 		return sort;
 	}
-
 	public void setSort(String sort) {
 		this.sort = sort;
 	}
-
 	public String getOrder() {
 		return order;
 	}
-
 	public void setOrder(String order) {
 		this.order = order;
 	}
-
 	public List<Filter> getFilters() {
 		return filters;
 	}
 	public List<ORFilter> getORFilters() {
 		return this.oRFilters;
 	}
-
 	public void setFilters(List<Filter> filters) {
 		this.filters = filters;
 	}
-	
 	public List<UpdateItem> getUpdateItems() {
 		return updateItem;
 	}

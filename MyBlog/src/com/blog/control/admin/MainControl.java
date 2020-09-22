@@ -1,6 +1,5 @@
 package com.blog.control.admin;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +19,19 @@ import com.blog.Constants;
 import com.blog.control.BaseControl;
 import com.blog.entity.Admin;
 import com.blog.entity.AdminInfor;
+import com.blog.entity.Local;
 import com.blog.entity.Menu;
 import com.blog.entity.Role;
 import com.blog.entity.Usertest;
 import com.blog.entity.WebsiteBase;
 import com.blog.service.AdminInforService;
 import com.blog.service.MenuService;
+import com.blog.service.RedisService;
 import com.blog.service.RoleService;
 import com.blog.service.UsertestService;
 import com.blog.service.WebsiteBaseService;
 import com.blog.service.impl.TUserServiceImpl;
+import com.blog.util.Message;
 import com.blog.util.SnowFlakeGenerator;
 
 /**
@@ -50,6 +52,9 @@ public class MainControl extends BaseControl{
 	WebsiteBaseService websiteBaseServiceImpl; 
 	
 	@Autowired
+	RedisService redisService;
+	
+	@Autowired
 	private AdminInforService adminInforServiceImpl;
 
 	@Autowired
@@ -65,21 +70,45 @@ public class MainControl extends BaseControl{
 	public String relogin(){
 		return "admin/relogin";
 	}
+	@RequestMapping("/error.chtml")
+	public String error(){
+		return "admin/error";
+	}
+	@RequestMapping("/accessDenied.chtml")
+	public String accessDenied(){
+		return "common/accessDenied";
+	}
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
-	public String listview1(HttpServletRequest request, String agentno, ModelMap model) throws Exception{
+	public String listview1(String token, HttpServletRequest request, String agentno, ModelMap model) throws Exception{
 		log.info("listview.chtml");
 		
 		// 测试缓存
-		Usertest u = new Usertest();
-		u.setId(String.valueOf(new SnowFlakeGenerator(1,1).nextId()));
-		u.setName("xiaoming");
-		usertestServiceImpl.save(u);
+//		Usertest u = new Usertest();
+//		u.setId(String.valueOf(new SnowFlakeGenerator(1,1).nextId()));
+//		u.setName("xiaoming");
+//		usertestServiceImpl.save(u);
 //		log.info("获取："+usertestServiceImpl.getByID("384778304613388281"));
-		log.info("获取："+usertestServiceImpl.getByID(u.getId()));
+//		log.info("获取："+usertestServiceImpl.getByID(u.getId()));
 		
+		/** 语言切换按钮 */
+		String[] languages = ((WebsiteBase) redisService.get(Constants.MANAGER_SYS_BASE)).getLanguages().split(",");
+		List<Local> locals = new ArrayList<>();
+		String currentLang = (String) redisService.get(Constants.LANGUAGE_CURRENT);
+		for(String lang : languages){
+			log.info(lang);
+			String[] arr = lang.split("-");
+			if(!currentLang.equals(arr[0])){
+				locals.add(new Local(arr[0], getText(arr[1])));
+			}
+		}
+		request.setAttribute("locals", locals);
+		request.setAttribute("token", token);
+		/** 语言切换按钮 */
 		
-		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+//		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+		Admin a = (Admin) redisService.get(token);
+		if(a == null) return "admin/login";
 		AdminInfor ai = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
 		model.addAttribute("name", ai.getName_());
 		
@@ -94,8 +123,7 @@ public class MainControl extends BaseControl{
 		request.setAttribute(Constant.MESSAGE_ERROR_CODE, "0001");
 		int num = 5/0;
 		*/
-		
-		log.info(tUserServiceImpl.getUserAndRole("123456").getRole().getName());
+//		log.info(tUserServiceImpl.getUserAndRole("123456").getRole().getName());
 		return "admin/admin_view";
 	}	 
 	
@@ -147,59 +175,64 @@ public class MainControl extends BaseControl{
 	 */
 	@RequestMapping("init.do")
 	@ResponseBody
-	public JSONObject init(HttpServletRequest request, ModelMap model) throws Exception{
+	public Message init(String token, HttpServletRequest request, ModelMap model) {
 		
-		// 用户根据权限获取 appid集合
-		Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
-		AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
-		List<Role> roles = roleServiceImpl.gets(singleOfEqString("role_id", adminInfor.getRole_id()));
-		List<String> app_ids = new ArrayList<>();
-		for(Role role : roles) {
-			app_ids.add(role.getApp_id());
+		try{
+			// 用户根据权限获取 appid集合
+//			Admin a = (Admin) request.getSession().getAttribute(Constants.USER_CONTEXT);
+			Admin a = (Admin) redisService.get(token);
+			AdminInfor adminInfor = adminInforServiceImpl.get(singleOfEqString("admin_id", a.getId()));
+			List<Role> roles = roleServiceImpl.gets(singleOfEqString("role_id", adminInfor.getRole_id()));
+			List<String> app_ids = new ArrayList<>();
+			for(Role role : roles) {
+				app_ids.add(role.getApp_id());
+			}
+			
+			// 收集菜单信息
+			Menu m = new Menu();
+			m.setRelate_id("");
+			List<Menu> ms = menuServiceImpl.getBySort(m, "ASC", "priority"); 
+			JSONArray jsonArray = new JSONArray();
+			for(Menu item : ms) { 
+				JSONObject object = jsonToJSONObject(item); 
+				object.remove("name"); 
+				object.remove("id"); 
+				object.remove("url"); 
+				object.remove("update_time"); 
+				object.remove("create_time"); 
+				object.remove("relate_id"); 
+				object.remove("msg"); 
+				object.remove("priority"); 
+				object.put("desc", item.getName()); 
+				object.put("key", item.getId());
+				object.put("href", item.getUrl());
+				if(item.getUrl().indexOf("####") != -1)
+					object.put("dataName", item.getId()); 
+				JSONArray jsonArray_ = null;
+				if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId(), app_ids)) != null) 
+					object.put("children", jsonArray_);
+				if(jsonArray_ != null && jsonArray_.size() > 0) jsonArray.add(object); // 子元素为空夹也不需要了
+			} 
+			
+			WebsiteBase base = new WebsiteBase();
+			base.setId("1"); 
+			base = websiteBaseServiceImpl.get(base);
+			
+			model.addAttribute("sitename", base.getSitename());
+			model.addAttribute("index_url", base.getIndex_url());
+			
+			JSONObject resultObj = new JSONObject();
+			resultObj.put("responseCode", "success");
+			resultObj.put("responseMsg", "初始化成功！");
+			resultObj.put("data", jsonArray);
+			resultObj.put("spread", base.getSpread());
+			resultObj.put("desc", base.getSitename());
+			resultObj.put("href", base.getIndex_url());
+//			log.info("初始化返回数据："+resultObj.toString());
+			return Message.success("初始化成功", resultObj);
+		}catch(Exception e ){
+			return Message.error("服务器异常："+e.getMessage());
 		}
-		
-		// 收集菜单信息
-		Menu m = new Menu();
-		m.setRelate_id("");
-		List<Menu> ms = menuServiceImpl.getBySort(m, "ASC", "priority"); 
-		JSONArray jsonArray = new JSONArray();
-		for(Menu item : ms) { 
-			JSONObject object = jsonToJSONObject(item); 
-			object.remove("name"); 
-			object.remove("id"); 
-			object.remove("url"); 
-			object.remove("update_time"); 
-			object.remove("create_time"); 
-			object.remove("relate_id"); 
-			object.remove("msg"); 
-			object.remove("priority"); 
-			object.put("desc", item.getName()); 
-			object.put("key", item.getId());
-			object.put("href", item.getUrl());
-			if(item.getUrl().indexOf("####") != -1)
-				object.put("dataName", item.getId()); 
-			JSONArray jsonArray_ = null;
-			if(item.getUrl().indexOf("####") != -1 && (jsonArray_ = init_(item.getId(), app_ids)) != null) 
-				object.put("children", jsonArray_);
-			if(jsonArray_ != null && jsonArray_.size() > 0) jsonArray.add(object); // 子元素为空夹也不需要了
-		} 
-		
-		WebsiteBase base = new WebsiteBase();
-		base.setId("1"); 
-		base = websiteBaseServiceImpl.get(base);
-		
-		model.addAttribute("sitename", base.getSitename());
-		model.addAttribute("index_url", base.getIndex_url());
-		
-		JSONObject resultObj = new JSONObject();
-		resultObj.put("responseCode", "success");
-		resultObj.put("responseMsg", "初始化成功！");
-		resultObj.put("data", jsonArray);
-		resultObj.put("spread", base.getSpread());
-		resultObj.put("desc", base.getSitename());
-		resultObj.put("href", base.getIndex_url());
-//		log.info("初始化返回数据："+resultObj.toString());
-		return resultObj;
 	}
 	
 	public final String getIpAddr(final HttpServletRequest request)

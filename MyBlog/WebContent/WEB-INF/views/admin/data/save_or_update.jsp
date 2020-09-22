@@ -79,12 +79,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>  
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
-    index: 'lib/index' //主入口模块
-    ,cutil: '../lib/cutil' 
-  }).use(['index', 'form', 'admin', 'cutil'], function(){
+    index: 'lib/index' //主入口模块	
+  }).use(['index', 'form', 'admin'], function(){
 		var table = layui.table
 		,$ = layui.$
 		,a = 'set-data-form-add'
@@ -99,7 +99,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			admin.cajax({
 				method: 'add'
 				,id: l
-				,data: data.field  
+				,data: $.extend(data.field, {token : token})  
 			});		  
 			return !1;
 		})
@@ -110,7 +110,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			admin.cajax({
 				method: 'update'
 				,id: l
-				,data: data.field  
+				,data: $.extend(data.field, {token : token})  
 			});
 			return !1;
 		})

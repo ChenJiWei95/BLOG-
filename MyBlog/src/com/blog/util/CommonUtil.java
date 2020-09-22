@@ -62,7 +62,7 @@ public class CommonUtil {
 	 * @since 1.0
 	 */
 	public static String randomId (){
-		return TimeUtil.getDatetime("yyyyMMddHHmmss")+String.valueOf(System.currentTimeMillis()).substring(11);
+		return TimeUtil.getDatetime("yyyyMMddHHmmss")+String.valueOf(System.currentTimeMillis()).substring(4);
 	}
 	/**
 	 * 获取32位的uuid

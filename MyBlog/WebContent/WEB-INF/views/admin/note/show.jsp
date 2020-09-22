@@ -205,6 +205,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   </script> 
   <script>
+  var token = top.token;
   //var noteTabs = JSON.parse('${jsonStr}')
   var queryStr = '${queryStr}'; // 拼接原有查询条件 根据这一查询条件查询更多 
   console.log("queryStr "+queryStr);

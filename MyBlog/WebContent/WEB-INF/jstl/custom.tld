@@ -12,4 +12,47 @@
        <name>name</name>
     </attribute>
   </tag>
+  <tag>
+    <name>async-simple-page</name>
+    <tag-class>com.blog.jstl.SimpleAsyncPageTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+       <name>pageIndex</name>
+       <type>java.util.Integer</type>
+    </attribute>
+    <attribute>
+       <name>pageSize</name>
+       <type>java.util.Integer</type>
+    </attribute>
+    <attribute>
+       <name>styleClass</name>
+    </attribute>
+    <attribute>
+       <name>action</name>
+    </attribute>
+  </tag>
+  <tag>
+    <name>simple-page</name>
+    <tag-class>com.blog.jstl.SimplePageTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+       <name>pageIndex</name>
+       <type>java.util.Integer</type>
+    </attribute>
+    <attribute>
+       <name>pageSize</name>
+       <type>java.util.Integer</type>
+    </attribute>
+    <attribute>
+       <name>styleClass</name>
+    </attribute>
+    <attribute>
+       <name>action</name>
+    </attribute>
+  </tag>
+  <tag>
+    <name>fm-generate-form</name>
+    <tag-class>com.blog.jstl.FmGenerateForm</tag-class>
+    <body-content>scriptless</body-content> 
+  </tag>
 </taglib> 

@@ -143,6 +143,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
   <script>
+  var token = top.token;
   var table;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
@@ -234,7 +235,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 		   ,id = $(obj.elem).data("id");
 	 	admin.cajax({
 			method: 'update'
-			,data: {status: status, id: id, type: "1"}  
+			,data: {status: status, id: id, type: "1", token: toekn}  
 	 		,success: function(){
 	 			self.location.href='<%=basePath%>admin/plan/show.chtml?secret_key=${secret_key}&isTips=0'
 	 		}

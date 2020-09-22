@@ -46,7 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
     index: 'lib/index' //主入口模块
-  }).use(['index', 'useradmin', 'table', 'admin', 'upload'], function(){
+  }).use(['index', 'useradmin', 'table', 'admin', 'upload', 'cutil'], function(){
     var $ = layui.$
     ,form = layui.form
     ,a = "C-admin-aimg-add"
@@ -64,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       	var field = data.field;
       	//执行重载
       	table.reload(l, {
-        	where: field
+      		where: $.extend(field, {token: token})
       	});
     });
   
@@ -134,9 +134,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             })
 		}
     };
-    table.render({//加载
+    layui.cutil.tableReq({//加载
         elem: "#"+l,
-        url: 'list.do',
+        data: {token: token},
         cols: [[
         	{type:"checkbox", fixed:"left"}
 			,{field:'name', title:'名称'}
@@ -145,8 +145,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			,{field:'update_time', title:'修改时间'}
 			,{field:'desc', title:'备注'}
 
-        ]],
-        text: "对不起，加载出现异常！"
+        ]]
+    	,table: table
     });
     $('.layui-btn.'+e).on('click', function(){
 		var type = $(this).data('type');
@@ -157,7 +157,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//普通图片上传
     var uploadInst = upload.render({
 	    elem: '#upload'
-	    ,url: 'upload.do'
+	    ,url: 'upload.do?token='+token
 	    ,before: function(obj){
 	      //预读本地文件示例，不支持ie8
 	      obj.preview(function(index, file, result){

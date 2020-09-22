@@ -1,6 +1,8 @@
 package com.blog.entity;
 
-public class Role extends Base{
+import java.io.Serializable;
+
+public class Role extends Base implements Serializable{
 	private String id;
 	private String name;
 	private String create_time;

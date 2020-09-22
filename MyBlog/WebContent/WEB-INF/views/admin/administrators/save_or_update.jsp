@@ -93,7 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
-  
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -109,14 +109,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	form.on("submit("+a+")", function(data){
 		cajax({
 			method: 'add'
-			,data: data.field  
+			,data: $.extend(data.field, {token : token})
 		});
 		return false;
 	})
 	,form.on("submit("+b+")", function(data){
 		cajax({
 			method: 'update'
-			,data: data.field  
+			,data: $.extend(data.field, {token : token}) 
 		});
 		return false;
 	})
@@ -134,7 +134,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$.ajax({
 			url: object.method + '.do'
 			,type: 'post'	
-			,data: object.data
+			,data: $.extend(object.data, {token : token})
 			,dataType: "json"
 			,success: function(data){
 				data.code == '0' && ('function' == typeof object.success && object.success(data.data, data.msg), parent.layer.close(c), parent.layer.msg("操作成功！"), parent.layer.close(index), parent.table.reload(l)),

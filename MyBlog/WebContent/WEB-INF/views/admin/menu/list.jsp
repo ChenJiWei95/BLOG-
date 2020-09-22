@@ -50,6 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>  
 	<script src="<%=basePath%>layuiadmin/layui/layui.js?t=1"></script>
 	<script>  
+	var token = top.token;
 	var oparate_active, initAjax;// 子页面调用 active 
 	layui.config({
 		base: '<%=basePath%>layuiadmin/' // 静态资源所在路径
@@ -73,7 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				layer.open({
 				  	type: 2
 				  	,title: '添加'
-				  	,content: 'save_or_update.chtml'
+				  	,content: 'save_or_update.chtml?token='+token
 				  	,area: ['420px', '420px']
 				  	,btn: ['确定', '取消']
 				  	,yes: function(index, layero){
@@ -96,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				layer.open({
 				  	type: 2
 				  	,title: '添加'
-				  	,content: 'save_or_update.chtml?relateId='+obj.data.id
+				  	,content: 'save_or_update.chtml?relateId='+obj.data.id+'&token='+token
 				  	,area: ['420px', '420px']
 				  	,btn: ['确定', '取消']
 				  	,yes: function(index, layero){
@@ -115,7 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				layer.open({
 					type: 2,
 					title: "编辑",
-					content: "save_or_update.chtml?spread="+obj.spread.join(","),
+					content: "save_or_update.chtml?spread="+obj.spread.join(",")+'&token='+token,
 					area: ['420px', '420px'],
 					btn: ["确定", "取消"],
 					yes: function(index, layero) {
@@ -143,7 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$.ajax({
 					url: 'remove.do'  
 					,type: 'post'	
-					,data: {id: obj.data.id}
+					,data: {id: obj.data.id, token: token}
 					,dataType: "json"
 					,success: function(data){
 						obj.active.del();
@@ -160,7 +161,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        ,title: "查看"
 			        ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
 			        ,id: 'layerDemo'+'auto' //防止重复弹出
-			        ,content: 'save_or_update.chtml'
+			        ,content: 'save_or_update.chtml'+'?token='+token
 			        ,area: ['420px', '420px']
 			        ,btn: '关闭'
 			        ,btnAlign: 'c' //按钮居中
@@ -187,50 +188,58 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		}  
 		,tree = layui.tree_etc; 
+		console.log("ok");
 		initAjax = function(){
-			$.ajax(
-				{ 
-					url: 'init.do'
-					,type: 'post'	
-					,dataType: "json"
-					,success: function(data){
-						if(data.responseCode != "success") {
-							layer.msg(data.responseMsg);
-							return ;
-						} 
-						var tempSpread;
-						if(data.spread != void 0 && "" != data.spread){
-							tempSpread = data.spread.split('|');
-						}
-						console.log("data.spread"+data.spread);
-						tree.render({//分支结构创建
-							elem: '#show-manage'
-							,data: data.data
-							,spread: tempSpread
-							,renderContent: !0
-							,click: function(obj){
-								// 点击layui-tree-txt 提示节点信息
-								if(obj.type == 1){ 
-									active['show'](obj.data);
-								}
-							}
-							,operate: function(obj){
-								//obj.type  obj.data  obj.active obj.elem
-								console.log("回调operate");
-								oparate_active = obj.active;
-								console.log(obj);
-								console.log(obj.active);
-								'function' == typeof active[obj.type] ? active[obj.type](obj) : '';
-							}
-						}) 
-					} 
-					,error: function(data){
-						layer.msg("服务器异常！") 
+			$.ajax({ 
+				url: 'init.do'
+				,type: 'post'	
+				,data: {token: token}
+				,dataType: "json"
+				,success: function(data){
+					var tempSpread;
+					console.log("data.spread"+data.spread);
+					if(data.spread != void 0 && "" != data.spread){
+						tempSpread = data.spread.split('|');
 					}
-				}
-			);
+					tree.render({//分支结构创建
+						elem: '#show-manage'
+						,data: data.data
+						,spread: tempSpread
+						,renderContent: !0
+						,click: function(obj){
+							// 点击layui-tree-txt 提示节点信息
+							if(obj.type == 1){ 
+								active['show'](obj.data);
+							}
+						}
+						,operate: function(obj){
+							//obj.type  obj.data  obj.active obj.elem
+							console.log("回调operate");
+							oparate_active = obj.active;
+							console.log(obj);
+							console.log(obj.active);
+							'function' == typeof active[obj.type] ? active[obj.type](obj) : '';
+						}
+					}) 
+				} 
+				,error: function(data){
+					layer.msg("服务器异常！") 
+				}	
+			})
 		}
 		initAjax();
+		/* layui.cutil.cajax({
+				method: 'init',
+				success: function(data){
+					console.log(data);
+					if(data.responseCode != "success") {
+						layer.msg(data.responseMsg);
+						return ;
+					}
+					
+				}
+		}); */
+			
 		
 		$('.layui-btn.manage-button').on('click', function(){
 			var type = $(this).data('type');

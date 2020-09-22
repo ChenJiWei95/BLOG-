@@ -39,7 +39,7 @@ public class RoleControl extends BaseControl{
 	
 	// 返回 页面 
 	@RequestMapping("/listview.chtml")
-	public String listview1(ModelMap model){ 
+	public String listview1(ModelMap modeoo){ 
 		return "admin/role/list";
 	}
 	// 返回 页面 
@@ -120,18 +120,16 @@ public class RoleControl extends BaseControl{
 	public Object remove(HttpServletRequest request) throws IOException{
 		
 		// 判断token是否正确  删除角色 
-		JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
+		String[] ids = request.getParameter("ids").split(",");
 		StringBuffer sb = new StringBuffer();
-		
-		for(int i = 0; i < json.size(); i++) {
-			JSONObject object = json.getJSONObject(i);
-			sb.append("id = ").append("'"+object.getString("id")+"'").append(" OR ");
-			sb.append("role_id = ").append("'"+object.getString("id")+"'").append(" OR ");
+		for(String id : ids) {
+			sb.append("id = ").append("'"+id+"'").append(" OR ");
+			sb.append("role_id = ").append("'"+id+"'").append(" OR ");
 		}
-		if(json.size() > 0) {
+		if(ids.length > 0) {
 			sb.delete(sb.length()-4, sb.length());
 			roleServiceImpl.delete(sb.toString());
-		}
+		}		
 		
 		return Message.success("请求成功", null);	
 		

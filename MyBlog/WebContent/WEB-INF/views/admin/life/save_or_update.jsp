@@ -68,6 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>  
   <script>
+  var token = top.token;
   layui.config({
     base: '<%=basePath%>layuiadmin/' //静态资源所在路径
   }).extend({
@@ -83,7 +84,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'add'
 			,id: l
-			,data: data.field  
+			,data: $.extend(data.field, {token : token})  
 		});
 		return false;
 	})
@@ -91,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		admin.cajax({
 			method: 'update'
 			,id: l
-			,data: data.field  
+			,data: $.extend(data.field, {token : token})  
 		});
 		return false;
 	}) 

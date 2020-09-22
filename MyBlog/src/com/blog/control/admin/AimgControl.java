@@ -172,16 +172,18 @@ public class AimgControl extends BaseControl{
 	public Object remove(HttpServletRequest request) throws IOException{
 		log.info("==================");
 		try {
+			String[] ids = request.getParameter("ids").split(",");
+			log.info(ids);
 			
-			JSONArray json = JSONObject.parseArray(ActionUtil.read(request));
-			log.info(json.toString());
 			StringBuffer sb = new StringBuffer();
-			sb.append(singleOfEqString("id", json.getJSONObject(0).getString("id")));
-			for(int i = 1; i < json.size(); i++) {
-				sb.append(" OR ")
-				.append(singleOfEqString("id", json.getJSONObject(i).getString("id")));
+			
+			for(String id : ids) {
+				sb.append("id = ").append("'"+id+"'").append(" OR ");
 			}
-			aimgServiceImpl.delete(sb.toString());	
+			if(ids.length > 0) {
+				sb.delete(sb.length()-4, sb.length());
+				aimgServiceImpl.delete(sb.toString());	
+			}
 			return Message.success("请求成功", null);
 		}catch(Exception e) { e.printStackTrace();
 			return Message.error("请求失败，"+e.getMessage(), null);

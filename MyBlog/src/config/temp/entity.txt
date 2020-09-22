@@ -3,7 +3,7 @@ package com.blog.entity;
  * 管理员登录表
  * @author cjw
  */
-public class #name# extends Base{
+public class #name# extends Base implements Serializable{
 	private String id; 
 	
 	public String getId() {

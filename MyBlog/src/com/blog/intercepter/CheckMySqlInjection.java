@@ -14,20 +14,31 @@ import org.springframework.stereotype.Component;
 import com.blog.anno.TParamer;
 
 
-@Aspect
-@Component
+/**
+ * <b></b>
+ * <p>
+ * 描述:<br>
+ * 已经记录在java基础中
+ * @author 威 
+ * <br>2020年6月7日 下午3:45:01 
+ * @see
+ * @since 1.0
+ */
+//@Aspect
+//@Component
 public class CheckMySqlInjection {
 	private static Logger log = Logger.getLogger(CheckMySqlInjection.class);
 	
-	@Pointcut("execution(* com.blog.service.impl.*.*(..))")
+	// 上一次要监视那个登录的对象检测是否有注入，其实这个监听的目标（com.blog.service.impl.*.*(..))）对象错了 接下来注释掉
+//	@Pointcut("execution(* com.blog.service.impl.*.*(..))")
   	public void performance(){
 		log.info("performance....");
 		System.out.println("performance....");
 	}
 	
-	@Before("performance()")
+//	@Before("performance()")
   	public void watchPerformance(JoinPoint joinPoint) throws Throwable{
-		log.info("login check");
+		log.info("Mysql check");
 		try {
 			
 			Class<?>[] clazz = new Class<?>[joinPoint.getArgs().length];

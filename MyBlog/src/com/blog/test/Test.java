@@ -12,12 +12,18 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.eclipse.jdt.internal.compiler.codegen.IntegerCache;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -39,8 +45,13 @@ import sun.misc.BASE64Encoder;
  * @see
  * @since 1.0
  */
+class TTTt{
+	String str = new String("good");
+	char[] ch = {'a', 'b', 'c'};
+}
 public class Test {
 	private static Logger log = LogManager.getLogger(Test.class);
+	private static int i = 100;
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException{
 		/*
 		生成mybatis的CRUD		test20_05_10_01
@@ -59,11 +70,411 @@ public class Test {
 //		test200602_1();
 		
 //		test200603_1(new User(), "User");	// 生成toString
-		test200603_2("Role");				// 生成toString
+//		test200603_2("Role");				// 生成toString
 //		test200603_3(new Note());			// 返回所有属性
 //		test200603_4();						// 生成实体类 hibernate
+//		test20_06_12_01();					//
+//		test20_06_12_02();
+//		test20_06_23_01();
+//		System.out.println(Integer.valueOf(4));
+//		test20062501(1);
+//		test20062502(new Integer(1));
+//		test20062701();
+//		((Test)null).test20062702();
+		
+		 
+//		test20062708();
+		
+//		System.out.println(test20062801("aaabbddfdbdsd"));
+		
+//		double d = 3f/2f;
+//		int a = 3/2;
+//		System.out.println(a);
+//		System.out.println(d);
+//		test20090401();
+		test20092101("C:\\Users\\Administrator.USER-20160224QQ\\.m2\\repository");
+//		test20092101("C:\\Users\\Administrator.USER-20160224QQ\\Desktop\\ddd");
+	}
+	// maven导入项目时有感叹号异常，这是依赖包有问题，此方法时清空有问题的依赖包然后重新下载
+	public static void test20092101(String path) {
+		int fileNum = 0, folderNum = 0;
+		File file = new File(path);
+		Scanner sc = new Scanner(System.in);
+	 	LinkedList<File> list = new LinkedList<>();
+	 	if (file.exists()){
+	 		if (null == file.listFiles()) {
+                return;
+            }
+            list.addAll(Arrays.asList(file.listFiles()));
+            while (!list.isEmpty()) {
+            	File target = list.removeFirst();
+                File[] files = target.listFiles();
+                if (null == files) {
+                    continue;
+                }
+                boolean isJar = false;
+                boolean isLastUpdated = false;
+                
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        System.out.println("文件夹:" + f.getAbsolutePath());
+                        list.add(f);
+                        folderNum++;
+                    } else {
+                        
+                        if(f.getAbsolutePath().endsWith(".jar.lastUpdated")){
+                        	isLastUpdated = true;
+//                        	System.out.println("以.jar.lastUpdated结尾:" + f.getAbsolutePath().endsWith(".jar.lastUpdated"));
+                        } else if(f.getAbsolutePath().endsWith(".jar")){
+                        	isJar = true;
+//                        	System.out.println("以.jar结尾:" + f.getAbsolutePath().endsWith(".jar"));
+                        }
+                        fileNum++;
+                    }
+                }
+//                System.out.println("isLastUpdated:"+isLastUpdated+"; isJar:"+isJar);
+                if(isLastUpdated){
+                	if(!isJar) {
+                		System.out.println("删除文件夹："+target.getAbsolutePath()); 
+                		System.out.println("回车进行确认删除！");
+                		sc.nextLine();
+//                		target.mkdir();
+                		delFolder(target.getAbsolutePath());
+                		System.out.println("已删除，确认继续！");
+                		sc.nextLine();
+                	} 
+                }
+            }
+	 	}else {
+            System.out.println("文件不存在!");
+        }
+	 	System.out.println("文件夹数量:" + folderNum + ",文件数量:" + fileNum);
+	}  
+	// 删除文件夹
+	// param folderPath 文件夹完整绝对路径
+	public static void delFolder(String folderPath) {
+		try {
+			delAllFile(folderPath); // 删除完里面所有内容
+			String filePath = folderPath;
+			filePath = filePath.toString();
+			java.io.File myFilePath = new java.io.File(filePath);
+			myFilePath.delete(); // 删除空文件夹
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+ 
+	// 删除指定文件夹下所有文件
+	// param path 文件夹完整绝对路径
+	public static boolean delAllFile(String path) {
+		boolean flag = false;
+		File file = new File(path);
+		if (!file.exists()) {
+			return flag;
+		}
+		if (!file.isDirectory()) {
+			return flag;
+		}
+		String[] tempList = file.list();
+		File temp = null;
+		for (int i = 0; i < tempList.length; i++) {
+			if (path.endsWith(File.separator)) {
+				temp = new File(path + tempList[i]);
+			} else {
+				temp = new File(path + File.separator + tempList[i]);
+			}
+			if (temp.isFile()) {
+				temp.delete();
+			}
+			if (temp.isDirectory()) {
+				delAllFile(path + "/" + tempList[i]);// 先删除文件夹里面的文件
+				delFolder(path + "/" + tempList[i]);// 再删除空文件夹
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	// 遍历所有文件夹
+	public static void folderMethod1(String path) {
+		int fileNum = 0, folderNum = 0;
+		File file = new File(path);
+	 	LinkedList<File> list = new LinkedList<>();
+	 	if (file.exists()){
+	 		if (null == file.listFiles()) {
+                return;
+            }
+            list.addAll(Arrays.asList(file.listFiles()));
+            while (!list.isEmpty()) {
+                File[] files = list.removeFirst().listFiles();
+                if (null == files) {
+                    continue;
+                }
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        System.out.println("文件夹:" + f.getAbsolutePath());
+                        list.add(f);
+                        folderNum++;
+                    } else {
+                        System.out.println("文件:" + f.getAbsolutePath());
+                        fileNum++;
+                    }
+                }
+            }
+	 	}else {
+            System.out.println("文件不存在!");
+        }
+	 	System.out.println("文件夹数量:" + folderNum + ",文件数量:" + fileNum);
+	}    
+	
+	// 将数行代码转换成StringBuilder.append("123456");串
+	public static void test20090401(){
+		CharStreamImpl c = new CharStreamImpl("C:\\Users\\Administrator.USER-20160224QQ\\Desktop\\temp.txt");
+		c.read(line -> {
+			System.out.println("html.append(\""+((String) line).replace("\"", "'")+"\");");
+		});
+	}
+	public static void test20_06_12_01(){
+		CharStreamImpl c = new CharStreamImpl("d:/temp.txt");
+		System.out.println("StringBuilder sb = new StringBuilder();");
+		c.read(line -> {
+			String lineStr = (String) line;
+			System.out.println("sb.append(\""+lineStr.replace("\"", "\\\"")+"\");");
+		});
 	}
 	
+	// 连续重复的字母用字数代替
+	// 原始值：aaabbddfdbdsd， 结果：a3b2d2fdbdsd
+	public static String test20062801(String str){
+		// 有数字则返回原串
+		if(str.matches(".*\\d+.*"))
+			return str; 
+		
+		char c = str.charAt(0);
+		int index = 1;
+		StringBuilder sb = new StringBuilder();
+		for(int i = 1; i < str.length(); i++){
+			if(str.charAt(i) == c) index++;
+			else{
+				sb.append(c+""+(index == 1 ? "" : index));
+				index = 1;
+				c = str.charAt(i);
+			}
+		}
+		return sb.append(str.charAt(str.length()-1)).toString();
+	}
+	
+	public static void test20062708(){
+		long a[] = new long[5];
+		System.out.println(a[4]);
+	}
+	public static void change(String str, char[] ch){
+		str = "test ok";
+		ch[0] = 'g';
+	}
+	
+	public static void test20062705(){
+		double a = 1;
+		double b = 2;
+		System.out.println(a+=b);
+		System.out.println(a=a+b);
+	}
+	public static void test20062704(){
+		int a = 1;
+		int b = 2;
+		System.out.println(a+=b);
+		System.out.println(a=a+b);
+	}
+	/*public static void test20062703(){
+		byte a = 1;
+		byte b = 2;
+		System.out.println(a+=b);
+		System.out.println(a=a+b);
+	}*/
+	public static void test20062702(){
+		System.out.println("test20062702_(4)");
+//		System.out.println(test20062702_(4));
+	}
+	public static int test20062702_(int n){
+		List<Integer> list = new ArrayList<Integer>();
+		for(int i = 0; i < n; i++){
+			list.add(i+1);
+		}
+		int len = list.size(), index = -1;
+		while(true){
+			for(int i = 0; i < 3; i++){
+				if(index < len-1) index++;
+				else index = 0;
+				System.out.println("index:"+index);
+			}
+			list.remove(index);
+			index--;
+			if((len = list.size()) == 1){
+				return list.get(0);
+			}
+		} 
+	}
+	public static void test20062701(){
+		Scanner sc = new Scanner(System.in);
+		String str = sc.next();
+		System.out.println(result(str));
+	}
+	public static String result(String str) {
+		int index = 0;
+		StringBuilder sb = new StringBuilder();
+		for(int i = 1, len = str.length(); i <= len; i++){
+			String result = mapping(str.substring(index, i));
+			if(result != null){
+				index = i;
+				sb.append(result);
+			}
+		}
+		return sb.toString();
+	}
+	public static String mapping(String str){
+		switch(str){
+			case "nine" : return "9";
+			case "eight" : return "8";
+			case "seven" : return "7";
+			case "six" : return "6";
+			case "five" : return "5";
+			case "four" : return "4";
+			case "three" : return "3";
+			case "two" : return "2";
+			case "one" : return "1";
+			case "zero" : return "0";
+		}
+		return null;
+	}
+	
+	public static void test20062501(int value){
+		System.out.println("int");
+	}
+	public static void test20062502(Integer value){
+		System.out.println("Integer");
+	}
+	
+	static long count = 0;
+	static boolean flag = false;
+	static boolean flag2 = false;
+	static boolean flag3 = false;
+	static StringBuilder sb = new StringBuilder();
+	public static void test20_06_23_01(){
+		CharStreamImpl impl = new CharStreamImpl("E:\\学习\\工作项目\\AUTHSYSTEST - 副本.sql");
+		CharStreamImpl write = new CharStreamImpl("E:\\学习\\工作项目\\2.txt");
+		
+		impl.read(line->{
+//			count++;
+			String l = (String) line;
+			if(l.indexOf("ALERT TABLE") != -1 ) flag = true;
+			if(flag){
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				/*if(l.indexOf("CREATE TABLE") != -1){
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println(l);
+//					flag2 = true;
+				}*/
+				/*if(l.indexOf("CHARSET=utf8;") != -1 && flag2){
+					flag3 = true;
+				}
+				if(flag2){
+					sb.append(l).append(System.lineSeparator());
+				}
+				if(flag3){
+					flag2 = false;
+					flag3 = false;
+					
+					System.out.println(sb);
+					sb = new StringBuilder();
+				}*/
+				System.out.println(l);
+			}
+			
+			/*if(l.indexOf(", 'SYYYY-MM-DD HH24:MI:SS'") != -1){
+				write.write(l.replace(", 'SYYYY-MM-DD HH24:MI:SS'", ""), true);
+			}else {
+				write.write(l, true);
+			}*/
+		});
+		System.out.println("处理完毕");
+	}
+	
+	/** 当前页 */
+	private static Integer currentIndex;
+	/** 总页数 */
+	private static Integer pageCount;
+	// 
+	public static void test20_06_12_02(){
+		currentIndex = 5;
+		pageCount = 10;
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div class=\"layui-box layui-laypage layui-laypage-default c-page-default\" id=\"layui-laypage-17\">");
+		sb.append("  <a href=\"javascript:;\" class=\"layui-laypage-prev\" data-page=\"1\">");
+		sb.append("    <i class=\"layui-icon\"></i></a>");
+		String href = "";
+		// 总是显示第一页按钮
+		active(sb, href, 1);
+		if(pageCount > 2){
+			// 2 - 1 = 1 < 1, 3 - 2 = 1 < 1 
+			// 特定条件下： 添加省略号
+			if(currentIndex >= 4)
+				sb.append("  <span class=\"layui-laypage-spr\">…</span>");
+			if(currentIndex == 1){
+				// 选中第一页，因为页数大于三才会进来这个if，所以直接创建第二页按钮
+				active(sb, href, currentIndex+1);
+				// 如果总页数不是3而已 就添加下一页按钮，然后就齐活了
+				if(pageCount != 3)
+					active(sb, href, currentIndex+2);
+			}else if(currentIndex == pageCount){
+				// 选中的是尾页 往后创建前一页按钮
+				active(sb, href, pageCount-1);
+				// 总数不是3，就创建更前一页按钮
+				if(pageCount != 3)
+					active(sb, href, pageCount-2);
+			}else{
+				// 其他选中，
+				// 先判断其他选中的前一页不是首页则创建上一页按钮
+				if(currentIndex-1 != 1)
+					active(sb, href, currentIndex-1);
+				// 选中页按钮，因为总数3才会进来，所以直接创建
+				active(sb, href, currentIndex);
+				// 最后判断选中的下一页不是尾页则创建下一页按钮
+				if(currentIndex+1 != pageCount)
+					active(sb, href, currentIndex+1);
+			}
+			// 特定条件下： 添加后方的省略号
+			if(pageCount - currentIndex >= 3)
+				sb.append("  <span class=\"layui-laypage-spr\">…</span>");
+		}
+		// 数量足够的情况 总是显示尾页按钮
+		if(pageCount >= 2)
+			active(sb, href, pageCount);
+		
+		sb.append("  <a href=\"javascript:;\" class=\"layui-laypage-next\" data-page=\"3\">");
+		sb.append("    <i class=\"layui-icon\"></i>");
+		sb.append("  </a>");
+		sb.append("  <span class=\"layui-laypage-count\">共 94 条</span>");
+		sb.append("</div>");
+		System.out.println(sb.toString());
+	}	
+	
+	protected static void active(StringBuilder sb, String href, Integer index) {
+		if(currentIndex == index){
+			sb.append("  <span class=\"layui-laypage-curr\">");
+			sb.append("    <em class=\"layui-laypage-em c-page-em\"></em>");
+			sb.append("    <em>"+index+"</em></span>");
+		}else
+			sb.append("  <a href=\""+href+"\" class=\"layui-laypage-last\" title=\"第"+index+"页\" data-page=\""+index+"\">"+index+"</a>");
+	}
+	
+	// createEntityForHibernate
 	protected static void test200603_4(){
 		ContextConfig2 c = new ContextConfig2();
 		c.setColumns("id name create_date update_date content admin_id status tags");
@@ -89,9 +500,11 @@ public class Test {
 		return conf;
 	}
 	
+	// 首字母大写
 	private static String upFirst(String str) {
 		return str.substring(0,1).toUpperCase() + str.substring(1);
 	}
+	
 	
 	public static void createEntityForHibernate(ContextConfig2 contextConfig2) {
 
@@ -437,20 +850,32 @@ public class Test {
 //		arr.add(createInput("用户编号", "Qu_uid_eq_s"));
 //		arr.add(createInput("开场编号", "Qu_id_eq_s"));
 //		arr.add(createInput("第三方支付订单号", "Qu_payOrderId_eq_s"));
-		arr.add(createDate("选择时间", "Qu_createDate_ge_s", "Qu_createDate_le_s")); // 两个时间区之间 
-		arr.add(createDate("选择时间", "Qu_createDate_ge_s"));// 一个时间
-		arr.add(createSelectByCode("Qu_type_eq_s", "类型", ""
-				+ "icon-图标"
-				+ ",plan_sign-计划"
-				+ ",note_tab-笔记标签"
-				));// 普通的select标签
+//		arr.add(createDate("选择时间", "Qu_createDate_ge_s", "Qu_createDate_le_s")); // 两个时间区之间 
+//		arr.add(createDate("选择时间", "Qu_createDate_ge_s"));// 一个时间
+//		arr.add(createSelectByCode("Qu_type_eq_s", "类型", ""
+//				+ "icon-图标"
+//				+ ",plan_sign-计划"
+//				+ ",note_tab-笔记标签"
+//				));// 普通的select标签
 //		arr.add(createSelectByCode("Qu_winType_eq_s", "开", "01-庄,02-和,03-闲"));// 普通的select标签
-//		arr.add(createSelectByCode("status", "状态", "id-name-members-Member", true));// 普通的select标签 用到forEach
+		arr.add(createSelectByCode("status", "状态", "[{'entity': 'Member', 'list': 'members', 'value': 'Member.id', 'text': 'Member.name'}]", true));// 普通的select标签 用到forEach
+		//arr.add(createSelectByCode("status", "状态", "id-name-members-Member", true));// 普通的select标签 用到forEach
+		arr.add(createInput("订单编号", "id")); // 两个时间区之间 
+		arr.add(createInput("用户编号", "uId"));// 一个时间
+		arr.add(createSelectByCode("paymentStatus", "支付状态", ""
+				+ "00-已支付"
+				+ ",02-待支付"
+				));
+		arr.add(createSelectByCode("originalAmount", "发货状态", ""
+				+ "00-完成"
+				+ ",01-途中"
+				+ ",02-未发货"
+				));
 		System.out.println(arr.toJSONString());
 		createCom(arr);
 		
 	}
-	public static String level_1 = "\t\t\t\t";
+	public static String level_1 = "";
 	public static String level_2 = "\t"+level_1;
 	public static String level_3 = "\t"+level_2;
 	public static String level_4 = "\t"+level_3;
@@ -503,8 +928,8 @@ public class Test {
 					JSONArray options = (JSONArray) object.get("options");
 					JSONObject option = options.getJSONObject(0);
 					html += object.getBoolean("isFor") ? 
-					level_3+"<c:forEach begin=\"0\" items=\"${"+option.getString("items")+"}\" step=\"1\" var=\""+option.getString("var")+"\" varStatus=\"varsta\">\r\n" + 
-					level_4+"<option value=\"${Role."+option.getString("value")+"}\">${Role."+option.getString("text")+"}</option>\r\n" + 
+					level_3+"<c:forEach begin=\"0\" items=\"${"+option.getString("list")+"}\" step=\"1\" var=\""+option.getString("entity")+"\" varStatus=\"varsta\">\r\n" + 
+					level_4+"<option value=\"${"+option.getString("value")+"}\">${"+option.getString("text")+"}</option>\r\n" + 
 					level_3+"</c:forEach>\r\n" : option(options); 
 					html +=
 					level_3+"</select>\r\n" + 
@@ -516,7 +941,7 @@ public class Test {
 					level_1+"<div class=\"layui-inline\">\r\n" + 
 					level_2+"<label class=\"layui-form-label\">"+object.get("text")+"</label>\r\n" + 
 					level_2+"<div class=\"layui-input-inline\">\r\n" + 
-					level_3+"<input type=\"text\" name=\""+object.get("name")+"\" placeholder=\"请输入\" autocomplete=\"off\" class=\"layui-input\">\r\n" + 
+					level_3+"<input type=\"text\" name=\""+object.get("name")+"\" placeholder=\""+(object.get("placeholder") != null?object.get("placeholder"):"请输入")+"\" autocomplete=\"off\" class=\"layui-input\">\r\n" + 
 					level_2+"</div>\r\n" + 
 				    level_1+"</div>\r\n";
 					// 一般输入标签处理
@@ -612,12 +1037,12 @@ public class Test {
 	 * 
 	 * @param name		属性name值
 	 * @param text		显示串    例如：状态
-	 * @param codeStr	00-启用,01-禁用
+	 * @param json	00-启用,01-禁用
 	 * @param isFor		true 则有 forEach 标签  通常是从字典表中自动获取数据
 	 * @return
 	 */
-	public static JSONObject createSelectByCode(String name, String text, String codeStr, boolean isFor) {
-		return createSelect(name, text, coverCodeStr(codeStr, isFor), isFor);
+	public static JSONObject createSelectByCode(String name, String text, String json, boolean isFor) {
+		return createSelect(name, text, JSONObject.parseArray(json), isFor);
 	}
 	/**
 	 * 

@@ -1,4 +1,4 @@
-package com.blog.enumer;
+package com.blog.util.enums;
 /**
  * 运算符
  */

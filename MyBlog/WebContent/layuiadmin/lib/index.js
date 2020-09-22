@@ -4,11 +4,12 @@
 ;
 layui.extend({
 	setter: "config"
-	,navTree: "lib/navTree"
+	/*,navTree: "lib/navTree"*/
     ,admin: "lib/admin"
     ,view: "lib/view"
-    ,partcle: 'lib/partcle'
-}).define(["setter", "admin"],
+    ,cutil: "lib/cutil"
+    /*,partcle: 'lib/partcle'*/
+}).define(["setter", "admin", 'cutil'/*, 'navTree', 'partcle'*/],
 function(export_) {//console.log("index");
     var config = layui.setter,
     element = layui.element, 
@@ -53,7 +54,7 @@ function(export_) {//console.log("index");
         if (config.pageTabs){
 			//console.log("是否存在顶栏标签 " + flag + " ");
 			flag || (selectElement(LAY_app_body).append(['<div class="layadmin-tabsbody-item layui-show">'
-				, '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>'
+				, '<iframe src="' + url+"?token="+token + '" frameborder="0" class="layadmin-iframe"></iframe>'
 				, "</div>"].join("")), page.index = elements_.length, element.tabAdd(layadmin_layout_tabs, {
 				title: "<span>" + desc + "</span>",
 				id: url,
@@ -63,7 +64,7 @@ function(export_) {//console.log("index");
         else {
 			//console.log("存在顶栏标签 则直接修改链接" + url);
             var u = admin.tabsBody(admin.tabsPage.index).find(".layadmin-iframe");
-            u[0].contentWindow.location.href = url
+            u[0].contentWindow.location.href = url+"?token="+token
         }
         element.tabChange(layadmin_layout_tabs, url),
         admin.tabsBodyChange(page.index, {
