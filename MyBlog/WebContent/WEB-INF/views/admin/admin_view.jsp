@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="my" uri="/WEB-INF/jstl/custom.tld"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -9,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
   <meta charset="utf-8">
-  <title>博客后台管理</title>
+  <title><my:text name="blog.index.managesys" /></title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -39,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </a>
           </li>
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
-            <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" admin-event="serach" lay-action="template/search.html?keywords="> 
+            <input type="text" placeholder="<my:text name="blog.index.search"/>..." autocomplete="off" class="layui-input layui-input-search" admin-event="serach" lay-action="template/search.html?keywords="> 
           </li>
         </ul>
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
@@ -69,13 +70,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </li>
           <li class="layui-nav-item" lay-unselect>
             <a href="javascript:;">
-              <cite>${name}</cite>
+              <cite>${name}</cite> 
             </a>
             <dl class="layui-nav-child">
-              <dd><a lay-href="<%=basePath%>admin/administrators/info.chtml">基本资料</a></dd>
-              <dd><a lay-href="<%=basePath%>admin/administrators/password.chtml">修改密码</a></dd>
+              <dd><a lay-href="<%=basePath%>admin/administrators/info.chtml">
+              	<my:text name="blog.index.baseInfor" />
+              </a></dd>
+              <dd><a lay-href="<%=basePath%>admin/administrators/password.chtml">
+              	<my:text name="blog.index.changePass" />
+              </a></dd>
+              <c:forEach begin="0" items="${locals}" step="1" var="Local" varStatus="varsta">
+                <dd style="text-align: center;">
+					<a href="<%=basePath%>admin/main/listview.chtml?request_locale=${Local.lang}&token=${token}">
+              		${Local.text}
+              		</a>
+              	</dd>
+              </c:forEach>
               <hr>
-              <dd admin-event="logout" style="text-align: center;"><a>退出</a></dd>
+              <dd admin-event="logout" style="text-align: center;"><a href="javascript:;">
+              	<my:text name="blog.index.signout" />
+              </a></dd>
             </dl>
           </li>
           
@@ -103,9 +117,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <li class="layui-nav-item" lay-unselect>
               <a href="javascript:;"></a>
               <dl class="layui-nav-child layui-anim-fadein">
-                <dd admin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
-                <dd admin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
-                <dd admin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                <dd admin-event="closeThisTabs"><a href="javascript:;">
+                	<my:text name="blog.index.closeCurrent" />
+                </a></dd>
+                <dd admin-event="closeOtherTabs"><a href="javascript:;">
+                	<my:text name="blog.index.closeOther" />
+                </a></dd>
+                <dd admin-event="closeAllTabs"><a href="javascript:;">
+                	<my:text name="blog.index.closeAll" />
+                </a></dd>
               </dl>
             </li>
           </ul>
@@ -121,7 +141,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="home/console.chtml" frameborder="0" class="layadmin-iframe"></iframe>
+          <iframe src="<%=basePath%>adin/main/aly_control.chtml?token=${token}" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       
@@ -129,60 +149,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <div class="layadmin-body-shade" admin-event="shade"></div>
     </div>
   </div>
-  <script src="<%=basePath%>layuiadmin/layui/layui.js"></script>
-  <script>
-  function refresh() {
-  	window.location.reload();
-  }
-  function test(){
-	  alert("0");
-  }
-  var index;
-  layui.config({
-	base: '<%=basePath%>layuiadmin/' //静态资源所在路径
-  }).extend({
-	index: 'lib/index' //主入口模块
-	,navTree: 'lib/navTree' 
-	,partcle: 'lib/partcle' 
-  }).use(['navTree', 'partcle'], function () {   
-	
-	var navTree = layui.navTree
-	,$ = layui.$;
-	
-	initAjax = function(){
-		$.ajax(
-			{ 
-				url: 'init.do'
-				,type: 'post'	
-				,dataType: "json"
-				,success: function(data){
-					if(data.responseCode != "success") {
-						layer.msg(data.responseMsg);
-						return ;
-					}  
-					navTree.render({
-						elem: '#nav-tree-cnt'
-						,base: '<%=basePath%>'
-						,data: {
-							href: data.href
-							,desc: data.desc
-							,data: data.data 
-						}
-					});
-					index = layui.index
-					layui.use('index') //必须在后面加载
-				} 
-				,error: function(data){
-					layer.msg("服务器异常！") 
-				}
-			}
-		);			
-	}
-	initAjax();
-	 
-	
-  });
-  </script>
+  
   
 </body>
 </html>
