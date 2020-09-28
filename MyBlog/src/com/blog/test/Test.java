@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,19 +20,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.eclipse.jdt.internal.compiler.codegen.IntegerCache;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.blog.anno.TParamer;
-import com.blog.entity.Note;
 import com.blog.util.CharStreamImpl;
 
 import sun.misc.BASE64Decoder;
@@ -49,6 +47,10 @@ class TTTt{
 	String str = new String("good");
 	char[] ch = {'a', 'b', 'c'};
 }
+interface Subject{
+	public void say();
+	public void run();
+} 
 public class Test {
 	private static Logger log = LogManager.getLogger(Test.class);
 	private static int i = 100;
@@ -92,8 +94,42 @@ public class Test {
 //		System.out.println(a);
 //		System.out.println(d);
 //		test20090401();
-		test20092101("C:\\Users\\Administrator.USER-20160224QQ\\.m2\\repository");
+//		test20092101("C:\\Users\\Administrator.USER-20160224QQ\\.m2\\repository");
 //		test20092101("C:\\Users\\Administrator.USER-20160224QQ\\Desktop\\ddd");
+		test200926();
+	}
+	// jdk动态代理
+	public static void test200926(){
+		class SubjectProxy implements Subject{
+
+			@Override
+			public void say() {
+				System.out.println("say");
+			}
+
+			@Override
+			public void run() {
+				System.out.println("run");
+			}
+			
+		}
+		SubjectProxy subject = new SubjectProxy(); 
+		Subject sub = (Subject) Proxy.newProxyInstance(subject.getClass().getClassLoader(), 
+				subject.getClass().getInterfaces(), 
+				new InvocationHandler(){
+
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						System.out.println("代理前置");
+						Object result = method.invoke(subject, args);
+						System.out.println("代理后置");
+						return result;
+					}
+					
+				}
+		);
+		sub.say();
+		sub.run();
 	}
 	// maven导入项目时有感叹号异常，这是依赖包有问题，此方法时清空有问题的依赖包然后重新下载
 	public static void test20092101(String path) {
